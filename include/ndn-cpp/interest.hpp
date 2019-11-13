@@ -469,10 +469,12 @@ public:
   }
 
   /**
-   * @deprecated You should let the wire encoder generate a random nonce internally before sending the interest.
+   * Set the nonce value.
+   * @param nonce The nonce Blob.
+   * @return This Interest so that you can chain calls to update values.
    */
   Interest&
-  DEPRECATED_IN_NDN_CPP setNonce(const Blob& nonce)
+  setNonce(const Blob& nonce)
   {
     nonce_ = nonce;
     // Set getNonceChangeCount_ so that the next call to getNonce() won't clear nonce_.
