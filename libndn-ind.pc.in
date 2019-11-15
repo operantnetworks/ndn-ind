@@ -3,9 +3,9 @@ exec_prefix=@exec_prefix@
 includedir=@includedir@
 libdir=@libdir@
 
-Name: NDN-CPP
+Name: NDN-IND
 Description: NDN Client Library for C++ and C
-URL: https://github.com/named-data/ndn-cpp
+URL: https://github.com/operantnetworks/ndn-ind
 Version: @PACKAGE_VERSION@
 Cflags: -I${includedir}
-Libs: -L${libdir} -lndn-cpp
+Libs: -L${libdir} -lndn-ind
