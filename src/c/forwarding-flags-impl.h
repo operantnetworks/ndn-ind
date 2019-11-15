@@ -40,7 +40,7 @@ extern "C" {
  * @deprecated Use RegistrationOptions.
  */
 void
-DEPRECATED_IN_NDN_CPP ndn_ForwardingFlags_initialize
+DEPRECATED_IN_NDN_IND ndn_ForwardingFlags_initialize
   (struct ndn_RegistrationOptions *self)
 {
   ndn_RegistrationOptions_initialize(self);
@@ -54,7 +54,7 @@ DEPRECATED_IN_NDN_CPP ndn_ForwardingFlags_initialize
  * @deprecated Use RegistrationOptions.
  */
 int
-DEPRECATED_IN_NDN_CPP ndn_ForwardingFlags_getNfdForwardingFlags
+DEPRECATED_IN_NDN_IND ndn_ForwardingFlags_getNfdForwardingFlags
   (const struct ndn_RegistrationOptions *self)
 {
   return ndn_RegistrationOptions_getNfdForwardingFlags(self);
@@ -69,7 +69,7 @@ DEPRECATED_IN_NDN_CPP ndn_ForwardingFlags_getNfdForwardingFlags
  * @deprecated Use RegistrationOptions.
  */
 void
-DEPRECATED_IN_NDN_CPP ndn_ForwardingFlags_setNfdForwardingFlags
+DEPRECATED_IN_NDN_IND ndn_ForwardingFlags_setNfdForwardingFlags
   (struct ndn_RegistrationOptions *self, int nfdForwardingFlags)
 {
   ndn_RegistrationOptions_setNfdForwardingFlags(self, nfdForwardingFlags);

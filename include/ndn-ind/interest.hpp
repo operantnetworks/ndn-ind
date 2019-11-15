@@ -299,7 +299,7 @@ public:
    * @deprecated Use hasApplicationParameters.
    */
   bool
-  DEPRECATED_IN_NDN_CPP hasParameters() const { return hasApplicationParameters(); }
+  DEPRECATED_IN_NDN_IND hasParameters() const { return hasApplicationParameters(); }
 
   /**
    * Get the application parameters.
@@ -312,7 +312,7 @@ public:
    * @deprecated Use getApplicationParameters.
    */
   const Blob&
-  DEPRECATED_IN_NDN_CPP getParameters() const { return getApplicationParameters(); }
+  DEPRECATED_IN_NDN_IND getParameters() const { return getApplicationParameters(); }
 
   /**
    * Check if this interest has a link object (or a link wire encoding which
@@ -321,7 +321,7 @@ public:
    * @deprecated Use getForwardingHint.
    */
   bool
-  DEPRECATED_IN_NDN_CPP hasLink() const
+  DEPRECATED_IN_NDN_IND hasLink() const
   {
     return link_.get() || !linkWireEncoding_.isNull();
   }
@@ -335,10 +335,10 @@ public:
    * @deprecated Use getForwardingHint.
    */
   Link*
-  DEPRECATED_IN_NDN_CPP getLink();
+  DEPRECATED_IN_NDN_IND getLink();
 
   const Link*
-  DEPRECATED_IN_NDN_CPP getLink() const { return const_cast<Interest*>(this)->getLink(); }
+  DEPRECATED_IN_NDN_IND getLink() const { return const_cast<Interest*>(this)->getLink(); }
 
   /**
    * Get the wire encoding of the link object. If there is already a wire
@@ -351,7 +351,7 @@ public:
    * @deprecated Use getForwardingHint.
    */
   Blob
-  DEPRECATED_IN_NDN_CPP getLinkWireEncoding
+  DEPRECATED_IN_NDN_IND getLinkWireEncoding
     (WireFormat& wireFormat = *WireFormat::getDefaultWireFormat()) const;
 
   /**
@@ -360,7 +360,7 @@ public:
    * @deprecated Use getForwardingHint.
    */
   int
-  DEPRECATED_IN_NDN_CPP getSelectedDelegationIndex() const { return selectedDelegationIndex_; }
+  DEPRECATED_IN_NDN_IND getSelectedDelegationIndex() const { return selectedDelegationIndex_; }
 
   /**
    * Get the incoming face ID according to the incoming packet header.
@@ -550,7 +550,7 @@ public:
    * @deprecated Use setApplicationParameters.
    */
   Interest&
-  DEPRECATED_IN_NDN_CPP setParameters(const Blob& applicationParameters)
+  DEPRECATED_IN_NDN_IND setParameters(const Blob& applicationParameters)
   {
     return setApplicationParameters(applicationParameters);
   }
@@ -578,7 +578,7 @@ public:
    * @deprecated Use setForwardingHint.
    */
   Interest&
-  DEPRECATED_IN_NDN_CPP setLinkWireEncoding
+  DEPRECATED_IN_NDN_IND setLinkWireEncoding
     (Blob encoding,
      WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
@@ -598,7 +598,7 @@ public:
    * @deprecated Use setForwardingHint.
    */
   Interest&
-  DEPRECATED_IN_NDN_CPP unsetLink()
+  DEPRECATED_IN_NDN_IND unsetLink()
   {
     WireFormat* wireFormat = 0;
     return setLinkWireEncoding(Blob(), *wireFormat);
@@ -612,7 +612,7 @@ public:
    * @deprecated Use setForwardingHint.
    */
   Interest&
-  DEPRECATED_IN_NDN_CPP setSelectedDelegationIndex(int selectedDelegationIndex)
+  DEPRECATED_IN_NDN_IND setSelectedDelegationIndex(int selectedDelegationIndex)
   {
     selectedDelegationIndex_ = selectedDelegationIndex;
     ++changeCount_;

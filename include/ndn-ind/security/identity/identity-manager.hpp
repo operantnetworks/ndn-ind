@@ -87,7 +87,7 @@ public:
    * @return The key name of the auto-generated KSK of the identity.
    */
   Name
-  DEPRECATED_IN_NDN_CPP createIdentity
+  DEPRECATED_IN_NDN_IND createIdentity
     (const Name& identityName, const KeyParams& params)
   {
     return IdentityCertificate::certificateNameToPublicKeyName

@@ -26,9 +26,9 @@
 #include <stddef.h>
 
 #if NDN_CPP_HAVE_ATTRIBUTE_DEPRECATED
-  #define DEPRECATED_IN_NDN_CPP __attribute__((deprecated))
+  #define DEPRECATED_IN_NDN_IND __attribute__((deprecated))
 #else
-  #define DEPRECATED_IN_NDN_CPP
+  #define DEPRECATED_IN_NDN_IND
 #endif
 
 #if !NDN_CPP_HAVE_ROUND

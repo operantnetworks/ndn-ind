@@ -35,7 +35,7 @@ public:
    * Create a new ForwardingFlags with "childInherit" set and all other flags cleared.
    * @deprecated Use RegistrationOptions.
    */
-  DEPRECATED_IN_NDN_CPP ForwardingFlags() {}
+  DEPRECATED_IN_NDN_IND ForwardingFlags() {}
 };
 
 }

@@ -57,7 +57,7 @@ public:
    * publicKeyDerLength).
    */
   void
-  DEPRECATED_IN_NDN_CPP setPublicKeyForKeyName
+  DEPRECATED_IN_NDN_IND setPublicKeyForKeyName
     (const Name& keyName, const uint8_t* publicKeyDer, size_t publicKeyDerLength)
   {
     setPublicKeyForKeyName(keyName, KEY_TYPE_RSA, publicKeyDer, publicKeyDerLength);
@@ -80,7 +80,7 @@ public:
    * privateKeyDer, privateKeyDerLength).
    */
   void
-   DEPRECATED_IN_NDN_CPP setPrivateKeyForKeyName
+   DEPRECATED_IN_NDN_IND setPrivateKeyForKeyName
     (const Name& keyName, const uint8_t* privateKeyDer, size_t privateKeyDerLength)
   {
     setPrivateKeyForKeyName(keyName, KEY_TYPE_RSA, privateKeyDer, privateKeyDerLength);
@@ -110,7 +110,7 @@ public:
    * publicKeyDerLength, privateKeyDer, privateKeyDerLength).
    */
   void
-  DEPRECATED_IN_NDN_CPP setKeyPairForKeyName
+  DEPRECATED_IN_NDN_IND setKeyPairForKeyName
     (const Name& keyName, const uint8_t* publicKeyDer, size_t publicKeyDerLength,
      const uint8_t* privateKeyDer, size_t privateKeyDerLength)
   {

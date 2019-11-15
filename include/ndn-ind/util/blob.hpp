@@ -143,11 +143,11 @@ public:
    * Create a new Blob to point to an existing byte array.
    * @deprecated Use the constructor with an explicit copy parameter.
    */
-  DEPRECATED_IN_NDN_CPP Blob(const ptr_lib::shared_ptr<std::vector<uint8_t> > &value)
+  DEPRECATED_IN_NDN_IND Blob(const ptr_lib::shared_ptr<std::vector<uint8_t> > &value)
   : ptr_lib::shared_ptr<const std::vector<uint8_t> >((const ptr_lib::shared_ptr<const std::vector<uint8_t> > &)value)
   {
   }
-  DEPRECATED_IN_NDN_CPP Blob(const ptr_lib::shared_ptr<const std::vector<uint8_t> > &value)
+  DEPRECATED_IN_NDN_IND Blob(const ptr_lib::shared_ptr<const std::vector<uint8_t> > &value)
   : ptr_lib::shared_ptr<const std::vector<uint8_t> >(value)
   {
   }

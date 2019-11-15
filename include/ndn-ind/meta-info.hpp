@@ -64,7 +64,7 @@ public:
    * @deprecated Use the application-specific content to store a timestamp.
    */
   MillisecondsSince1970
-  DEPRECATED_IN_NDN_CPP getTimestampMilliseconds() const
+  DEPRECATED_IN_NDN_IND getTimestampMilliseconds() const
   {
     return timestampMilliseconds_;
   }
@@ -93,7 +93,7 @@ public:
    * @deprecated Use getFreshnessPeriod.
    */
   int
-  DEPRECATED_IN_NDN_CPP getFreshnessSeconds() const
+  DEPRECATED_IN_NDN_IND getFreshnessSeconds() const
   {
     return freshnessPeriod_ < 0 ? -1 : (int)round(freshnessPeriod_ / 1000.0);
   }
@@ -110,13 +110,13 @@ public:
    * @deprecated Use getFinalBlockId.
    */
   const Name::Component&
-  DEPRECATED_IN_NDN_CPP getFinalBlockID() const { return getFinalBlockId(); }
+  DEPRECATED_IN_NDN_IND getFinalBlockID() const { return getFinalBlockId(); }
 
   /**
    * @deprecated Use the application-specific content to store a timestamp.
    */
   void
-  DEPRECATED_IN_NDN_CPP setTimestampMilliseconds
+  DEPRECATED_IN_NDN_IND setTimestampMilliseconds
     (MillisecondsSince1970 timestampMilliseconds)
   {
     timestampMilliseconds_ = timestampMilliseconds;
@@ -157,7 +157,7 @@ public:
    * @deprecated Use setFreshnessPeriod.
    */
   void
-  DEPRECATED_IN_NDN_CPP setFreshnessSeconds(int freshnessSeconds)
+  DEPRECATED_IN_NDN_IND setFreshnessSeconds(int freshnessSeconds)
   {
     setFreshnessPeriod(freshnessSeconds < 0 ? -1.0 : (double)freshnessSeconds * 1000.0);
   }
@@ -178,7 +178,7 @@ public:
    * @deprecated Use setFinalBlockId.
    */
   void
-  DEPRECATED_IN_NDN_CPP setFinalBlockID(const Name::Component& finalBlockId)
+  DEPRECATED_IN_NDN_IND setFinalBlockID(const Name::Component& finalBlockId)
   {
     finalBlockId_ = finalBlockId;
     ++changeCount_;

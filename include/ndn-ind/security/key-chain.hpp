@@ -526,7 +526,7 @@ public:
    * @return The key name of the auto-generated KSK of the identity.
    */
   Name
-  DEPRECATED_IN_NDN_CPP createIdentity
+  DEPRECATED_IN_NDN_IND createIdentity
     (const Name& identityName, const KeyParams& params = getDefaultKeyParams())
   {
     return IdentityCertificate::certificateNameToPublicKeyName
@@ -743,7 +743,7 @@ public:
    * @deprecated Use getCertificate.
    */
   ptr_lib::shared_ptr<IdentityCertificate>
-  DEPRECATED_IN_NDN_CPP getIdentityCertificate(const Name& certificateName)
+  DEPRECATED_IN_NDN_IND getIdentityCertificate(const Name& certificateName)
   {
     if (!isSecurityV1_)
       throw Error
@@ -988,7 +988,7 @@ public:
    * exceptions.
    */
   void
-  DEPRECATED_IN_NDN_CPP verifyData
+  DEPRECATED_IN_NDN_IND verifyData
     (const ptr_lib::shared_ptr<Data>& data, const OnVerified& onVerified,
      const OnVerifyFailed& onVerifyFailed, int stepCount = 0);
 
@@ -1031,7 +1031,7 @@ public:
    * exceptions.
    */
   void
-  DEPRECATED_IN_NDN_CPP verifyInterest
+  DEPRECATED_IN_NDN_IND verifyInterest
     (const ptr_lib::shared_ptr<Interest>& interest,
      const OnVerifiedInterest& onVerified,
      const OnVerifyInterestFailed& onVerifyFailed, int stepCount = 0,
@@ -1113,7 +1113,7 @@ public:
   /**
    * @deprecated Use getDefaultKeyParams().
    */
-  static const RsaKeyParams DEPRECATED_IN_NDN_CPP DEFAULT_KEY_PARAMS;
+  static const RsaKeyParams DEPRECATED_IN_NDN_IND DEFAULT_KEY_PARAMS;
 
 private:
   friend class CommandInterestSigner;

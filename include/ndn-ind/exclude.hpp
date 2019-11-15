@@ -99,13 +99,13 @@ public:
    * @deprecated Use size().
    */
   size_t
-  DEPRECATED_IN_NDN_CPP getEntryCount() const { return entries_.size(); }
+  DEPRECATED_IN_NDN_IND getEntryCount() const { return entries_.size(); }
 
   /**
    * @deprecated Use get(i).
    */
   const Exclude::Entry&
-  DEPRECATED_IN_NDN_CPP getEntry(size_t i) const { return entries_[i]; }
+  DEPRECATED_IN_NDN_IND getEntry(size_t i) const { return entries_[i]; }
 
   /**
    * Set excludeLite to have the values and point to the entries in this Exclude,
@@ -168,13 +168,13 @@ public:
    * @deprecated Use appendAny.
    */
   Exclude&
-  DEPRECATED_IN_NDN_CPP addAny() { return appendAny(); }
+  DEPRECATED_IN_NDN_IND addAny() { return appendAny(); }
 
   /**
    * @deprecated Use appendComponent.
    */
   Exclude&
-  DEPRECATED_IN_NDN_CPP addComponent(uint8_t *component, size_t componentLength)
+  DEPRECATED_IN_NDN_IND addComponent(uint8_t *component, size_t componentLength)
   {
     return appendComponent(component, componentLength);
   }

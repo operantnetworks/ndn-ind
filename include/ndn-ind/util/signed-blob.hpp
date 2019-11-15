@@ -111,13 +111,13 @@ public:
    * Create a new SignedBlob to point to an existing byte array.
    * @deprecated Use the constructor with an explicit copy parameter.
    */
-  DEPRECATED_IN_NDN_CPP SignedBlob
+  DEPRECATED_IN_NDN_IND SignedBlob
     (const ptr_lib::shared_ptr<std::vector<uint8_t> > &value,
      size_t signedPortionBeginOffset, size_t signedPortionEndOffset)
   : Blob(value, false), signedPortionBeginOffset_(signedPortionBeginOffset), signedPortionEndOffset_(signedPortionEndOffset)
   {
   }
-  DEPRECATED_IN_NDN_CPP SignedBlob
+  DEPRECATED_IN_NDN_IND SignedBlob
     (const ptr_lib::shared_ptr<const std::vector<uint8_t> > &value,
      size_t signedPortionBeginOffset, size_t signedPortionEndOffset)
   : Blob(value,false), signedPortionBeginOffset_(signedPortionBeginOffset), signedPortionEndOffset_(signedPortionEndOffset)

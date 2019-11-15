@@ -35,7 +35,7 @@ public:
    * Create a ForwardingFlagsLite with "childInherit" set and all other flags
    * cleared.
    */
-  DEPRECATED_IN_NDN_CPP ForwardingFlagsLite() {}
+  DEPRECATED_IN_NDN_IND ForwardingFlagsLite() {}
 
   /**
    * Downcast the reference to the ndn_RegistrationOptions struct to a
@@ -44,13 +44,13 @@ public:
    * @return The same reference as ForwardingFlagsLite.
    */
   static ForwardingFlagsLite&
-  DEPRECATED_IN_NDN_CPP downCast(ndn_RegistrationOptions& registrationOptions)
+  DEPRECATED_IN_NDN_IND downCast(ndn_RegistrationOptions& registrationOptions)
   {
     return *(ForwardingFlagsLite*)&registrationOptions;
   }
 
   static const ForwardingFlagsLite&
-  DEPRECATED_IN_NDN_CPP downCast(const ndn_RegistrationOptions& registrationOptions)
+  DEPRECATED_IN_NDN_IND downCast(const ndn_RegistrationOptions& registrationOptions)
   {
     return *(ForwardingFlagsLite*)&registrationOptions;
   }

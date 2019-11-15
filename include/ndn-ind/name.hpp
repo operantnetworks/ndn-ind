@@ -397,7 +397,7 @@ public:
      * @deprecated Use toSegment.
      */
     uint64_t
-    DEPRECATED_IN_NDN_CPP toSeqNum() const
+    DEPRECATED_IN_NDN_IND toSeqNum() const
     {
       return toSegment();
     }
@@ -406,13 +406,13 @@ public:
      * @deprecated. Use MetaInfo.getFinalBlockId.
      */
     bool
-    DEPRECATED_IN_NDN_CPP isFinalSegment() const { return hasPrefix(getFinalSegmentPrefix(), getFinalSegmentPrefixLength()); }
+    DEPRECATED_IN_NDN_IND isFinalSegment() const { return hasPrefix(getFinalSegmentPrefix(), getFinalSegmentPrefixLength()); }
 
     /**
      * @deprecated. Use MetaInfo.getFinalBlockId.
      */
     uint64_t
-    DEPRECATED_IN_NDN_CPP toFinalSegment() const
+    DEPRECATED_IN_NDN_IND toFinalSegment() const
     {
       return toNumberWithPrefix(getFinalSegmentPrefix(), getFinalSegmentPrefixLength());
     }
@@ -1008,7 +1008,7 @@ public:
    * @deprecated Use append.
    */
   Name&
-  DEPRECATED_IN_NDN_CPP appendComponent(const uint8_t *value, size_t valueLength)
+  DEPRECATED_IN_NDN_IND appendComponent(const uint8_t *value, size_t valueLength)
   {
     return append(value, valueLength);
   }
@@ -1017,7 +1017,7 @@ public:
    * @deprecated Use append.
    */
   Name&
-  DEPRECATED_IN_NDN_CPP appendComponent(const std::vector<uint8_t>& value)
+  DEPRECATED_IN_NDN_IND appendComponent(const std::vector<uint8_t>& value)
   {
     return append(value);
   }
@@ -1026,7 +1026,7 @@ public:
    * @deprecated Use append.
    */
   Name&
-  DEPRECATED_IN_NDN_CPP appendComponent(const Blob &value)
+  DEPRECATED_IN_NDN_IND appendComponent(const Blob &value)
   {
     return append(value);
   }
@@ -1035,7 +1035,7 @@ public:
    * @deprecated Use append.
    */
   Name&
-  DEPRECATED_IN_NDN_CPP addComponent(const uint8_t *value, size_t valueLength)
+  DEPRECATED_IN_NDN_IND addComponent(const uint8_t *value, size_t valueLength)
   {
     return append(value, valueLength);
   }
@@ -1044,7 +1044,7 @@ public:
    * @deprecated Use append.
    */
   Name&
-  DEPRECATED_IN_NDN_CPP addComponent(const std::vector<uint8_t>& value)
+  DEPRECATED_IN_NDN_IND addComponent(const std::vector<uint8_t>& value)
   {
     return append(value);
   }
@@ -1053,7 +1053,7 @@ public:
    * @deprecated Use append.
    */
   Name&
-  DEPRECATED_IN_NDN_CPP addComponent(const Blob &value)
+  DEPRECATED_IN_NDN_IND addComponent(const Blob &value)
   {
     return append(value);
   }
@@ -1071,13 +1071,13 @@ public:
    * @deprecated use size().
    */
   size_t
-  DEPRECATED_IN_NDN_CPP getComponentCount() const { return size(); }
+  DEPRECATED_IN_NDN_IND getComponentCount() const { return size(); }
 
   /**
    * @deprecated Use get(i).
    */
   const Component&
-  DEPRECATED_IN_NDN_CPP getComponent(size_t i) const { return get(i); }
+  DEPRECATED_IN_NDN_IND getComponent(size_t i) const { return get(i); }
 
   /**
    * Get a new name, constructed as a subset of components.
@@ -1134,7 +1134,7 @@ public:
    * @deprecated Use toUri().
    */
   std::string
-  DEPRECATED_IN_NDN_CPP to_uri() const
+  DEPRECATED_IN_NDN_IND to_uri() const
   {
     return toUri();
   }
@@ -1192,7 +1192,7 @@ public:
    * @deprecated. Use MetaInfo.setFinalBlockId.
    */
   Name&
-  DEPRECATED_IN_NDN_CPP appendFinalSegment(uint64_t segment)
+  DEPRECATED_IN_NDN_IND appendFinalSegment(uint64_t segment)
   {
     return append(Component::fromNumberWithPrefix
       (segment, Component::getFinalSegmentPrefix(), Component::getFinalSegmentPrefixLength()));
@@ -1664,7 +1664,7 @@ public:
    * @deprecated Use operator < .
    */
   static bool
-  DEPRECATED_IN_NDN_CPP breadthFirstLess(const Name& name1, const Name& name2) { return name1 < name2; }
+  DEPRECATED_IN_NDN_IND breadthFirstLess(const Name& name1, const Name& name2) { return name1 < name2; }
 
   /**
    * @deprecated Not needed since Name defines operator < .
