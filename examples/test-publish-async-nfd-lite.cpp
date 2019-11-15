@@ -23,7 +23,7 @@
  * packets with the prefix /testecho. When an Interest is received, make an echo
  * Data packet with the same name and send it. This needs NFD running on the
  * local host. The works with test-echo-consumer or test-echo-consumer-lite .
- * This uses the API for NDN-CPP Lite instead of the full NDN-CPP. Note that
+ * This uses the API for NDN-IND Lite instead of the full NDN-IND. Note that
  * this does not use the C++ Standard Library, or exceptions, or virtual
  * methods or malloc (except in the send functions which you can
  * change to not use malloc). Therefore the lightweight C++ code maps

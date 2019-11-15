@@ -23,7 +23,7 @@
  * /testecho/<word> , then displays the received Data packet. This needs NFD
  * running on the local host. The works with test-publish-async-nfd or
  * test-publish-async-nfd-lite .
- * This uses the API for NDN-CPP Lite instead of the full NDN-CPP. Note that
+ * This uses the API for NDN-IND Lite instead of the full NDN-IND. Note that
  * this does not use the C++ Standard Library, or exceptions, or virtual
  * methods or malloc (except in the sendInterest functions which you can
  * change to not use malloc). Therefore the lightweight C++ code maps
@@ -177,7 +177,7 @@ main(int argc, char** argv)
   }
 
   // The main event loop. 
-  // We're not using the Pending Interest Table in the main NDN-CPP Face object,
+  // We're not using the Pending Interest Table in the main NDN-IND Face object,
   // so there is no automatic check for timeout. To keep this example
   // lightweight, we loop forever waiting for the Data packet. To check for
   // timeout, we could use ndn_getNowMilliseconds() to get the start time, then
