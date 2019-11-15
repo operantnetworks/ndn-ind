@@ -26,8 +26,7 @@
 #ifndef NDN_UTIL_TIME_HPP
 #define NDN_UTIL_TIME_HPP
 
-#include "ndn-cxx/detail/common.hpp"
-
+#include <type_traits>
 #include <boost/asio/wait_traits.hpp>
 #include <boost/chrono.hpp>
 

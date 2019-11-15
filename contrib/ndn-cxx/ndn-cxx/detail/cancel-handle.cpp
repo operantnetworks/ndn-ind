@@ -23,12 +23,12 @@
 #include <ndn-ind/ndn-ind-config.h>
 #ifdef NDN_IND_HAVE_BOOST
 
-#include "ndn-cxx/detail/cancel-handle.hpp"
+#include <ndn-ind/util/impl/cancel-handle.hpp>
 
 namespace ndn {
 namespace detail {
 
-CancelHandle::CancelHandle(function<void()> cancel)
+CancelHandle::CancelHandle(std::function<void()> cancel)
   : m_cancel(std::move(cancel))
 {
 }

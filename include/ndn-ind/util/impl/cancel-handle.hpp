@@ -26,7 +26,7 @@
 #ifndef NDN_DETAIL_CANCEL_HANDLE_HPP
 #define NDN_DETAIL_CANCEL_HANDLE_HPP
 
-#include "ndn-cxx/detail/common.hpp"
+#include <functional>
 
 namespace ndn {
 namespace detail {
@@ -39,7 +39,7 @@ public:
   CancelHandle() noexcept = default;
 
   explicit
-  CancelHandle(function<void()> cancel);
+  CancelHandle(std::function<void()> cancel);
 
   /** \brief Cancel the operation.
    */
@@ -47,7 +47,7 @@ public:
   cancel() const;
 
 private:
-  mutable function<void()> m_cancel;
+  mutable std::function<void()> m_cancel;
 };
 
 /** \brief Cancels an operation automatically upon destruction.

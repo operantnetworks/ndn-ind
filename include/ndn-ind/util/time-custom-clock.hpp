@@ -26,7 +26,7 @@
 #ifndef NDN_UTIL_TIME_CUSTOM_CLOCK_HPP
 #define NDN_UTIL_TIME_CUSTOM_CLOCK_HPP
 
-#include "ndn-cxx/util/time.hpp"
+#include "time.hpp"
 
 namespace ndn {
 namespace time {
@@ -64,8 +64,8 @@ using CustomSteadyClock = CustomClock<steady_clock>;
  * of the corresponding clock will be used
  */
 void
-setCustomClocks(shared_ptr<CustomSteadyClock> steadyClock = nullptr,
-                shared_ptr<CustomSystemClock> systemClock = nullptr);
+setCustomClocks(std::shared_ptr<CustomSteadyClock> steadyClock = nullptr,
+                std::shared_ptr<CustomSystemClock> systemClock = nullptr);
 
 } // namespace time
 } // namespace ndn

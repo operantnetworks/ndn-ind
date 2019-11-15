@@ -26,11 +26,12 @@
 #ifndef NDN_UTIL_SCHEDULER_HPP
 #define NDN_UTIL_SCHEDULER_HPP
 
-#include "ndn-cxx/detail/asio-fwd.hpp"
-#include "ndn-cxx/detail/cancel-handle.hpp"
-#include "ndn-cxx/util/time.hpp"
+#include "impl/asio-fwd.hpp"
+#include "impl/cancel-handle.hpp"
+#include "time.hpp"
 
 #include <boost/system/error_code.hpp>
+#include <boost/noncopyable.hpp>
 #include <set>
 
 namespace ndn {
@@ -100,10 +101,10 @@ public:
   reset() noexcept;
 
 private:
-  EventId(Scheduler& sched, weak_ptr<EventInfo> info);
+  EventId(Scheduler& sched, std::weak_ptr<EventInfo> info);
 
 private:
-  weak_ptr<EventInfo> m_info;
+  std::weak_ptr<EventInfo> m_info;
 
   friend class Scheduler;
   friend std::ostream& operator<<(std::ostream& os, const EventId& eventId);
@@ -146,7 +147,7 @@ public:
 
 /** \brief Generic time-based scheduler
  */
-class Scheduler : noncopyable
+class Scheduler : boost::noncopyable
 {
 public:
   explicit
@@ -185,7 +186,7 @@ public:
 
 private:
   void
-  cancelImpl(const shared_ptr<EventInfo>& info);
+  cancelImpl(const std::shared_ptr<EventInfo>& info);
 
   /** \brief Schedule the next event on the internal timer
    */
@@ -205,13 +206,13 @@ private:
   {
   public:
     bool
-    operator()(const shared_ptr<EventInfo>& a, const shared_ptr<EventInfo>& b) const noexcept;
+    operator()(const std::shared_ptr<EventInfo>& a, const std::shared_ptr<EventInfo>& b) const noexcept;
   };
 
-  using EventQueue = std::multiset<shared_ptr<EventInfo>, EventQueueCompare>;
+  using EventQueue = std::multiset<std::shared_ptr<EventInfo>, EventQueueCompare>;
   EventQueue m_queue;
 
-  unique_ptr<util::detail::SteadyTimer> m_timer;
+  std::unique_ptr<util::detail::SteadyTimer> m_timer;
   bool m_isEventExecuting = false;
 
   friend EventId;

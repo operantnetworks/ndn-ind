@@ -23,8 +23,8 @@
 #include <ndn-ind/ndn-ind-config.h>
 #ifdef NDN_IND_HAVE_BOOST_ASIO
 
-#include "ndn-cxx/util/scheduler.hpp"
-#include "ndn-cxx/util/impl/steady-timer.hpp"
+#include <ndn-ind/util/scheduler.hpp>
+#include <ndn-ind/util/impl/steady-timer.hpp>
 
 #include <boost/scope_exit.hpp>
 
@@ -32,9 +32,14 @@ namespace ndn {
 namespace util {
 namespace scheduler {
 
+using std::shared_ptr;
+using std::weak_ptr;
+using std::make_shared;
+using std::make_unique;
+
 /** \brief Stores internal information about a scheduled event
  */
-class EventInfo : noncopyable
+class EventInfo : boost::noncopyable
 {
 public:
   EventInfo(time::nanoseconds after, EventCallback&& cb)

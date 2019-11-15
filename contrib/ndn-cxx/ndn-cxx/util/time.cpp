@@ -23,14 +23,16 @@
 #include <ndn-ind/ndn-ind-config.h>
 #ifdef NDN_IND_HAVE_BOOST
 
-#include "ndn-cxx/util/time.hpp"
-#include "ndn-cxx/util/time-custom-clock.hpp"
+#include <ndn-ind/util/time.hpp>
+#include <ndn-ind/util/time-custom-clock.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <sstream>
 
 namespace ndn {
 namespace time {
+
+using std::shared_ptr;
 
 static shared_ptr<CustomSystemClock> g_systemClock;
 static shared_ptr<CustomSteadyClock> g_steadyClock;
