@@ -5,7 +5,7 @@
  */
 // Only compile if the main OpenSSL library is not available.
 #include <ndn-ind/ndn-ind-config.h>
-#if !NDN_CPP_HAVE_LIBCRYPTO
+#if !NDN_IND_HAVE_LIBCRYPTO
 
 #if 0
 #include <openssl/opensslconf.h>
@@ -410,4 +410,4 @@ static void sha256_block_data_order(SHA256_CTX *ctx, const void *in,
 # endif
 #endif                         /* SHA256_ASM */
 
-#endif // NDN_CPP_HAVE_LIBCRYPTO
+#endif // NDN_IND_HAVE_LIBCRYPTO

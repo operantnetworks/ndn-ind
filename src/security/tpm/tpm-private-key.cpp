@@ -76,7 +76,7 @@ TpmPrivateKey::loadPkcs1
   }
 
   keyType_ = (KeyType)-1;
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyType == KEY_TYPE_EC) {
     ecPrivateKey_.reset(new EcPrivateKeyLite());
     if ((error = ecPrivateKey_->decode(encoding, encodingLength)))
@@ -131,7 +131,7 @@ TpmPrivateKey::loadPkcs8(const uint8_t* encoding, size_t encodingLength)
   }
 
   keyType_ = (KeyType)-1;
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (oidString == EC_ENCRYPTION_OID) {
     ecPrivateKey_.reset(new EcPrivateKeyLite());
     decodeEcPrivateKey(algorithmParameters, privateKeyDer, *ecPrivateKey_);
@@ -158,7 +158,7 @@ TpmPrivateKey::loadEncryptedPkcs8
   (const uint8_t* encoding, size_t encodingLength, const uint8_t* password,
    size_t passwordLength)
 {
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   // Decode the PKCS #8 EncryptedPrivateKeyInfo.
   // See https://tools.ietf.org/html/rfc5208.
   string oidString;
@@ -285,7 +285,7 @@ TpmPrivateKey::loadEncryptedPkcs8
 Blob
 TpmPrivateKey::derivePublicKey() const
 {
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyType_ == KEY_TYPE_EC) {
     // Get the encoding length and encode the public key.
     size_t encodingLength;
@@ -335,7 +335,7 @@ TpmPrivateKey::decrypt
   (const uint8_t* cipherText, size_t cipherTextLength,
    ndn_EncryptAlgorithmType algorithmType)
 {
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyType_ == KEY_TYPE_EC)
     throw Error("Decryption is not supported for EC keys");
   else if (keyType_ == KEY_TYPE_RSA) {
@@ -372,7 +372,7 @@ TpmPrivateKey::sign
   size_t signatureBitsLength;
   ndn_Error error;
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyType_ == KEY_TYPE_EC) {
     if ((error = ecPrivateKey_->signWithSha256
          (data, dataLength, signatureBits, signatureBitsLength)))
@@ -395,7 +395,7 @@ TpmPrivateKey::sign
 Blob
 TpmPrivateKey::toPkcs1(bool includeParameters)
 {
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyType_ == KEY_TYPE_EC) {
     // Get the encoding length and encode.
     size_t encodingLength;
@@ -431,7 +431,7 @@ TpmPrivateKey::toPkcs1(bool includeParameters)
 Blob
 TpmPrivateKey::toPkcs8(bool includeParameters)
 {
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyType_ == KEY_TYPE_EC) {
     OID parametersOid = getEcOid(*ecPrivateKey_);
     return encodePkcs8PrivateKey
@@ -452,7 +452,7 @@ Blob
 TpmPrivateKey::toEncryptedPkcs8
   (const uint8_t* password, size_t passwordLength, bool includeParameters)
 {
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyType_ < 0)
     throw Error("toEncryptedPkcs8: The private key is not loaded");
 
@@ -529,7 +529,7 @@ ptr_lib::shared_ptr<TpmPrivateKey>
 TpmPrivateKey::generatePrivateKey(const KeyParams& keyParams)
 {
   ptr_lib::shared_ptr<TpmPrivateKey> result(new TpmPrivateKey());
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (keyParams.getKeyType() == KEY_TYPE_EC) {
     const EcKeyParams& ecParams = static_cast<const EcKeyParams&>(keyParams);
     result->ecPrivateKey_.reset(new EcPrivateKeyLite());
@@ -591,7 +591,7 @@ TpmPrivateKey::encodeSubjectPublicKeyInfo
   return result.encode();
 }
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 void
 TpmPrivateKey::decodeEcPrivateKey
   (const ptr_lib::shared_ptr<DerNode>& algorithmParameters,

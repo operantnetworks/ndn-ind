@@ -22,8 +22,8 @@
  */
 
 #include "../../util/regex/ndn-regex-top-matcher.hpp"
-// Only compile if we set NDN_CPP_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
-#if NDN_CPP_HAVE_REGEX_LIB
+// Only compile if we set NDN_IND_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
+#if NDN_IND_HAVE_REGEX_LIB
 
 #include <dirent.h>
 #include <sys/types.h>
@@ -1134,4 +1134,4 @@ ConfigPolicyManager::TrustAnchorRefreshManager::refreshAnchors()
 
 }
 
-#endif // NDN_CPP_HAVE_REGEX_LIB
+#endif // NDN_IND_HAVE_REGEX_LIB

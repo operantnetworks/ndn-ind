@@ -21,8 +21,8 @@
  */
 
 #include "../../../util/regex/ndn-regex-matcher-base.hpp"
-// Only compile if we set NDN_CPP_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
-#if NDN_CPP_HAVE_REGEX_LIB
+// Only compile if we set NDN_IND_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
+#if NDN_IND_HAVE_REGEX_LIB
 
 #include <ndn-ind/security/validator-config-error.hpp>
 #include <ndn-ind/security/v2/validator-config/config-name-relation.hpp>
@@ -116,4 +116,4 @@ ConfigRegexNameFilter::matchName(const Name& packetName)
 
 }
 
-#endif // NDN_CPP_HAVE_REGEX_LIB
+#endif // NDN_IND_HAVE_REGEX_LIB

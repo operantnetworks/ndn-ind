@@ -40,7 +40,7 @@ VerificationHelpers::verifySignature
   bool verified;
 
   if (digestAlgorithm == DIGEST_ALGORITHM_SHA256) {
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
     if (publicKey.getKeyType() == KEY_TYPE_RSA) {
       if (RsaPublicKeyLite::verifySha256WithRsaSignature
           (signature, signatureLength, buffer, bufferLength,

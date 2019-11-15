@@ -20,9 +20,9 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_LIBZ 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_LIBZ 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_LIBZ
+#if NDN_IND_HAVE_LIBZ
 
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind/lite/util/crypto-lite.hpp>
@@ -396,4 +396,4 @@ FullPSync2017::Impl::delayedRemovePendingEntry
 
 }
 
-#endif // NDN_CPP_HAVE_LIBZ
+#endif // NDN_IND_HAVE_LIBZ

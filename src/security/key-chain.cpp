@@ -36,7 +36,7 @@
 #include <ndn-ind/sha256-with-rsa-signature.hpp>
 #include <ndn-ind/digest-sha256-signature.hpp>
 #include <ndn-ind/hmac-with-sha256-signature.hpp>
-#if NDN_CPP_HAVE_UNISTD_H
+#if NDN_IND_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
@@ -64,7 +64,7 @@ map<string, KeyChain::MakeTpmBackEnd>* KeyChain::tpmFactories_ = 0;
 SigningInfo* KeyChain::defaultSigningInfo_ = 0;
 KeyParams* KeyChain::defaultKeyParams_ = 0;
 
-#ifdef NDN_CPP_HAVE_SQLITE3
+#ifdef NDN_IND_HAVE_SQLITE3
 static ptr_lib::shared_ptr<PibImpl>
 makePibSqlite3(const string& location)
 {
@@ -78,7 +78,7 @@ makePibMemory(const string& location)
   return ptr_lib::shared_ptr<PibImpl>(new PibMemory());
 }
 
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
 static ptr_lib::shared_ptr<TpmBackEnd>
 makeTpmBackEndOsx(const string& location)
 {
@@ -144,8 +144,8 @@ KeyChain::KeyChain()
   isSecurityV1_ = false;
 
 // Only check for v1 files if we have Unix support and SQLite3.
-#if NDN_CPP_HAVE_UNISTD_H
-#ifdef NDN_CPP_HAVE_SQLITE3
+#if NDN_IND_HAVE_UNISTD_H
+#ifdef NDN_IND_HAVE_SQLITE3
   if (::access(BasicIdentityStorage::getDefaultDatabaseFilePath().c_str(), R_OK)
         == 0 &&
       ::access(PibSqlite3::getDefaultDatabaseFilePath().c_str(), R_OK) != 0) {
@@ -666,7 +666,7 @@ KeyChain::verifyInterest
      stepCount, wireFormat);
 }
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 void
 KeyChain::signWithHmacWithSha256
   (Data& data, const Blob& key, WireFormat& wireFormat)
@@ -752,7 +752,7 @@ KeyChain::getPibFactories()
     pibFactories_ = new map<string, MakePibImpl>();
 
     // Add the standard factories.
-#ifdef NDN_CPP_HAVE_SQLITE3
+#ifdef NDN_IND_HAVE_SQLITE3
     (*pibFactories_)[PibSqlite3::getScheme()] = &makePibSqlite3;
 #endif
     (*pibFactories_)[PibMemory::getScheme()] = &makePibMemory;
@@ -769,7 +769,7 @@ KeyChain::getTpmFactories()
     tpmFactories_ = new map<string, MakeTpmBackEnd>();
 
     // Add the standard factories.
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
     (*tpmFactories_)[TpmBackEndOsx::getScheme()] = &makeTpmBackEndOsx;
 #endif
     (*tpmFactories_)[TpmBackEndFile::getScheme()] = &makeTpmBackEndFile;
@@ -832,7 +832,7 @@ KeyChain::getDefaultPibScheme()
 string
 KeyChain::getDefaultTpmScheme()
 {
-#if NDN_CPP_HAVE_OSX_SECURITY && NDN_CPP_WITH_OSX_KEYCHAIN
+#if NDN_IND_HAVE_OSX_SECURITY && NDN_IND_WITH_OSX_KEYCHAIN
   return TpmBackEndOsx::getScheme();
 #else
   return TpmBackEndFile::getScheme();

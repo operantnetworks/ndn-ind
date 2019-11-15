@@ -23,23 +23,23 @@
 #ifndef NDN_NDN_REGEX_MATCHER_BASE_HPP
 #define NDN_NDN_REGEX_MATCHER_BASE_HPP
 
-// Depending if ndn-ind-config.h defines NDN_CPP_HAVE_BOOST_REGEX or sets
-//   NDN_CPP_HAVE_STD_REGEX = 1, define the regex_lib namespace alias.
-// Set NDN_CPP_HAVE_REGEX_LIB = 1 if regex_lib is defined.
+// Depending if ndn-ind-config.h defines NDN_IND_HAVE_BOOST_REGEX or sets
+//   NDN_IND_HAVE_STD_REGEX = 1, define the regex_lib namespace alias.
+// Set NDN_IND_HAVE_REGEX_LIB = 1 if regex_lib is defined.
 
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_STD_REGEX
+#if NDN_IND_HAVE_STD_REGEX
   #include <regex>
   namespace ndn { namespace regex_lib = std; }
-  #define NDN_CPP_HAVE_REGEX_LIB 1
+  #define NDN_IND_HAVE_REGEX_LIB 1
 
   // Only Boost needs the correction.
   static const size_t NDN_REGEXP_MARK_COUNT_CORRECTION = 0;
-#elif defined(NDN_CPP_HAVE_BOOST_REGEX)
+#elif defined(NDN_IND_HAVE_BOOST_REGEX)
   #include <boost/regex.hpp>
   #include <boost/version.hpp>
   namespace ndn { namespace regex_lib = boost; }
-  #define NDN_CPP_HAVE_REGEX_LIB 1
+  #define NDN_IND_HAVE_REGEX_LIB 1
 
   // Re: http://www.boost.org/users/history/version_1_56_0.html
   // Correct the behavior of basic_regex<>::mark_count() to match existing
@@ -52,11 +52,11 @@
     0;
   #endif
 #else
-  #define NDN_CPP_HAVE_REGEX_LIB 0
+  #define NDN_IND_HAVE_REGEX_LIB 0
 #endif
 
-// Only compile if we set NDN_CPP_HAVE_REGEX_LIB.
-#if NDN_CPP_HAVE_REGEX_LIB
+// Only compile if we set NDN_IND_HAVE_REGEX_LIB.
+#if NDN_IND_HAVE_REGEX_LIB
 
 #include <string>
 #include <ndn-ind/name.hpp>
@@ -146,6 +146,6 @@ operator<<(std::ostream& os, const NdnRegexMatcherBase& regex)
 
 }
 
-#endif // NDN_CPP_HAVE_REGEX_LIB
+#endif // NDN_IND_HAVE_REGEX_LIB
 
 #endif

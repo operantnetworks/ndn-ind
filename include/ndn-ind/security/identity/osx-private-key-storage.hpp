@@ -22,9 +22,9 @@
 #ifndef NDN_OSX_PRIVATEKEY_STORAGE_H
 #define NDN_OSX_PRIVATEKEY_STORAGE_H
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_OSX_SECURITY 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_OSX_SECURITY 1.
 #include "../../ndn-ind-config.h"
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
 
 #include "../../common.hpp"
 #include "../tpm/helper-osx.hpp"
@@ -193,6 +193,6 @@ public:
 
 }
 
-#endif // NDN_CPP_HAVE_OSX_SECURITY
+#endif // NDN_IND_HAVE_OSX_SECURITY
 
 #endif

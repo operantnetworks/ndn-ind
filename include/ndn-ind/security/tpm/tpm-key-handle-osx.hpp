@@ -23,9 +23,9 @@
 #ifndef NDN_TPM_KEY_HANDLE_OSX_HPP
 #define NDN_TPM_KEY_HANDLE_OSX_HPP
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_OSX_SECURITY 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_OSX_SECURITY 1.
 #include "../../ndn-ind-config.h"
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
 
 #include "helper-osx.hpp"
 #include "tpm-key-handle.hpp"
@@ -57,6 +57,6 @@ private:
 
 }
 
-#endif // NDN_CPP_HAVE_OSX_SECURITY
+#endif // NDN_IND_HAVE_OSX_SECURITY
 
 #endif

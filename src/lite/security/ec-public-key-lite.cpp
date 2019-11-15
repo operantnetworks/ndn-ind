@@ -22,7 +22,7 @@
 #include "../../c/security/ec-public-key.h"
 #include <ndn-ind/lite/security/ec-public-key-lite.hpp>
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 namespace ndn {
 
@@ -76,4 +76,4 @@ EcPublicKeyLite::verifySha256WithEcdsaSignature
 
 }
 
-#endif // NDN_CPP_HAVE_LIBCRYPTO
+#endif // NDN_IND_HAVE_LIBCRYPTO

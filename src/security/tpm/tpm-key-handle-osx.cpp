@@ -20,9 +20,9 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_OSX_SECURITY 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_OSX_SECURITY 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
 
 #include <stdexcept>
 #include <ndn-ind/security/tpm/tpm-back-end-osx.hpp>
@@ -60,4 +60,4 @@ TpmKeyHandleOsx::doDerivePublicKey() const
 
 }
 
-#endif // NDN_CPP_HAVE_OSX_SECURITY
+#endif // NDN_IND_HAVE_OSX_SECURITY

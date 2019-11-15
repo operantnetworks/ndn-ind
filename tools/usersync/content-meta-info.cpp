@@ -19,9 +19,9 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_PROTOBUF = 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_PROTOBUF
+#if NDN_IND_HAVE_PROTOBUF
 
 #include <stdexcept>
 #include <math.h>
@@ -88,4 +88,4 @@ ContentMetaInfo::wireDecode(const uint8_t *input, size_t inputLength)
 
 }
 
-#endif // NDN_CPP_HAVE_PROTOBUF
+#endif // NDN_IND_HAVE_PROTOBUF

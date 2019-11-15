@@ -68,7 +68,7 @@ CryptoLite::generateRandomFloat(float& value)
   return NDN_ERROR_success;
 }
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 void
 CryptoLite::computeHmacWithSha256

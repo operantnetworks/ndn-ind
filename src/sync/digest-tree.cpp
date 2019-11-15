@@ -22,7 +22,7 @@
 
 #include <algorithm>
 #include <ndn-ind/util/logging.hpp>
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 #include <openssl/ssl.h>
 #else
 #include "../../contrib/openssl/sha.h"

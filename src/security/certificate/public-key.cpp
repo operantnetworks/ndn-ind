@@ -59,7 +59,7 @@ PublicKey::PublicKey(const Blob& keyDer)
 
   // Verify that the we can decode.
   // Use a temporary pointer since d2i updates it.
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   if (oidString == RSA_ENCRYPTION_OID) {
     keyType_ = KEY_TYPE_RSA;
 

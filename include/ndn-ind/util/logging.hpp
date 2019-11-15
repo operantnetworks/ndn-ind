@@ -25,7 +25,7 @@
 
 #include "../common.hpp"
 
-#if NDN_CPP_HAVE_LOG4CXX
+#if NDN_IND_HAVE_LOG4CXX
 
 #include <log4cxx/logger.h>
 
@@ -68,7 +68,7 @@
 void
 INIT_LOGGERS ();
 
-#else // else NDN_CPP_HAVE_LOG4CXX
+#else // else NDN_IND_HAVE_LOG4CXX
 
 #define INIT_LOGGER(name)
 #define _LOG_FUNCTION(x)
@@ -98,6 +98,6 @@ INIT_LOGGERS ();
 #define _LOG_ERROR(x)
 #endif
 
-#endif // NDN_CPP_HAVE_LOG4CXX
+#endif // NDN_IND_HAVE_LOG4CXX
 
 #endif

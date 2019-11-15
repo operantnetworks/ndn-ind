@@ -22,7 +22,7 @@
 #include "../../c/security/rsa-private-key.h"
 #include <ndn-ind/lite/security/rsa-private-key-lite.hpp>
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 namespace ndn {
 
@@ -83,4 +83,4 @@ RsaPrivateKeyLite::decrypt
 
 }
 
-#endif // NDN_CPP_HAVE_LIBCRYPTO
+#endif // NDN_IND_HAVE_LIBCRYPTO

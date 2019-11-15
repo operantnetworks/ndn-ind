@@ -21,8 +21,8 @@
  */
 
 #include "../../../util/regex/ndn-regex-matcher-base.hpp"
-// Only compile if we set NDN_CPP_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
-#if NDN_CPP_HAVE_REGEX_LIB
+// Only compile if we set NDN_IND_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
+#if NDN_IND_HAVE_REGEX_LIB
 
 #include "../../../util/boost-info-parser.hpp"
 #include <ndn-ind/util/logging.hpp>
@@ -130,4 +130,4 @@ ConfigRule::create(const BoostInfoTree& configSection)
 
 }
 
-#endif // NDN_CPP_HAVE_REGEX_LIB
+#endif // NDN_IND_HAVE_REGEX_LIB

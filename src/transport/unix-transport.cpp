@@ -21,7 +21,7 @@
 
 // Only compile if we have Unix socket support.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_UNISTD_H
+#if NDN_IND_HAVE_UNISTD_H
 
 #include <stdexcept>
 #include <stdlib.h>
@@ -108,4 +108,4 @@ UnixTransport::close()
 
 }
 
-#endif // NDN_CPP_HAVE_UNISTD_H
+#endif // NDN_IND_HAVE_UNISTD_H

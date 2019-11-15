@@ -22,9 +22,9 @@
 #ifndef NDN_ASYNC_UNIX_TRANSPORT_HPP
 #define NDN_ASYNC_UNIX_TRANSPORT_HPP
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST_ASIO.
 #include "../ndn-ind-config.h"
-#ifdef NDN_CPP_HAVE_BOOST_ASIO
+#ifdef NDN_IND_HAVE_BOOST_ASIO
 
 #include <string>
 #include <boost/asio.hpp>
@@ -146,6 +146,6 @@ private:
 
 }
 
-#endif // NDN_CPP_HAVE_BOOST_ASIO
+#endif // NDN_IND_HAVE_BOOST_ASIO
 
 #endif

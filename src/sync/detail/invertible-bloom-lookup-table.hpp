@@ -48,9 +48,9 @@
 #ifndef NDN_INVERTIBLE_BLOOM_LOOKUP_TABLE_HPP
 #define NDN_INVERTIBLE_BLOOM_LOOKUP_TABLE_HPP
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_LIBZ 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_LIBZ 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_LIBZ
+#if NDN_IND_HAVE_LIBZ
 
 #include <set>
 #include <ndn-ind/util/blob.hpp>
@@ -182,6 +182,6 @@ private:
 
 }
 
-#endif // NDN_CPP_HAVE_LIBZ
+#endif // NDN_IND_HAVE_LIBZ
 
 #endif

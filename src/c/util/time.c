@@ -19,10 +19,10 @@
  */
 
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_TIME_H
+#if NDN_IND_HAVE_TIME_H
 #include <time.h>
 #endif
-#if NDN_CPP_HAVE_SYS_TIME_H
+#if NDN_IND_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 #if defined(_WIN32)
@@ -49,7 +49,7 @@ ndn_getNowMilliseconds()
 }
 
 // Note: configure.ac requires gettimeofday, but check anyway.
-#elif NDN_CPP_HAVE_GETTIMEOFDAY
+#elif NDN_IND_HAVE_GETTIMEOFDAY
 ndn_MillisecondsSince1970
 ndn_getNowMilliseconds()
 {
@@ -63,7 +63,7 @@ ndn_Error
 ndn_toIsoString
   (ndn_MillisecondsSince1970 milliseconds, int includeFraction, char *isoString)
 {
-#if NDN_CPP_HAVE_GMTIME_SUPPORT
+#if NDN_IND_HAVE_GMTIME_SUPPORT
   double secondsSince1970;
   char fractionBuffer[10];
   const char *fraction;
@@ -103,7 +103,7 @@ ndn_toIsoString
 ndn_Error
 ndn_fromIsoString(const char* isoString, ndn_MillisecondsSince1970 *milliseconds)
 {
-#if NDN_CPP_HAVE_GMTIME_SUPPORT
+#if NDN_IND_HAVE_GMTIME_SUPPORT
   // Initialize time zone, etc.
   time_t dummyTime = 0;
   struct tm tm1 = *gmtime(&dummyTime);

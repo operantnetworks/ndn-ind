@@ -21,8 +21,8 @@
  */
 
 #include "ndn-regex-matcher-base.hpp"
-// Only compile if we set NDN_CPP_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
-#if NDN_CPP_HAVE_REGEX_LIB
+// Only compile if we set NDN_IND_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
+#if NDN_IND_HAVE_REGEX_LIB
 
 #include "ndn-regex-backref-manager.hpp"
 #include "ndn-regex-backref-matcher.hpp"
@@ -156,4 +156,4 @@ NdnRegexPatternListMatcher::extractRepetition(size_t index)
 
 }
 
-#endif // NDN_CPP_HAVE_REGEX_LIB
+#endif // NDN_IND_HAVE_REGEX_LIB

@@ -24,7 +24,7 @@
 
 #if defined(__APPLE__)
 
-#define NDN_CPP_HAVE_ENDIAN_H 1
+#define NDN_IND_HAVE_ENDIAN_H 1
 
 #include <libkern/OSByteOrder.h>
 #define htobe16(x) OSSwapHostToBigInt16(x)
@@ -42,7 +42,7 @@
 
 #elif defined(_WIN32)
 
-#define NDN_CPP_HAVE_ENDIAN_H 1
+#define NDN_IND_HAVE_ENDIAN_H 1
 
 #include <WinSock2.h>
 #include <stdint.h>
@@ -51,7 +51,7 @@
 #define be16toh(x) ntohs(x)
 #define htobe32(x) htonl(x)
 #define be32toh(x) ntohl(x)
-#if NDN_CPP_HAVE_HTONLL
+#if NDN_IND_HAVE_HTONLL
 // Windows 8 has htonll. Assume we have ntohll if we have htonll.
 #define htobe64(x) htonll(x)
 #define be64toh(x) ntohll(x)
@@ -80,17 +80,17 @@ static __inline uint64_t be64toh(uint64_t x) { return htons(1) == 1 ? x : (((uin
 
 #elif defined(__FreeBSD__)
 
-#define NDN_CPP_HAVE_ENDIAN_H 1
+#define NDN_IND_HAVE_ENDIAN_H 1
 #include <sys/endian.h>
 
 #elif defined(ARDUINO)
 
-#define NDN_CPP_HAVE_ENDIAN_H 0
+#define NDN_IND_HAVE_ENDIAN_H 0
 
 #else
 
 // Linux, Cygwin, etc.
-#define NDN_CPP_HAVE_ENDIAN_H 1
+#define NDN_IND_HAVE_ENDIAN_H 1
 #include <endian.h>
 
 #endif

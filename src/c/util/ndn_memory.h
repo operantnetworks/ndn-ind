@@ -19,7 +19,7 @@
  */
 
 /*
- * Based on NDN_CPP_HAVE_MEMCMP, NDN_CPP_HAVE_MEMCPY and NDN_CPP_HAVE_MEMSET in
+ * Based on NDN_IND_HAVE_MEMCMP, NDN_IND_HAVE_MEMCPY and NDN_IND_HAVE_MEMSET in
  * ndn-ind-config.h, use the library version or a local implementation of
  * memcmp, memcpy and memset.
  */
@@ -33,9 +33,9 @@
 extern "C" {
 #endif
 
-#if NDN_CPP_HAVE_MEMCMP
+#if NDN_IND_HAVE_MEMCMP
 
-#if NDN_CPP_HAVE_MEMORY_H
+#if NDN_IND_HAVE_MEMORY_H
 #include <memory.h>
 #else
 #include <string.h>
@@ -58,9 +58,9 @@ static __inline int ndn_memcmp(const uint8_t *buf1, const uint8_t *buf2, size_t 
 int ndn_memcmp(const uint8_t *buf1, const uint8_t *buf2, size_t len);
 #endif
 
-#if NDN_CPP_HAVE_MEMCPY
+#if NDN_IND_HAVE_MEMCPY
 
-#if NDN_CPP_HAVE_MEMORY_H
+#if NDN_IND_HAVE_MEMORY_H
 #include <memory.h>
 #else
 #include <string.h>
@@ -81,9 +81,9 @@ static __inline void ndn_memcpy(uint8_t *dest, const uint8_t *src, size_t len)
 void ndn_memcpy(uint8_t *dest, const uint8_t *src, size_t len);
 #endif
 
-#if NDN_CPP_HAVE_MEMSET
+#if NDN_IND_HAVE_MEMSET
 
-#if NDN_CPP_HAVE_MEMORY_H
+#if NDN_IND_HAVE_MEMORY_H
 #include <memory.h>
 #else
 #include <string.h>

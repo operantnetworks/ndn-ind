@@ -19,9 +19,9 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_PROTOBUF = 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_PROTOBUF
+#if NDN_IND_HAVE_PROTOBUF
 
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind-tools/usersync/generalized-content.hpp>
@@ -207,4 +207,4 @@ GeneralizedContent::onSegmentFetcherError
 
 }
 
-#endif // NDN_CPP_HAVE_PROTOBUF
+#endif // NDN_IND_HAVE_PROTOBUF

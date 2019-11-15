@@ -21,10 +21,10 @@
  */
 
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_TIME_H
+#if NDN_IND_HAVE_TIME_H
 #include <time.h>
 #endif
-#if NDN_CPP_HAVE_SYS_TIME_H
+#if NDN_IND_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 #include <float.h>
@@ -167,7 +167,7 @@ RepetitiveInterval::hasIntervalOnDate(MillisecondsSince1970 timePoint) const
       return true;
   }
   else {
-#if NDN_CPP_HAVE_GMTIME_SUPPORT
+#if NDN_IND_HAVE_GMTIME_SUPPORT
     time_t timePointDateSeconds = (time_t)::floor(timePointDateMilliseconds / 1000.0);
     struct tm timePointDateTm = *::gmtime(&timePointDateSeconds);
     time_t startDateSeconds = (time_t)::floor(startDate_ / 1000.0);

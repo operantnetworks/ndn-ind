@@ -21,8 +21,8 @@
  */
 
 #include "ndn-regex-matcher-base.hpp"
-// Only compile if we set NDN_CPP_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
-#if NDN_CPP_HAVE_REGEX_LIB
+// Only compile if we set NDN_IND_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
+#if NDN_IND_HAVE_REGEX_LIB
 
 #include "ndn-regex-matcher-base.hpp"
 #include "ndn-regex-backref-manager.hpp"
@@ -95,4 +95,4 @@ NdnRegexMatcherBase::recursiveMatch
 
 }
 
-#endif // NDN_CPP_HAVE_REGEX_LIB
+#endif // NDN_IND_HAVE_REGEX_LIB

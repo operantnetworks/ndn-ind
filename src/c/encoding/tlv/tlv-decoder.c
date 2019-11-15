@@ -31,7 +31,7 @@ ndn_TlvDecoder_readExtendedVarNumber(struct ndn_TlvDecoder *self, unsigned int f
     if (self->offset + 2 > self->inputLength)
       return NDN_ERROR_read_past_the_end_of_the_input;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     // kind of dangerous... but should be efficient.
     beValue = *(uint16_t *)(self->input + self->offset);
     *varNumber = (uint64_t)be16toh(beValue);
@@ -46,7 +46,7 @@ ndn_TlvDecoder_readExtendedVarNumber(struct ndn_TlvDecoder *self, unsigned int f
     if (self->offset + 4 > self->inputLength)
       return NDN_ERROR_read_past_the_end_of_the_input;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     // kind of dangerous... but should be efficient.
     beValue = *(uint32_t *)(self->input + self->offset);
     *varNumber = (uint64_t)be32toh(beValue);
@@ -64,7 +64,7 @@ ndn_TlvDecoder_readExtendedVarNumber(struct ndn_TlvDecoder *self, unsigned int f
     if (self->offset + 8 > self->inputLength)
       return NDN_ERROR_read_past_the_end_of_the_input;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     // kind of dangerous... but should be efficient.
     beValue = *(uint64_t *)(self->input + self->offset);
     *varNumber = be64toh(beValue);
@@ -124,7 +124,7 @@ ndn_TlvDecoder_readExtendedNonNegativeInteger(struct ndn_TlvDecoder *self, size_
       if (self->offset + 2 > self->inputLength)
         return NDN_ERROR_read_past_the_end_of_the_input;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
       {
         // kind of dangerous... but should be efficient.
         uint16_t beValue = *(uint16_t *)(self->input + self->offset);
@@ -140,7 +140,7 @@ ndn_TlvDecoder_readExtendedNonNegativeInteger(struct ndn_TlvDecoder *self, size_
       if (self->offset + 4 > self->inputLength)
         return NDN_ERROR_read_past_the_end_of_the_input;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
       {
         // kind of dangerous... but should be efficient.
         uint32_t beValue = *(uint32_t *)(self->input + self->offset);
@@ -158,7 +158,7 @@ ndn_TlvDecoder_readExtendedNonNegativeInteger(struct ndn_TlvDecoder *self, size_
       if (self->offset + 8 > self->inputLength)
         return NDN_ERROR_read_past_the_end_of_the_input;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
       {
         // kind of dangerous... but should be efficient.
         uint64_t beValue = *(uint64_t *)(self->input + self->offset);

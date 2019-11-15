@@ -22,7 +22,7 @@
 #include "../../../c/encrypt/algo/aes-algorithm.h"
 #include <ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp>
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 namespace ndn {
 
@@ -92,4 +92,4 @@ AesAlgorithmLite::encrypt128Ecb
 
 }
 
-#endif // NDN_CPP_HAVE_LIBCRYPTO
+#endif // NDN_IND_HAVE_LIBCRYPTO

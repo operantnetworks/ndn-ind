@@ -21,8 +21,8 @@
  */
 
 #include "ndn-regex-matcher-base.hpp"
-// Only compile if we set NDN_CPP_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
-#if NDN_CPP_HAVE_REGEX_LIB
+// Only compile if we set NDN_IND_HAVE_REGEX_LIB in ndn-regex-matcher-base.hpp.
+#if NDN_IND_HAVE_REGEX_LIB
 
 #include "ndn-regex-pattern-list-matcher.hpp"
 #include "ndn-regex-backref-matcher.hpp"
@@ -54,4 +54,4 @@ NdnRegexBackrefMatcher::compile()
 
 }
 
-#endif // NDN_CPP_HAVE_REGEX_LIB
+#endif // NDN_IND_HAVE_REGEX_LIB

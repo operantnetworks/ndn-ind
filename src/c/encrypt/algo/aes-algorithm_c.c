@@ -21,7 +21,7 @@
 #include "../../util/crypto.h"
 #include "aes-algorithm.h"
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 #include <openssl/evp.h>
 
@@ -219,4 +219,4 @@ ndn_AesAlgorithm_encrypt128Ecb
   return NDN_ERROR_success;
 }
 
-#endif // NDN_CPP_HAVE_LIBCRYPTO
+#endif // NDN_IND_HAVE_LIBCRYPTO

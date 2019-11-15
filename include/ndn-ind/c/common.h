@@ -25,13 +25,13 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#if NDN_CPP_HAVE_ATTRIBUTE_DEPRECATED
+#if NDN_IND_HAVE_ATTRIBUTE_DEPRECATED
   #define DEPRECATED_IN_NDN_IND __attribute__((deprecated))
 #else
   #define DEPRECATED_IN_NDN_IND
 #endif
 
-#if !NDN_CPP_HAVE_ROUND
+#if !NDN_IND_HAVE_ROUND
 #define round(x) floor((x) + 0.5)
 #endif
 

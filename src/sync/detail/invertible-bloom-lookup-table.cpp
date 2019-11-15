@@ -45,9 +45,9 @@
  * SOFTWARE.
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_LIBZ 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_LIBZ 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_LIBZ
+#if NDN_IND_HAVE_LIBZ
 
 #include <stdexcept>
 #include <zlib.h>
@@ -329,4 +329,4 @@ InvertibleBloomLookupTable::HashTableEntry::isPure() const
 
 }
 
-#endif // NDN_CPP_HAVE_LIBZ
+#endif // NDN_IND_HAVE_LIBZ

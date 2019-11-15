@@ -22,7 +22,7 @@
 #include "../../../c/encrypt/algo/des-algorithm.h"
 #include <ndn-ind/lite/encrypt/algo/des-algorithm-lite.hpp>
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 namespace ndn {
 
@@ -50,4 +50,4 @@ DesAlgorithmLite::encryptEdeCbcPkcs5Padding
 
 }
 
-#endif // NDN_CPP_HAVE_LIBCRYPTO
+#endif // NDN_IND_HAVE_LIBCRYPTO

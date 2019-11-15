@@ -27,9 +27,9 @@ using namespace std;
 
 namespace ndn {
 
-// Only compile these constructors if we set NDN_CPP_HAVE_REGEX_LIB in
+// Only compile these constructors if we set NDN_IND_HAVE_REGEX_LIB in
 // ndn-regex-matcher-base.hpp.
-#if NDN_CPP_HAVE_REGEX_LIB
+#if NDN_IND_HAVE_REGEX_LIB
 
 InterestFilter::InterestFilter(const Name& prefix, const string& regexFilter)
 : prefix_(prefix), regexFilter_(regexFilter),
@@ -76,7 +76,7 @@ InterestFilter::doesMatch(const Name& name) const
     return false;
 
   if (hasRegexFilter()) {
-#if NDN_CPP_HAVE_REGEX_LIB
+#if NDN_IND_HAVE_REGEX_LIB
     // Perform a prefix match and regular expression match for the remaining
     // components.
     if (!prefix_.match(name))

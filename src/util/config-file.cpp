@@ -60,9 +60,9 @@ ConfigFile::findConfigFile()
       return filePath;
   }
 
-#ifdef NDN_CPP_SYSCONFDIR
+#ifdef NDN_IND_SYSCONFDIR
   {
-    string sysConfDir(NDN_CPP_SYSCONFDIR);
+    string sysConfDir(NDN_IND_SYSCONFDIR);
     if (sysConfDir[sysConfDir.size() - 1] == '/' || sysConfDir[sysConfDir.size() - 1] == '\\')
       // Strip the ending path separator.
       sysConfDir.erase(sysConfDir.size() - 1);

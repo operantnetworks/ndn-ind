@@ -21,7 +21,7 @@
 #include "../../util/crypto.h"
 #include "des-algorithm.h"
 
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 #include <openssl/evp.h>
 
@@ -93,4 +93,4 @@ ndn_DesAlgorithm_encryptEdeCbcPkcs5Padding
   return NDN_ERROR_success;
 }
 
-#endif // NDN_CPP_HAVE_LIBCRYPTO
+#endif // NDN_IND_HAVE_LIBCRYPTO

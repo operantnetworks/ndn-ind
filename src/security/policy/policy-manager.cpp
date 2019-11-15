@@ -42,7 +42,7 @@ PolicyManager::verifySignature
       (signedBlob.signedBuf(), signedBlob.signedSize(),
        signature->getSignature().buf(), signature->getSignature().size(),
        DIGEST_ALGORITHM_SHA256);
-#if NDN_CPP_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
   else if (dynamic_cast<const Sha256WithRsaSignature *>(signature) ||
            dynamic_cast<const Sha256WithEcdsaSignature *>(signature)) {
     if (publicKeyDer.isNull())

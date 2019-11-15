@@ -23,9 +23,9 @@
 #ifndef NDN_BASIC_IDENTITY_STORAGE_HPP
 #define NDN_BASIC_IDENTITY_STORAGE_HPP
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_SQLITE3.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_SQLITE3.
 #include "../../ndn-ind-config.h"
-#ifdef NDN_CPP_HAVE_SQLITE3
+#ifdef NDN_IND_HAVE_SQLITE3
 
 #include "../../common.hpp"
 #include "identity-storage.hpp"
@@ -294,6 +294,6 @@ private:
 
 }
 
-#endif // NDN_CPP_HAVE_SQLITE3
+#endif // NDN_IND_HAVE_SQLITE3
 
 #endif

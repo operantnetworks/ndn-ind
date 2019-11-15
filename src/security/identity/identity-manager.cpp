@@ -21,10 +21,10 @@
  */
 
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_TIME_H
+#if NDN_IND_HAVE_TIME_H
 #include <time.h>
 #endif
-#if NDN_CPP_HAVE_SYS_TIME_H
+#if NDN_IND_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 #include <ctime>
@@ -88,7 +88,7 @@ IdentityManager::getDefaultIdentityStorage(ConfigFile& config)
         ("Invalid config file pib value: " + pibLocator);
   }
 
-#ifdef NDN_CPP_HAVE_SQLITE3
+#ifdef NDN_IND_HAVE_SQLITE3
   return ptr_lib::make_shared<BasicIdentityStorage>();
 #else
   // No SQLite, so we can't use BasicIdentityStorage.
@@ -105,7 +105,7 @@ IdentityManager::getDefaultPrivateKeyStorage
 
   if (tpmLocator == "") {
     // Use the system default.
-#if NDN_CPP_HAVE_OSX_SECURITY && NDN_CPP_WITH_OSX_KEYCHAIN
+#if NDN_IND_HAVE_OSX_SECURITY && NDN_IND_WITH_OSX_KEYCHAIN
     canonicalTpmLocator = "tpm-osxkeychain:";
     return ptr_lib::make_shared<OSXPrivateKeyStorage>();
 #else
@@ -114,7 +114,7 @@ IdentityManager::getDefaultPrivateKeyStorage
 #endif
   }
   else if (tpmLocator == "tpm-osxkeychain") {
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
     canonicalTpmLocator = "tpm-osxkeychain:";
     return ptr_lib::make_shared<OSXPrivateKeyStorage>();
 #else
@@ -543,7 +543,7 @@ IdentityManager::selfSign(const Name& keyName)
   Blob keyBlob = identityStorage_->getKey(keyName);
   ptr_lib::shared_ptr<PublicKey> publicKey(new PublicKey(keyBlob));
 
-#if NDN_CPP_HAVE_GMTIME_SUPPORT
+#if NDN_IND_HAVE_GMTIME_SUPPORT
   time_t nowSeconds = time(NULL);
   struct tm current = *gmtime(&nowSeconds);
   current.tm_hour = 0;

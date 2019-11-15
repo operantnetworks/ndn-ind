@@ -20,7 +20,7 @@
 
 #include "ndn_memory.h"
 
-#if !NDN_CPP_HAVE_MEMCMP
+#if !NDN_IND_HAVE_MEMCMP
 int ndn_memcmp(const uint8_t *buf1, const uint8_t *buf2, size_t len)
 {
   size_t i;
@@ -38,7 +38,7 @@ int ndn_memcmp(const uint8_t *buf1, const uint8_t *buf2, size_t len)
 int ndn_memcmp_stub_to_avoid_empty_file_warning = 0;
 #endif
 
-#if !NDN_CPP_HAVE_MEMCPY
+#if !NDN_IND_HAVE_MEMCPY
 void ndn_memcpy(uint8_t *dest, const uint8_t *src, size_t len)
 {
   size_t i;
@@ -50,7 +50,7 @@ void ndn_memcpy(uint8_t *dest, const uint8_t *src, size_t len)
 int ndn_memcpy_stub_to_avoid_empty_file_warning = 0;
 #endif
 
-#if !NDN_CPP_HAVE_MEMSET
+#if !NDN_IND_HAVE_MEMSET
 void ndn_memset(uint8_t *dest, int val, size_t len)
 {
   size_t i;

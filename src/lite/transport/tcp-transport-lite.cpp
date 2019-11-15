@@ -21,7 +21,7 @@
 
 // Only compile if we have Unix socket support.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_UNISTD_H
+#if NDN_IND_HAVE_UNISTD_H
 
 #include "../../c/transport/tcp-transport.h"
 #include <ndn-ind/lite/transport/tcp-transport-lite.hpp>
@@ -67,4 +67,4 @@ TcpTransportLite::close() { return ndn_TcpTransport_close(this); }
 
 }
 
-#endif // NDN_CPP_HAVE_UNISTD_H
+#endif // NDN_IND_HAVE_UNISTD_H

@@ -62,7 +62,7 @@ ndn_TlvEncoder_writeVarNumberEnabled(struct ndn_TlvEncoder *self, uint64_t varNu
       return error;
     self->output->array[self->offset] = 253;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     beValue = htobe16((uint16_t)varNumber);
     ndn_memcpy(self->output->array + self->offset + 1, (uint8_t *)&beValue, 2);
 #else
@@ -78,7 +78,7 @@ ndn_TlvEncoder_writeVarNumberEnabled(struct ndn_TlvEncoder *self, uint64_t varNu
       return error;
     self->output->array[self->offset] = 254;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     beValue = htobe32((uint32_t)varNumber);
     ndn_memcpy(self->output->array + self->offset + 1, (uint8_t *)&beValue, 4);
 #else
@@ -96,7 +96,7 @@ ndn_TlvEncoder_writeVarNumberEnabled(struct ndn_TlvEncoder *self, uint64_t varNu
       return error;
     self->output->array[self->offset] = 255;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     beValue = htobe64(varNumber);
     ndn_memcpy(self->output->array + self->offset + 1, (uint8_t *)&beValue, 8);
 #else
@@ -133,7 +133,7 @@ ndn_TlvEncoder_writeNonNegativeIntegerEnabled(struct ndn_TlvEncoder *self, uint6
     if ((error = ndn_DynamicUInt8Array_ensureLength(self->output, self->offset + 2)))
       return error;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     beValue = htobe16((uint16_t)value);
     ndn_memcpy(self->output->array + self->offset, (uint8_t *)&beValue, 2);
 #else
@@ -148,7 +148,7 @@ ndn_TlvEncoder_writeNonNegativeIntegerEnabled(struct ndn_TlvEncoder *self, uint6
     if ((error = ndn_DynamicUInt8Array_ensureLength(self->output, self->offset + 4)))
       return error;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     beValue = htobe32((uint32_t)value);
     ndn_memcpy(self->output->array + self->offset, (uint8_t *)&beValue, 4);
 #else
@@ -165,7 +165,7 @@ ndn_TlvEncoder_writeNonNegativeIntegerEnabled(struct ndn_TlvEncoder *self, uint6
     if ((error = ndn_DynamicUInt8Array_ensureLength(self->output, self->offset + 8)))
       return error;
 
-#if NDN_CPP_HAVE_ENDIAN_H
+#if NDN_IND_HAVE_ENDIAN_H
     beValue = htobe64(value);
     ndn_memcpy(self->output->array + self->offset, (uint8_t *)&beValue, 8);
 #else

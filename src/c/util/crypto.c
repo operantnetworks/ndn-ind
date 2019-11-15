@@ -24,7 +24,7 @@
 
 // ndn_generateRandomBytes is defined in a .cpp file.
 
-#elif NDN_CPP_HAVE_LIBCRYPTO
+#elif NDN_IND_HAVE_LIBCRYPTO
 
 #include <openssl/ssl.h>
 #include <openssl/rand.h>
