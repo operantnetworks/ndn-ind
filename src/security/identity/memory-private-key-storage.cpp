@@ -20,8 +20,8 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/identity/memory-private-key-storage.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
 
 using namespace std;
 

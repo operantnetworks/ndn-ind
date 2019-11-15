@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/encoding/wire-format.hpp>
+#include <ndn-ind/encoding/wire-format.hpp>
 
 using namespace std;
 

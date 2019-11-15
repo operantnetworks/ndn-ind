@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/security-exception.hpp>
+#include <ndn-ind/security/security-exception.hpp>
 using namespace std;
 
 namespace ndn {

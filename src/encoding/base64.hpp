@@ -24,7 +24,7 @@
 
 #include <string>
 #include <vector>
-#include <ndn-cpp/common.hpp>
+#include <ndn-ind/common.hpp>
 
 namespace ndn {
 

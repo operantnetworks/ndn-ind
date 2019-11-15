@@ -21,10 +21,10 @@
 #ifndef NDN_RSA_PRIVATE_KEY_H
 #define NDN_RSA_PRIVATE_KEY_H
 
-#include <ndn-cpp/c/common.h>
-#include <ndn-cpp/c/errors.h>
-#include <ndn-cpp/c/encrypt/algo/encrypt-params-types.h>
-#include <ndn-cpp/c/security/rsa-private-key-types.h>
+#include <ndn-ind/c/common.h>
+#include <ndn-ind/c/errors.h>
+#include <ndn-ind/c/encrypt/algo/encrypt-params-types.h>
+#include <ndn-ind/c/security/rsa-private-key-types.h>
 
 #ifdef __cplusplus
 extern "C" {

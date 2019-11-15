@@ -7,7 +7,7 @@
 #ifndef NDN_MURMUR_HASH_H
 #define NDN_MURMUR_HASH_H
 
-#include <ndn-cpp/c/common.h>
+#include <ndn-ind/c/common.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -20,16 +20,16 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_OSX_SECURITY 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_OSX_SECURITY
 
 #include <fstream>
 #include <sstream>
 #include <CoreFoundation/CoreFoundation.h>
 
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/security/identity/osx-private-key-storage.hpp>
-#include <ndn-cpp/security/security-exception.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/security/identity/osx-private-key-storage.hpp>
+#include <ndn-ind/security/security-exception.hpp>
 
 using namespace std;
 

@@ -21,8 +21,8 @@
 
 #include "../../encoding/der/der-node.hpp"
 #include "../../c/util/crypto.h"
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/identity/private-key-storage.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/identity/private-key-storage.hpp>
 
 using namespace std;
 

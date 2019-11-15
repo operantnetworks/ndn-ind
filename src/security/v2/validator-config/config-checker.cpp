@@ -26,9 +26,9 @@
 
 #include "../../../util/boost-info-parser.hpp"
 #include "../../../util/regex/ndn-regex-top-matcher.hpp"
-#include <ndn-cpp/security/pib/pib-key.hpp>
-#include <ndn-cpp/security/validator-config-error.hpp>
-#include <ndn-cpp/security/v2/validator-config/config-checker.hpp>
+#include <ndn-ind/security/pib/pib-key.hpp>
+#include <ndn-ind/security/validator-config-error.hpp>
+#include <ndn-ind/security/v2/validator-config/config-checker.hpp>
 
 using namespace std;
 

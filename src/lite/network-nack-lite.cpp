@@ -20,8 +20,8 @@
  */
 
 #include "../c/network-nack.h"
-#include <ndn-cpp/lite/lp/lp-packet-lite.hpp>
-#include <ndn-cpp/lite/network-nack-lite.hpp>
+#include <ndn-ind/lite/lp/lp-packet-lite.hpp>
+#include <ndn-ind/lite/network-nack-lite.hpp>
 
 namespace ndn {
 

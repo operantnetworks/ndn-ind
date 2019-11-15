@@ -25,7 +25,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include <ndn-cpp/common.hpp>
+#include <ndn-ind/common.hpp>
 #include "../util/dynamic-uint8-vector.hpp"
 #include "../c/encoding/tlv/tlv-encoder.h"
 

@@ -21,11 +21,11 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/lite/security/ec-public-key-lite.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
-#include <ndn-cpp/security/verification-helpers.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/security/ec-public-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/security/verification-helpers.hpp>
 
 using namespace std;
 

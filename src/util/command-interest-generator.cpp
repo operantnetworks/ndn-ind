@@ -19,7 +19,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 #include "command-interest-generator.hpp"
 
 using namespace std;

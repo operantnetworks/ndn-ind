@@ -27,10 +27,10 @@
 #include <fstream>
 #include <sstream>
 #include "../../encoding/base64.hpp"
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/security/tpm/tpm-private-key.hpp>
-#include <ndn-cpp/security/identity/file-private-key-storage.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/security/tpm/tpm-private-key.hpp>
+#include <ndn-ind/security/identity/file-private-key-storage.hpp>
 
 using namespace std;
 

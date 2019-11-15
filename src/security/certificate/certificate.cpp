@@ -22,11 +22,11 @@
 
 #include <stdexcept>
 #include <float.h>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
 #include "../../encoding/der/der-node.hpp"
 #include "../../encoding/base64.hpp"
 #include "../../c/util/time.h"
-#include <ndn-cpp/security/certificate/certificate.hpp>
+#include <ndn-ind/security/certificate/certificate.hpp>
 
 using namespace std;
 

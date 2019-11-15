@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/command-interest-signer.hpp>
+#include <ndn-ind/security/command-interest-signer.hpp>
 
 using namespace std;
 

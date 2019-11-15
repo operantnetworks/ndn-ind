@@ -20,7 +20,7 @@
  */
 
 #include "../c/control-parameters.h"
-#include <ndn-cpp/lite/control-parameters-lite.hpp>
+#include <ndn-ind/lite/control-parameters-lite.hpp>
 
 namespace ndn {
 

@@ -23,9 +23,9 @@
 #ifndef NDN_PSYNC_SEGMENT_PUBLISHER_HPP
 #define NDN_PSYNC_SEGMENT_PUBLISHER_HPP
 
-#include <ndn-cpp/face.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/in-memory-storage/in-memory-storage-retaining.hpp>
+#include <ndn-ind/face.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/in-memory-storage/in-memory-storage-retaining.hpp>
 
 namespace ndn {
 

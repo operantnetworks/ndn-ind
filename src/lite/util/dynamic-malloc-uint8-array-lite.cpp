@@ -20,7 +20,7 @@
  */
 
 #include <stdlib.h>
-#include <ndn-cpp/lite/util/dynamic-malloc-uint8-array-lite.hpp>
+#include <ndn-ind/lite/util/dynamic-malloc-uint8-array-lite.hpp>
 
 namespace ndn {
 

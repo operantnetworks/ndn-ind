@@ -22,9 +22,9 @@
 #ifndef NDN_CONGESTION_MARK_HPP
 #define NDN_CONGESTION_MARK_HPP
 
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/lite/lp/congestion-mark-lite.hpp>
-#include <ndn-cpp/lp-packet-header-field.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/lite/lp/congestion-mark-lite.hpp>
+#include <ndn-ind/lp-packet-header-field.hpp>
 
 namespace ndn {
 

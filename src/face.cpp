@@ -23,9 +23,9 @@
 #include <stdlib.h>
 #include <stdexcept>
 #include "node.hpp"
-#include <ndn-cpp/transport/tcp-transport.hpp>
-#include <ndn-cpp/transport/unix-transport.hpp>
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/transport/tcp-transport.hpp>
+#include <ndn-ind/transport/unix-transport.hpp>
+#include <ndn-ind/face.hpp>
 #if NDN_CPP_HAVE_UNISTD_H
 #include <unistd.h>
 #endif

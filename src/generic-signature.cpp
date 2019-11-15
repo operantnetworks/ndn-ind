@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/generic-signature.hpp>
+#include <ndn-ind/generic-signature.hpp>
 
 using namespace std;
 

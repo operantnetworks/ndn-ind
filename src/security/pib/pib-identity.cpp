@@ -21,7 +21,7 @@
  */
 
 #include "detail/pib-identity-impl.hpp"
-#include <ndn-cpp/security/pib/pib-identity.hpp>
+#include <ndn-ind/security/pib/pib-identity.hpp>
 
 using namespace std;
 

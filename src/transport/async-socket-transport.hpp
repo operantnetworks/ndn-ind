@@ -26,7 +26,7 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include <ndn-cpp/transport/transport.hpp>
+#include <ndn-ind/transport/transport.hpp>
 #include "../c/encoding/element-reader.h"
 #include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"

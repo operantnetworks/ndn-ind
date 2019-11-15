@@ -21,7 +21,7 @@
 
 #include <stdexcept>
 #include "util/regex/ndn-regex-top-matcher.hpp"
-#include <ndn-cpp/interest-filter.hpp>
+#include <ndn-ind/interest-filter.hpp>
 
 using namespace std;
 

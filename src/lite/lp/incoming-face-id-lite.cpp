@@ -20,8 +20,8 @@
  */
 
 #include "../../c/lp/incoming-face-id.h"
-#include <ndn-cpp/lite/lp/lp-packet-lite.hpp>
-#include <ndn-cpp/lite/lp/incoming-face-id-lite.hpp>
+#include <ndn-ind/lite/lp/lp-packet-lite.hpp>
+#include <ndn-ind/lite/lp/incoming-face-id-lite.hpp>
 
 namespace ndn {
 

@@ -22,8 +22,8 @@
 #ifndef NDN_TLV_DECODER_H
 #define NDN_TLV_DECODER_H
 
-#include <ndn-cpp/c/common.h>
-#include <ndn-cpp/c/errors.h>
+#include <ndn-ind/c/common.h>
+#include <ndn-ind/c/errors.h>
 #include "../../util/blob.h"
 #include "tlv.h"
 

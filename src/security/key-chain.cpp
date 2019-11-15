@@ -22,31 +22,31 @@
 
 #include <stdio.h>
 #include <stdexcept>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/lite/security/ec-public-key-lite.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/identity/basic-identity-storage.hpp>
-#include <ndn-cpp/security/policy/policy-manager.hpp>
-#include <ndn-cpp/security/policy/no-verify-policy-manager.hpp>
-#include <ndn-cpp/security/verification-helpers.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
-#include <ndn-cpp/hmac-with-sha256-signature.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/security/ec-public-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/identity/basic-identity-storage.hpp>
+#include <ndn-ind/security/policy/policy-manager.hpp>
+#include <ndn-ind/security/policy/no-verify-policy-manager.hpp>
+#include <ndn-ind/security/verification-helpers.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/hmac-with-sha256-signature.hpp>
 #if NDN_CPP_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#include <ndn-cpp/security/pib/pib-sqlite3.hpp>
-#include <ndn-cpp/security/pib/pib-memory.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-osx.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-file.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-memory.hpp>
+#include <ndn-ind/security/pib/pib-sqlite3.hpp>
+#include <ndn-ind/security/pib/pib-memory.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-osx.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-file.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-memory.hpp>
 #include "../util/config-file.hpp"
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 
 INIT_LOGGER("ndn.KeyChain");
 

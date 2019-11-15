@@ -22,7 +22,7 @@
 #define NDN_CONGESTION_MARK_H
 
 #include "lp-packet.h"
-#include <ndn-cpp/c/lp/congestion-mark-types.h>
+#include <ndn-ind/c/lp/congestion-mark-types.h>
 
 #ifdef __cplusplus
 extern "C" {

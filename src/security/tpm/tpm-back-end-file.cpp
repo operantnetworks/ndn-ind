@@ -25,10 +25,10 @@
 #include <sstream>
 #include <sys/stat.h>
 #include "../../encoding/base64.hpp"
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/security/tpm/tpm-private-key.hpp>
-#include <ndn-cpp/security/tpm/tpm-key-handle-memory.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-file.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/security/tpm/tpm-private-key.hpp>
+#include <ndn-ind/security/tpm/tpm-key-handle-memory.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-file.hpp>
 
 using namespace std;
 

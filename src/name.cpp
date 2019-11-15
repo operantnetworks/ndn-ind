@@ -25,7 +25,7 @@
 #include <string.h>
 #include <stdexcept>
 #include <stdlib.h>
-#include <ndn-cpp/name.hpp>
+#include <ndn-ind/name.hpp>
 #include "c/util/ndn_memory.h"
 #include "encoding/tlv-encoder.hpp"
 

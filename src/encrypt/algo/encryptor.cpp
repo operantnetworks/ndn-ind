@@ -21,14 +21,14 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/encrypt/encrypted-content.hpp>
-#include <ndn-cpp/encoding/tlv-wire-format.hpp>
-#include <ndn-cpp/encrypt/algo/aes-algorithm.hpp>
-#include <ndn-cpp/encrypt/algo/rsa-algorithm.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/encrypt/encrypted-content.hpp>
+#include <ndn-ind/encoding/tlv-wire-format.hpp>
+#include <ndn-ind/encrypt/algo/aes-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/rsa-algorithm.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
 #include "../../c/util/ndn_memory.h"
-#include <ndn-cpp/encrypt/algo/encryptor.hpp>
+#include <ndn-ind/encrypt/algo/encryptor.hpp>
 
 using namespace std;
 

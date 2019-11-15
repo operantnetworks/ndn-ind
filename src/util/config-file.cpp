@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
-#include <ndn-cpp/common.hpp>
+#include <ndn-ind/common.hpp>
 #include "config-file.hpp"
 
 using namespace std;

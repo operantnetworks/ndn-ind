@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/in-memory-storage/in-memory-storage-retaining.hpp>
+#include <ndn-ind/in-memory-storage/in-memory-storage-retaining.hpp>
 
 using namespace std;
 

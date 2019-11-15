@@ -21,7 +21,7 @@
 
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #ifdef NDN_CPP_HAVE_BOOST_ASIO
 
 #include <stdexcept>
@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include "../c/transport/unix-transport.h"
 #include "async-socket-transport.hpp"
-#include <ndn-cpp/transport/async-unix-transport.hpp>
+#include <ndn-ind/transport/async-unix-transport.hpp>
 
 using namespace std;
 

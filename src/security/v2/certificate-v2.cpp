@@ -20,12 +20,12 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/validity-period.hpp>
-#include <ndn-cpp/encrypt/schedule.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/security/validity-period.hpp>
+#include <ndn-ind/encrypt/schedule.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
 #include "../../encoding/base64.hpp"
-#include <ndn-cpp/security/v2/certificate-v2.hpp>
+#include <ndn-ind/security/v2/certificate-v2.hpp>
 
 #include "ndn-cpp/key-locator.hpp"
 

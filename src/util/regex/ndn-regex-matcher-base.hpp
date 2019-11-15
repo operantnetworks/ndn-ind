@@ -27,7 +27,7 @@
 //   NDN_CPP_HAVE_STD_REGEX = 1, define the regex_lib namespace alias.
 // Set NDN_CPP_HAVE_REGEX_LIB = 1 if regex_lib is defined.
 
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_STD_REGEX
   #include <regex>
   namespace ndn { namespace regex_lib = std; }
@@ -59,7 +59,7 @@
 #if NDN_CPP_HAVE_REGEX_LIB
 
 #include <string>
-#include <ndn-cpp/name.hpp>
+#include <ndn-ind/name.hpp>
 
 namespace ndn {
 

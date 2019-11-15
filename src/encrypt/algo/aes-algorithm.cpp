@@ -21,9 +21,9 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/lite/encrypt/algo/aes-algorithm-lite.hpp>
-#include <ndn-cpp/encrypt/algo/aes-algorithm.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp>
+#include <ndn-ind/encrypt/algo/aes-algorithm.hpp>
 
 using namespace std;
 

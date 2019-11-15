@@ -22,7 +22,7 @@
 #ifndef NDN_NFD_COMMAND_INTEREST_GENERATOR_HPP
 #define NDN_NFD_COMMAND_INTEREST_GENERATOR_HPP
 
-#include <ndn-cpp/security/command-interest-preparer.hpp>
+#include <ndn-ind/security/command-interest-preparer.hpp>
 
 namespace ndn {
 

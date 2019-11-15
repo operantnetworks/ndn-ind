@@ -20,20 +20,20 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/interest.hpp>
-#include <ndn-cpp/data.hpp>
-#include <ndn-cpp/control-parameters.hpp>
-#include <ndn-cpp/control-response.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/hmac-with-sha256-signature.hpp>
-#include <ndn-cpp/generic-signature.hpp>
-#include <ndn-cpp/delegation-set.hpp>
-#include <ndn-cpp/encrypt/encrypted-content.hpp>
-#include <ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp>
+#include <ndn-ind/interest.hpp>
+#include <ndn-ind/data.hpp>
+#include <ndn-ind/control-parameters.hpp>
+#include <ndn-ind/control-response.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/hmac-with-sha256-signature.hpp>
+#include <ndn-ind/generic-signature.hpp>
+#include <ndn-ind/delegation-set.hpp>
+#include <ndn-ind/encrypt/encrypted-content.hpp>
+#include <ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp>
 #include "tlv-encoder.hpp"
-#include <ndn-cpp/encoding/tlv-0_2-wire-format.hpp>
+#include <ndn-ind/encoding/tlv-0_2-wire-format.hpp>
 
 using namespace std;
 

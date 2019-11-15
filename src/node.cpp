@@ -20,14 +20,14 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/encoding/tlv-wire-format.hpp>
-#include <ndn-cpp/control-response.hpp>
-#include <ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp>
-#include <ndn-cpp/lite/lp/lp-packet-lite.hpp>
+#include <ndn-ind/encoding/tlv-wire-format.hpp>
+#include <ndn-ind/control-response.hpp>
+#include <ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp>
+#include <ndn-ind/lite/lp/lp-packet-lite.hpp>
 #include "c/util/time.h"
 #include "encoding/tlv-encoder.hpp"
 #include "encoding/tlv-decoder.hpp"
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "lp/lp-packet.hpp"
 #include "node.hpp"
 

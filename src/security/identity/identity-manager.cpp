@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_TIME_H
 #include <time.h>
 #endif
@@ -30,18 +30,18 @@
 #include <ctime>
 #include <fstream>
 #include <math.h>
-#include <ndn-cpp/key-locator.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/identity/basic-identity-storage.hpp>
-#include <ndn-cpp/security/identity/file-private-key-storage.hpp>
-#include <ndn-cpp/security/identity/osx-private-key-storage.hpp>
+#include <ndn-ind/key-locator.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/identity/basic-identity-storage.hpp>
+#include <ndn-ind/security/identity/file-private-key-storage.hpp>
+#include <ndn-ind/security/identity/osx-private-key-storage.hpp>
 #include "../../util/config-file.hpp"
 #include "../../c/util/time.h"
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/security/identity/identity-manager.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/security/identity/identity-manager.hpp>
 
 using namespace std;
 

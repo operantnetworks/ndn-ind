@@ -20,7 +20,7 @@
  */
 
 #include "../../c/encoding/tlv-0_2-wire-format.h"
-#include <ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp>
+#include <ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp>
 
 namespace ndn {
 

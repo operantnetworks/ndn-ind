@@ -20,8 +20,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/interest.hpp>
-#include <ndn-cpp/security/v2/trust-anchor-container.hpp>
+#include <ndn-ind/interest.hpp>
+#include <ndn-ind/security/v2/trust-anchor-container.hpp>
 
 using namespace std;
 

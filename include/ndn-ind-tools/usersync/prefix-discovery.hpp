@@ -22,7 +22,7 @@
 #ifndef NDN_PREFIX_DISCOVERY_HPP
 #define NDN_PREFIX_DISCOVERY_HPP
 
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 
 namespace ndntools {
 

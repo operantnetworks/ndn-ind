@@ -21,8 +21,8 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/certificate/identity-certificate.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/certificate/identity-certificate.hpp>
 
 using namespace std;
 

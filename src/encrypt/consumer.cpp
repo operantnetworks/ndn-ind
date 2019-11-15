@@ -21,11 +21,11 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/encrypt/algo/aes-algorithm.hpp>
-#include <ndn-cpp/encrypt/algo/rsa-algorithm.hpp>
-#include <ndn-cpp/encrypt/algo/encryptor.hpp>
-#include <ndn-cpp/encrypt/consumer.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/encrypt/algo/aes-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/rsa-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/encryptor.hpp>
+#include <ndn-ind/encrypt/consumer.hpp>
 
 using namespace std;
 using namespace ndn::func_lib;

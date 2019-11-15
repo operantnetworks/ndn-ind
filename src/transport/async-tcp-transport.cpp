@@ -20,7 +20,7 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #ifdef NDN_CPP_HAVE_BOOST_ASIO
 
 #include <stdexcept>
@@ -30,7 +30,7 @@
 #include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"
 #include "async-socket-transport.hpp"
-#include <ndn-cpp/transport/async-tcp-transport.hpp>
+#include <ndn-ind/transport/async-tcp-transport.hpp>
 
 using namespace std;
 

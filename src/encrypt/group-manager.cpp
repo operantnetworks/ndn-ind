@@ -20,11 +20,11 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/encrypt/algo/encryptor.hpp>
-#include <ndn-cpp/encrypt/algo/rsa-algorithm.hpp>
-#include <ndn-cpp/encrypt/group-manager.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/encrypt/algo/encryptor.hpp>
+#include <ndn-ind/encrypt/algo/rsa-algorithm.hpp>
+#include <ndn-ind/encrypt/group-manager.hpp>
 
 using namespace std;
 

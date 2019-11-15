@@ -24,8 +24,8 @@
 #ifndef NDN_DER_NODE_HPP
 #define NDN_DER_NODE_HPP
 
-#include <ndn-cpp/util/blob.hpp>
-#include <ndn-cpp/encoding/oid.hpp>
+#include <ndn-ind/util/blob.hpp>
+#include <ndn-ind/encoding/oid.hpp>
 #include "../../util/dynamic-uint8-vector.hpp"
 #include "der-node-type.hpp"
 

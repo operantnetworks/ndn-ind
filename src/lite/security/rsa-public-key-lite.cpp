@@ -20,7 +20,7 @@
  */
 
 #include "../../c/security/rsa-public-key.h"
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
 
 #if NDN_CPP_HAVE_LIBCRYPTO
 

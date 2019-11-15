@@ -21,7 +21,7 @@
  */
 
 #include <sstream>
-#include <ndn-cpp/security/v2/validation-error.hpp>
+#include <ndn-ind/security/v2/validation-error.hpp>
 
 using namespace std;
 

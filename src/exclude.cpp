@@ -20,8 +20,8 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/exclude.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/exclude.hpp>
 
 using namespace std;
 

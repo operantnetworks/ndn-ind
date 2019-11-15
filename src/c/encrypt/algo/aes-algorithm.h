@@ -21,8 +21,8 @@
 #ifndef NDN_AES_ALGORITHM_H
 #define NDN_AES_ALGORITHM_H
 
-#include <ndn-cpp/c/common.h>
-#include <ndn-cpp/c/errors.h>
+#include <ndn-ind/c/common.h>
+#include <ndn-ind/c/errors.h>
 
 #ifdef __cplusplus
 extern "C" {

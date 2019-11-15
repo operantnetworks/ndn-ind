@@ -26,7 +26,7 @@
 #ifndef NDN_FORWARDING_FLAGS_IMPL_H
 #define NDN_FORWARDING_FLAGS_IMPL_H
 
-#include <ndn-cpp/c/common.h>
+#include <ndn-ind/c/common.h>
 #include "registration-options.h"
 
 #ifdef __cplusplus

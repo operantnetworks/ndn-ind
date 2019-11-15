@@ -20,7 +20,7 @@
  */
 
 #include "../c/key-locator.h"
-#include <ndn-cpp/lite/key-locator-lite.hpp>
+#include <ndn-ind/lite/key-locator-lite.hpp>
 
 namespace ndn {
 

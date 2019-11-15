@@ -22,7 +22,7 @@
 
 #include <float.h>
 #include <stdexcept>
-#include <ndn-cpp/encrypt/interval.hpp>
+#include <ndn-ind/encrypt/interval.hpp>
 
 using namespace std;
 

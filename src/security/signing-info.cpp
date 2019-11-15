@@ -21,8 +21,8 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/security/signing-info.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/security/signing-info.hpp>
 
 using namespace std;
 

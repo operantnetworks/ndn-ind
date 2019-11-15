@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <sstream>
 
-#include <ndn-cpp/encoding/oid.hpp>
+#include <ndn-ind/encoding/oid.hpp>
 
 using namespace std;
 

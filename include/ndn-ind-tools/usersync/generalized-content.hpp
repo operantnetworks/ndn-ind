@@ -22,9 +22,9 @@
 #ifndef NDN_GENERALIZED_CONTENT_HPP
 #define NDN_GENERALIZED_CONTENT_HPP
 
-#include <ndn-cpp/face.hpp>
-#include <ndn-cpp/util/segment-fetcher.hpp>
-#include <ndn-cpp/util/memory-content-cache.hpp>
+#include <ndn-ind/face.hpp>
+#include <ndn-ind/util/segment-fetcher.hpp>
+#include <ndn-ind/util/memory-content-cache.hpp>
 #include "content-meta-info.hpp"
 
 namespace ndntools {

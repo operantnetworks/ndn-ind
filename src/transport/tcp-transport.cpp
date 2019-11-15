@@ -20,7 +20,7 @@
  */
 
 // Only compile if we have Unix socket support.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_UNISTD_H
 
 #include <stdexcept>
@@ -29,7 +29,7 @@
 #include "../c/encoding/element-reader.h"
 #include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"
-#include <ndn-cpp/transport/tcp-transport.hpp>
+#include <ndn-ind/transport/tcp-transport.hpp>
 
 using namespace std;
 

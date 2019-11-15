@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/transport/transport.hpp>
+#include <ndn-ind/transport/transport.hpp>
 
 using namespace std;
 

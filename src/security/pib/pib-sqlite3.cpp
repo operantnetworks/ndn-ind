@@ -21,7 +21,7 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_SQLITE3.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #ifdef NDN_CPP_HAVE_SQLITE3
 
 #include <sqlite3.h>
@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include "../../util/sqlite3-statement.hpp"
-#include <ndn-cpp/security/pib/pib-sqlite3.hpp>
+#include <ndn-ind/security/pib/pib-sqlite3.hpp>
 
 using namespace std;
 

@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/pib/pib-impl.hpp>
+#include <ndn-ind/security/pib/pib-impl.hpp>
 #include "pib-identity-impl.hpp"
 
 using namespace std;

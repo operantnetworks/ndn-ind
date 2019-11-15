@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/hmac-with-sha256-signature.hpp>
+#include <ndn-ind/hmac-with-sha256-signature.hpp>
 
 using namespace std;
 

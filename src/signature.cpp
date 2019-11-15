@@ -19,7 +19,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/signature.hpp>
+#include <ndn-ind/signature.hpp>
 
 using namespace std;
 

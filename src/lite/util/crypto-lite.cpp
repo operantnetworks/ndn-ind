@@ -21,7 +21,7 @@
 
 #include "../../c/util/crypto.h"
 #include "../../../contrib/murmur-hash/murmur-hash.h"
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
 
 #ifdef ARDUINO
 

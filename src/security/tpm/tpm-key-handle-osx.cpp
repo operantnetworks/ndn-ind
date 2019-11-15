@@ -21,12 +21,12 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_OSX_SECURITY 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_OSX_SECURITY
 
 #include <stdexcept>
-#include <ndn-cpp/security/tpm/tpm-back-end-osx.hpp>
-#include <ndn-cpp/security/tpm/tpm-key-handle-osx.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-osx.hpp>
+#include <ndn-ind/security/tpm/tpm-key-handle-osx.hpp>
 
 using namespace std;
 

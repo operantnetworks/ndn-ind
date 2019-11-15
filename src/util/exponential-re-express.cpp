@@ -19,8 +19,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/util/exponential-re-express.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/util/exponential-re-express.hpp>
 
 INIT_LOGGER("ndn.ExponentialReExpress");
 

@@ -20,13 +20,13 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #ifdef NDN_CPP_HAVE_BOOST_ASIO
 
 #include <boost/bind.hpp>
-#include <ndn-cpp/transport/async-tcp-transport.hpp>
-#include <ndn-cpp/transport/async-unix-transport.hpp>
-#include <ndn-cpp/threadsafe-face.hpp>
+#include <ndn-ind/transport/async-tcp-transport.hpp>
+#include <ndn-ind/transport/async-unix-transport.hpp>
+#include <ndn-ind/threadsafe-face.hpp>
 #include "node.hpp"
 
 using namespace std;

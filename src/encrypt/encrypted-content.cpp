@@ -22,8 +22,8 @@
 
 #include <stdexcept>
 #include "../c/encrypt/encrypted-content.h"
-#include <ndn-cpp/lite/encrypt/encrypted-content-lite.hpp>
-#include <ndn-cpp/encrypt/encrypted-content.hpp>
+#include <ndn-ind/lite/encrypt/encrypted-content-lite.hpp>
+#include <ndn-ind/encrypt/encrypted-content.hpp>
 
 using namespace std;
 

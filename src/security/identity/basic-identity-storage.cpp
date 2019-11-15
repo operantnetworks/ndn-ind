@@ -21,7 +21,7 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_SQLITE3.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #ifdef NDN_CPP_HAVE_SQLITE3
 
 #include <sqlite3.h>
@@ -30,13 +30,13 @@
 #include <sstream>
 #include <fstream>
 #include <math.h>
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "../../c/util/time.h"
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/data.hpp>
-#include <ndn-cpp/key-locator.hpp>
-#include <ndn-cpp/security/certificate/identity-certificate.hpp>
-#include <ndn-cpp/security/identity/basic-identity-storage.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/data.hpp>
+#include <ndn-ind/key-locator.hpp>
+#include <ndn-ind/security/certificate/identity-certificate.hpp>
+#include <ndn-ind/security/identity/basic-identity-storage.hpp>
 
 INIT_LOGGER("ndn.BasicIdentityStorage");
 

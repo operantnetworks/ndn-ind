@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/meta-info.hpp>
+#include <ndn-ind/meta-info.hpp>
 #include "c/data.h"
 
 using namespace std;

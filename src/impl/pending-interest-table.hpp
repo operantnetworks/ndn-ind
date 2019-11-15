@@ -22,7 +22,7 @@
 #ifndef NDN_PENDING_INTEREST_TABLE_HPP
 #define NDN_PENDING_INTEREST_TABLE_HPP
 
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 
 namespace ndn {
 

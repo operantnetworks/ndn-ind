@@ -23,9 +23,9 @@
 #ifndef NDN_INCOMING_FACE_ID_HPP
 #define NDN_INCOMING_FACE_ID_HPP
 
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/lite/lp/incoming-face-id-lite.hpp>
-#include <ndn-cpp/lp-packet-header-field.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/lite/lp/incoming-face-id-lite.hpp>
+#include <ndn-ind/lp-packet-header-field.hpp>
 
 namespace ndn {
 

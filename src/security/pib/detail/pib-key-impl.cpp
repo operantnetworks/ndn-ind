@@ -20,10 +20,10 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/certificate/public-key.hpp>
-#include <ndn-cpp/security/pib/pib-impl.hpp>
-#include <ndn-cpp/security/pib/pib-key.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/certificate/public-key.hpp>
+#include <ndn-ind/security/pib/pib-impl.hpp>
+#include <ndn-ind/security/pib/pib-key.hpp>
 #include "pib-key-impl.hpp"
 
 using namespace std;

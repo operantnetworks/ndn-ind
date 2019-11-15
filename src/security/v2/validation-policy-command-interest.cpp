@@ -20,8 +20,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/command-interest-signer.hpp>
-#include <ndn-cpp/security/v2/validation-policy-command-interest.hpp>
+#include <ndn-ind/security/command-interest-signer.hpp>
+#include <ndn-ind/security/v2/validation-policy-command-interest.hpp>
 
 using namespace std;
 using namespace ndn::func_lib;

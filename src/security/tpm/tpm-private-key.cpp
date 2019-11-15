@@ -23,9 +23,9 @@
 #include "../../encoding/der/der-node.hpp"
 #include "../../encoding/der/der-exception.hpp"
 #include "../../c/util/crypto.h"
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/lite/encrypt/algo/des-algorithm-lite.hpp>
-#include <ndn-cpp/security/tpm/tpm-private-key.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/encrypt/algo/des-algorithm-lite.hpp>
+#include <ndn-ind/security/tpm/tpm-private-key.hpp>
 
 using namespace std;
 

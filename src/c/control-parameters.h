@@ -21,7 +21,7 @@
 #ifndef NDN_CONTROL_PARAMETERS_OPTIONS_H
 #define NDN_CONTROL_PARAMETERS_OPTIONS_H
 
-#include <ndn-cpp/c/control-parameters-types.h>
+#include <ndn-ind/c/control-parameters-types.h>
 #include "registration-options.h"
 #include "name.h"
 

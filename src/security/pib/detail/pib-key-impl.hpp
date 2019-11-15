@@ -23,8 +23,8 @@
 #ifndef NDN_PIB_KEY_IMPL_HPP
 #define NDN_PIB_KEY_IMPL_HPP
 
-#include <ndn-cpp/security/pib/pib-certificate-container.hpp>
-#include <ndn-cpp/security/security-common.hpp>
+#include <ndn-ind/security/pib/pib-certificate-container.hpp>
+#include <ndn-ind/security/security-common.hpp>
 
 // Give friend access to the tests.
 class TestPibKeyImpl_CertificateOperation_Test;

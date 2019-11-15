@@ -20,7 +20,7 @@
  */
 
 #include "../../c/lp/lp-packet.h"
-#include <ndn-cpp/lite/lp/lp-packet-lite.hpp>
+#include <ndn-ind/lite/lp/lp-packet-lite.hpp>
 
 namespace ndn {
 

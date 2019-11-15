@@ -20,7 +20,7 @@
  */
 
 #include "lp/lp-packet.hpp"
-#include <ndn-cpp/network-nack.hpp>
+#include <ndn-ind/network-nack.hpp>
 
 namespace ndn {
 

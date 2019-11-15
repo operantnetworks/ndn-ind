@@ -24,8 +24,8 @@
 
 #include <vector>
 #include <stdexcept>
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/util/blob.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/util/blob.hpp>
 #include "../c/util/dynamic-uint8-array.h"
 
 namespace ndn {

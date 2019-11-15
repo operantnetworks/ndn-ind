@@ -21,11 +21,11 @@
  */
 
 #include "../../c/util/crypto.h"
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/pib/pib-impl.hpp>
-#include <ndn-cpp/security/identity/identity-storage.hpp>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/security/policy/self-verify-policy-manager.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/pib/pib-impl.hpp>
+#include <ndn-ind/security/identity/identity-storage.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/security/policy/self-verify-policy-manager.hpp>
 
 using namespace std;
 

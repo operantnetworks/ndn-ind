@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "psync-user-prefixes.hpp"
 
 using namespace std;

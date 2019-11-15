@@ -23,7 +23,7 @@
 #ifndef NDN_PIB_IDENTITY_IMPL_HPP
 #define NDN_PIB_IDENTITY_IMPL_HPP
 
-#include <ndn-cpp/security/pib/pib-key-container.hpp>
+#include <ndn-ind/security/pib/pib-key-container.hpp>
 
 // Give friend access to the tests.
 class TestPibIdentityImpl_KeyOperation_Test;

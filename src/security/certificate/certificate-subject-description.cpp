@@ -21,7 +21,7 @@
  */
 
 #include "../../encoding/der/der-node.hpp"
-#include <ndn-cpp/security/certificate/certificate-subject-description.hpp>
+#include <ndn-ind/security/certificate/certificate-subject-description.hpp>
 
 using namespace std;
 

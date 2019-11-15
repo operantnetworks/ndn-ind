@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/link.hpp>
+#include <ndn-ind/link.hpp>
 
 using namespace std;
 

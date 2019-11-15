@@ -21,7 +21,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/key-params.hpp>
+#include <ndn-ind/security/key-params.hpp>
 
 using namespace std;
 

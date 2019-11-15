@@ -21,12 +21,12 @@
 
 #include "../../c/util/crypto.h"
 #include "../../c/util/ndn_memory.h"
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/security/verification-helpers.hpp>
-#include <ndn-cpp/security/policy/policy-manager.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/security/verification-helpers.hpp>
+#include <ndn-ind/security/policy/policy-manager.hpp>
 
 using namespace std;
 

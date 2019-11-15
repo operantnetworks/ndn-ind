@@ -21,10 +21,10 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
-#include <ndn-cpp/security/tpm/tpm-private-key.hpp>
-#include <ndn-cpp/encrypt/algo/rsa-algorithm.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/security/tpm/tpm-private-key.hpp>
+#include <ndn-ind/encrypt/algo/rsa-algorithm.hpp>
 
 using namespace std;
 

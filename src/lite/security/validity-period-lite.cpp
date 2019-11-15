@@ -20,7 +20,7 @@
  */
 
 #include "../../c/security/validity-period.h"
-#include <ndn-cpp/lite/security/validity-period-lite.hpp>
+#include <ndn-ind/lite/security/validity-period-lite.hpp>
 
 namespace ndn {
 

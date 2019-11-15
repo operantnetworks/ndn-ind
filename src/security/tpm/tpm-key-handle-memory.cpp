@@ -21,8 +21,8 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/tpm/tpm-private-key.hpp>
-#include <ndn-cpp/security/tpm/tpm-key-handle-memory.hpp>
+#include <ndn-ind/security/tpm/tpm-private-key.hpp>
+#include <ndn-ind/security/tpm/tpm-key-handle-memory.hpp>
 
 using namespace std;
 

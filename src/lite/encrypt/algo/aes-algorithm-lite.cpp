@@ -20,7 +20,7 @@
  */
 
 #include "../../../c/encrypt/algo/aes-algorithm.h"
-#include <ndn-cpp/lite/encrypt/algo/aes-algorithm-lite.hpp>
+#include <ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp>
 
 #if NDN_CPP_HAVE_LIBCRYPTO
 

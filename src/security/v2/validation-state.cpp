@@ -21,9 +21,9 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/security/verification-helpers.hpp>
-#include <ndn-cpp/security/v2/validation-state.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/security/verification-helpers.hpp>
+#include <ndn-ind/security/v2/validation-state.hpp>
 
 INIT_LOGGER("ndn.ValidationState");
 

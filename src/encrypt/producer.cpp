@@ -20,11 +20,11 @@
  */
 
 #include <math.h>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/encrypt/algo/encryptor.hpp>
-#include <ndn-cpp/encrypt/algo/aes-algorithm.hpp>
-#include <ndn-cpp/encrypt/schedule.hpp>
-#include <ndn-cpp/encrypt/producer.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/encrypt/algo/encryptor.hpp>
+#include <ndn-ind/encrypt/algo/aes-algorithm.hpp>
+#include <ndn-ind/encrypt/schedule.hpp>
+#include <ndn-ind/encrypt/producer.hpp>
 
 using namespace std;
 using namespace ndn::func_lib;

@@ -21,17 +21,17 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_LIBZ 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_LIBZ
 
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
 #include "./detail/psync-segment-publisher.hpp"
 #include "./detail/invertible-bloom-lookup-table.hpp"
 #include "./detail/psync-state.hpp"
 #include "./detail/psync-segment-publisher.hpp"
 #include "./detail/psync-user-prefixes.hpp"
-#include <ndn-cpp/sync/full-psync2017-with-users.hpp>
+#include <ndn-ind/sync/full-psync2017-with-users.hpp>
 
 using namespace std;
 using namespace ndn::func_lib;

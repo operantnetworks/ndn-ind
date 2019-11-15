@@ -23,9 +23,9 @@
 #include <stdexcept>
 #endif
 #include <algorithm>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/certificate/identity-certificate.hpp>
-#include <ndn-cpp/security/identity/memory-identity-storage.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/certificate/identity-certificate.hpp>
+#include <ndn-ind/security/identity/memory-identity-storage.hpp>
 
 using namespace std;
 

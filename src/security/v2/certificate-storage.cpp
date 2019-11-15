@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/v2/certificate-storage.hpp>
+#include <ndn-ind/security/v2/certificate-storage.hpp>
 
 using namespace std;
 

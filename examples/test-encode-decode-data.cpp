@@ -21,16 +21,16 @@
 #include <cstdlib>
 #include <iostream>
 #include <time.h>
-#include <ndn-cpp/data.hpp>
-#include <ndn-cpp/security/safe-bag.hpp>
-#include <ndn-cpp/security/v2/validation-policy-from-pib.hpp>
-#include <ndn-cpp/security/v2/validator.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/hmac-with-sha256-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/generic-signature.hpp>
+#include <ndn-ind/data.hpp>
+#include <ndn-ind/security/safe-bag.hpp>
+#include <ndn-ind/security/v2/validation-policy-from-pib.hpp>
+#include <ndn-ind/security/v2/validator.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/hmac-with-sha256-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/generic-signature.hpp>
 
 using namespace std;
 using namespace ndn;

@@ -19,8 +19,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp-tools/usersync/prefix-discovery.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind-tools/usersync/prefix-discovery.hpp>
 
 using namespace std;
 using namespace ndn;

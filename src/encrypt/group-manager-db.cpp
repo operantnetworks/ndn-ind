@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/encrypt/group-manager-db.hpp>
+#include <ndn-ind/encrypt/group-manager-db.hpp>
 
 using namespace std;
 

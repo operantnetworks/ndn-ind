@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/delegation-set.hpp>
+#include <ndn-ind/delegation-set.hpp>
 
 using namespace std;
 

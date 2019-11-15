@@ -21,7 +21,7 @@
 #ifndef NDN_CONTROL_RESPONSE_H
 #define NDN_CONTROL_RESPONSE_H
 
-#include <ndn-cpp/c/control-response-types.h>
+#include <ndn-ind/c/control-response-types.h>
 #include "control-parameters.h"
 
 #ifdef __cplusplus

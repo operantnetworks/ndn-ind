@@ -23,15 +23,15 @@
 #define NDN_NODE_HPP
 
 #include <map>
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_BOOST_ATOMIC
 #include <boost/atomic.hpp>
 #endif
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/interest.hpp>
-#include <ndn-cpp/data.hpp>
-#include <ndn-cpp/interest-filter.hpp>
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/interest.hpp>
+#include <ndn-ind/data.hpp>
+#include <ndn-ind/interest-filter.hpp>
+#include <ndn-ind/face.hpp>
 #include "util/command-interest-generator.hpp"
 #include "impl/delayed-call-table.hpp"
 #include "impl/interest-filter-table.hpp"

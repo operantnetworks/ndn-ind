@@ -20,7 +20,7 @@
  */
 
 #include "../../c/security/ec-public-key.h"
-#include <ndn-cpp/lite/security/ec-public-key-lite.hpp>
+#include <ndn-ind/lite/security/ec-public-key-lite.hpp>
 
 #if NDN_CPP_HAVE_LIBCRYPTO
 

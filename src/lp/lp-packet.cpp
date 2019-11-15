@@ -20,7 +20,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/network-nack.hpp>
+#include <ndn-ind/network-nack.hpp>
 #include "incoming-face-id.hpp"
 #include "congestion-mark.hpp"
 #include "lp-packet.hpp"

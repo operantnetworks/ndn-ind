@@ -21,7 +21,7 @@
  */
 
 #include <math.h>
-#include <ndn-cpp/encrypt/producer-db.hpp>
+#include <ndn-ind/encrypt/producer-db.hpp>
 
 using namespace std;
 

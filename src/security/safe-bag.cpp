@@ -20,15 +20,15 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/certificate/public-key.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/encoding/tlv-wire-format.hpp>
-#include <ndn-cpp/security/tpm/tpm.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-memory.hpp>
+#include <ndn-ind/security/certificate/public-key.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/encoding/tlv-wire-format.hpp>
+#include <ndn-ind/security/tpm/tpm.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-memory.hpp>
 #include "../encoding/tlv-decoder.hpp"
 #include "../encoding/tlv-encoder.hpp"
-#include <ndn-cpp/security/safe-bag.hpp>
+#include <ndn-ind/security/safe-bag.hpp>
 
 using namespace std;
 

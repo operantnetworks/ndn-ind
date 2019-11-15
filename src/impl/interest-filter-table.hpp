@@ -22,7 +22,7 @@
 #ifndef NDN_INTEREST_FILTER_TABLE_HPP
 #define NDN_INTEREST_FILTER_TABLE_HPP
 
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 
 namespace ndn {
 

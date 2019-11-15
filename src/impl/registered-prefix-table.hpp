@@ -22,7 +22,7 @@
 #ifndef NDN_REGISTERED_PREFIX_TABLE_HPP
 #define NDN_REGISTERED_PREFIX_TABLE_HPP
 
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 #include "interest-filter-table.hpp"
 
 namespace ndn {

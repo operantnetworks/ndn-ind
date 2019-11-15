@@ -22,8 +22,8 @@
 
 #include <stdexcept>
 #include "../c/util/ndn_memory.h"
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/util/segment-fetcher.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/util/segment-fetcher.hpp>
 
 using namespace std;
 using namespace ndn::func_lib;

@@ -26,7 +26,7 @@
 #include "../c/encoding/tlv/tlv-decoder.h"
 #include "../c/util/blob.h"
 #include "../util/dynamic-uint8-vector.hpp"
-#include <ndn-cpp/encrypt/schedule.hpp>
+#include <ndn-ind/encrypt/schedule.hpp>
 
 using namespace std;
 

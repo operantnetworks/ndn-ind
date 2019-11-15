@@ -23,7 +23,7 @@
 #define NDN_DELAYED_CALL_TABLE_HPP
 
 #include <deque>
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 
 namespace ndn {
 

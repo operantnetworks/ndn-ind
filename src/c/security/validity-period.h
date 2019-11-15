@@ -23,7 +23,7 @@
 
 #include <float.h>
 #include <math.h>
-#include <ndn-cpp/c/security/validity-period-types.h>
+#include <ndn-ind/c/security/validity-period-types.h>
 
 #ifdef __cplusplus
 extern "C" {

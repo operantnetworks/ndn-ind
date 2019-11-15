@@ -22,8 +22,8 @@
 
 #include <math.h>
 #include "../../c/util/time.h"
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/identity/identity-storage.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/identity/identity-storage.hpp>
 
 using namespace std;
 

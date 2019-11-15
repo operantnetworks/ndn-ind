@@ -21,7 +21,7 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/security/v2/validation-policy.hpp>
+#include <ndn-ind/security/v2/validation-policy.hpp>
 
 using namespace std;
 

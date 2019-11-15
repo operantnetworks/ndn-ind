@@ -20,7 +20,7 @@
  */
 
 #include <algorithm>
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "pending-interest-table.hpp"
 
 INIT_LOGGER("ndn.PendingInterestTable");

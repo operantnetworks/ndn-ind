@@ -21,15 +21,15 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <stdexcept>
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "sync-state.pb.h"
 #include "../c/util/time.h"
 #include "digest-tree.hpp"
-#include <ndn-cpp/sync/chrono-sync2013.hpp>
+#include <ndn-ind/sync/chrono-sync2013.hpp>
 
 INIT_LOGGER("ndn.ChronoSync2013");
 

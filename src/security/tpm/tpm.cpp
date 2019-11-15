@@ -20,9 +20,9 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/tpm/tpm-key-handle.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end.hpp>
-#include <ndn-cpp/security/tpm/tpm.hpp>
+#include <ndn-ind/security/tpm/tpm-key-handle.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end.hpp>
+#include <ndn-ind/security/tpm/tpm.hpp>
 
 using namespace std;
 

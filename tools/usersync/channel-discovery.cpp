@@ -20,16 +20,16 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <algorithm>
 #include <stdexcept>
 #include <sstream>
 #include <fstream>
-#include <ndn-cpp/util/logging.hpp>
+#include <ndn-ind/util/logging.hpp>
 #include "../../src/encoding/base64.hpp"
-#include <ndn-cpp-tools/usersync/channel-discovery.hpp>
+#include <ndn-ind-tools/usersync/channel-discovery.hpp>
 
 using namespace std;
 using namespace ndn;

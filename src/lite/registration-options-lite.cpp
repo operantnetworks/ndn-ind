@@ -20,7 +20,7 @@
  */
 
 #include "../c/registration-options.h"
-#include <ndn-cpp/lite/registration-options-lite.hpp>
+#include <ndn-ind/lite/registration-options-lite.hpp>
 
 namespace ndn {
 

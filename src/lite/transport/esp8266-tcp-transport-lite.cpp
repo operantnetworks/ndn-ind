@@ -23,7 +23,7 @@
 #ifdef ARDUINO
 
 #include "../../c/encoding/element-reader.h"
-#include <ndn-cpp/lite/transport/esp8266-tcp-transport-lite.hpp>
+#include <ndn-ind/lite/transport/esp8266-tcp-transport-lite.hpp>
 
 namespace ndn {
 

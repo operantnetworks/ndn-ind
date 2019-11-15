@@ -24,9 +24,9 @@
 #define NDN_LP_PACKET_HPP
 
 #include <vector>
-#include <ndn-cpp/lite/lp/lp-packet-lite.hpp>
-#include <ndn-cpp/lp-packet-header-field.hpp>
-#include <ndn-cpp/util/blob.hpp>
+#include <ndn-ind/lite/lp/lp-packet-lite.hpp>
+#include <ndn-ind/lp-packet-header-field.hpp>
+#include <ndn-ind/util/blob.hpp>
 
 namespace ndn {
 

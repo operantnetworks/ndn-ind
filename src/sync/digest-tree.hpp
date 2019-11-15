@@ -23,7 +23,7 @@
 #ifndef NDN_DIGEST_TREE_HPP
 #define NDN_DIGEST_TREE_HPP
 
-#include <ndn-cpp/common.hpp>
+#include <ndn-ind/common.hpp>
 #include <string>
 
 namespace ndn {

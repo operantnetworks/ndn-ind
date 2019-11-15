@@ -20,11 +20,11 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/encrypt/encryptor-v2.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/encrypt/access-manager-v2.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/encrypt/encryptor-v2.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/encrypt/access-manager-v2.hpp>
 
 using namespace std;
 using namespace ndn::func_lib;

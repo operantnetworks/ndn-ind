@@ -22,7 +22,7 @@
 #ifndef NDN_CONTENT_META_INFO_HPP
 #define NDN_CONTENT_META_INFO_HPP
 
-#include <ndn-cpp/util/blob.hpp>
+#include <ndn-ind/util/blob.hpp>
 
 extern "C" {
 

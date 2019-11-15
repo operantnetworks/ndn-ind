@@ -20,14 +20,14 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security//security-exception.hpp>
+#include <ndn-ind/security//security-exception.hpp>
 #include "../../c/util/crypto.h"
 #include "../../encoding/der/der-node.hpp"
 #include "../../encoding/der/der-exception.hpp"
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/lite/security/ec-public-key-lite.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
-#include <ndn-cpp/security/certificate/public-key.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/security/ec-public-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/security/certificate/public-key.hpp>
 
 using namespace std;
 

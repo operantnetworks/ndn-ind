@@ -21,10 +21,10 @@
  */
 
 #include <math.h>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
 #include "../c/util/time.h"
 #include "../encoding/tlv-encoder.hpp"
-#include <ndn-cpp/security/command-interest-preparer.hpp>
+#include <ndn-ind/security/command-interest-preparer.hpp>
 
 using namespace std;
 

@@ -22,7 +22,7 @@
 #include <sstream>
 #include <cctype>
 #include <algorithm>
-#include <ndn-cpp/common.hpp>
+#include <ndn-ind/common.hpp>
 
 using namespace std;
 

@@ -20,17 +20,17 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/hmac-with-sha256-signature.hpp>
-#include <ndn-cpp/generic-signature.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/hmac-with-sha256-signature.hpp>
+#include <ndn-ind/generic-signature.hpp>
 #include "c/data.h"
 #include "lp/incoming-face-id.hpp"
 #include "lp/congestion-mark.hpp"
 #include "ndn-cpp/lite/util/crypto-lite.hpp"
-#include <ndn-cpp/data.hpp>
+#include <ndn-ind/data.hpp>
 
 using namespace std;
 

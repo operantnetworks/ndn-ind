@@ -20,8 +20,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/security/pib/pib-impl.hpp>
-#include <ndn-cpp/security/pib/pib-certificate-container.hpp>
+#include <ndn-ind/security/pib/pib-impl.hpp>
+#include <ndn-ind/security/pib/pib-certificate-container.hpp>
 
 using namespace std;
 

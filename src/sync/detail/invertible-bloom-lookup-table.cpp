@@ -46,12 +46,12 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_LIBZ 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_LIBZ
 
 #include <stdexcept>
 #include <zlib.h>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
 #include "invertible-bloom-lookup-table.hpp"
 
 using namespace std;

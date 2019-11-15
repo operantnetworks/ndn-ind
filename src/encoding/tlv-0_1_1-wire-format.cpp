@@ -19,7 +19,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/encoding/tlv-0_1_1-wire-format.hpp>
+#include <ndn-ind/encoding/tlv-0_1_1-wire-format.hpp>
 
 using namespace std;
 

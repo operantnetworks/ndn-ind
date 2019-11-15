@@ -21,9 +21,9 @@
 #ifndef NDN_TLV_STRUCTURE_DECODER_H
 #define NDN_TLV_STRUCTURE_DECODER_H
 
-#include <ndn-cpp/c/common.h>
-#include <ndn-cpp/c/errors.h>
-#include <ndn-cpp/c/encoding/element-reader-types.h>
+#include <ndn-ind/c/common.h>
+#include <ndn-ind/c/errors.h>
+#include <ndn-ind/c/encoding/element-reader-types.h>
 
 #ifdef  __cplusplus
 extern "C" {

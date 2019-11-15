@@ -20,7 +20,7 @@
  */
 
 #include "../c/data.h"
-#include <ndn-cpp/lite/meta-info-lite.hpp>
+#include <ndn-ind/lite/meta-info-lite.hpp>
 
 namespace ndn {
 

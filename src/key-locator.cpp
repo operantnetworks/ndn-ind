@@ -20,11 +20,11 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/hmac-with-sha256-signature.hpp>
-#include <ndn-cpp/key-locator.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/hmac-with-sha256-signature.hpp>
+#include <ndn-ind/key-locator.hpp>
 
 using namespace std;
 

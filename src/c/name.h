@@ -21,8 +21,8 @@
 #ifndef NDN_NAME_H
 #define NDN_NAME_H
 
-#include <ndn-cpp/c/name-types.h>
-#include <ndn-cpp/c/errors.h>
+#include <ndn-ind/c/name-types.h>
+#include <ndn-ind/c/errors.h>
 #include "util/blob.h"
 
 #ifdef __cplusplus

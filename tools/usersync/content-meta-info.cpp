@@ -20,14 +20,14 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <stdexcept>
 #include <math.h>
-#include <ndn-cpp/encoding/protobuf-tlv.hpp>
+#include <ndn-ind/encoding/protobuf-tlv.hpp>
 #include "content-meta-info.pb.h"
-#include <ndn-cpp-tools/usersync/content-meta-info.hpp>
+#include <ndn-ind-tools/usersync/content-meta-info.hpp>
 
 using namespace std;
 using namespace ndn;

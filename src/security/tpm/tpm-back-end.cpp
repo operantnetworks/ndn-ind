@@ -21,11 +21,11 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/security/pib/pib-key.hpp>
-#include <ndn-cpp/security/tpm/tpm.hpp>
-#include <ndn-cpp/security/tpm/tpm-key-handle.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/security/pib/pib-key.hpp>
+#include <ndn-ind/security/tpm/tpm.hpp>
+#include <ndn-ind/security/tpm/tpm-key-handle.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end.hpp>
 
 using namespace std;
 

@@ -20,7 +20,7 @@
  */
 
 // Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+#include <ndn-ind/ndn-cpp-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <google/protobuf/message.h>
@@ -28,7 +28,7 @@
 #include <stdexcept>
 #include "tlv-encoder.hpp"
 #include "tlv-decoder.hpp"
-#include <ndn-cpp/encoding/protobuf-tlv.hpp>
+#include <ndn-ind/encoding/protobuf-tlv.hpp>
 
 using namespace std;
 using namespace google::protobuf;

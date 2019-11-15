@@ -20,7 +20,7 @@
  */
 
 #include "../../../c/encrypt/algo/des-algorithm.h"
-#include <ndn-cpp/lite/encrypt/algo/des-algorithm-lite.hpp>
+#include <ndn-ind/lite/encrypt/algo/des-algorithm-lite.hpp>
 
 #if NDN_CPP_HAVE_LIBCRYPTO
 

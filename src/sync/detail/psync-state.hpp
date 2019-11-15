@@ -23,7 +23,7 @@
 #ifndef NDN_PSYNC_STATE_HPP
 #define NDN_PSYNC_STATE_HPP
 
-#include <ndn-cpp/name.hpp>
+#include <ndn-ind/name.hpp>
 
 namespace ndn {
 

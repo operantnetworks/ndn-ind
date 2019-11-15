@@ -32,13 +32,13 @@
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/certificate/identity-certificate.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/certificate/identity-certificate.hpp>
 #include "../../util/boost-info-parser.hpp"
 #include "../../c/util/time.h"
 #include "../../encoding/base64.hpp"
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/security/policy/config-policy-manager.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/security/policy/config-policy-manager.hpp>
 
 using namespace std;
 using namespace ndn::func_lib;

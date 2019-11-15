@@ -22,9 +22,9 @@
 
 #include <math.h>
 #include <stdexcept>
-#include <ndn-cpp/sha256-with-ecdsa-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/security/validity-period.hpp>
+#include <ndn-ind/sha256-with-ecdsa-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/security/validity-period.hpp>
 
 using namespace std;
 

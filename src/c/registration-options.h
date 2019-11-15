@@ -21,7 +21,7 @@
 #ifndef NDN_REGISTRATION_OPTIONS_H
 #define NDN_REGISTRATION_OPTIONS_H
 
-#include <ndn-cpp/c/registration-options-types.h>
+#include <ndn-ind/c/registration-options-types.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -20,7 +20,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include <ndn-cpp/encrypt/consumer-db.hpp>
+#include <ndn-ind/encrypt/consumer-db.hpp>
 
 using namespace std;
 

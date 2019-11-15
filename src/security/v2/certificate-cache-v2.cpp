@@ -21,9 +21,9 @@
  */
 
 #include <algorithm>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/encrypt/schedule.hpp>
-#include <ndn-cpp/security/v2/certificate-cache-v2.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/encrypt/schedule.hpp>
+#include <ndn-ind/security/v2/certificate-cache-v2.hpp>
 
 using namespace std;
 

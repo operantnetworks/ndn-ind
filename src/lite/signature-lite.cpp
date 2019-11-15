@@ -20,7 +20,7 @@
  */
 
 #include "../c/data.h"
-#include <ndn-cpp/lite/signature-lite.hpp>
+#include <ndn-ind/lite/signature-lite.hpp>
 
 namespace ndn {
 

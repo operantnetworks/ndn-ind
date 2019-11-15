@@ -24,7 +24,7 @@
 #define NDN_PSYNC_USER_PREFIXES_HPP
 
 #include <map>
-#include <ndn-cpp/name.hpp>
+#include <ndn-ind/name.hpp>
 
 namespace ndn {
 

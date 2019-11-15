@@ -23,7 +23,7 @@
 #define NDN_CHANNEL_DISCOVERY_HPP
 
 #include <map>
-#include <ndn-cpp/sync/chrono-sync2013.hpp>
+#include <ndn-ind/sync/chrono-sync2013.hpp>
 
 namespace ndntools {
 

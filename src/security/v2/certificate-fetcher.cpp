@@ -21,8 +21,8 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/security/v2/certificate-fetcher.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/security/v2/certificate-fetcher.hpp>
 
 INIT_LOGGER("ndn.CertificateFetcher");
 

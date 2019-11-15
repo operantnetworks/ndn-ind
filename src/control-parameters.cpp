@@ -20,8 +20,8 @@
  */
 
 #include <stdexcept>
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/control-parameters.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/control-parameters.hpp>
 
 using namespace std;
 

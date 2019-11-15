@@ -21,12 +21,12 @@
 
 #include <math.h>
 #include <stdexcept>
-#include <ndn-cpp/common.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
+#include <ndn-ind/common.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
 #include "lp/incoming-face-id.hpp"
-#include <ndn-cpp/data.hpp>
-#include <ndn-cpp/util/logging.hpp>
-#include <ndn-cpp/interest.hpp>
+#include <ndn-ind/data.hpp>
+#include <ndn-ind/util/logging.hpp>
+#include <ndn-ind/interest.hpp>
 
 INIT_LOGGER("ndn.Interest");
 

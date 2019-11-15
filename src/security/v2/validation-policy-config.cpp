@@ -30,9 +30,9 @@
 #include <stdexcept>
 #include "../../util/boost-info-parser.hpp"
 #include "../../encoding/base64.hpp"
-#include <ndn-cpp/security/validator-config-error.hpp>
-#include <ndn-cpp/security/v2/validator.hpp>
-#include <ndn-cpp/security/v2/validation-policy-config.hpp>
+#include <ndn-ind/security/validator-config-error.hpp>
+#include <ndn-ind/security/v2/validator.hpp>
+#include <ndn-ind/security/v2/validation-policy-config.hpp>
 
 using namespace std;
 
