@@ -372,7 +372,7 @@ libndn_c_la_SOURCES = ${ndn_ind_c_headers} \
 libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   contrib/ndn-cxx/ndn-cxx/detail/cancel-handle.cpp \
   contrib/ndn-cxx/ndn-cxx/util/scheduler.cpp \
-  contrib/ndn-cxx/ndn-cxx/util/time.cpp \
+  contrib/ndn-cxx/ndn-cxx/util/time_cpp.cpp \
   src/common.cpp \
   src/control-parameters.cpp \
   src/control-response.cpp \
