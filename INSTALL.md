@@ -1,12 +1,12 @@
-NDN-CPP:  A Named Data Networking client library for C++ and C
+NDN-IND:  A Named Data Networking client library for C++ and C
 ==============================================================
 
-These are instructions to build and install NDN-CPP.
+These are instructions to build and install NDN-IND.
 To cross compile for Anrdoid, see android-native/INSTALL-android.md .
 
 Prerequisites
 =============
-(These are prerequisites to build NDN-CPP.  To do development of NDN-CPP code and update the build system,
+(These are prerequisites to build NDN-IND.  To do development of NDN-IND code and update the build system,
  see Development Prerequisites.)
 
 * Required: libcrypto
@@ -135,9 +135,9 @@ In the Cygwin installer, select and install the "Devel" packages at the top leve
 
 Build
 =====
-(These are instructions to build NDN-CPP. To do development of NDN-CPP code and update the build system, see Development.)
+(These are instructions to build NDN-IND. To do development of NDN-IND code and update the build system, see Development.)
 
-To build in a terminal, change directory to the NDN-CPP root.
+To build in a terminal, change directory to the NDN-IND root.
 
 To configure on macOS, enter:
 
@@ -178,9 +178,9 @@ This makes the following example programs:
 
 * bin/test-get-async: Connect to one of the NDN testbed hubs, express an interest and display the received data.
 * bin/test-publish-async-nfd: Connect to the local NFD hub, accept interests with prefix /testecho and echo back a data packet. See test-echo-consumer.
-* bin/test-publish-async-nfd-lite: Use NDN-CPP Lite to connect to the local NFD hub, accept interests with prefix /testecho and echo back a data packet. See test-echo-consumer-lite.
+* bin/test-publish-async-nfd-lite: Use NDN-IND Lite to connect to the local NFD hub, accept interests with prefix /testecho and echo back a data packet. See test-echo-consumer-lite.
 * bin/test-echo-consumer: Prompt for a word, send the interest /testecho/word to the local hub which is echoed by test-publish-async-nfd.
-* bin/test-echo-consumer-lite: Use NDN-CPP Lite to prompt for a word, send the interest /testecho/word to the local hub which is echoed by test-publish-async-nfd-lite.
+* bin/test-echo-consumer-lite: Use NDN-IND Lite to prompt for a word, send the interest /testecho/word to the local hub which is echoed by test-publish-async-nfd-lite.
 * bin/test-encode-decode-interest: Encode and decode an interest, testing interest selectors and the name URI.
 * bin/test-encode-decode-data: Encode and decode a data packet, including signing the data packet.
 * bin/test-encode-decode-fib-entry: Encode and decode a sample Protobuf message using ProtobufTlv.
@@ -192,7 +192,7 @@ Running make doxygen-doc puts code documentation in doc/html.
 
 Development Prerequisites
 =========================
-These steps are only needed to do development of NDN-CPP code and update the build system.
+These steps are only needed to do development of NDN-IND code and update the build system.
 First follow the Prerequisites above for your platform.
 
 ## OS X 10.9, OS X 10.10.2, OS X 10.11, macOS 10.12, macOS 10.13 and macOS 10.14
@@ -209,7 +209,7 @@ Development
 ===========
 Follow Development Prerequisites above for your platform.
 Now you can add source code files and update Makefile.am.
-After updating, change directory to the NDN-CPP root and enter the following to build the Makefile:
+After updating, change directory to the NDN-IND root and enter the following to build the Makefile:
 
     ./autogen.sh
 
