@@ -26,8 +26,7 @@
 #include <ndn-ind/sha256-with-rsa-signature.hpp>
 #include "../../encoding/base64.hpp"
 #include <ndn-ind/security/v2/certificate-v2.hpp>
-
-#include "ndn-cpp/key-locator.hpp"
+#include <ndn-ind/key-locator.hpp>
 
 using namespace std;
 
