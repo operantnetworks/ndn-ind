@@ -20,19 +20,19 @@
  */
 
 #include "gtest/gtest.h"
-#include "ndn-cpp/lite/util/crypto-lite.hpp"
+#include "ndn-ind/lite/util/crypto-lite.hpp"
 #include <sstream>
-#include <ndn-cpp/data.hpp>
-#include <ndn-cpp/security/identity/memory-identity-storage.hpp>
-#include <ndn-cpp/security/identity/memory-private-key-storage.hpp>
-#include <ndn-cpp/security/policy/self-verify-policy-manager.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/generic-signature.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/lite/lp/lp-packet-lite.hpp>
-#include <ndn-cpp/encoding/tlv-wire-format.hpp>
-#include <ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp>
+#include <ndn-ind/data.hpp>
+#include <ndn-ind/security/identity/memory-identity-storage.hpp>
+#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
+#include <ndn-ind/security/policy/self-verify-policy-manager.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/generic-signature.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/lite/lp/lp-packet-lite.hpp>
+#include <ndn-ind/encoding/tlv-wire-format.hpp>
+#include <ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp>
 #include "../../src/lp/lp-packet.hpp"
 
 using namespace std;

@@ -22,8 +22,8 @@
 
 #include "gtest/gtest.h"
 #include <algorithm>
-#include <ndn-cpp/security/pib/pib-identity-container.hpp>
-#include <ndn-cpp/security/pib/pib-memory.hpp>
+#include <ndn-ind/security/pib/pib-identity-container.hpp>
+#include <ndn-ind/security/pib/pib-memory.hpp>
 #include "pib-data-fixture.hpp"
 
 using namespace std;

@@ -22,8 +22,8 @@
 
 #include "gtest/gtest.h"
 #include <algorithm>
-#include <ndn-cpp/security/pib/pib-memory.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/security/pib/pib-memory.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
 #include "../../src/security/pib/detail/pib-key-impl.hpp"
 #include "pib-data-fixture.hpp"
 

@@ -21,7 +21,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/encrypt/algo/aes-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/aes-algorithm.hpp>
 
 using namespace std;
 using namespace ndn;

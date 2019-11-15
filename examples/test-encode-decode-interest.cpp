@@ -20,12 +20,12 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <ndn-cpp/interest.hpp>
-#include <ndn-cpp/face.hpp>
-#include <ndn-cpp/security/safe-bag.hpp>
-#include <ndn-cpp/security/v2/validation-policy-from-pib.hpp>
-#include <ndn-cpp/security/v2/validator.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/interest.hpp>
+#include <ndn-ind/face.hpp>
+#include <ndn-ind/security/safe-bag.hpp>
+#include <ndn-ind/security/v2/validation-policy-from-pib.hpp>
+#include <ndn-ind/security/v2/validator.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
 using namespace ndn;

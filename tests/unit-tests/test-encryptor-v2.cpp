@@ -31,8 +31,8 @@
 #include <unistd.h>
 #include <fstream>
 #include <cstdio>
-#include <ndn-cpp/encrypt/encryptor-v2.hpp>
-#include <ndn-cpp/security/validator-null.hpp>
+#include <ndn-ind/encrypt/encryptor-v2.hpp>
+#include <ndn-ind/security/validator-null.hpp>
 #include "identity-management-fixture.hpp"
 #include "in-memory-storage-face.hpp"
 #include "encrypt-static-data.hpp"

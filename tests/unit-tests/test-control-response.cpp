@@ -21,7 +21,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/control-response.hpp>
+#include <ndn-ind/control-response.hpp>
 
 using namespace std;
 using namespace ndn;

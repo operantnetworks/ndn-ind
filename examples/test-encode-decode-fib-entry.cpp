@@ -18,13 +18,13 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <cstdlib>
 #include <iostream>
-#include <ndn-cpp/encoding/protobuf-tlv.hpp>
+#include <ndn-ind/encoding/protobuf-tlv.hpp>
 // This include is produced by:
 // protoc --cpp_out=. fib-entry.proto
 #include "fib-entry.pb.h"

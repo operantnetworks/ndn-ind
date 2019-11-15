@@ -22,10 +22,10 @@
 
 #include "gtest/gtest.h"
 #include "validator-fixture.hpp"
-#include <ndn-cpp/encoding/tlv-wire-format.hpp>
-#include <ndn-cpp/security/command-interest-signer.hpp>
-#include <ndn-cpp/security/v2/validation-policy-simple-hierarchy.hpp>
-#include <ndn-cpp/security/v2/validation-policy-command-interest.hpp>
+#include <ndn-ind/encoding/tlv-wire-format.hpp>
+#include <ndn-ind/security/command-interest-signer.hpp>
+#include <ndn-ind/security/v2/validation-policy-simple-hierarchy.hpp>
+#include <ndn-ind/security/v2/validation-policy-command-interest.hpp>
 
 using namespace std;
 using namespace ndn;

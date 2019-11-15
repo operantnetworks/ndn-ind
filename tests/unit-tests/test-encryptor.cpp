@@ -21,10 +21,10 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/encrypt/encrypted-content.hpp>
-#include <ndn-cpp/encrypt/algo/aes-algorithm.hpp>
-#include <ndn-cpp/encrypt/algo/rsa-algorithm.hpp>
-#include <ndn-cpp/encrypt/algo/encryptor.hpp>
+#include <ndn-ind/encrypt/encrypted-content.hpp>
+#include <ndn-ind/encrypt/algo/aes-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/rsa-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/encryptor.hpp>
 
 using namespace std;
 using namespace ndn;

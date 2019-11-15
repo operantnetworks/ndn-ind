@@ -25,8 +25,8 @@
  * See main() for more details.
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <unistd.h>
@@ -35,9 +35,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
-#include <ndn-cpp/face.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/encoding/protobuf-tlv.hpp>
+#include <ndn-ind/face.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/encoding/protobuf-tlv.hpp>
 // These includes are produced by:
 // protoc --cpp_out=. repo-command-parameter.proto
 #include "repo-command-parameter.pb.h"

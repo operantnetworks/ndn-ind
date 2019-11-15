@@ -29,7 +29,7 @@
 #include <fstream>
 #include <stdexcept>
 #include "identity-management-fixture.hpp"
-#include <ndn-cpp/security/v2/trust-anchor-container.hpp>
+#include <ndn-ind/security/v2/trust-anchor-container.hpp>
 
 using namespace std;
 using namespace ndn;
@@ -49,7 +49,7 @@ getPolicyConfigDirectory()
   string policyConfigDirectory = "policy_config";
   // Check if expected files are in this directory.
   if (!fileExists(policyConfigDirectory + "/regex_ruleset.conf")) {
-    // Maybe we are running "make check" from the ndn-cpp root.  There may be
+    // Maybe we are running "make check" from the ndn-ind root.  There may be
     //   a way to tell "make check" to run from tests/unit-tests, but for
     //   now just set policyConfigDirectory explicitly.
     policyConfigDirectory = "tests/unit-tests/policy_config";

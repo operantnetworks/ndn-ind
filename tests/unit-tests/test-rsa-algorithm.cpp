@@ -21,7 +21,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/encrypt/algo/rsa-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/rsa-algorithm.hpp>
 // Use the internal fromBase64.
 #include "../../src/encoding/base64.hpp"
 

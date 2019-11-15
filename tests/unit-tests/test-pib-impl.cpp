@@ -25,8 +25,8 @@
 #include <unistd.h>
 #include <fstream>
 #include <cstdio>
-#include <ndn-cpp/security/pib/pib-memory.hpp>
-#include <ndn-cpp/security/pib/pib-sqlite3.hpp>
+#include <ndn-ind/security/pib/pib-memory.hpp>
+#include <ndn-ind/security/pib/pib-sqlite3.hpp>
 #include "pib-data-fixture.hpp"
 
 using namespace std;
@@ -59,7 +59,7 @@ getPolicyConfigDirectory()
   string policyConfigDirectory = "policy_config";
   // Check if expected files are in this directory.
   if (!fileExists(policyConfigDirectory + "/regex_ruleset.conf")) {
-    // Maybe we are running "make check" from the ndn-cpp root.  There may be
+    // Maybe we are running "make check" from the ndn-ind root.  There may be
     //   a way to tell "make check" to run from tests/unit-tests, but for
     //   now just set policyConfigDirectory explicitly.
     policyConfigDirectory = "tests/unit-tests/policy_config";

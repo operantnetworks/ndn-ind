@@ -23,19 +23,19 @@
 #include <time.h>
 #include <sys/time.h>
 #include <stdexcept>
-#include <ndn-cpp/data.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/key-locator.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/security/safe-bag.hpp>
-#include <ndn-cpp/security/v2/validation-policy-from-pib.hpp>
-#include <ndn-cpp/security/v2/validator.hpp>
-#include <ndn-cpp/lite/data-lite.hpp>
-#include <ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp>
-#include <ndn-cpp/lite/security/ec-private-key-lite.hpp>
-#include <ndn-cpp/lite/security/ec-public-key-lite.hpp>
-#include <ndn-cpp/lite/security/rsa-private-key-lite.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/data.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/key-locator.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/security/safe-bag.hpp>
+#include <ndn-ind/security/v2/validation-policy-from-pib.hpp>
+#include <ndn-ind/security/v2/validator.hpp>
+#include <ndn-ind/lite/data-lite.hpp>
+#include <ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp>
+#include <ndn-ind/lite/security/ec-private-key-lite.hpp>
+#include <ndn-ind/lite/security/ec-public-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-private-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
 
 using namespace std;
 using namespace ndn;

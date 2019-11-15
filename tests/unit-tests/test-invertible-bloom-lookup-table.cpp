@@ -21,8 +21,8 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/name.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
+#include <ndn-ind/name.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
 #include "../../src/sync/detail/invertible-bloom-lookup-table.hpp"
 
 using namespace std;

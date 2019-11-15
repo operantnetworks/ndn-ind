@@ -21,7 +21,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 
 using namespace std;
 using namespace ndn;

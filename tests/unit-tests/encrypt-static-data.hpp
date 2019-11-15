@@ -23,7 +23,7 @@
 #ifndef NDN_ENCRYPT_STATIC_DATA_HPP
 #define NDN_ENCRYPT_STATIC_DATA_HPP
 
-#include <ndn-cpp/util/blob.hpp>
+#include <ndn-ind/util/blob.hpp>
 
 /**
  * EncryptStaticData has static data blocks used by TestEncryptorV2, etc.

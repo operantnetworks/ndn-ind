@@ -23,15 +23,15 @@
  * need to call processEvents. To run it, you must install Boost with asio.
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
+#include <ndn-ind/ndn-ind-config.h>
 #ifdef NDN_CPP_HAVE_BOOST_ASIO
 
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
 #include <boost/asio.hpp>
-#include <ndn-cpp/threadsafe-face.hpp>
+#include <ndn-ind/threadsafe-face.hpp>
 
 using namespace std;
 using namespace ndn;

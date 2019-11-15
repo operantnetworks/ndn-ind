@@ -25,15 +25,15 @@
 #include <unistd.h>
 #include <fstream>
 #include <cstdio>
-#include <ndn-cpp/lite/security/ec-public-key-lite.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
-#include <ndn-cpp/security/pib/pib-key.hpp>
-#include <ndn-cpp/security/tpm/tpm.hpp>
-#include <ndn-cpp/security/tpm/tpm-private-key.hpp>
-#include <ndn-cpp/security/tpm/tpm-key-handle.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-memory.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-file.hpp>
-#include <ndn-cpp/security/tpm/tpm-back-end-osx.hpp>
+#include <ndn-ind/lite/security/ec-public-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/security/pib/pib-key.hpp>
+#include <ndn-ind/security/tpm/tpm.hpp>
+#include <ndn-ind/security/tpm/tpm-private-key.hpp>
+#include <ndn-ind/security/tpm/tpm-key-handle.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-memory.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-file.hpp>
+#include <ndn-ind/security/tpm/tpm-back-end-osx.hpp>
 #include "../../src/encoding/base64.hpp"
 
 using namespace std;
@@ -54,7 +54,7 @@ getPolicyConfigDirectory()
   string policyConfigDirectory = "policy_config";
   // Check if expected files are in this directory.
   if (!fileExists(policyConfigDirectory + "/regex_ruleset.conf")) {
-    // Maybe we are running "make check" from the ndn-cpp root.  There may be
+    // Maybe we are running "make check" from the ndn-ind root.  There may be
     //   a way to tell "make check" to run from tests/unit-tests, but for
     //   now just set policyConfigDirectory explicitly.
     policyConfigDirectory = "tests/unit-tests/policy_config";

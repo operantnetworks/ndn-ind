@@ -23,8 +23,8 @@
 #ifndef NDN_VALIDATOR_FIXTURE_HPP
 #define NDN_VALIDATOR_FIXTURE_HPP
 
-#include <ndn-cpp/security/v2/validator.hpp>
-#include <ndn-cpp/security/v2/certificate-fetcher-from-network.hpp>
+#include <ndn-ind/security/v2/validator.hpp>
+#include <ndn-ind/security/v2/certificate-fetcher-from-network.hpp>
 #include "identity-management-fixture.hpp"
 
 /**

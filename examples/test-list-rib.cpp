@@ -23,15 +23,15 @@
  * See http://redmine.named-data.net/projects/nfd/wiki/Management .
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
-#include <ndn-cpp/util/segment-fetcher.hpp>
-#include <ndn-cpp/encoding/protobuf-tlv.hpp>
+#include <ndn-ind/util/segment-fetcher.hpp>
+#include <ndn-ind/encoding/protobuf-tlv.hpp>
 // This include is produced by:
 // protoc --cpp_out=. rib-entry.proto
 #include "rib-entry.pb.h"

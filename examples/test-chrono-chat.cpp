@@ -19,8 +19,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <cstdlib>
@@ -32,10 +32,10 @@
 #include <math.h>
 #include <sstream>
 #include <stdexcept>
-#include <ndn-cpp/security/safe-bag.hpp>
-#include <ndn-cpp/transport/tcp-transport.hpp>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/sync/chrono-sync2013.hpp>
+#include <ndn-ind/security/safe-bag.hpp>
+#include <ndn-ind/transport/tcp-transport.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/sync/chrono-sync2013.hpp>
 // This include is produced by:
 // protoc --cpp_out=. chatbuf.proto
 #include "chatbuf.pb.h"

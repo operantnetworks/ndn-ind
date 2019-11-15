@@ -24,9 +24,9 @@
 #include <algorithm>
 #include <fstream>
 #include <stdexcept>
-#include <ndn-cpp/encrypt/algo/aes-algorithm.hpp>
-#include <ndn-cpp/encrypt/algo/rsa-algorithm.hpp>
-#include <ndn-cpp/encrypt/sqlite3-consumer-db.hpp>
+#include <ndn-ind/encrypt/algo/aes-algorithm.hpp>
+#include <ndn-ind/encrypt/algo/rsa-algorithm.hpp>
+#include <ndn-ind/encrypt/sqlite3-consumer-db.hpp>
 
 using namespace std;
 using namespace ndn;
@@ -46,7 +46,7 @@ getPolicyConfigDirectory()
   string policyConfigDirectory = "policy_config";
   // Check if expected files are in this directory.
   if (!fileExists(policyConfigDirectory + "/regex_ruleset.conf")) {
-    // Maybe we are running "make check" from the ndn-cpp root.  There may be
+    // Maybe we are running "make check" from the ndn-ind root.  There may be
     //   a way to tell "make check" to run from tests/unit-tests, but for
     //   now just set policyConfigDirectory explicitly.
     policyConfigDirectory = "tests/unit-tests/policy_config";

@@ -24,8 +24,8 @@
  * announced to others. This requires a local running NFD.
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <cstdlib>
@@ -35,7 +35,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <poll.h>
-#include <ndn-cpp-tools/usersync/channel-discovery.hpp>
+#include <ndn-ind-tools/usersync/channel-discovery.hpp>
 
 using namespace std;
 using namespace ndn;

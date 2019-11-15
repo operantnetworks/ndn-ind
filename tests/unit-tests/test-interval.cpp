@@ -21,9 +21,9 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/encrypt/interval.hpp>
+#include <ndn-ind/encrypt/interval.hpp>
 // Use Schedule::fromIsoString.
-#include <ndn-cpp/encrypt/schedule.hpp>
+#include <ndn-ind/encrypt/schedule.hpp>
 
 using namespace std;
 using namespace ndn;

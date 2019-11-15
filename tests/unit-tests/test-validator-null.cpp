@@ -22,7 +22,7 @@
 
 #include "gtest/gtest.h"
 #include "identity-management-fixture.hpp"
-#include <ndn-cpp/security/validator-null.hpp>
+#include <ndn-ind/security/validator-null.hpp>
 
 using namespace std;
 using namespace ndn;

@@ -21,7 +21,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/data.hpp>
+#include <ndn-ind/data.hpp>
 #include "../../src/sync/detail/psync-state.hpp"
 
 using namespace std;

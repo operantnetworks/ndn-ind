@@ -21,8 +21,8 @@
 #ifndef NDN_IN_MEMORY_STORAGE_FACE_HPP
 #define NDN_IN_MEMORY_STORAGE_FACE_HPP
 
-#include <ndn-cpp/face.hpp>
-#include <ndn-cpp/in-memory-storage/in-memory-storage-retaining.hpp>
+#include <ndn-ind/face.hpp>
+#include <ndn-ind/in-memory-storage/in-memory-storage-retaining.hpp>
 #include "../../src/impl/interest-filter-table.hpp"
 #include "../../src/impl/delayed-call-table.hpp"
 

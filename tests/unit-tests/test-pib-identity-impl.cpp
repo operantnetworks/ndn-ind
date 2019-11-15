@@ -22,7 +22,7 @@
 
 #include "gtest/gtest.h"
 #include <algorithm>
-#include <ndn-cpp/security/pib/pib-memory.hpp>
+#include <ndn-ind/security/pib/pib-memory.hpp>
 #include "../../src/security/pib/detail/pib-identity-impl.hpp"
 #include "pib-data-fixture.hpp"
 

@@ -22,11 +22,11 @@
 
 #include "gtest/gtest.h"
 #include "../../src/encoding/base64.hpp"
-#include <ndn-cpp/lite/security/ec-public-key-lite.hpp>
-#include <ndn-cpp/lite/security/rsa-public-key-lite.hpp>
-#include <ndn-cpp/security/certificate/public-key.hpp>
-#include <ndn-cpp/security/verification-helpers.hpp>
-#include <ndn-cpp/security/tpm/tpm-private-key.hpp>
+#include <ndn-ind/lite/security/ec-public-key-lite.hpp>
+#include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
+#include <ndn-ind/security/certificate/public-key.hpp>
+#include <ndn-ind/security/verification-helpers.hpp>
+#include <ndn-ind/security/tpm/tpm-private-key.hpp>
 
 using namespace std;
 using namespace ndn;

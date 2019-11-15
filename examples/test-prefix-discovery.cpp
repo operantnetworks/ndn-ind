@@ -24,13 +24,13 @@
  * running NFD. This programs runs indefinitely until you stop it (^C),
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_PROTOBUF
 
 #include <cstdlib>
 #include <unistd.h>
-#include <ndn-cpp-tools/usersync/prefix-discovery.hpp>
+#include <ndn-ind-tools/usersync/prefix-discovery.hpp>
 
 using namespace std;
 using namespace ndn;

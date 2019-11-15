@@ -22,14 +22,14 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/security/identity/memory-identity-storage.hpp>
-#include <ndn-cpp/security/identity/memory-private-key-storage.hpp>
-#include <ndn-cpp/security/policy/self-verify-policy-manager.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/interest-filter.hpp>
-#include <ndn-cpp/digest-sha256-signature.hpp>
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/interest.hpp>
+#include <ndn-ind/security/identity/memory-identity-storage.hpp>
+#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
+#include <ndn-ind/security/policy/self-verify-policy-manager.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/interest-filter.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/interest.hpp>
 
 using namespace std;
 using namespace ndn;

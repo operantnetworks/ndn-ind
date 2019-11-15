@@ -21,7 +21,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/name.hpp>
+#include <ndn-ind/name.hpp>
 
 using namespace std;
 using namespace ndn;

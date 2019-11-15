@@ -21,7 +21,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/control-parameters.hpp>
+#include <ndn-ind/control-parameters.hpp>
 
 using namespace std;
 using namespace ndn;

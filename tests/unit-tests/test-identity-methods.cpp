@@ -27,11 +27,11 @@
 #include <fstream>
 #include <cstdio>
 #include <stdexcept>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/security/security-exception.hpp>
-#include <ndn-cpp/security/policy/self-verify-policy-manager.hpp>
-#include <ndn-cpp/security/identity/basic-identity-storage.hpp>
-#include <ndn-cpp/security/identity/file-private-key-storage.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/policy/self-verify-policy-manager.hpp>
+#include <ndn-ind/security/identity/basic-identity-storage.hpp>
+#include <ndn-ind/security/identity/file-private-key-storage.hpp>
 #include "../../src/encoding/base64.hpp"
 
 using namespace std;
@@ -61,7 +61,7 @@ getPolicyConfigDirectory()
   string policyConfigDirectory = "policy_config";
   // Check if expected files are in this directory.
   if (!fileExists(policyConfigDirectory + "/regex_ruleset.conf")) {
-    // Maybe we are running "make check" from the ndn-cpp root.  There may be
+    // Maybe we are running "make check" from the ndn-ind root.  There may be
     //   a way to tell "make check" to run from tests/unit-tests, but for
     //   now just set policyConfigDirectory explicitly.
     policyConfigDirectory = "tests/unit-tests/policy_config";

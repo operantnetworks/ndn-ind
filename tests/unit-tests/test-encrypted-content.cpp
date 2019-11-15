@@ -21,7 +21,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/encrypt/encrypted-content.hpp>
+#include <ndn-ind/encrypt/encrypted-content.hpp>
 
 using namespace std;
 using namespace ndn;

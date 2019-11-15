@@ -26,7 +26,7 @@
 #include <fstream>
 #include <cstdio>
 #include "identity-management-fixture.hpp"
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
 using namespace ndn;

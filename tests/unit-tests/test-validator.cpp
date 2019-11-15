@@ -22,7 +22,7 @@
 
 #include "gtest/gtest.h"
 #include "validator-fixture.hpp"
-#include <ndn-cpp/security/v2/validation-policy-simple-hierarchy.hpp>
+#include <ndn-ind/security/v2/validation-policy-simple-hierarchy.hpp>
 
 using namespace std;
 using namespace ndn;

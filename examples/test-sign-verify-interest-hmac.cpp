@@ -27,9 +27,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <time.h>
-#include <ndn-cpp/interest.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-#include <ndn-cpp/hmac-with-sha256-signature.hpp>
+#include <ndn-ind/interest.hpp>
+#include <ndn-ind/security/key-chain.hpp>
+#include <ndn-ind/hmac-with-sha256-signature.hpp>
 
 using namespace std;
 using namespace ndn;

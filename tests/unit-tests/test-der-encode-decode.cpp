@@ -22,10 +22,10 @@
 #include "gtest/gtest.h"
 #include <algorithm>
 #include <sstream>
-#include <ndn-cpp/security/certificate/certificate.hpp>
-#include <ndn-cpp/security/identity/memory-identity-storage.hpp>
-#include <ndn-cpp/security/identity/memory-private-key-storage.hpp>
-#include <ndn-cpp/security/identity/identity-manager.hpp>
+#include <ndn-ind/security/certificate/certificate.hpp>
+#include <ndn-ind/security/identity/memory-identity-storage.hpp>
+#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
+#include <ndn-ind/security/identity/identity-manager.hpp>
 #include "../../src/encoding/der/der-node.hpp"
 
 using namespace std;

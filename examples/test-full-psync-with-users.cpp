@@ -27,16 +27,16 @@
  * https://github.com/named-data/PSync/blob/master/examples/full-sync.cpp
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_LIBZ 1.
-#include <ndn-cpp/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_LIBZ 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_LIBZ
 
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
-#include <ndn-cpp/lite/util/crypto-lite.hpp>
-#include <ndn-cpp/sync/full-psync2017-with-users.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include <ndn-ind/sync/full-psync2017-with-users.hpp>
 
 using namespace std;
 using namespace ndn;

@@ -23,8 +23,8 @@
 
 #include "gtest/gtest.h"
 #include <algorithm>
-#include <ndn-cpp/name.hpp>
-#include <ndn-cpp/encoding/tlv-wire-format.hpp>
+#include <ndn-ind/name.hpp>
+#include <ndn-ind/encoding/tlv-wire-format.hpp>
 
 using namespace std;
 using namespace ndn;

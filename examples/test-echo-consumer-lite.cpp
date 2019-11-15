@@ -35,9 +35,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <ndn-cpp/lite/transport/tcp-transport-lite.hpp>
-#include <ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp>
-#include <ndn-cpp/lite/util/dynamic-malloc-uint8-array-lite.hpp>
+#include <ndn-ind/lite/transport/tcp-transport-lite.hpp>
+#include <ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp>
+#include <ndn-ind/lite/util/dynamic-malloc-uint8-array-lite.hpp>
 
 using namespace ndn;
 

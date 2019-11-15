@@ -22,8 +22,8 @@
 #include <iostream>
 #include <time.h>
 #include <unistd.h>
-#include <ndn-cpp/face.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/face.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
 using namespace ndn;

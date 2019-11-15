@@ -21,9 +21,9 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/sha256-with-rsa-signature.hpp>
-#include <ndn-cpp/security/v2/certificate-v2.hpp>
-#include <ndn-cpp/encrypt/schedule.hpp>
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/security/v2/certificate-v2.hpp>
+#include <ndn-ind/encrypt/schedule.hpp>
 
 using namespace std;
 using namespace ndn;

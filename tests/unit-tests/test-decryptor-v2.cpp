@@ -22,8 +22,8 @@
 
 #include "gtest/gtest.h"
 #include <cstdio>
-#include <ndn-cpp/security/validator-null.hpp>
-#include <ndn-cpp/encrypt/decryptor-v2.hpp>
+#include <ndn-ind/security/validator-null.hpp>
+#include <ndn-ind/encrypt/decryptor-v2.hpp>
 #include "identity-management-fixture.hpp"
 #include "in-memory-storage-face.hpp"
 #include "encrypt-static-data.hpp"

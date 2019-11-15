@@ -24,7 +24,7 @@
 #ifndef NDN_PIB_DATA_FIXTURE_HPP
 #define NDN_PIB_DATA_FIXTURE_HPP
 
-#include <ndn-cpp/security/pib/pib-impl.hpp>
+#include <ndn-ind/security/pib/pib-impl.hpp>
 
 class PibDataFixture
 {

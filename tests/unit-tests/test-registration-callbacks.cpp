@@ -20,7 +20,7 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-cpp/face.hpp>
+#include <ndn-ind/face.hpp>
 #include <sstream>
 #if NDN_CPP_HAVE_TIME_H
 #include <time.h>
@@ -28,10 +28,10 @@
 #if NDN_CPP_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#include <ndn-cpp/security/identity/memory-identity-storage.hpp>
-#include <ndn-cpp/security/identity/memory-private-key-storage.hpp>
-#include <ndn-cpp/security/policy/self-verify-policy-manager.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/identity/memory-identity-storage.hpp>
+#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
+#include <ndn-ind/security/policy/self-verify-policy-manager.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
 using namespace ndn;

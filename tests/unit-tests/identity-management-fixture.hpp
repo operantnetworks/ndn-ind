@@ -24,7 +24,7 @@
 #define NDN_IDENTITY_MANAGEMENT_FIXTURE_HPP
 
 #include <set>
-#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-ind/security/key-chain.hpp>
 
 class IdentityManagementFixture
 {
