@@ -1,7 +1,7 @@
-NDN-CPP: A Named Data Networking client library for C++ and C - Android
+NDN-IND: A Named Data Networking client library for C++ and C - Android
 =======================================================================
 
-This are instructions to cross-compile NDN-CPP for Android.
+This are instructions to cross-compile NDN-IND for Android.
 
 Prerequisites
 =============
@@ -45,10 +45,10 @@ Prepare OpenSSL
 
 (These instructions are taken from https://wiki.openssl.org/index.php/Android .)
 Make sure the environment variables ANDROID_SDK_ROOT and ANDROID_NDK_ROOT are set (see above).
-To run the OpenSSL setup script, in the following change <NDN-CPP-root> to the root of the NDN-CPP distribution. In
+To run the OpenSSL setup script, in the following change <NDN-IND-root> to the root of the NDN-IND distribution. In
 a terminal, enter:
 
-    . <NDN-CPP-root>/android-native/setenv-android.sh
+    . <NDN-IND-root>/android-native/setenv-android.sh
 
 If it says "Error: FIPS_SIG does not specify incore module", you can ignore it.
 
@@ -67,7 +67,7 @@ Build
 
 Create a new Android project with the following configuration:
 
-* In the New Project wizard, name the project (e.g. "ndn-cpp-native"). Be sure to check "Include C++ support".
+* In the New Project wizard, name the project (e.g. "ndn-ind-native"). Be sure to check "Include C++ support".
 * Select a minimum SDK. This has been tested with "API 21: Android 5.0 (Lollipop)".
 * Select the Basic Activity template.
 * In the Customize C++ Support screen, for the C++ Standard, select "C++11". Check "Exceptions Support"
@@ -75,30 +75,30 @@ Create a new Android project with the following configuration:
 * Click Finish to complete the New Project wizard.
 
 In a terminal, change directory to the root of your Android Studio project,
-for example "~/AndroidStudioProjects/ndn-cpp-native".
+for example "~/AndroidStudioProjects/ndn-ind-native".
 
-To make a link to NDN-CPP, in the following change <NDN-CPP-root> to the root of the NDN-CPP distribution:
+To make a link to NDN-IND, in the following change <NDN-IND-root> to the root of the NDN-IND distribution:
 
-    ln -s <NDN-CPP-root> app/src/ndn-cpp
+    ln -s <NDN-IND-root> app/src/ndn-ind
 
 To make a link to OpenSSL, in the following change <OpenSSL> to the extracted OpenSSL distribution:
 
     ln -s <OpenSSL> app/src/openssl
 
 The Android config.h mainly selects the std shared_ptr and other defaults.
-Copy it to the NDN-CPP include folder:
+Copy it to the NDN-IND include folder:
 
-    cp app/src/ndn-cpp/android-native/ndn-cpp-config.h app/src/ndn-cpp/include/ndn-cpp
+    cp app/src/ndn-ind/android-native/ndn-ind-config.h app/src/ndn-ind/include/ndn-ind
 
 Copy the project mk files:
 
-    cp app/src/ndn-cpp/android-native/Android.mk app
-    cp app/src/ndn-cpp/android-native/Application.mk app
+    cp app/src/ndn-ind/android-native/Android.mk app
+    cp app/src/ndn-ind/android-native/Application.mk app
 
 The APP_PLATFORM in Application.mk should match _ANDROID_API in setenv-android.sh .
 
-(This uses SQLite by default. To omit SQLite, edit ndn-cpp-config.h to remove the line
-`#define NDN_CPP_HAVE_SQLITE3` and edit Android.mk to remove sqlite3 from the line
+(This uses SQLite by default. To omit SQLite, edit ndn-ind-config.h to remove the line
+`#define NDN_IND_HAVE_SQLITE3` and edit Android.mk to remove sqlite3 from the line
 `LOCAL_SHARED_LIBRARIES := openssl sqlite3` . Also, you don't need to install
 libsqlite3.so on your Android.)
 
@@ -106,7 +106,7 @@ Use NDK to build:
 
     ndk-build NDK_PROJECT_PATH=`pwd` NDK_LIBS_OUT=`pwd`/app/build/intermediates/cmake/debug/obj/armeabi APP_BUILD_SCRIPT=app/Android.mk NDK_APPLICATION_MK=app/Application.mk
 
-The libndn-cpp.so library and other files are in a subfolder based on the APP_ABI target in Application.mk .
+The libndn-ind.so library and other files are in a subfolder based on the APP_ABI target in Application.mk .
 For example, if the target is armeabi-v7a then the files are in
 app/build/intermediates/cmake/debug/obj/armeabi/armeabi-v7a . The default Android.mk
 builds an Android executable ndn-example from test-encode-decode-data.
@@ -129,6 +129,6 @@ In the adb shell, set the library path and run the application:
 
 ## Unity on Android
 
-To use libndn-cpp.so in your Unity on Android project, copy libndn-cpp.so to the
+To use libndn-ind.so in your Unity on Android project, copy libndn-ind.so to the
 subfolder Assets/Plugins/Android of your Unity project folder. (Create this
 folder if it doesn't exist.)

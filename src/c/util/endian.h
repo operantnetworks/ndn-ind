@@ -46,7 +46,7 @@
 
 #include <WinSock2.h>
 #include <stdint.h>
-#include <ndn-ind/ndn-cpp-config.h>
+#include <ndn-ind/ndn-ind-config.h>
 #define htobe16(x) htons(x)
 #define be16toh(x) ntohs(x)
 #define htobe32(x) htonl(x)

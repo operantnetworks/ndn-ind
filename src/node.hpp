@@ -23,7 +23,7 @@
 #define NDN_NODE_HPP
 
 #include <map>
-#include <ndn-ind/ndn-cpp-config.h>
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_BOOST_ATOMIC
 #include <boost/atomic.hpp>
 #endif

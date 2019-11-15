@@ -21,7 +21,7 @@
 #ifndef NDN_COMMON_H
 #define NDN_COMMON_H
 
-#include "../ndn-cpp-config.h"
+#include "../ndn-ind-config.h"
 #include <stdint.h>
 #include <stddef.h>
 

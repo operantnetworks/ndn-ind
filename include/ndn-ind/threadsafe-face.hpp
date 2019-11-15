@@ -22,8 +22,8 @@
 #ifndef NDN_THREADSAFE_FACE_HPP
 #define NDN_THREADSAFE_FACE_HPP
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
-#include "ndn-cpp-config.h"
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
+#include "ndn-ind-config.h"
 #ifdef NDN_CPP_HAVE_BOOST_ASIO
 
 #include <boost/asio.hpp>

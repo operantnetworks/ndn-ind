@@ -20,7 +20,7 @@
 
 /*
  * Based on NDN_CPP_HAVE_MEMCMP, NDN_CPP_HAVE_MEMCPY and NDN_CPP_HAVE_MEMSET in
- * ndn-cpp-config.h, use the library version or a local implementation of
+ * ndn-ind-config.h, use the library version or a local implementation of
  * memcmp, memcpy and memset.
  */
 

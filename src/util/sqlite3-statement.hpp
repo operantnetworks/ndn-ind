@@ -23,8 +23,8 @@
 #ifndef NDN_SQLITE3_STATEMENT_HPP
 #define NDN_SQLITE3_STATEMENT_HPP
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_SQLITE3.
-#include <ndn-ind/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_SQLITE3.
+#include <ndn-ind/ndn-ind-config.h>
 #ifdef NDN_CPP_HAVE_SQLITE3
 
 #include <string>

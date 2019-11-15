@@ -19,8 +19,8 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
-#include <ndn-ind/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
+#include <ndn-ind/ndn-ind-config.h>
 #ifdef NDN_CPP_HAVE_BOOST_ASIO
 
 #include <stdexcept>

@@ -23,11 +23,11 @@
 #ifndef NDN_NDN_REGEX_MATCHER_BASE_HPP
 #define NDN_NDN_REGEX_MATCHER_BASE_HPP
 
-// Depending if ndn-cpp-config.h defines NDN_CPP_HAVE_BOOST_REGEX or sets
+// Depending if ndn-ind-config.h defines NDN_CPP_HAVE_BOOST_REGEX or sets
 //   NDN_CPP_HAVE_STD_REGEX = 1, define the regex_lib namespace alias.
 // Set NDN_CPP_HAVE_REGEX_LIB = 1 if regex_lib is defined.
 
-#include <ndn-ind/ndn-cpp-config.h>
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_STD_REGEX
   #include <regex>
   namespace ndn { namespace regex_lib = std; }

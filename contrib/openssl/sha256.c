@@ -4,7 +4,7 @@
  * ====================================================================
  */
 // Only compile if the main OpenSSL library is not available.
-#include <ndn-ind/ndn-cpp-config.h>
+#include <ndn-ind/ndn-ind-config.h>
 #if !NDN_CPP_HAVE_LIBCRYPTO
 
 #if 0

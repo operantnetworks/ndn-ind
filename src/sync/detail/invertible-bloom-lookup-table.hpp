@@ -48,8 +48,8 @@
 #ifndef NDN_INVERTIBLE_BLOOM_LOOKUP_TABLE_HPP
 #define NDN_INVERTIBLE_BLOOM_LOOKUP_TABLE_HPP
 
-// Only compile if ndn-cpp-config.h defines NDN_CPP_HAVE_LIBZ 1.
-#include <ndn-ind/ndn-cpp-config.h>
+// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_LIBZ 1.
+#include <ndn-ind/ndn-ind-config.h>
 #if NDN_CPP_HAVE_LIBZ
 
 #include <set>
