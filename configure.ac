@@ -1,15 +1,15 @@
 # To build using autotools, see the Development section of the file INSTALL.
 
 AC_PREREQ([2.59])
-AC_INIT([ndn-cpp], [0.17], [ndn-lib@lists.cs.ucla.edu], [ndn-cpp], [https://github.com/named-data/ndn-cpp])
+AC_INIT([ndn-ind], [0.17], [ndn-lib@lists.cs.ucla.edu], [ndn-ind], [https://github.com/operantnetworks/ndn-ind])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define foreign])
 
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR([configure.ac])
 # Create config.h without prefixes.  Put it in the include directory so CFLAGS will have -I./include .
 AC_CONFIG_HEADERS(include/config.h)
-# Add prefixes and output to a unique file name which will go into the ndn-cpp include install directory.
-AX_PREFIX_CONFIG_H(include/ndn-cpp/ndn-cpp-config.h)
+# Add prefixes and output to a unique file name which will go into the ndn-ind include install directory.
+AX_PREFIX_CONFIG_H(include/ndn-ind/ndn-ind-config.h)
 AM_MAINTAINER_MODE
 AM_PROG_AR
 AC_PROG_LIBTOOL
@@ -355,5 +355,5 @@ DX_INIT_DOXYGEN([$PACKAGE_NAME],[Doxyfile])
 
 AC_CONFIG_FILES([Makefile
                  include/Makefile
-                 libndn-cpp.pc])
+                 libndn-ind.pc])
 AC_OUTPUT

@@ -15,14 +15,14 @@ AM_LDFLAGS=${BOOST_LDFLAGS} ${BOOST_SYSTEM_LIB} ${BOOST_REGEX_LIB} ${BOOST_ASIO_
 # "make install" will also install the include headers.
 SUBDIRS = include
 
-lib_LTLIBRARIES = libndn-c.la libndn-cpp.la libndn-cpp-tools.la
-libndn_cpp_tools_la_LIBADD = libndn-cpp.la
+lib_LTLIBRARIES = libndn-c.la libndn-ind.la libndn-ind-tools.la
+libndn_ind_tools_la_LIBADD = libndn-ind.la
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libndn-cpp.pc
+pkgconfig_DATA = libndn-ind.pc
 
-# Make ndn-cpp-config.h so we recompile the .pb.cc after Protobuf is installed or removed.
-%.pb.cc: %.proto include/ndn-cpp/ndn-cpp-config.h
+# Make ndn-ind-config.h so we recompile the .pb.cc after Protobuf is installed or removed.
+%.pb.cc: %.proto include/ndn-ind/ndn-ind-config.h
 	if test "no${PROTOC}" == "no"; then \
 	  cat protobuf-stub.txt > $@ ; \
 	else \
@@ -86,229 +86,229 @@ noinst_PROGRAMS = bin/test-channel-discovery bin/test-chrono-chat \
   bin/analog-reading-consumer bin/basic-insertion bin/watched-insertion
 
 # Public C headers.
-# NOTE: If a new directory is added, then add it to ndn_cpp_c_headers in include/Makefile.am.
-ndn_cpp_c_headers = \
-  include/ndn-cpp/ndn-cpp-config.h \
-  include/ndn-cpp/c/common.h \
-  include/ndn-cpp/c/control-parameters-types.h \
-  include/ndn-cpp/c/control-response-types.h \
-  include/ndn-cpp/c/data-types.h \
-  include/ndn-cpp/c/delegation-set-types.h \
-  include/ndn-cpp/c/errors.h \
-  include/ndn-cpp/c/forwarding-flags.h \
-  include/ndn-cpp/c/interest-types.h \
-  include/ndn-cpp/c/key-types.h \
-  include/ndn-cpp/c/name-types.h \
-  include/ndn-cpp/c/network-nack-types.h \
-  include/ndn-cpp/c/registration-options-types.h \
-  include/ndn-cpp/c/encoding/element-reader-types.h \
-  include/ndn-cpp/c/encrypt/encrypted-content-types.h \
-  include/ndn-cpp/c/encrypt/algo/encrypt-params-types.h \
-  include/ndn-cpp/c/lp/congestion-mark-types.h \
-  include/ndn-cpp/c/lp/incoming-face-id-types.h \
-  include/ndn-cpp/c/lp/lp-packet-types.h \
-  include/ndn-cpp/c/security/ec-private-key-types.h \
-  include/ndn-cpp/c/security/ec-public-key-types.h \
-  include/ndn-cpp/c/security/rsa-private-key-types.h \
-  include/ndn-cpp/c/security/rsa-public-key-types.h \
-  include/ndn-cpp/c/security/validity-period-types.h \
-  include/ndn-cpp/c/transport/transport-types.h \
-  include/ndn-cpp/c/util/blob-types.h \
-  include/ndn-cpp/c/util/dynamic-uint8-array-types.h
+# NOTE: If a new directory is added, then add it to ndn_ind_c_headers in include/Makefile.am.
+ndn_ind_c_headers = \
+  include/ndn-ind/ndn-ind-config.h \
+  include/ndn-ind/c/common.h \
+  include/ndn-ind/c/control-parameters-types.h \
+  include/ndn-ind/c/control-response-types.h \
+  include/ndn-ind/c/data-types.h \
+  include/ndn-ind/c/delegation-set-types.h \
+  include/ndn-ind/c/errors.h \
+  include/ndn-ind/c/forwarding-flags.h \
+  include/ndn-ind/c/interest-types.h \
+  include/ndn-ind/c/key-types.h \
+  include/ndn-ind/c/name-types.h \
+  include/ndn-ind/c/network-nack-types.h \
+  include/ndn-ind/c/registration-options-types.h \
+  include/ndn-ind/c/encoding/element-reader-types.h \
+  include/ndn-ind/c/encrypt/encrypted-content-types.h \
+  include/ndn-ind/c/encrypt/algo/encrypt-params-types.h \
+  include/ndn-ind/c/lp/congestion-mark-types.h \
+  include/ndn-ind/c/lp/incoming-face-id-types.h \
+  include/ndn-ind/c/lp/lp-packet-types.h \
+  include/ndn-ind/c/security/ec-private-key-types.h \
+  include/ndn-ind/c/security/ec-public-key-types.h \
+  include/ndn-ind/c/security/rsa-private-key-types.h \
+  include/ndn-ind/c/security/rsa-public-key-types.h \
+  include/ndn-ind/c/security/validity-period-types.h \
+  include/ndn-ind/c/transport/transport-types.h \
+  include/ndn-ind/c/util/blob-types.h \
+  include/ndn-ind/c/util/dynamic-uint8-array-types.h
 
 # Public C++ headers.
-# NOTE: If a new directory is added, then add it to ndn_cpp_cpp_headers in include/Makefile.am.
-ndn_cpp_cpp_headers = \
-  include/ndn-cpp/common.hpp \
-  include/ndn-cpp/control-parameters.hpp \
-  include/ndn-cpp/control-response.hpp \
-  include/ndn-cpp/data.hpp \
-  include/ndn-cpp/delegation-set.hpp \
-  include/ndn-cpp/digest-sha256-signature.hpp \
-  include/ndn-cpp/exclude.hpp \
-  include/ndn-cpp/face.hpp \
-  include/ndn-cpp/forwarding-flags.hpp \
-  include/ndn-cpp/generic-signature.hpp \
-  include/ndn-cpp/hmac-with-sha256-signature.hpp \
-  include/ndn-cpp/interest-filter.hpp \
-  include/ndn-cpp/interest.hpp \
-  include/ndn-cpp/key-locator.hpp \
-  include/ndn-cpp/link.hpp \
-  include/ndn-cpp/meta-info.hpp \
-  include/ndn-cpp/name.hpp \
-  include/ndn-cpp/network-nack.hpp \
-  include/ndn-cpp/registration-options.hpp \
-  include/ndn-cpp/sha256-with-ecdsa-signature.hpp \
-  include/ndn-cpp/sha256-with-rsa-signature.hpp \
-  include/ndn-cpp/signature.hpp \
-  include/ndn-cpp/threadsafe-face.hpp \
-  include/ndn-cpp/encoding/oid.hpp \
-  include/ndn-cpp/encoding/protobuf-tlv.hpp \
-  include/ndn-cpp/encoding/tlv-0_1-wire-format.hpp \
-  include/ndn-cpp/encoding/tlv-0_1_1-wire-format.hpp \
-  include/ndn-cpp/encoding/tlv-0_2-wire-format.hpp \
-  include/ndn-cpp/encoding/tlv-wire-format.hpp \
-  include/ndn-cpp/encoding/wire-format.hpp \
-  include/ndn-cpp/encrypt/access-manager-v2.hpp \
-  include/ndn-cpp/encrypt/consumer.hpp \
-  include/ndn-cpp/encrypt/consumer-db.hpp \
-  include/ndn-cpp/encrypt/decrypt-key.hpp \
-  include/ndn-cpp/encrypt/decryptor-v2.hpp \
-  include/ndn-cpp/encrypt/encrypt-key.hpp \
-  include/ndn-cpp/encrypt/encrypted-content.hpp \
-  include/ndn-cpp/encrypt/encryptor-v2.hpp \
-  include/ndn-cpp/encrypt/interval.hpp \
-  include/ndn-cpp/encrypt/group-manager.hpp \
-  include/ndn-cpp/encrypt/group-manager-db.hpp \
-  include/ndn-cpp/encrypt/producer.hpp \
-  include/ndn-cpp/encrypt/producer-db.hpp \
-  include/ndn-cpp/encrypt/repetitive-interval.hpp \
-  include/ndn-cpp/encrypt/schedule.hpp \
-  include/ndn-cpp/encrypt/sqlite3-consumer-db.hpp \
-  include/ndn-cpp/encrypt/sqlite3-group-manager-db.hpp \
-  include/ndn-cpp/encrypt/sqlite3-producer-db.hpp \
-  include/ndn-cpp/encrypt/algo/aes-algorithm.hpp \
-  include/ndn-cpp/encrypt/algo/encrypt-params.hpp \
-  include/ndn-cpp/encrypt/algo/encryptor.hpp \
-  include/ndn-cpp/encrypt/algo/rsa-algorithm.hpp \
-  include/ndn-cpp/in-memory-storage/in-memory-storage-retaining.hpp \
-  include/ndn-cpp/lite/common-lite.hpp \
-  include/ndn-cpp/lite/control-parameters-lite.hpp \
-  include/ndn-cpp/lite/control-response-lite.hpp \
-  include/ndn-cpp/lite/data-lite.hpp \
-  include/ndn-cpp/lite/delegation-set-lite.hpp \
-  include/ndn-cpp/lite/exclude-lite.hpp \
-  include/ndn-cpp/lite/forwarding-flags-lite.hpp \
-  include/ndn-cpp/lite/interest-lite.hpp \
-  include/ndn-cpp/lite/key-locator-lite.hpp \
-  include/ndn-cpp/lite/meta-info-lite.hpp \
-  include/ndn-cpp/lite/name-lite.hpp \
-  include/ndn-cpp/lite/network-nack-lite.hpp \
-  include/ndn-cpp/lite/registration-options-lite.hpp \
-  include/ndn-cpp/lite/signature-lite.hpp \
-  include/ndn-cpp/lite/encoding/element-listener-lite.hpp \
-  include/ndn-cpp/lite/encoding/tlv-0_1_1-wire-format-lite.hpp \
-  include/ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp \
-  include/ndn-cpp/lite/encrypt/encrypted-content-lite.hpp \
-  include/ndn-cpp/lite/encrypt/algo/aes-algorithm-lite.hpp \
-  include/ndn-cpp/lite/encrypt/algo/des-algorithm-lite.hpp \
-  include/ndn-cpp/lite/encrypt/algo/encrypt-params-lite.hpp \
-  include/ndn-cpp/lite/lp/congestion-mark-lite.hpp \
-  include/ndn-cpp/lite/lp/incoming-face-id-lite.hpp \
-  include/ndn-cpp/lite/lp/lp-packet-lite.hpp \
-  include/ndn-cpp/lite/security/ec-private-key-lite.hpp \
-  include/ndn-cpp/lite/security/ec-public-key-lite.hpp \
-  include/ndn-cpp/lite/security/rsa-private-key-lite.hpp \
-  include/ndn-cpp/lite/security/rsa-public-key-lite.hpp \
-  include/ndn-cpp/lite/security/validity-period-lite.hpp \
-  include/ndn-cpp/lite/transport/tcp-transport-lite.hpp \
-  include/ndn-cpp/lite/transport/udp-transport-lite.hpp \
-  include/ndn-cpp/lite/transport/unix-transport-lite.hpp \
-  include/ndn-cpp/lite/util/blob-lite.hpp \
-  include/ndn-cpp/lite/util/crypto-lite.hpp \
-  include/ndn-cpp/lite/util/dynamic-malloc-uint8-array-lite.hpp \
-  include/ndn-cpp/lite/util/dynamic-uint8-array-lite.hpp \
-  include/ndn-cpp/security/security-common.hpp \
-  include/ndn-cpp/security/command-interest-preparer.hpp \
-  include/ndn-cpp/security/command-interest-signer.hpp \
-  include/ndn-cpp/security/key-chain.hpp \
-  include/ndn-cpp/security/key-params.hpp \
-  include/ndn-cpp/security/safe-bag.hpp \
-  include/ndn-cpp/security/security-exception.hpp \
-  include/ndn-cpp/security/signing-info.hpp \
-  include/ndn-cpp/security/validity-period.hpp \
-  include/ndn-cpp/security/validator-config-error.hpp \
-  include/ndn-cpp/security/validator-config.hpp \
-  include/ndn-cpp/security/validator-null.hpp \
-  include/ndn-cpp/security/validity-period.hpp \
-  include/ndn-cpp/security/verification-helpers.hpp \
-  include/ndn-cpp/security/certificate/certificate-extension.hpp \
-  include/ndn-cpp/security/certificate/certificate-subject-description.hpp \
-  include/ndn-cpp/security/certificate/certificate.hpp \
-  include/ndn-cpp/security/certificate/identity-certificate.hpp \
-  include/ndn-cpp/security/certificate/public-key.hpp \
-  include/ndn-cpp/security/identity/basic-identity-storage.hpp \
-  include/ndn-cpp/security/identity/file-private-key-storage.hpp \
-  include/ndn-cpp/security/identity/identity-manager.hpp \
-  include/ndn-cpp/security/identity/identity-storage.hpp \
-  include/ndn-cpp/security/identity/memory-identity-storage.hpp \
-  include/ndn-cpp/security/identity/memory-private-key-storage.hpp \
-  include/ndn-cpp/security/identity/osx-private-key-storage.hpp \
-  include/ndn-cpp/security/identity/private-key-storage.hpp \
-  include/ndn-cpp/security/pib/pib-certificate-container.hpp \
-  include/ndn-cpp/security/pib/pib-identity.hpp \
-  include/ndn-cpp/security/pib/pib-identity-container.hpp \
-  include/ndn-cpp/security/pib/pib-impl.hpp \
-  include/ndn-cpp/security/pib/pib-key.hpp \
-  include/ndn-cpp/security/pib/pib-key-container.hpp \
-  include/ndn-cpp/security/pib/pib-memory.hpp \
-  include/ndn-cpp/security/pib/pib-sqlite3.hpp \
-  include/ndn-cpp/security/pib/pib.hpp \
-  include/ndn-cpp/security/policy/config-policy-manager.hpp \
-  include/ndn-cpp/security/policy/no-verify-policy-manager.hpp \
-  include/ndn-cpp/security/policy/policy-manager.hpp \
-  include/ndn-cpp/security/policy/self-verify-policy-manager.hpp \
-  include/ndn-cpp/security/policy/validation-request.hpp \
-  include/ndn-cpp/security/tpm/helper-osx.hpp \
-  include/ndn-cpp/security/tpm/tpm.hpp \
-  include/ndn-cpp/security/tpm/tpm-back-end.hpp \
-  include/ndn-cpp/security/tpm/tpm-back-end-file.hpp \
-  include/ndn-cpp/security/tpm/tpm-back-end-memory.hpp \
-  include/ndn-cpp/security/tpm/tpm-back-end-osx.hpp \
-  include/ndn-cpp/security/tpm/tpm-key-handle.hpp \
-  include/ndn-cpp/security/tpm/tpm-key-handle-memory.hpp \
-  include/ndn-cpp/security/tpm/tpm-key-handle-osx.hpp \
-  include/ndn-cpp/security/tpm/tpm-private-key.hpp \
-  include/ndn-cpp/security/v2/certificate-fetcher-from-network.hpp \
-  include/ndn-cpp/security/v2/certificate-fetcher-offline.hpp \
-  include/ndn-cpp/security/v2/certificate-fetcher.hpp \
-  include/ndn-cpp/security/v2/certificate-request.hpp \
-  include/ndn-cpp/security/v2/certificate-storage.hpp \
-  include/ndn-cpp/security/v2/certificate-v2.hpp \
-  include/ndn-cpp/security/v2/trust-anchor-container.hpp \
-  include/ndn-cpp/security/v2/trust-anchor-group.hpp \
-  include/ndn-cpp/security/v2/validation-error.hpp \
-  include/ndn-cpp/security/v2/validation-policy-accept-all.hpp \
-  include/ndn-cpp/security/v2/validation-policy-command-interest.hpp \
-  include/ndn-cpp/security/v2/validation-policy-config.hpp \
-  include/ndn-cpp/security/v2/validation-policy-from-pib.hpp \
-  include/ndn-cpp/security/v2/validation-policy-simple-hierarchy.hpp \
-  include/ndn-cpp/security/v2/validation-policy.hpp \
-  include/ndn-cpp/security/v2/validation-state.hpp \
-  include/ndn-cpp/security/v2/validator.hpp \
-  include/ndn-cpp/security/v2/validator-config/config-checker.hpp \
-  include/ndn-cpp/security/v2/validator-config/config-filter.hpp \
-  include/ndn-cpp/security/v2/validator-config/config-name-relation.hpp \
-  include/ndn-cpp/security/v2/validator-config/config-rule.hpp \
-  include/ndn-cpp/sync/chrono-sync2013.hpp \
-  include/ndn-cpp/sync/full-psync2017.hpp \
-  include/ndn-cpp/sync/full-psync2017-with-users.hpp \
-  include/ndn-cpp/sync/psync-missing-data-info.hpp \
-  include/ndn-cpp/sync/psync-producer-base.hpp \
-  include/ndn-cpp/transport/async-tcp-transport.hpp \
-  include/ndn-cpp/transport/async-unix-transport.hpp \
-  include/ndn-cpp/transport/tcp-transport.hpp \
-  include/ndn-cpp/transport/transport.hpp \
-  include/ndn-cpp/transport/udp-transport.hpp \
-  include/ndn-cpp/transport/unix-transport.hpp \
-  include/ndn-cpp/util/blob.hpp \
-  include/ndn-cpp/util/change-counter.hpp \
-  include/ndn-cpp/util/exponential-re-express.hpp \
-  include/ndn-cpp/util/logging.hpp \
-  include/ndn-cpp/util/memory-content-cache.hpp \
-  include/ndn-cpp/util/segment-fetcher.hpp \
-  include/ndn-cpp/util/signed-blob.hpp
+# NOTE: If a new directory is added, then add it to ndn_ind_cpp_headers in include/Makefile.am.
+ndn_ind_cpp_headers = \
+  include/ndn-ind/common.hpp \
+  include/ndn-ind/control-parameters.hpp \
+  include/ndn-ind/control-response.hpp \
+  include/ndn-ind/data.hpp \
+  include/ndn-ind/delegation-set.hpp \
+  include/ndn-ind/digest-sha256-signature.hpp \
+  include/ndn-ind/exclude.hpp \
+  include/ndn-ind/face.hpp \
+  include/ndn-ind/forwarding-flags.hpp \
+  include/ndn-ind/generic-signature.hpp \
+  include/ndn-ind/hmac-with-sha256-signature.hpp \
+  include/ndn-ind/interest-filter.hpp \
+  include/ndn-ind/interest.hpp \
+  include/ndn-ind/key-locator.hpp \
+  include/ndn-ind/link.hpp \
+  include/ndn-ind/meta-info.hpp \
+  include/ndn-ind/name.hpp \
+  include/ndn-ind/network-nack.hpp \
+  include/ndn-ind/registration-options.hpp \
+  include/ndn-ind/sha256-with-ecdsa-signature.hpp \
+  include/ndn-ind/sha256-with-rsa-signature.hpp \
+  include/ndn-ind/signature.hpp \
+  include/ndn-ind/threadsafe-face.hpp \
+  include/ndn-ind/encoding/oid.hpp \
+  include/ndn-ind/encoding/protobuf-tlv.hpp \
+  include/ndn-ind/encoding/tlv-0_1-wire-format.hpp \
+  include/ndn-ind/encoding/tlv-0_1_1-wire-format.hpp \
+  include/ndn-ind/encoding/tlv-0_2-wire-format.hpp \
+  include/ndn-ind/encoding/tlv-wire-format.hpp \
+  include/ndn-ind/encoding/wire-format.hpp \
+  include/ndn-ind/encrypt/access-manager-v2.hpp \
+  include/ndn-ind/encrypt/consumer.hpp \
+  include/ndn-ind/encrypt/consumer-db.hpp \
+  include/ndn-ind/encrypt/decrypt-key.hpp \
+  include/ndn-ind/encrypt/decryptor-v2.hpp \
+  include/ndn-ind/encrypt/encrypt-key.hpp \
+  include/ndn-ind/encrypt/encrypted-content.hpp \
+  include/ndn-ind/encrypt/encryptor-v2.hpp \
+  include/ndn-ind/encrypt/interval.hpp \
+  include/ndn-ind/encrypt/group-manager.hpp \
+  include/ndn-ind/encrypt/group-manager-db.hpp \
+  include/ndn-ind/encrypt/producer.hpp \
+  include/ndn-ind/encrypt/producer-db.hpp \
+  include/ndn-ind/encrypt/repetitive-interval.hpp \
+  include/ndn-ind/encrypt/schedule.hpp \
+  include/ndn-ind/encrypt/sqlite3-consumer-db.hpp \
+  include/ndn-ind/encrypt/sqlite3-group-manager-db.hpp \
+  include/ndn-ind/encrypt/sqlite3-producer-db.hpp \
+  include/ndn-ind/encrypt/algo/aes-algorithm.hpp \
+  include/ndn-ind/encrypt/algo/encrypt-params.hpp \
+  include/ndn-ind/encrypt/algo/encryptor.hpp \
+  include/ndn-ind/encrypt/algo/rsa-algorithm.hpp \
+  include/ndn-ind/in-memory-storage/in-memory-storage-retaining.hpp \
+  include/ndn-ind/lite/common-lite.hpp \
+  include/ndn-ind/lite/control-parameters-lite.hpp \
+  include/ndn-ind/lite/control-response-lite.hpp \
+  include/ndn-ind/lite/data-lite.hpp \
+  include/ndn-ind/lite/delegation-set-lite.hpp \
+  include/ndn-ind/lite/exclude-lite.hpp \
+  include/ndn-ind/lite/forwarding-flags-lite.hpp \
+  include/ndn-ind/lite/interest-lite.hpp \
+  include/ndn-ind/lite/key-locator-lite.hpp \
+  include/ndn-ind/lite/meta-info-lite.hpp \
+  include/ndn-ind/lite/name-lite.hpp \
+  include/ndn-ind/lite/network-nack-lite.hpp \
+  include/ndn-ind/lite/registration-options-lite.hpp \
+  include/ndn-ind/lite/signature-lite.hpp \
+  include/ndn-ind/lite/encoding/element-listener-lite.hpp \
+  include/ndn-ind/lite/encoding/tlv-0_1_1-wire-format-lite.hpp \
+  include/ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp \
+  include/ndn-ind/lite/encrypt/encrypted-content-lite.hpp \
+  include/ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp \
+  include/ndn-ind/lite/encrypt/algo/des-algorithm-lite.hpp \
+  include/ndn-ind/lite/encrypt/algo/encrypt-params-lite.hpp \
+  include/ndn-ind/lite/lp/congestion-mark-lite.hpp \
+  include/ndn-ind/lite/lp/incoming-face-id-lite.hpp \
+  include/ndn-ind/lite/lp/lp-packet-lite.hpp \
+  include/ndn-ind/lite/security/ec-private-key-lite.hpp \
+  include/ndn-ind/lite/security/ec-public-key-lite.hpp \
+  include/ndn-ind/lite/security/rsa-private-key-lite.hpp \
+  include/ndn-ind/lite/security/rsa-public-key-lite.hpp \
+  include/ndn-ind/lite/security/validity-period-lite.hpp \
+  include/ndn-ind/lite/transport/tcp-transport-lite.hpp \
+  include/ndn-ind/lite/transport/udp-transport-lite.hpp \
+  include/ndn-ind/lite/transport/unix-transport-lite.hpp \
+  include/ndn-ind/lite/util/blob-lite.hpp \
+  include/ndn-ind/lite/util/crypto-lite.hpp \
+  include/ndn-ind/lite/util/dynamic-malloc-uint8-array-lite.hpp \
+  include/ndn-ind/lite/util/dynamic-uint8-array-lite.hpp \
+  include/ndn-ind/security/security-common.hpp \
+  include/ndn-ind/security/command-interest-preparer.hpp \
+  include/ndn-ind/security/command-interest-signer.hpp \
+  include/ndn-ind/security/key-chain.hpp \
+  include/ndn-ind/security/key-params.hpp \
+  include/ndn-ind/security/safe-bag.hpp \
+  include/ndn-ind/security/security-exception.hpp \
+  include/ndn-ind/security/signing-info.hpp \
+  include/ndn-ind/security/validity-period.hpp \
+  include/ndn-ind/security/validator-config-error.hpp \
+  include/ndn-ind/security/validator-config.hpp \
+  include/ndn-ind/security/validator-null.hpp \
+  include/ndn-ind/security/validity-period.hpp \
+  include/ndn-ind/security/verification-helpers.hpp \
+  include/ndn-ind/security/certificate/certificate-extension.hpp \
+  include/ndn-ind/security/certificate/certificate-subject-description.hpp \
+  include/ndn-ind/security/certificate/certificate.hpp \
+  include/ndn-ind/security/certificate/identity-certificate.hpp \
+  include/ndn-ind/security/certificate/public-key.hpp \
+  include/ndn-ind/security/identity/basic-identity-storage.hpp \
+  include/ndn-ind/security/identity/file-private-key-storage.hpp \
+  include/ndn-ind/security/identity/identity-manager.hpp \
+  include/ndn-ind/security/identity/identity-storage.hpp \
+  include/ndn-ind/security/identity/memory-identity-storage.hpp \
+  include/ndn-ind/security/identity/memory-private-key-storage.hpp \
+  include/ndn-ind/security/identity/osx-private-key-storage.hpp \
+  include/ndn-ind/security/identity/private-key-storage.hpp \
+  include/ndn-ind/security/pib/pib-certificate-container.hpp \
+  include/ndn-ind/security/pib/pib-identity.hpp \
+  include/ndn-ind/security/pib/pib-identity-container.hpp \
+  include/ndn-ind/security/pib/pib-impl.hpp \
+  include/ndn-ind/security/pib/pib-key.hpp \
+  include/ndn-ind/security/pib/pib-key-container.hpp \
+  include/ndn-ind/security/pib/pib-memory.hpp \
+  include/ndn-ind/security/pib/pib-sqlite3.hpp \
+  include/ndn-ind/security/pib/pib.hpp \
+  include/ndn-ind/security/policy/config-policy-manager.hpp \
+  include/ndn-ind/security/policy/no-verify-policy-manager.hpp \
+  include/ndn-ind/security/policy/policy-manager.hpp \
+  include/ndn-ind/security/policy/self-verify-policy-manager.hpp \
+  include/ndn-ind/security/policy/validation-request.hpp \
+  include/ndn-ind/security/tpm/helper-osx.hpp \
+  include/ndn-ind/security/tpm/tpm.hpp \
+  include/ndn-ind/security/tpm/tpm-back-end.hpp \
+  include/ndn-ind/security/tpm/tpm-back-end-file.hpp \
+  include/ndn-ind/security/tpm/tpm-back-end-memory.hpp \
+  include/ndn-ind/security/tpm/tpm-back-end-osx.hpp \
+  include/ndn-ind/security/tpm/tpm-key-handle.hpp \
+  include/ndn-ind/security/tpm/tpm-key-handle-memory.hpp \
+  include/ndn-ind/security/tpm/tpm-key-handle-osx.hpp \
+  include/ndn-ind/security/tpm/tpm-private-key.hpp \
+  include/ndn-ind/security/v2/certificate-fetcher-from-network.hpp \
+  include/ndn-ind/security/v2/certificate-fetcher-offline.hpp \
+  include/ndn-ind/security/v2/certificate-fetcher.hpp \
+  include/ndn-ind/security/v2/certificate-request.hpp \
+  include/ndn-ind/security/v2/certificate-storage.hpp \
+  include/ndn-ind/security/v2/certificate-v2.hpp \
+  include/ndn-ind/security/v2/trust-anchor-container.hpp \
+  include/ndn-ind/security/v2/trust-anchor-group.hpp \
+  include/ndn-ind/security/v2/validation-error.hpp \
+  include/ndn-ind/security/v2/validation-policy-accept-all.hpp \
+  include/ndn-ind/security/v2/validation-policy-command-interest.hpp \
+  include/ndn-ind/security/v2/validation-policy-config.hpp \
+  include/ndn-ind/security/v2/validation-policy-from-pib.hpp \
+  include/ndn-ind/security/v2/validation-policy-simple-hierarchy.hpp \
+  include/ndn-ind/security/v2/validation-policy.hpp \
+  include/ndn-ind/security/v2/validation-state.hpp \
+  include/ndn-ind/security/v2/validator.hpp \
+  include/ndn-ind/security/v2/validator-config/config-checker.hpp \
+  include/ndn-ind/security/v2/validator-config/config-filter.hpp \
+  include/ndn-ind/security/v2/validator-config/config-name-relation.hpp \
+  include/ndn-ind/security/v2/validator-config/config-rule.hpp \
+  include/ndn-ind/sync/chrono-sync2013.hpp \
+  include/ndn-ind/sync/full-psync2017.hpp \
+  include/ndn-ind/sync/full-psync2017-with-users.hpp \
+  include/ndn-ind/sync/psync-missing-data-info.hpp \
+  include/ndn-ind/sync/psync-producer-base.hpp \
+  include/ndn-ind/transport/async-tcp-transport.hpp \
+  include/ndn-ind/transport/async-unix-transport.hpp \
+  include/ndn-ind/transport/tcp-transport.hpp \
+  include/ndn-ind/transport/transport.hpp \
+  include/ndn-ind/transport/udp-transport.hpp \
+  include/ndn-ind/transport/unix-transport.hpp \
+  include/ndn-ind/util/blob.hpp \
+  include/ndn-ind/util/change-counter.hpp \
+  include/ndn-ind/util/exponential-re-express.hpp \
+  include/ndn-ind/util/logging.hpp \
+  include/ndn-ind/util/memory-content-cache.hpp \
+  include/ndn-ind/util/segment-fetcher.hpp \
+  include/ndn-ind/util/signed-blob.hpp
 
-# Public ndn-cpp-tools C++ headers.
-# NOTE: If a new directory is added, then add it to ndn_cpp_tools_cpp_headers in include/Makefile.am.
-ndn_cpp_tools_cpp_headers = \
-  include/ndn-cpp-tools/usersync/channel-discovery.hpp \
-  include/ndn-cpp-tools/usersync/content-meta-info.hpp \
-  include/ndn-cpp-tools/usersync/generalized-content.hpp \
-  include/ndn-cpp-tools/usersync/prefix-discovery.hpp
+# Public ndn-ind-tools C++ headers.
+# NOTE: If a new directory is added, then add it to ndn_ind_tools_cpp_headers in include/Makefile.am.
+ndn_ind_tools_cpp_headers = \
+  include/ndn-ind-tools/usersync/channel-discovery.hpp \
+  include/ndn-ind-tools/usersync/content-meta-info.hpp \
+  include/ndn-ind-tools/usersync/generalized-content.hpp \
+  include/ndn-ind-tools/usersync/prefix-discovery.hpp
 
 # Just the C code.
-libndn_c_la_SOURCES = ${ndn_cpp_c_headers} \
+libndn_c_la_SOURCES = ${ndn_ind_c_headers} \
   contrib/apache/apr_base64.c contrib/apache/apr_base64.h \
   contrib/murmur-hash/murmur-hash.c contrib/murmur-hash/murmur-hash.h \
   src/c/control-parameters_c.c src/c/control-parameters.h \
@@ -363,7 +363,7 @@ libndn_c_la_SOURCES = ${ndn_cpp_c_headers} \
   src/c/util/time.c src/c/util/time.h
 
 # C++ code and also the C code.
-libndn_cpp_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_cpp_cpp_headers} \
+libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/common.cpp \
   src/control-parameters.cpp \
   src/control-response.cpp \
@@ -563,90 +563,90 @@ libndn_cpp_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_cpp_cpp_headers} \
   src/util/regex/ndn-regex-repeat-matcher.cpp src/util/regex/ndn-regex-repeat-matcher.hpp \
   src/util/regex/ndn-regex-top-matcher.cpp src/util/regex/ndn-regex-top-matcher.hpp
 
-# The ndn-cpp-tools library.
-libndn_cpp_tools_la_SOURCES = ${ndn_cpp_tools_cpp_headers} ${ndn_cpp_cpp_headers} \
+# The ndn-ind-tools library.
+libndn_ind_tools_la_SOURCES = ${ndn_ind_tools_cpp_headers} ${ndn_ind_cpp_headers} \
   tools/usersync/content-meta-info.pb.cc \
   tools/usersync/channel-discovery.cpp \
   tools/usersync/content-meta-info.cpp \
   tools/usersync/generalized-content.cpp tools/usersync/prefix-discovery.cpp
 
 bin_test_channel_discovery_SOURCES = examples/test-channel-discovery.cpp
-bin_test_channel_discovery_LDADD = libndn-cpp.la libndn-cpp-tools.la
+bin_test_channel_discovery_LDADD = libndn-ind.la libndn-ind-tools.la
 
 bin_test_chrono_chat_SOURCES = examples/chatbuf.pb.cc examples/test-chrono-chat.cpp
-bin_test_chrono_chat_LDADD = libndn-cpp.la
+bin_test_chrono_chat_LDADD = libndn-ind.la
 
 bin_test_echo_consumer_lite_SOURCES = examples/test-echo-consumer-lite.cpp
-bin_test_echo_consumer_lite_LDADD = libndn-cpp.la
+bin_test_echo_consumer_lite_LDADD = libndn-ind.la
 
 bin_test_echo_consumer_SOURCES = examples/test-echo-consumer.cpp
-bin_test_echo_consumer_LDADD = libndn-cpp.la
+bin_test_echo_consumer_LDADD = libndn-ind.la
 
 bin_test_encode_decode_benchmark_SOURCES = examples/test-encode-decode-benchmark.cpp
-bin_test_encode_decode_benchmark_LDADD = libndn-cpp.la
+bin_test_encode_decode_benchmark_LDADD = libndn-ind.la
 
 bin_test_encode_decode_data_SOURCES = examples/test-encode-decode-data.cpp
-bin_test_encode_decode_data_LDADD = libndn-cpp.la
+bin_test_encode_decode_data_LDADD = libndn-ind.la
 
 bin_test_encode_decode_fib_entry_SOURCES = examples/fib-entry.pb.cc examples/test-encode-decode-fib-entry.cpp
-bin_test_encode_decode_fib_entry_LDADD = libndn-cpp.la
+bin_test_encode_decode_fib_entry_LDADD = libndn-ind.la
 
 bin_test_encode_decode_interest_SOURCES = examples/test-encode-decode-interest.cpp
-bin_test_encode_decode_interest_LDADD = libndn-cpp.la
+bin_test_encode_decode_interest_LDADD = libndn-ind.la
 
 bin_test_full_psync_SOURCES = examples/test-full-psync.cpp
-bin_test_full_psync_LDADD = libndn-cpp.la
+bin_test_full_psync_LDADD = libndn-ind.la
 
 bin_test_full_psync_with_users_SOURCES = examples/test-full-psync-with-users.cpp
-bin_test_full_psync_with_users_LDADD = libndn-cpp.la
+bin_test_full_psync_with_users_LDADD = libndn-ind.la
 
 bin_test_generalized_content_SOURCES = examples/test-generalized-content.cpp
-bin_test_generalized_content_LDADD = libndn-cpp.la libndn-cpp-tools.la
+bin_test_generalized_content_LDADD = libndn-ind.la libndn-ind-tools.la
 
 bin_test_get_async_SOURCES = examples/test-get-async.cpp
-bin_test_get_async_LDADD = libndn-cpp.la
+bin_test_get_async_LDADD = libndn-ind.la
 
 bin_test_get_async_threadsafe_SOURCES = examples/test-get-async-threadsafe.cpp
-bin_test_get_async_threadsafe_LDADD = libndn-cpp.la
+bin_test_get_async_threadsafe_LDADD = libndn-ind.la
 
 bin_test_list_channels_SOURCES = examples/channel-status.pb.cc examples/test-list-channels.cpp
-bin_test_list_channels_LDADD = libndn-cpp.la
+bin_test_list_channels_LDADD = libndn-ind.la
 
 bin_test_list_faces_SOURCES = examples/face-status.pb.cc examples/test-list-faces.cpp
-bin_test_list_faces_LDADD = libndn-cpp.la
+bin_test_list_faces_LDADD = libndn-ind.la
 
 bin_test_list_rib_SOURCES = examples/rib-entry.pb.cc examples/test-list-rib.cpp
-bin_test_list_rib_LDADD = libndn-cpp.la
+bin_test_list_rib_LDADD = libndn-ind.la
 
 bin_test_prefix_discovery_SOURCES = examples/test-prefix-discovery.cpp
-bin_test_prefix_discovery_LDADD = libndn-cpp.la libndn-cpp-tools.la
+bin_test_prefix_discovery_LDADD = libndn-ind.la libndn-ind-tools.la
 
 bin_test_publish_async_nfd_SOURCES = examples/test-publish-async-nfd.cpp
-bin_test_publish_async_nfd_LDADD = libndn-cpp.la
+bin_test_publish_async_nfd_LDADD = libndn-ind.la
 
 bin_test_publish_async_nfd_lite_SOURCES = examples/test-publish-async-nfd-lite.cpp
-bin_test_publish_async_nfd_lite_LDADD = libndn-cpp.la
+bin_test_publish_async_nfd_lite_LDADD = libndn-ind.la
 
 bin_analog_reading_consumer_SOURCES = examples/arduino/analog-reading-consumer.cpp
-bin_analog_reading_consumer_LDADD = libndn-cpp.la
+bin_analog_reading_consumer_LDADD = libndn-ind.la
 
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
-bin_test_sign_verify_data_hmac_LDADD = libndn-cpp.la
+bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la
 
 bin_basic_insertion_SOURCES = \
   examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
   examples/repo-ng/basic-insertion.cpp
-bin_basic_insertion_LDADD = libndn-cpp.la
+bin_basic_insertion_LDADD = libndn-ind.la
 
 bin_watched_insertion_SOURCES = \
   examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
   examples/repo-ng/watched-insertion.cpp
-bin_watched_insertion_LDADD = libndn-cpp.la
+bin_watched_insertion_LDADD = libndn-ind.la
 
 bin_test_register_route_SOURCES = \
   examples/control-parameters.pb.cc examples/face-query-filter.pb.cc \
   examples/face-status.pb.cc examples/test-register-route.cpp
-bin_test_register_route_LDADD = libndn-cpp.la
+bin_test_register_route_LDADD = libndn-ind.la
 
 # Unit tests
 
@@ -656,35 +656,35 @@ bin_unit_tests_test_access_manager_v2_SOURCES = tests/unit-tests/test-access-man
   tests/unit-tests/in-memory-storage-face.cpp \
   contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_access_manager_v2_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_access_manager_v2_LDADD = libndn-cpp.la
+bin_unit_tests_test_access_manager_v2_LDADD = libndn-ind.la
 
 bin_unit_tests_test_aes_algorithm_SOURCES = tests/unit-tests/test-aes-algorithm.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_aes_algorithm_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_aes_algorithm_LDADD = libndn-cpp.la
+bin_unit_tests_test_aes_algorithm_LDADD = libndn-ind.la
 
 bin_unit_tests_test_certificate_SOURCES = tests/unit-tests/test-certificate.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_certificate_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_certificate_LDADD = libndn-cpp.la
+bin_unit_tests_test_certificate_LDADD = libndn-ind.la
 
 bin_unit_tests_test_consumer_SOURCES = tests/unit-tests/test-consumer.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_consumer_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_consumer_LDADD = libndn-cpp.la
+bin_unit_tests_test_consumer_LDADD = libndn-ind.la
 
 bin_unit_tests_test_consumer_db_SOURCES = tests/unit-tests/test-consumer-db.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_consumer_db_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_consumer_db_LDADD = libndn-cpp.la
+bin_unit_tests_test_consumer_db_LDADD = libndn-ind.la
 
 bin_unit_tests_test_control_parameters_encode_decode_SOURCES = tests/unit-tests/test-control-parameters-encode-decode.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_control_parameters_encode_decode_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_control_parameters_encode_decode_LDADD = libndn-cpp.la
+bin_unit_tests_test_control_parameters_encode_decode_LDADD = libndn-ind.la
 
 bin_unit_tests_test_control_response_SOURCES = tests/unit-tests/test-control-response.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_control_response_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_control_response_LDADD = libndn-cpp.la
+bin_unit_tests_test_control_response_LDADD = libndn-ind.la
 
 bin_unit_tests_test_data_methods_SOURCES = tests/unit-tests/test-data-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_data_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_data_methods_LDADD = libndn-cpp.la
+bin_unit_tests_test_data_methods_LDADD = libndn-ind.la
 
 bin_unit_tests_test_decryptor_v2_SOURCES = tests/unit-tests/test-decryptor-v2.cpp \
   tests/unit-tests/encrypt-static-data.cpp \
@@ -692,19 +692,19 @@ bin_unit_tests_test_decryptor_v2_SOURCES = tests/unit-tests/test-decryptor-v2.cp
   tests/unit-tests/in-memory-storage-face.cpp \
   contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_decryptor_v2_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_decryptor_v2_LDADD = libndn-cpp.la
+bin_unit_tests_test_decryptor_v2_LDADD = libndn-ind.la
 
 bin_unit_tests_test_der_encode_decode_SOURCES = tests/unit-tests/test-der-encode-decode.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_der_encode_decode_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_der_encode_decode_LDADD = libndn-cpp.la
+bin_unit_tests_test_der_encode_decode_LDADD = libndn-ind.la
 
 bin_unit_tests_test_encrypted_content_SOURCES = tests/unit-tests/test-encrypted-content.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_encrypted_content_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_encrypted_content_LDADD = libndn-cpp.la
+bin_unit_tests_test_encrypted_content_LDADD = libndn-ind.la
 
 bin_unit_tests_test_encryptor_SOURCES = tests/unit-tests/test-encryptor.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_encryptor_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_encryptor_LDADD = libndn-cpp.la
+bin_unit_tests_test_encryptor_LDADD = libndn-ind.la
 
 bin_unit_tests_test_encryptor_v2_SOURCES = tests/unit-tests/test-encryptor-v2.cpp \
   tests/unit-tests/encrypt-static-data.cpp \
@@ -712,162 +712,162 @@ bin_unit_tests_test_encryptor_v2_SOURCES = tests/unit-tests/test-encryptor-v2.cp
   tests/unit-tests/in-memory-storage-face.cpp \
   contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_encryptor_v2_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_encryptor_v2_LDADD = libndn-cpp.la
+bin_unit_tests_test_encryptor_v2_LDADD = libndn-ind.la
 
 bin_unit_tests_test_face_methods_SOURCES = tests/unit-tests/test-face-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_face_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_face_methods_LDADD = libndn-cpp.la
+bin_unit_tests_test_face_methods_LDADD = libndn-ind.la
 
 bin_unit_tests_test_group_manager_SOURCES = tests/unit-tests/test-group-manager.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_group_manager_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_group_manager_LDADD = libndn-cpp.la
+bin_unit_tests_test_group_manager_LDADD = libndn-ind.la
 
 bin_unit_tests_test_group_manager_db_SOURCES = tests/unit-tests/test-group-manager-db.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_group_manager_db_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_group_manager_db_LDADD = libndn-cpp.la
+bin_unit_tests_test_group_manager_db_LDADD = libndn-ind.la
 
 bin_unit_tests_test_identity_methods_SOURCES = tests/unit-tests/test-identity-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_identity_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_identity_methods_LDADD = libndn-cpp.la
+bin_unit_tests_test_identity_methods_LDADD = libndn-ind.la
 
 bin_unit_tests_test_interest_methods_SOURCES = tests/unit-tests/test-interest-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_interest_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_interest_methods_LDADD = libndn-cpp.la
+bin_unit_tests_test_interest_methods_LDADD = libndn-ind.la
 
 bin_unit_tests_test_interval_SOURCES = tests/unit-tests/test-interval.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_interval_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_interval_LDADD = libndn-cpp.la
+bin_unit_tests_test_interval_LDADD = libndn-ind.la
 
 bin_unit_tests_test_key_chain_SOURCES = tests/unit-tests/test-key-chain.cpp \
   tests/unit-tests/identity-management-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_key_chain_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_key_chain_LDADD = libndn-cpp.la
+bin_unit_tests_test_key_chain_LDADD = libndn-ind.la
 
 bin_unit_tests_test_invertible_bloom_lookup_table_SOURCES = \
   tests/unit-tests/test-invertible-bloom-lookup-table.cpp \
   contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_invertible_bloom_lookup_table_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_invertible_bloom_lookup_table_LDADD = libndn-cpp.la
+bin_unit_tests_test_invertible_bloom_lookup_table_LDADD = libndn-ind.la
 
 bin_unit_tests_test_link_SOURCES = tests/unit-tests/test-link.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_link_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_link_LDADD = libndn-cpp.la
+bin_unit_tests_test_link_LDADD = libndn-ind.la
 
 bin_unit_tests_test_name_conventions_SOURCES = tests/unit-tests/test-name-conventions.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_name_conventions_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_name_conventions_LDADD = libndn-cpp.la
+bin_unit_tests_test_name_conventions_LDADD = libndn-ind.la
 
 bin_unit_tests_test_name_methods_SOURCES = tests/unit-tests/test-name-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_name_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_name_methods_LDADD = libndn-cpp.la
+bin_unit_tests_test_name_methods_LDADD = libndn-ind.la
 
 bin_unit_tests_test_pib_certificate_container_SOURCES = tests/unit-tests/test-pib-certificate-container.cpp \
   tests/unit-tests/pib-data-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_pib_certificate_container_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_pib_certificate_container_LDADD = libndn-cpp.la
+bin_unit_tests_test_pib_certificate_container_LDADD = libndn-ind.la
 
 bin_unit_tests_test_pib_identity_container_SOURCES = tests/unit-tests/test-pib-identity-container.cpp \
   tests/unit-tests/pib-data-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_pib_identity_container_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_pib_identity_container_LDADD = libndn-cpp.la
+bin_unit_tests_test_pib_identity_container_LDADD = libndn-ind.la
 
 bin_unit_tests_test_pib_identity_impl_SOURCES = tests/unit-tests/test-pib-identity-impl.cpp \
   tests/unit-tests/pib-data-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_pib_identity_impl_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_pib_identity_impl_LDADD = libndn-cpp.la
+bin_unit_tests_test_pib_identity_impl_LDADD = libndn-ind.la
 
 bin_unit_tests_test_pib_impl_SOURCES = tests/unit-tests/test-pib-impl.cpp \
   tests/unit-tests/pib-data-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_pib_impl_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_pib_impl_LDADD = libndn-cpp.la
+bin_unit_tests_test_pib_impl_LDADD = libndn-ind.la
 
 bin_unit_tests_test_pib_key_container_SOURCES = tests/unit-tests/test-pib-key-container.cpp \
   tests/unit-tests/pib-data-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_pib_key_container_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_pib_key_container_LDADD = libndn-cpp.la
+bin_unit_tests_test_pib_key_container_LDADD = libndn-ind.la
 
 bin_unit_tests_test_pib_key_impl_SOURCES = tests/unit-tests/test-pib-key-impl.cpp \
   tests/unit-tests/pib-data-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_pib_key_impl_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_pib_key_impl_LDADD = libndn-cpp.la
+bin_unit_tests_test_pib_key_impl_LDADD = libndn-ind.la
 
 bin_unit_tests_test_policy_manager_SOURCES = tests/unit-tests/test-policy-manager.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_policy_manager_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_policy_manager_LDADD = libndn-cpp.la
+bin_unit_tests_test_policy_manager_LDADD = libndn-ind.la
 
 bin_unit_tests_test_policy_manager_v2_SOURCES = tests/unit-tests/test-policy-manager-v2.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_policy_manager_v2_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_policy_manager_v2_LDADD = libndn-cpp.la
+bin_unit_tests_test_policy_manager_v2_LDADD = libndn-ind.la
 
 bin_unit_tests_test_producer_SOURCES = tests/unit-tests/test-producer.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_producer_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_producer_LDADD = libndn-cpp.la
+bin_unit_tests_test_producer_LDADD = libndn-ind.la
 
 bin_unit_tests_test_producer_db_SOURCES = tests/unit-tests/test-producer-db.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_producer_db_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_producer_db_LDADD = libndn-cpp.la
+bin_unit_tests_test_producer_db_LDADD = libndn-ind.la
 
 bin_unit_tests_test_regex_SOURCES = tests/unit-tests/test-regex.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_regex_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_regex_LDADD = libndn-cpp.la
+bin_unit_tests_test_regex_LDADD = libndn-ind.la
 
 bin_unit_tests_test_psync_state_SOURCES = tests/unit-tests/test-psync-state.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_psync_state_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_psync_state_LDADD = libndn-cpp.la
+bin_unit_tests_test_psync_state_LDADD = libndn-ind.la
 
 bin_unit_tests_test_registration_callbacks_SOURCES = tests/unit-tests/test-registration-callbacks.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_registration_callbacks_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_registration_callbacks_LDADD = libndn-cpp.la
+bin_unit_tests_test_registration_callbacks_LDADD = libndn-ind.la
 
 bin_unit_tests_test_repetitive_interval_SOURCES = tests/unit-tests/test-repetitive-interval.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_repetitive_interval_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_repetitive_interval_LDADD = libndn-cpp.la
+bin_unit_tests_test_repetitive_interval_LDADD = libndn-ind.la
 
 bin_unit_tests_test_rsa_algorithm_SOURCES = tests/unit-tests/test-rsa-algorithm.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_rsa_algorithm_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_rsa_algorithm_LDADD = libndn-cpp.la
+bin_unit_tests_test_rsa_algorithm_LDADD = libndn-ind.la
 
 bin_unit_tests_test_schedule_SOURCES = tests/unit-tests/test-schedule.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_schedule_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_schedule_LDADD = libndn-cpp.la
+bin_unit_tests_test_schedule_LDADD = libndn-ind.la
 
 bin_unit_tests_test_signing_info_SOURCES = tests/unit-tests/test-signing-info.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_signing_info_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_signing_info_LDADD = libndn-cpp.la
+bin_unit_tests_test_signing_info_LDADD = libndn-ind.la
 
 bin_unit_tests_test_tpm_back_ends_SOURCES = tests/unit-tests/test-tpm-back-ends.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_tpm_back_ends_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_tpm_back_ends_LDADD = libndn-cpp.la
+bin_unit_tests_test_tpm_back_ends_LDADD = libndn-ind.la
 
 bin_unit_tests_test_tpm_private_key_SOURCES = tests/unit-tests/test-tpm-private-key.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_tpm_private_key_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_tpm_private_key_LDADD = libndn-cpp.la
+bin_unit_tests_test_tpm_private_key_LDADD = libndn-ind.la
 
 bin_unit_tests_test_validation_policy_command_interest_SOURCES = \
   tests/unit-tests/test-validation-policy-command-interest.cpp \
   tests/unit-tests/identity-management-fixture.cpp \
   tests/unit-tests/validator-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_validation_policy_command_interest_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_validation_policy_command_interest_LDADD = libndn-cpp.la
+bin_unit_tests_test_validation_policy_command_interest_LDADD = libndn-ind.la
 
 bin_unit_tests_test_validation_policy_config_SOURCES = tests/unit-tests/test-validation-policy-config.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_validation_policy_config_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_validation_policy_config_LDADD = libndn-cpp.la
+bin_unit_tests_test_validation_policy_config_LDADD = libndn-ind.la
 
 bin_unit_tests_test_validator_null_SOURCES = tests/unit-tests/test-validator-null.cpp \
   tests/unit-tests/identity-management-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_validator_null_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_validator_null_LDADD = libndn-cpp.la
+bin_unit_tests_test_validator_null_LDADD = libndn-ind.la
 
 bin_unit_tests_test_validator_SOURCES = tests/unit-tests/test-validator.cpp \
   tests/unit-tests/identity-management-fixture.cpp \
   tests/unit-tests/validator-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_validator_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_validator_LDADD = libndn-cpp.la
+bin_unit_tests_test_validator_LDADD = libndn-ind.la
 
 bin_unit_tests_test_verification_rules_SOURCES = tests/unit-tests/test-verification-rules.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_verification_rules_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_verification_rules_LDADD = libndn-cpp.la
+bin_unit_tests_test_verification_rules_LDADD = libndn-ind.la
 
 TESTS = ${check_PROGRAMS}
 

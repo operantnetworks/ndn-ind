@@ -15,9 +15,9 @@
 @SET_MAKE@
 
 # "make install" will install these in the install include directory, for example
-# /usr/local/ndn-cpp/name.hpp.
+# /usr/local/ndn-ind/name.hpp.
 # These files are included by the application with, for example
-# #include <ndn-cpp/namp.hpp>
+# #include <ndn-ind/namp.hpp>
 # Internal include headers are not put in this public install directory.
 
 VPATH = @srcdir@
@@ -357,50 +357,50 @@ top_srcdir = @top_srcdir@
 
 # Public C headers.
 ndn_cpp_c_headers = \
-  $(wildcard ndn-cpp/*.h) \
-  $(wildcard ndn-cpp/c/*.*) \
-  $(wildcard ndn-cpp/c/encoding/*.*) \
-  $(wildcard ndn-cpp/c/encrypt/*.*) \
-  $(wildcard ndn-cpp/c/encrypt/algo/*.*) \
-  $(wildcard ndn-cpp/c/lp/*.*) \
-  $(wildcard ndn-cpp/c/security/*.*) \
-  $(wildcard ndn-cpp/c/transport/*.*) \
-  $(wildcard ndn-cpp/c/util/*.*)
+  $(wildcard ndn-ind/*.h) \
+  $(wildcard ndn-ind/c/*.*) \
+  $(wildcard ndn-ind/c/encoding/*.*) \
+  $(wildcard ndn-ind/c/encrypt/*.*) \
+  $(wildcard ndn-ind/c/encrypt/algo/*.*) \
+  $(wildcard ndn-ind/c/lp/*.*) \
+  $(wildcard ndn-ind/c/security/*.*) \
+  $(wildcard ndn-ind/c/transport/*.*) \
+  $(wildcard ndn-ind/c/util/*.*)
 
 
 # Public C++ headers.
-# Use ndn-cpp/*.hpp instead of *.* to not overwrite *.h from above.
+# Use ndn-ind/*.hpp instead of *.* to not overwrite *.h from above.
 ndn_cpp_cpp_headers = \
-  $(wildcard ndn-cpp/*.hpp) \
-  $(wildcard ndn-cpp/encoding/*.*) \
-  $(wildcard ndn-cpp/encrypt/*.*) \
-  $(wildcard ndn-cpp/encrypt/algo/*.*) \
-  $(wildcard ndn-cpp/in-memory-storage/*.*) \
-  $(wildcard ndn-cpp/lite/*.*) \
-  $(wildcard ndn-cpp/lite/encoding/*.*) \
-  $(wildcard ndn-cpp/lite/encrypt/*.*) \
-  $(wildcard ndn-cpp/lite/encrypt/algo/*.*) \
-  $(wildcard ndn-cpp/lite/lp/*.*) \
-  $(wildcard ndn-cpp/lite/security/*.*) \
-  $(wildcard ndn-cpp/lite/transport/*.*) \
-  $(wildcard ndn-cpp/lite/util/*.*) \
-  $(wildcard ndn-cpp/security/*.*) \
-  $(wildcard ndn-cpp/security/certificate/*.*) \
-  $(wildcard ndn-cpp/security/identity/*.*) \
-  $(wildcard ndn-cpp/security/pib/*.*) \
-  $(wildcard ndn-cpp/security/policy/*.*) \
-  $(wildcard ndn-cpp/security/tpm/*.*) \
-  $(wildcard ndn-cpp/security/v2/*.*) \
-  $(wildcard ndn-cpp/security/v2/validator-config/*.*) \
-  $(wildcard ndn-cpp/sync/*.*) \
-  $(wildcard ndn-cpp/tools/usersync/*.*) \
-  $(wildcard ndn-cpp/transport/*.*) \
-  $(wildcard ndn-cpp/util/*.*)
+  $(wildcard ndn-ind/*.hpp) \
+  $(wildcard ndn-ind/encoding/*.*) \
+  $(wildcard ndn-ind/encrypt/*.*) \
+  $(wildcard ndn-ind/encrypt/algo/*.*) \
+  $(wildcard ndn-ind/in-memory-storage/*.*) \
+  $(wildcard ndn-ind/lite/*.*) \
+  $(wildcard ndn-ind/lite/encoding/*.*) \
+  $(wildcard ndn-ind/lite/encrypt/*.*) \
+  $(wildcard ndn-ind/lite/encrypt/algo/*.*) \
+  $(wildcard ndn-ind/lite/lp/*.*) \
+  $(wildcard ndn-ind/lite/security/*.*) \
+  $(wildcard ndn-ind/lite/transport/*.*) \
+  $(wildcard ndn-ind/lite/util/*.*) \
+  $(wildcard ndn-ind/security/*.*) \
+  $(wildcard ndn-ind/security/certificate/*.*) \
+  $(wildcard ndn-ind/security/identity/*.*) \
+  $(wildcard ndn-ind/security/pib/*.*) \
+  $(wildcard ndn-ind/security/policy/*.*) \
+  $(wildcard ndn-ind/security/tpm/*.*) \
+  $(wildcard ndn-ind/security/v2/*.*) \
+  $(wildcard ndn-ind/security/v2/validator-config/*.*) \
+  $(wildcard ndn-ind/sync/*.*) \
+  $(wildcard ndn-ind/tools/usersync/*.*) \
+  $(wildcard ndn-ind/transport/*.*) \
+  $(wildcard ndn-ind/util/*.*)
 
 
-# Public ndn-cpp-tools C++ headers.
+# Public ndn-ind-tools C++ headers.
 ndn_cpp_tools_cpp_headers = \
-  $(wildcard ndn-cpp-tools/usersync/*.*)
+  $(wildcard ndn-ind-tools/usersync/*.*)
 
 ndnboost_headers = \
   $(wildcard ndnboost/*.*) \
