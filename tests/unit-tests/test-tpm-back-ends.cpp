@@ -78,7 +78,7 @@ public:
     backEndFile.reset(new TpmBackEndFile(locationPath));
     backEndList[1] = backEndFile.get();
 
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
     backEndOsx.reset(new TpmBackEndOsx());
     backEndList[2] = backEndOsx.get();
 #endif
@@ -86,11 +86,11 @@ public:
 
   ptr_lib::shared_ptr<TpmBackEndMemory> backEndMemory;
   ptr_lib::shared_ptr<TpmBackEndFile> backEndFile;
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
   ptr_lib::shared_ptr<TpmBackEndOsx> backEndOsx;
 #endif
 
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
   TpmBackEnd* backEndList[3];
 #else
   TpmBackEnd* backEndList[2];
@@ -240,7 +240,7 @@ jweEC0nrcL31j9mF0vz5E6tfRu4hhJ6L4yfWs0gSejskeVB/w8QY4g==";
 
   for (size_t i = 0; i < sizeof(backEndList) / sizeof(backEndList[0]); ++i) {
     TpmBackEnd& tpm = *backEndList[i];
-#if NDN_CPP_HAVE_OSX_SECURITY
+#if NDN_IND_HAVE_OSX_SECURITY
     if (&tpm == backEndOsx.get())
       // TODO: Implement TpmBackEndOsx import/export.
       continue;

@@ -24,9 +24,9 @@
  * announced to others. This requires a local running NFD.
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_PROTOBUF = 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_PROTOBUF
+#if NDN_IND_HAVE_PROTOBUF
 
 #include <cstdlib>
 #include <stdio.h>
@@ -235,7 +235,7 @@ onError
   cout << message << endl;
 }
 
-#else // NDN_CPP_HAVE_PROTOBUF
+#else // NDN_IND_HAVE_PROTOBUF
 
 #include <iostream>
 
@@ -247,4 +247,4 @@ int main(int argc, char** argv)
     "This program uses Protobuf but it is not installed. Install it and ./configure again." << endl;
 }
 
-#endif // NDN_CPP_HAVE_PROTOBUF
+#endif // NDN_IND_HAVE_PROTOBUF

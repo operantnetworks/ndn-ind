@@ -23,9 +23,9 @@
  * need to call processEvents. To run it, you must install Boost with asio.
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_BOOST_ASIO.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST_ASIO.
 #include <ndn-ind/ndn-ind-config.h>
-#ifdef NDN_CPP_HAVE_BOOST_ASIO
+#ifdef NDN_IND_HAVE_BOOST_ASIO
 
 #include <cstdlib>
 #include <iostream>
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
   return 0;
 }
 
-#else // NDN_CPP_HAVE_BOOST_ASIO
+#else // NDN_IND_HAVE_BOOST_ASIO
 
 #include <iostream>
 
@@ -130,4 +130,4 @@ int main(int argc, char** argv)
     "This program uses Boost asio but it is not installed. Install Boost and ./configure again." << endl;
 }
 
-#endif // NDN_CPP_HAVE_BOOST_ASIO
+#endif // NDN_IND_HAVE_BOOST_ASIO

@@ -24,9 +24,9 @@
  * See http://redmine.named-data.net/projects/nfd/wiki/Management .
  */
 
-// Only compile if ndn-ind-config.h defines NDN_CPP_HAVE_PROTOBUF = 1.
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_PROTOBUF = 1.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_CPP_HAVE_PROTOBUF
+#if NDN_IND_HAVE_PROTOBUF
 
 #include <cstdlib>
 #include <iostream>
@@ -115,7 +115,7 @@ onError(SegmentFetcher::ErrorCode errorCode, const string& message, bool* enable
   cout << message << endl;
 }
 
-#else // NDN_CPP_HAVE_PROTOBUF
+#else // NDN_IND_HAVE_PROTOBUF
 
 #include <iostream>
 
@@ -127,4 +127,4 @@ int main(int argc, char** argv)
     "This program uses Protobuf but it is not installed. Install it and ./configure again." << endl;
 }
 
-#endif // NDN_CPP_HAVE_PROTOBUF
+#endif // NDN_IND_HAVE_PROTOBUF

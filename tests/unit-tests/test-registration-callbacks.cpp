@@ -22,10 +22,10 @@
 #include "gtest/gtest.h"
 #include <ndn-ind/face.hpp>
 #include <sstream>
-#if NDN_CPP_HAVE_TIME_H
+#if NDN_IND_HAVE_TIME_H
 #include <time.h>
 #endif
-#if NDN_CPP_HAVE_SYS_TIME_H
+#if NDN_IND_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
 #include <ndn-ind/security/identity/memory-identity-storage.hpp>
