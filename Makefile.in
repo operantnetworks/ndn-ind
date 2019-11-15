@@ -298,14 +298,16 @@ am__objects_2 = $(am__objects_1) contrib/apache/apr_base64.lo \
 	src/c/util/ndn_memory.lo src/c/util/ndn_realloc.lo \
 	src/c/util/time.lo
 am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
-	src/common.lo src/control-parameters.lo \
-	src/control-response.lo src/data.lo src/delegation-set.lo \
-	src/digest-sha256-signature.lo src/exclude.lo src/face.lo \
-	src/generic-signature.lo src/hmac-with-sha256-signature.lo \
-	src/interest-filter.lo src/interest.lo src/key-locator.lo \
-	src/link.lo src/meta-info.lo src/name.lo src/network-nack.lo \
-	src/node.lo src/signature.lo \
-	src/sha256-with-ecdsa-signature.lo \
+	contrib/ndn-cxx/ndn-cxx/detail/cancel-handle.lo \
+	contrib/ndn-cxx/ndn-cxx/util/scheduler.lo \
+	contrib/ndn-cxx/ndn-cxx/util/time.lo src/common.lo \
+	src/control-parameters.lo src/control-response.lo src/data.lo \
+	src/delegation-set.lo src/digest-sha256-signature.lo \
+	src/exclude.lo src/face.lo src/generic-signature.lo \
+	src/hmac-with-sha256-signature.lo src/interest-filter.lo \
+	src/interest.lo src/key-locator.lo src/link.lo \
+	src/meta-info.lo src/name.lo src/network-nack.lo src/node.lo \
+	src/signature.lo src/sha256-with-ecdsa-signature.lo \
 	src/sha256-with-rsa-signature.lo src/threadsafe-face.lo \
 	src/encoding/base64.lo src/encoding/element-listener.lo \
 	src/encoding/oid.lo src/encoding/protobuf-tlv.lo \
@@ -904,6 +906,9 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_validator_null-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_verification_rules-gtest-all.Po \
 	contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo \
+	contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo \
+	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo \
+	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time.Plo \
 	examples/$(DEPDIR)/channel-status.pb.Po \
 	examples/$(DEPDIR)/chatbuf.pb.Po \
 	examples/$(DEPDIR)/control-parameters.pb.Po \
@@ -2111,8 +2116,14 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/util/exponential-re-express.hpp \
   include/ndn-ind/util/logging.hpp \
   include/ndn-ind/util/memory-content-cache.hpp \
+  include/ndn-ind/util/scheduler.hpp \
   include/ndn-ind/util/segment-fetcher.hpp \
-  include/ndn-ind/util/signed-blob.hpp
+  include/ndn-ind/util/signed-blob.hpp \
+  include/ndn-ind/util/time.hpp \
+  include/ndn-ind/util/time-custom-clock.hpp \
+  include/ndn-ind/util/impl/asio-fwd.hpp \
+  include/ndn-ind/util/impl/cancel-handle.hpp \
+  include/ndn-ind/util/impl/steady-timer.hpp
 
 
 # Public ndn-ind-tools C++ headers.
@@ -2182,6 +2193,9 @@ libndn_c_la_SOURCES = ${ndn_ind_c_headers} \
 
 # C++ code and also the C code.
 libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
+  contrib/ndn-cxx/ndn-cxx/detail/cancel-handle.cpp \
+  contrib/ndn-cxx/ndn-cxx/util/scheduler.cpp \
+  contrib/ndn-cxx/ndn-cxx/util/time.cpp \
   src/common.cpp \
   src/control-parameters.cpp \
   src/control-response.cpp \
@@ -2899,6 +2913,27 @@ tools/usersync/prefix-discovery.lo: tools/usersync/$(am__dirstamp) \
 
 libndn-ind-tools.la: $(libndn_ind_tools_la_OBJECTS) $(libndn_ind_tools_la_DEPENDENCIES) $(EXTRA_libndn_ind_tools_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libndn_ind_tools_la_OBJECTS) $(libndn_ind_tools_la_LIBADD) $(LIBS)
+contrib/ndn-cxx/ndn-cxx/detail/$(am__dirstamp):
+	@$(MKDIR_P) contrib/ndn-cxx/ndn-cxx/detail
+	@: > contrib/ndn-cxx/ndn-cxx/detail/$(am__dirstamp)
+contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)
+	@: > contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/$(am__dirstamp)
+contrib/ndn-cxx/ndn-cxx/detail/cancel-handle.lo:  \
+	contrib/ndn-cxx/ndn-cxx/detail/$(am__dirstamp) \
+	contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/$(am__dirstamp)
+contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp):
+	@$(MKDIR_P) contrib/ndn-cxx/ndn-cxx/util
+	@: > contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp)
+contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)
+	@: > contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp)
+contrib/ndn-cxx/ndn-cxx/util/scheduler.lo:  \
+	contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp) \
+	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp)
+contrib/ndn-cxx/ndn-cxx/util/time.lo:  \
+	contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp) \
+	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp)
 src/$(am__dirstamp):
 	@$(MKDIR_P) src
 	@: > src/$(am__dirstamp)
@@ -4287,6 +4322,10 @@ mostlyclean-compile:
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/*.$(OBJEXT)
 	-rm -f contrib/murmur-hash/*.$(OBJEXT)
 	-rm -f contrib/murmur-hash/*.lo
+	-rm -f contrib/ndn-cxx/ndn-cxx/detail/*.$(OBJEXT)
+	-rm -f contrib/ndn-cxx/ndn-cxx/detail/*.lo
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/*.$(OBJEXT)
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/*.lo
 	-rm -f examples/*.$(OBJEXT)
 	-rm -f examples/arduino/*.$(OBJEXT)
 	-rm -f examples/repo-ng/*.$(OBJEXT)
@@ -4423,6 +4462,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_validator_null-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_verification_rules-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/channel-status.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/chatbuf.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/control-parameters.pb.Po@am__quote@ # am--include-marker
@@ -6488,6 +6530,8 @@ clean-libtool:
 	-rm -rf bin/unit-tests/.libs bin/unit-tests/_libs
 	-rm -rf contrib/apache/.libs contrib/apache/_libs
 	-rm -rf contrib/murmur-hash/.libs contrib/murmur-hash/_libs
+	-rm -rf contrib/ndn-cxx/ndn-cxx/detail/.libs contrib/ndn-cxx/ndn-cxx/detail/_libs
+	-rm -rf contrib/ndn-cxx/ndn-cxx/util/.libs contrib/ndn-cxx/ndn-cxx/util/_libs
 	-rm -rf src/.libs src/_libs
 	-rm -rf src/c/.libs src/c/_libs
 	-rm -rf src/c/encoding/.libs src/c/encoding/_libs
@@ -7389,6 +7433,10 @@ distclean-generic:
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(am__dirstamp)
 	-rm -f contrib/murmur-hash/$(DEPDIR)/$(am__dirstamp)
 	-rm -f contrib/murmur-hash/$(am__dirstamp)
+	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/$(am__dirstamp)
+	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(am__dirstamp)
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp)
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp)
 	-rm -f examples/$(DEPDIR)/$(am__dirstamp)
 	-rm -f examples/$(am__dirstamp)
 	-rm -f examples/arduino/$(DEPDIR)/$(am__dirstamp)
@@ -7536,6 +7584,9 @@ distclean: distclean-recursive
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_validator_null-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_verification_rules-gtest-all.Po
 	-rm -f contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo
+	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time.Plo
 	-rm -f examples/$(DEPDIR)/channel-status.pb.Po
 	-rm -f examples/$(DEPDIR)/chatbuf.pb.Po
 	-rm -f examples/$(DEPDIR)/control-parameters.pb.Po
@@ -7972,6 +8023,9 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_validator_null-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_verification_rules-gtest-all.Po
 	-rm -f contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo
+	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo
+	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time.Plo
 	-rm -f examples/$(DEPDIR)/channel-status.pb.Po
 	-rm -f examples/$(DEPDIR)/chatbuf.pb.Po
 	-rm -f examples/$(DEPDIR)/control-parameters.pb.Po

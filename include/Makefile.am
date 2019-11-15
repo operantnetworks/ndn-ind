@@ -43,7 +43,8 @@ ndn_cpp_cpp_headers = \
   $(wildcard ndn-ind/sync/*.*) \
   $(wildcard ndn-ind/tools/usersync/*.*) \
   $(wildcard ndn-ind/transport/*.*) \
-  $(wildcard ndn-ind/util/*.*)
+  $(wildcard ndn-ind/util/*.*) \
+  $(wildcard ndn-ind/util/impl/*.*)
 
 # Public ndn-ind-tools C++ headers.
 ndn_cpp_tools_cpp_headers = \

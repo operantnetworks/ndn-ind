@@ -296,8 +296,14 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/util/exponential-re-express.hpp \
   include/ndn-ind/util/logging.hpp \
   include/ndn-ind/util/memory-content-cache.hpp \
+  include/ndn-ind/util/scheduler.hpp \
   include/ndn-ind/util/segment-fetcher.hpp \
-  include/ndn-ind/util/signed-blob.hpp
+  include/ndn-ind/util/signed-blob.hpp \
+  include/ndn-ind/util/time.hpp \
+  include/ndn-ind/util/time-custom-clock.hpp \
+  include/ndn-ind/util/impl/asio-fwd.hpp \
+  include/ndn-ind/util/impl/cancel-handle.hpp \
+  include/ndn-ind/util/impl/steady-timer.hpp
 
 # Public ndn-ind-tools C++ headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_tools_cpp_headers in include/Makefile.am.
@@ -364,6 +370,9 @@ libndn_c_la_SOURCES = ${ndn_ind_c_headers} \
 
 # C++ code and also the C code.
 libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
+  contrib/ndn-cxx/ndn-cxx/detail/cancel-handle.cpp \
+  contrib/ndn-cxx/ndn-cxx/util/scheduler.cpp \
+  contrib/ndn-cxx/ndn-cxx/util/time.cpp \
   src/common.cpp \
   src/control-parameters.cpp \
   src/control-response.cpp \
