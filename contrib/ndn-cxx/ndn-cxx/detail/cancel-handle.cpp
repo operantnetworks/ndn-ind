@@ -19,6 +19,10 @@
  * See AUTHORS.md for complete list of ndn-cxx authors and contributors.
  */
 
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST.
+#include <ndn-ind/ndn-ind-config.h>
+#ifdef NDN_IND_HAVE_BOOST
+
 #include "ndn-cxx/detail/cancel-handle.hpp"
 
 namespace ndn {
@@ -77,3 +81,5 @@ ScopedCancelHandle::release()
 
 } // namespace detail
 } // namespace ndn
+
+#endif // NDN_IND_HAVE_BOOST

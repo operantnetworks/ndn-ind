@@ -19,6 +19,10 @@
  * See AUTHORS.md for complete list of ndn-cxx authors and contributors.
  */
 
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST_ASIO.
+#include <ndn-ind/ndn-ind-config.h>
+#ifdef NDN_IND_HAVE_BOOST_ASIO
+
 #include "ndn-cxx/util/scheduler.hpp"
 #include "ndn-cxx/util/impl/steady-timer.hpp"
 
@@ -178,3 +182,5 @@ Scheduler::executeEvent(const boost::system::error_code& error)
 } // namespace scheduler
 } // namespace util
 } // namespace ndn
+
+#endif // NDN_IND_HAVE_BOOST_ASIO

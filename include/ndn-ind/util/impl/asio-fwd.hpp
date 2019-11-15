@@ -19,6 +19,10 @@
  * See AUTHORS.md for complete list of ndn-cxx authors and contributors.
  */
 
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST_ASIO.
+#include "../../ndn-ind-config.h"
+#ifdef NDN_IND_HAVE_BOOST_ASIO
+
 #ifndef NDN_DETAIL_ASIO_FWD_HPP
 #define NDN_DETAIL_ASIO_FWD_HPP
 
@@ -38,3 +42,5 @@ class io_service;
 } // namespace boost
 
 #endif // NDN_DETAIL_ASIO_FWD_HPP
+
+#endif // NDN_IND_HAVE_BOOST_ASIO

@@ -19,6 +19,10 @@
  * See AUTHORS.md for complete list of ndn-cxx authors and contributors.
  */
 
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST.
+#include <ndn-ind/ndn-ind-config.h>
+#ifdef NDN_IND_HAVE_BOOST
+
 #include "ndn-cxx/util/time.hpp"
 #include "ndn-cxx/util/time-custom-clock.hpp"
 
@@ -234,3 +238,5 @@ template struct clock_string<ndn::time::steady_clock, char>;
 
 } // namespace chrono
 } // namespace boost
+
+#endif // NDN_IND_HAVE_BOOST

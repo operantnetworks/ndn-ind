@@ -19,6 +19,10 @@
  * See AUTHORS.md for complete list of ndn-cxx authors and contributors.
  */
 
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST_ASIO.
+#include "../ndn-ind-config.h"
+#ifdef NDN_IND_HAVE_BOOST_ASIO
+
 #ifndef NDN_UTIL_TIME_CUSTOM_CLOCK_HPP
 #define NDN_UTIL_TIME_CUSTOM_CLOCK_HPP
 
@@ -67,3 +71,5 @@ setCustomClocks(shared_ptr<CustomSteadyClock> steadyClock = nullptr,
 } // namespace ndn
 
 #endif // NDN_UTIL_TIME_CUSTOM_CLOCK_HPP
+
+#endif // NDN_IND_HAVE_BOOST_ASIO
