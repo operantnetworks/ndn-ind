@@ -443,7 +443,7 @@ public:
   /**
    * Set the MustBeFresh flag.
    * @param mustBeFresh True if the content must be fresh, otherwise false. If
-   * you do not set this flag, the default value is true.
+   * you do not set this flag, the default value is false.
    * @return This Interest so that you can chain calls to update values.
    */
   Interest&
@@ -731,7 +731,7 @@ private:
     // didSetCanBePrefix_ is true if the app already called setDefaultCanBePrefix().
     didSetCanBePrefix_ = didSetDefaultCanBePrefix_;
     childSelector_ = -1;
-    mustBeFresh_ = true;
+    mustBeFresh_ = false;
     interestLifetimeMilliseconds_ = -1.0;
     linkWireEncodingFormat_ = 0;
     selectedDelegationIndex_ = -1;

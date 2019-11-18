@@ -217,7 +217,7 @@ public:
   /**
    * Set the MustBeFresh flag.
    * @param mustBeFresh True if the content must be fresh, otherwise false. If
-   * you do not set this flag, the default value is true.
+   * you do not set this flag, the default value is false.
    * @return This InterestLite so that you can chain calls to update values.
    */
   InterestLite&
