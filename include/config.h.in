@@ -12,6 +12,9 @@
 /* 1 if have boost/atomic.hpp. */
 #undef HAVE_BOOST_ATOMIC
 
+/* define if the Boost::Chrono library is available */
+#undef HAVE_BOOST_CHRONO
+
 /* 1 if have the `boost::function' class. */
 #undef HAVE_BOOST_FUNCTION
 

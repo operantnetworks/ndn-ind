@@ -99,6 +99,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/acx_pthread.m4 \
 	$(top_srcdir)/m4/ax_boost_asio.m4 \
 	$(top_srcdir)/m4/ax_boost_base.m4 \
+	$(top_srcdir)/m4/ax_boost_chrono.m4 \
 	$(top_srcdir)/m4/ax_boost_regex.m4 \
 	$(top_srcdir)/m4/ax_check_zlib.m4 \
 	$(top_srcdir)/m4/ax_cxx_compile_stdcxx.m4 \
@@ -201,6 +202,7 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOOST_ASIO_LIB = @BOOST_ASIO_LIB@
+BOOST_CHRONO_LIB = @BOOST_CHRONO_LIB@
 BOOST_CPPFLAGS = @BOOST_CPPFLAGS@
 BOOST_LDFLAGS = @BOOST_LDFLAGS@
 BOOST_REGEX_LIB = @BOOST_REGEX_LIB@
