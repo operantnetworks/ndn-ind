@@ -81,6 +81,17 @@ public:
   ThreadsafeFace(boost::asio::io_service& ioService);
 
   /**
+   * Create a new Face for communication with an NDN hub using a default
+   * connection as follows. If the forwarder's Unix socket file exists, then
+   * connect using AsyncUnixTransport. Otherwise, connect to "localhost" on port
+   * 6363 using AsyncTcpTransport. This creates a default asio io_service. You
+   * can access it with getIoService(), which you should use to start the 
+   * service. With this constructor, you do not need to call processEvents since
+   * the ioService does all processing.
+   */
+  ThreadsafeFace();
+
+  /**
    * Get the asio io_service that was given to the constructor.
    * @return THe asio io_service.
    */
@@ -247,6 +258,8 @@ private:
   static ptr_lib::shared_ptr<Transport::ConnectionInfo>
   getDefaultConnectionInfo();
 
+  // This is only used if the io_service is not supplied to the constructor.
+  std::unique_ptr<boost::asio::io_service> internalIoService_;
   boost::asio::io_service& ioService_;
 };
 
