@@ -358,8 +358,7 @@ TEST_F(TestConsumer, Consume)
              ptr_lib::shared_ptr<Data> cKeyData,
              ptr_lib::shared_ptr<Data> dKeyData,
              int* contentCount, int* cKeyCount, int* dKeyCount)
-    : Face("localhost"),
-      contentData_(contentData),
+    : contentData_(contentData),
       cKeyData_(cKeyData),
       dKeyData_(dKeyData),
       contentCount_(contentCount),
@@ -439,8 +438,7 @@ TEST_F(TestConsumer, ConsumerWithLink)
              ptr_lib::shared_ptr<Data> cKeyData,
              ptr_lib::shared_ptr<Data> dKeyData,
              int* contentCount, int* cKeyCount, int* dKeyCount)
-    : Face("localhost"),
-      contentData_(contentData),
+    : contentData_(contentData),
       cKeyData_(cKeyData),
       dKeyData_(dKeyData),
       contentCount_(contentCount),

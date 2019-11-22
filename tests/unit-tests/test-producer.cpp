@@ -230,8 +230,7 @@ TEST_F(TestProducer, ContentKeyRequest)
   public:
     TestFace(TestProducer* parent, const Name& timeMarker,
              int* expressInterestCallCount)
-    : Face("localhost"),
-      parent_(parent),
+    : parent_(parent),
       timeMarker_(timeMarker),
       expressInterestCallCount_(expressInterestCallCount)
     {}
@@ -347,8 +346,7 @@ TEST_F(TestProducer, ContentKeySearch)
     TestFace(TestProducer* parent, const Name& timeMarkerFirstHop,
              const Name& timeMarkerSecondHop, const Name& timeMarkerThirdHop,
              const Name& expectedInterest, int* requestCount)
-    : Face("localhost"),
-      parent_(parent),
+    : parent_(parent),
       timeMarkerFirstHop_(timeMarkerFirstHop),
       timeMarkerSecondHop_(timeMarkerSecondHop),
       timeMarkerThirdHop_(timeMarkerThirdHop),
@@ -431,8 +429,7 @@ TEST_F(TestProducer, ContentKeyTimeout)
   class TestFace : public Face {
   public:
     TestFace(const Name& expectedInterest, int* timeoutCount)
-    : Face("localhost"),
-      expectedInterest_(expectedInterest),
+    : expectedInterest_(expectedInterest),
       timeoutCount_(timeoutCount)
     {}
 
@@ -483,8 +480,7 @@ TEST_F(TestProducer, ProducerWithLink)
   class TestFace : public Face {
   public:
     TestFace(const Name& expectedInterest, int* timeoutCount)
-    : Face("localhost"),
-      expectedInterest_(expectedInterest),
+    : expectedInterest_(expectedInterest),
       timeoutCount_(timeoutCount)
     {}
 

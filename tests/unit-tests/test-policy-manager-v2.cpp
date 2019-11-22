@@ -307,7 +307,7 @@ TEST_F(TestConfigPolicyManager, InterestTimestamp)
   Name interestName = Name("/ndn/ucla/edu/something");
   Name certName = keyChain_->getPib().getIdentity(identityName_)
     ->getKey(keyName_)->getDefaultCertificate()->getName();
-  Face face("localhost");
+  Face face;
   face.setCommandSigningInfo(*keyChain_, certName);
 
   ptr_lib::shared_ptr<Interest> oldInterest(new Interest(interestName));

@@ -265,7 +265,7 @@ int main(int argc, char** argv)
       (ptr_lib::make_shared<ValidationPolicyFromPib>(keyChain.getPib()));
 
     // Make a Face just so that we can sign the interest.
-    Face face("localhost");
+    Face face;
     face.setCommandSigningInfo(keyChain, keyChain.getDefaultCertificateName());
     face.makeCommandInterest(freshInterest);
 

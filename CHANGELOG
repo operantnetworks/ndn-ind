@@ -7,6 +7,7 @@ Changes
 * Added ndn::util::Scheduler and time utilities in ndn::time .
 * In Interest, changed the MustBeFresh default value to false.
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .
+* In examples and unit tests, use the default Face which doesn't require TCP.
 
 NDN-CPP v0.17 (2019-10-04)
 --------------------------
