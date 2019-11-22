@@ -92,7 +92,7 @@ public:
   ThreadsafeFace();
 
   /**
-   * Get the asio io_service that was given to the constructor.
+   * Get the asio io_service that was given to or created by the constructor.
    * @return THe asio io_service.
    */
   boost::asio::io_service&
