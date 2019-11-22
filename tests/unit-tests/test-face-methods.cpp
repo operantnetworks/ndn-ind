@@ -93,8 +93,8 @@ public:
 class RegisterCounter
 {
 public:
-  RegisterCounter(KeyChain& keyChain, Name certificateName)
-  : keyChain_(keyChain), certificateName_(certificateName)
+  RegisterCounter(KeyChain& keyChain)
+  : keyChain_(keyChain)
   {
     onInterestCallCount_ = 0;
     onRegisterFailedCallCount_ = 0;
@@ -112,7 +112,7 @@ public:
     Data data(interest->getName());
     string content("SUCCESS");
     data.setContent((const uint8_t *)&content[0], content.size());
-    keyChain_.sign(data, certificateName_);
+    keyChain_.sign(data);
     face.putData(data);
   }
 
@@ -123,7 +123,6 @@ public:
   }
 
   KeyChain& keyChain_;
-  Name certificateName_;
   int onInterestCallCount_;
   int onRegisterFailedCallCount_;
 };
@@ -260,25 +259,9 @@ static const uint8_t DEFAULT_RSA_PRIVATE_KEY_DER[] = {
 class TestFaceRegisterMethods : public ::testing::Test {
 public:
   TestFaceRegisterMethods()
-  : identityStorage(new MemoryIdentityStorage()),
-    privateKeyStorage(new MemoryPrivateKeyStorage()),
-    keyChain(ptr_lib::make_shared<IdentityManager>(identityStorage, privateKeyStorage),
-             ptr_lib::make_shared<NoVerifyPolicyManager>())
   {
-    Name keyName("/testname/DSK-123");
-    certificateName = keyName.getSubName(0, keyName.size() - 1).append
-      ("KEY").append(keyName[-1]).append("ID-CERT").append("0");
-
-    identityStorage->addKey
-      (keyName, KEY_TYPE_RSA, Blob(DEFAULT_RSA_PUBLIC_KEY_DER,
-       sizeof(DEFAULT_RSA_PUBLIC_KEY_DER)));
-    privateKeyStorage->setKeyPairForKeyName
-      (keyName, KEY_TYPE_RSA, DEFAULT_RSA_PUBLIC_KEY_DER,
-       sizeof(DEFAULT_RSA_PUBLIC_KEY_DER), DEFAULT_RSA_PRIVATE_KEY_DER,
-       sizeof(DEFAULT_RSA_PRIVATE_KEY_DER));
-
-    faceIn.setCommandSigningInfo(keyChain, certificateName);
-    faceOut.setCommandSigningInfo(keyChain, certificateName);
+    faceIn.setCommandSigningInfo(keyChain, keyChain.getDefaultCertificateName());
+    faceOut.setCommandSigningInfo(keyChain, keyChain.getDefaultCertificateName());
   }
 
   virtual void
@@ -290,17 +273,14 @@ public:
 
   Face faceIn;
   Face faceOut;
-  ptr_lib::shared_ptr<MemoryIdentityStorage> identityStorage;
-  ptr_lib::shared_ptr<MemoryPrivateKeyStorage> privateKeyStorage;
   KeyChain keyChain;
-  Name certificateName;
 };
 
 TEST_F(TestFaceRegisterMethods, RegisterPrefixResponse)
 {
   Name prefixName("/test");
 
-  RegisterCounter registerCounter(keyChain, certificateName);
+  RegisterCounter registerCounter(keyChain);
 
   faceIn.registerPrefix
     (prefixName,
