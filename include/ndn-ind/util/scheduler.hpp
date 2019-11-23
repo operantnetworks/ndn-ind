@@ -26,6 +26,7 @@
 #ifndef NDN_UTIL_SCHEDULER_HPP
 #define NDN_UTIL_SCHEDULER_HPP
 
+#include <memory>
 #include "impl/asio-fwd.hpp"
 #include "impl/cancel-handle.hpp"
 #include "time.hpp"

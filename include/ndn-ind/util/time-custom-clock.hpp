@@ -26,6 +26,7 @@
 #ifndef NDN_UTIL_TIME_CUSTOM_CLOCK_HPP
 #define NDN_UTIL_TIME_CUSTOM_CLOCK_HPP
 
+#include <memory>
 #include "time.hpp"
 
 namespace ndn {
