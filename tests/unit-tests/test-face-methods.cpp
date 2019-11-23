@@ -166,6 +166,16 @@ public:
   {
     faceIn.shutdown();
     faceOut.shutdown();
+
+    // Give time to shut down the face before the next test.
+    Milliseconds timeout = 500;
+    MillisecondsSince1970 startTime = getNowMilliseconds();
+    while (getNowMilliseconds() - startTime < timeout) {
+      faceIn.processEvents();
+      faceOut.processEvents();
+      // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
+      usleep(10000);
+    }
   }
 
   Face faceIn;
@@ -242,7 +252,6 @@ TEST_F(TestFaceRegisterMethods, RegisterPrefixResponse)
 class TestFaceInterestMethods : public ::testing::Test {
 public:
   TestFaceInterestMethods()
-  : face("localhost")
   {
   }
 
@@ -250,6 +259,15 @@ public:
   TearDown()
   {
     face.shutdown();
+
+    // Give time to shut down the face before the next test.
+    Milliseconds timeout = 500;
+    MillisecondsSince1970 startTime = getNowMilliseconds();
+    while (getNowMilliseconds() - startTime < timeout) {
+      face.processEvents();
+      // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
+      usleep(10000);
+    }
   }
 
   Face face;
