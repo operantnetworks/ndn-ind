@@ -113,7 +113,7 @@ public:
   getChildSelector() const { return childSelector; }
 
   /**
-   * Return true if the content must be fresh. The default is true.
+   * Return true if the content must be fresh. The default is false.
    * @return True if must be fresh, otherwise false.
    */
   bool
