@@ -20,6 +20,10 @@ Prerequisites
 
 Following are the detailed steps for each platform to install the prerequisites.
 
+## Red Hat 7.7
+
+See the file INSTALL.RHEL7.md .
+
 ## 10.9.5, OS X 10.10.2, OS X 10.11, macOS 10.12, macOS 10.13 and macOS 10.14
 Install Xcode. To install the command line tools, in a terminal enter:
 
