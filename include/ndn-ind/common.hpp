@@ -41,32 +41,7 @@ namespace ndn { namespace ptr_lib = std; }
 #include <boost/enable_shared_from_this.hpp>
 namespace ndn { namespace ptr_lib = boost; }
 #else
-/* Use the boost header files in this distribution that were extracted with:
-cd <BOOST DEVELOPMENT DIRECTORY WITH boost SUBDIRECTORY>
-dist/bin/bcp --namespace=ndnboost shared_ptr make_shared enable_shared_from_this weak_ptr function bind atomic <NDN-IND ROOT>/include
-cd <NDN-IND ROOT>/include
-rm -rf boost.css boost.png jamroot libs
-mv boost ndnboost
-cd ndnboost
-# Replace when including files.
-(unset LANG; find . -type f -exec sed -i '' 's/\<boost\//\<ndnboost\//g' {} +)
-(unset LANG; find . -type f -exec sed -i '' 's/\"boost\//\"ndnboost\//g' {} +)
-(unset LANG; find . -type f -exec sed -i '' 's/ boost\// ndnboost\//g' {} +)
-(unset LANG; find . -type f -exec sed -i '' 's/(boost\//(ndnboost\//g' {} +)
-# Replace macro definitions.
-(unset LANG; find . -type f -exec sed -i '' 's/BOOST_/NDNBOOST_/g' {} +)
-# Replace header include guards which don't start with BOOST_ .  This may result in some with NDNBOOST twice, but that is OK.
-(unset LANG; find . -type f -exec sed -i '' 's/_DWA/_NDNBOOST_DWA/g' {} +)
-(unset LANG; find . -type f -exec sed -i '' 's/ UUID_/ NDNBOOST_UUID_/g' {} +)
-(unset LANG; find . -type f -exec sed -i '' 's/ FILE_boost/ FILE_ndnboost/g' {} +)
-# Replace the mpl_ barrier namespace.  This should only change file adl_barrier.hpp.
-(unset LANG; find . -type f -exec sed -i '' 's/ mpl_/ ndnboost_mpl_/g' {} +)
- */
-#include <ndnboost/shared_ptr.hpp>
-#include <ndnboost/weak_ptr.hpp>
-#include <ndnboost/make_shared.hpp>
-#include <ndnboost/enable_shared_from_this.hpp>
-namespace ndn { namespace ptr_lib = ndnboost; }
+#error You cannot ./configure with both --with-std-shared-ptr=no and --with-boost-shared-ptr=no
 #endif
 
 // Depending on where ./configure found function and the options --with-std-function
@@ -100,10 +75,7 @@ namespace ndn { namespace func_lib {
 #include <boost/bind.hpp>
 namespace ndn { namespace func_lib = boost; }
 #else
-// Use the boost header files in this distribution that were extracted as above:
-#include <ndnboost/function.hpp>
-#include <ndnboost/bind.hpp>
-namespace ndn { namespace func_lib = ndnboost; }
+#error You cannot ./configure with both --with-std-function=no and --with-boost-function=no
 #endif
 
 namespace ndn {
