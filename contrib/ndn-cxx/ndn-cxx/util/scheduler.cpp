@@ -36,22 +36,23 @@ using std::shared_ptr;
 using std::weak_ptr;
 using std::make_shared;
 using std::make_unique;
+using namespace std::chrono;
 
 /** \brief Stores internal information about a scheduled event
  */
 class EventInfo : boost::noncopyable
 {
 public:
-  EventInfo(time::nanoseconds after, EventCallback&& cb)
+  EventInfo(nanoseconds after, EventCallback&& cb)
     : callback(std::move(cb))
     , expireTime(time::steady_clock::now() + after)
   {
   }
 
-  time::nanoseconds
+  nanoseconds
   expiresFromNow() const
   {
-    return std::max(expireTime - time::steady_clock::now(), 0_ns);
+    return std::max(expireTime - time::steady_clock::now(), nanoseconds(0));
   }
 
 public:
@@ -107,7 +108,7 @@ Scheduler::Scheduler(boost::asio::io_service& ioService)
 Scheduler::~Scheduler() = default;
 
 EventId
-Scheduler::schedule(time::nanoseconds after, EventCallback callback)
+Scheduler::schedule(nanoseconds after, EventCallback callback)
 {
   BOOST_ASSERT(callback != nullptr);
 

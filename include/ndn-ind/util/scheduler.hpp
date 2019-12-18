@@ -160,13 +160,13 @@ public:
    *  \return EventId that can be used to cancel the scheduled event
    */
   EventId
-  schedule(time::nanoseconds after, EventCallback callback);
+  schedule(std::chrono::nanoseconds after, EventCallback callback);
 
   /** \deprecated use schedule(after, callback)
    */
   [[deprecated("use schedule(after, callback)")]]
   EventId
-  scheduleEvent(time::nanoseconds after, EventCallback callback)
+  scheduleEvent(std::chrono::nanoseconds after, EventCallback callback)
   {
     return schedule(after, std::move(callback));
   }

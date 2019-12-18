@@ -33,6 +33,7 @@ namespace ndn {
 namespace time {
 
 using std::shared_ptr;
+using namespace std::chrono;
 
 static shared_ptr<CustomSystemClock> g_systemClock;
 static shared_ptr<CustomSteadyClock> g_steadyClock;
@@ -53,7 +54,7 @@ system_clock::now() noexcept
 {
   if (g_systemClock == nullptr) {
     // optimized default version
-    return time_point(boost::chrono::system_clock::now().time_since_epoch());
+    return time_point(std::chrono::system_clock::now().time_since_epoch());
   }
   else {
     return g_systemClock->getNow();
@@ -75,11 +76,11 @@ system_clock::from_time_t(std::time_t t) noexcept
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef __APPLE__
-// Note that on macOS platform boost::steady_clock is not truly monotonic, so we use
+// Note that on macOS platform std::chrono::steady_clock is not truly monotonic, so we use
 // system_clock instead.  Refer to https://svn.boost.org/trac/boost/ticket/7719)
-typedef boost::chrono::system_clock base_steady_clock;
+typedef std::chrono::system_clock base_steady_clock;
 #else
-typedef boost::chrono::steady_clock base_steady_clock;
+typedef std::chrono::steady_clock base_steady_clock;
 #endif
 
 steady_clock::time_point
@@ -141,7 +142,7 @@ convertToPosixTime(const system_clock::TimePoint& timePoint)
 #else
     milliseconds;
 #endif
-  constexpr auto unitsPerHour = duration_cast<BptResolution>(1_h).count();
+  constexpr auto unitsPerHour = duration_cast<BptResolution>(hours(1)).count();
 
   auto sinceEpoch = duration_cast<BptResolution>(timePoint - getUnixEpoch()).count();
   return epoch + bpt::time_duration(sinceEpoch / unitsPerHour, 0, 0, sinceEpoch % unitsPerHour);
@@ -205,40 +206,5 @@ fromString(const std::string& timePointStr,
 
 } // namespace time
 } // namespace ndn
-
-namespace boost {
-namespace chrono {
-
-template<class CharT>
-std::basic_string<CharT>
-clock_string<ndn::time::system_clock, CharT>::since()
-{
-  if (ndn::time::g_systemClock == nullptr) {
-    // optimized default version
-    return clock_string<system_clock, CharT>::since();
-  }
-  else {
-    return ndn::time::g_systemClock->getSince();
-  }
-}
-
-template<class CharT>
-std::basic_string<CharT>
-clock_string<ndn::time::steady_clock, CharT>::since()
-{
-  if (ndn::time::g_steadyClock == nullptr) {
-    // optimized default version
-    return clock_string<ndn::time::base_steady_clock, CharT>::since();
-  }
-  else {
-    return ndn::time::g_steadyClock->getSince();
-  }
-}
-
-template struct clock_string<ndn::time::system_clock, char>;
-template struct clock_string<ndn::time::steady_clock, char>;
-
-} // namespace chrono
-} // namespace boost
 
 #endif // NDN_IND_HAVE_BOOST
