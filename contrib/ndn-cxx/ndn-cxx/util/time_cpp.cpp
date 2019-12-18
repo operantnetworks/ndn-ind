@@ -25,35 +25,8 @@
 
 #include <ndn-ind/util/time.hpp>
 
-#include <sstream>
-
 namespace ndn {
 namespace time {
-
-using std::shared_ptr;
-using namespace std::chrono;
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-system_clock::time_point
-system_clock::now() noexcept
-{
-  return time_point(std::chrono::system_clock::now().time_since_epoch());
-}
-
-std::time_t
-system_clock::to_time_t(const system_clock::time_point& t) noexcept
-{
-  return duration_cast<seconds>(t.time_since_epoch()).count();
-}
-
-system_clock::time_point
-system_clock::from_time_t(std::time_t t) noexcept
-{
-  return time_point(seconds(t));
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef __APPLE__
 // Note that on macOS platform std::chrono::steady_clock is not truly monotonic, so we use
@@ -67,15 +40,6 @@ steady_clock::time_point
 steady_clock::now() noexcept
 {
   return time_point(base_steady_clock::now().time_since_epoch());
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-const system_clock::TimePoint&
-getUnixEpoch()
-{
-  static constexpr system_clock::TimePoint epoch(seconds::zero());
-  return epoch;
 }
 
 } // namespace time

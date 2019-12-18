@@ -32,51 +32,6 @@ namespace ndn {
 namespace time {
 
 /**
- * \brief System clock
- *
- * System clock represents the system-wide real time wall clock.
- *
- * It may not be monotonic: on most systems, the system time can be
- * adjusted at any moment. It is the only clock that has the ability
- * to be displayed and converted to/from UNIX timestamp.
- *
- * To get the current time:
- *
- * <code>
- *     system_clock::TimePoint now = system_clock::now();
- * </code>
- *
- * To convert a TimePoint to/from UNIX timestamp:
- *
- * <code>
- *     system_clock::TimePoint time = ...;
- *     uint64_t timestampInMilliseconds = toUnixTimestamp(time).count();
- *     system_clock::TimePoint time2 = fromUnixTimestamp(milliseconds(timestampInMilliseconds));
- * </code>
- */
-class system_clock
-{
-public:
-  using duration   = std::chrono::system_clock::duration;
-  using rep        = duration::rep;
-  using period     = duration::period;
-  using time_point = std::chrono::time_point<system_clock>;
-  static constexpr bool is_steady = std::chrono::system_clock::is_steady;
-
-  typedef time_point TimePoint;
-  typedef duration Duration;
-
-  static time_point
-  now() noexcept;
-
-  static std::time_t
-  to_time_t(const time_point& t) noexcept;
-
-  static time_point
-  from_time_t(std::time_t t) noexcept;
-};
-
-/**
  * \brief Steady clock
  *
  * Steady clock represents a monotonic clock. The time points of this
@@ -99,12 +54,6 @@ public:
   static time_point
   now() noexcept;
 };
-
-/**
- * \brief Get system_clock::TimePoint representing UNIX time epoch (00:00:00 on Jan 1, 1970)
- */
-const system_clock::TimePoint&
-getUnixEpoch();
 
 } // namespace time
 } // namespace ndn
