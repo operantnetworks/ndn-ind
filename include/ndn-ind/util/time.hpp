@@ -28,7 +28,7 @@
 
 #include <type_traits>
 #include <boost/asio/wait_traits.hpp>
-#include <boost/chrono.hpp>
+#include <chrono>
 
 namespace ndn {
 namespace time {
@@ -121,85 +121,6 @@ private:
  */
 const system_clock::TimePoint&
 getUnixEpoch();
-
-/**
- * \brief Convert system_clock::TimePoint to UNIX timestamp
- */
-std::chrono::milliseconds
-toUnixTimestamp(const system_clock::TimePoint& point);
-
-/**
- * \brief Convert UNIX timestamp to system_clock::TimePoint
- */
-system_clock::TimePoint
-fromUnixTimestamp(std::chrono::milliseconds duration);
-
-/**
- * \brief Convert to the ISO string representation of the time (YYYYMMDDTHHMMSS,fffffffff)
- *
- * If \p timePoint contains doesn't contain fractional seconds,
- * the output format is YYYYMMDDTHHMMSS
- *
- * Examples:
- *
- *   - with fractional nanoseconds:  20020131T100001,123456789
- *   - with fractional microseconds: 20020131T100001,123456
- *   - with fractional milliseconds: 20020131T100001,123
- *   - without fractional seconds:   20020131T100001
- */
-std::string
-toIsoString(const system_clock::TimePoint& timePoint);
-
-/**
- * \brief Convert from the ISO string (YYYYMMDDTHHMMSS,fffffffff) representation
- *        to the internal time format
- *
- * Examples of accepted ISO strings:
- *
- *   - with fractional nanoseconds:  20020131T100001,123456789
- *   - with fractional microseconds: 20020131T100001,123456
- *   - with fractional milliseconds: 20020131T100001,123
- *   - without fractional seconds:   20020131T100001
- *
- */
-system_clock::TimePoint
-fromIsoString(const std::string& isoString);
-
-/**
- * \brief Convert time point to string with specified format
- *
- * By default, `%Y-%m-%d %H:%M:%S` is used, producing dates like
- * `2014-04-10 22:51:00`
- *
- * \param timePoint time point of system_clock
- * \param format desired output format (default: `%Y-%m-%d %H:%M:%S`)
- * \param locale desired locale (default: "C" locale)
- *
- * \sa https://www.boost.org/doc/libs/1_58_0/doc/html/date_time/date_time_io.html#date_time.format_flags
- *     describes possible formatting flags
- **/
-std::string
-toString(const system_clock::TimePoint& timePoint,
-         const std::string& format = "%Y-%m-%d %H:%M:%S",
-         const std::locale& locale = std::locale("C"));
-
-/**
- * \brief Convert from string of specified format into time point
- *
- * By default, `%Y-%m-%d %H:%M:%S` is used, accepting dates like
- * `2014-04-10 22:51:00`
- *
- * \param timePointStr string representing time point
- * \param format input output format (default: `%Y-%m-%d %H:%M:%S`)
- * \param locale input locale (default: "C" locale)
- *
- * \sa https://www.boost.org/doc/libs/1_58_0/doc/html/date_time/date_time_io.html#date_time.format_flags
- *     describes possible formatting flags
- */
-system_clock::TimePoint
-fromString(const std::string& timePointStr,
-           const std::string& format = "%Y-%m-%d %H:%M:%S",
-           const std::locale& locale = std::locale("C"));
 
 } // namespace time
 } // namespace ndn
