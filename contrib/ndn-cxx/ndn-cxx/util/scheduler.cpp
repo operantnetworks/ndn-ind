@@ -44,20 +44,20 @@ class EventInfo : boost::noncopyable
 public:
   EventInfo(nanoseconds after, EventCallback&& cb)
     : callback(std::move(cb))
-    , expireTime(time::steady_clock::now() + after)
+    , expireTime(MonotonicSteadyClock::now() + after)
   {
   }
 
   nanoseconds
   expiresFromNow() const
   {
-    return std::max(expireTime - time::steady_clock::now(), nanoseconds(0));
+    return std::max(expireTime - MonotonicSteadyClock::now(), nanoseconds(0));
   }
 
 public:
   EventCallback callback;
   Scheduler::EventQueue::const_iterator queueIt;
-  time::steady_clock::TimePoint expireTime;
+  MonotonicSteadyClock::TimePoint expireTime;
   bool isExpired = false;
 };
 
@@ -170,7 +170,7 @@ Scheduler::executeEvent(const boost::system::error_code& error)
   } BOOST_SCOPE_EXIT_END
 
   // process all expired events
-  auto now = time::steady_clock::now();
+  auto now = MonotonicSteadyClock::now();
   while (!m_queue.empty()) {
     auto head = m_queue.begin();
     shared_ptr<EventInfo> info = *head;

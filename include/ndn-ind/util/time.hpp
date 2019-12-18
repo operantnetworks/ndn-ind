@@ -29,25 +29,23 @@
 #include <chrono>
 
 namespace ndn {
-namespace time {
+namespace scheduler {
 
 /**
- * \brief Steady clock
- *
- * Steady clock represents a monotonic clock. The time points of this
+ * MonotonicSteadyClock represents a monotonic clock. The time points of this
  * clock cannot decrease as physical time moves forward. This clock is
  * not related to wall clock time, and is best suitable for measuring
  * intervals.
  * On most systems, this is the same as std::chrono::stead_clock. But on macOS,
  * we need to override the behavior of now() so that it is monotonic.
  */
-class steady_clock
+class MonotonicSteadyClock
 {
 public:
   using duration   = std::chrono::steady_clock::duration;
   using rep        = duration::rep;
   using period     = duration::period;
-  using time_point = std::chrono::time_point<steady_clock>;
+  using time_point = std::chrono::time_point<MonotonicSteadyClock>;
   static constexpr bool is_steady = true;
 
   typedef time_point TimePoint;
@@ -66,7 +64,7 @@ public:
   }
 };
 
-} // namespace time
+} // namespace scheduler
 } // namespace ndn
 
 #endif // NDN_UTIL_TIME_HPP

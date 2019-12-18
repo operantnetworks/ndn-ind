@@ -33,10 +33,10 @@
 namespace ndn {
 namespace scheduler {
 
-class SteadyTimer : public boost::asio::basic_waitable_timer<time::steady_clock>
+class SteadyTimer : public boost::asio::basic_waitable_timer<MonotonicSteadyClock>
 {
 public:
-  using boost::asio::basic_waitable_timer<time::steady_clock>::basic_waitable_timer;
+  using boost::asio::basic_waitable_timer<MonotonicSteadyClock>::basic_waitable_timer;
 };
 
 } // namespace scheduler
