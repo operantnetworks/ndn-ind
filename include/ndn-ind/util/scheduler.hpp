@@ -29,7 +29,7 @@
 #include <memory>
 #include "impl/asio-fwd.hpp"
 #include "impl/cancel-handle.hpp"
-#include "time.hpp"
+#include "impl/monotonic_steady_clock.hpp"
 
 #include <boost/system/error_code.hpp>
 #include <boost/noncopyable.hpp>

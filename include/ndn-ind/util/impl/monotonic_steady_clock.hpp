@@ -20,7 +20,7 @@
  */
 
 // Only compile if ndn-ind-config.h defines NDN_IND_HAVE_BOOST_ASIO.
-#include "../ndn-ind-config.h"
+#include "../../ndn-ind-config.h"
 #ifdef NDN_IND_HAVE_BOOST_ASIO
 
 #ifndef NDN_UTIL_TIME_HPP

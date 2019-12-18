@@ -26,7 +26,7 @@
 #ifndef NDN_UTIL_IMPL_STEADY_TIMER_HPP
 #define NDN_UTIL_IMPL_STEADY_TIMER_HPP
 
-#include "../time.hpp"
+#include "monotonic_steady_clock.hpp"
 
 #include <boost/asio/basic_waitable_timer.hpp>
 

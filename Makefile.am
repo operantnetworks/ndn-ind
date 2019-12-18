@@ -299,9 +299,9 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/util/scheduler.hpp \
   include/ndn-ind/util/segment-fetcher.hpp \
   include/ndn-ind/util/signed-blob.hpp \
-  include/ndn-ind/util/time.hpp \
   include/ndn-ind/util/impl/asio-fwd.hpp \
   include/ndn-ind/util/impl/cancel-handle.hpp \
+  include/ndn-ind/util/impl/monotonic_steady_clock.hpp \
   include/ndn-ind/util/impl/steady-timer.hpp
 
 # Public ndn-ind-tools C++ headers.
