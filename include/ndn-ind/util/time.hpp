@@ -26,8 +26,6 @@
 #ifndef NDN_UTIL_TIME_HPP
 #define NDN_UTIL_TIME_HPP
 
-#include <type_traits>
-#include <boost/asio/wait_traits.hpp>
 #include <chrono>
 
 namespace ndn {
@@ -100,20 +98,6 @@ public:
 
   static time_point
   now() noexcept;
-
-private:
-  /**
-   * \brief Trait function used in detail::SteadyTimer to select proper waiting time
-   *
-   * Mock time implementations should return the minimum value to ensure
-   * that Boost.Asio doesn't perform any waiting on mock timers.
-   *
-   * @sa http://blog.think-async.com/2007/08/time-travel.html
-   */
-  static duration
-  to_wait_duration(duration d);
-
-  friend struct boost::asio::wait_traits<steady_clock>; // see steady-timer.hpp
 };
 
 /**

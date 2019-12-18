@@ -2113,7 +2113,6 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/util/segment-fetcher.hpp \
   include/ndn-ind/util/signed-blob.hpp \
   include/ndn-ind/util/time.hpp \
-  include/ndn-ind/util/time-custom-clock.hpp \
   include/ndn-ind/util/impl/asio-fwd.hpp \
   include/ndn-ind/util/impl/cancel-handle.hpp \
   include/ndn-ind/util/impl/steady-timer.hpp

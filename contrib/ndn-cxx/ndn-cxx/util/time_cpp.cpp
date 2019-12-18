@@ -24,7 +24,6 @@
 #ifdef NDN_IND_HAVE_BOOST
 
 #include <ndn-ind/util/time.hpp>
-#include <ndn-ind/util/time-custom-clock.hpp>
 
 #include <sstream>
 
@@ -34,30 +33,12 @@ namespace time {
 using std::shared_ptr;
 using namespace std::chrono;
 
-static shared_ptr<CustomSystemClock> g_systemClock;
-static shared_ptr<CustomSteadyClock> g_steadyClock;
-
-// this function is declared in time-custom-clock.hpp
-void
-setCustomClocks(shared_ptr<CustomSteadyClock> steadyClock,
-                shared_ptr<CustomSystemClock> systemClock)
-{
-  g_systemClock = std::move(systemClock);
-  g_steadyClock = std::move(steadyClock);
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 system_clock::time_point
 system_clock::now() noexcept
 {
-  if (g_systemClock == nullptr) {
-    // optimized default version
-    return time_point(std::chrono::system_clock::now().time_since_epoch());
-  }
-  else {
-    return g_systemClock->getNow();
-  }
+  return time_point(std::chrono::system_clock::now().time_since_epoch());
 }
 
 std::time_t
@@ -85,25 +66,7 @@ typedef std::chrono::steady_clock base_steady_clock;
 steady_clock::time_point
 steady_clock::now() noexcept
 {
-  if (g_steadyClock == nullptr) {
-    // optimized default version
-    return time_point(base_steady_clock::now().time_since_epoch());
-  }
-  else {
-    return g_steadyClock->getNow();
-  }
-}
-
-steady_clock::duration
-steady_clock::to_wait_duration(steady_clock::duration d)
-{
-  if (g_steadyClock == nullptr) {
-    // optimized default version
-    return d;
-  }
-  else {
-    return g_steadyClock->toWaitDuration(d);
-  }
+  return time_point(base_steady_clock::now().time_since_epoch());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////

@@ -29,23 +29,6 @@
 #include "../time.hpp"
 
 #include <boost/asio/basic_waitable_timer.hpp>
-#include <boost/asio/wait_traits.hpp>
-
-namespace boost {
-namespace asio {
-
-template<>
-struct wait_traits<ndn::time::steady_clock>
-{
-  static ndn::time::steady_clock::duration
-  to_wait_duration(const ndn::time::steady_clock::duration& d)
-  {
-    return ndn::time::steady_clock::to_wait_duration(d);
-  }
-};
-
-} // namespace asio
-} // namespace boost
 
 namespace ndn {
 namespace util {
