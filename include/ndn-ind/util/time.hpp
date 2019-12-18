@@ -38,6 +38,8 @@ namespace time {
  * clock cannot decrease as physical time moves forward. This clock is
  * not related to wall clock time, and is best suitable for measuring
  * intervals.
+ * On most systems, this is the same as std::chrono::stead_clock. But on macOS,
+ * we need to override the behavior of now() so that it is monotonic.
  */
 class steady_clock
 {
@@ -52,7 +54,16 @@ public:
   typedef duration Duration;
 
   static time_point
-  now() noexcept;
+  now() noexcept
+  {
+#ifdef __APPLE__
+// Note that on macOS platform std::chrono::steady_clock is not truly monotonic, so we use
+// system_clock instead.  Refer to https://svn.boost.org/trac/boost/ticket/7719)
+    return time_point(std::chrono::system_clock::now().time_since_epoch());
+#else
+    return time_point(std::chrono::steady_clock::now().time_since_epoch());
+#endif
+  }
 };
 
 } // namespace time

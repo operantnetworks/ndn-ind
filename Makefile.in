@@ -300,8 +300,7 @@ am__objects_2 = $(am__objects_1) contrib/apache/apr_base64.lo \
 	src/c/util/time.lo
 am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
 	contrib/ndn-cxx/ndn-cxx/detail/cancel-handle.lo \
-	contrib/ndn-cxx/ndn-cxx/util/scheduler.lo \
-	contrib/ndn-cxx/ndn-cxx/util/time_cpp.lo src/common.lo \
+	contrib/ndn-cxx/ndn-cxx/util/scheduler.lo src/common.lo \
 	src/control-parameters.lo src/control-response.lo src/data.lo \
 	src/delegation-set.lo src/digest-sha256-signature.lo \
 	src/exclude.lo src/face.lo src/generic-signature.lo \
@@ -902,7 +901,6 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo \
 	contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo \
 	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo \
-	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time_cpp.Plo \
 	examples/$(DEPDIR)/channel-status.pb.Po \
 	examples/$(DEPDIR)/chatbuf.pb.Po \
 	examples/$(DEPDIR)/control-parameters.pb.Po \
@@ -2187,7 +2185,6 @@ libndn_c_la_SOURCES = ${ndn_ind_c_headers} \
 libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   contrib/ndn-cxx/ndn-cxx/detail/cancel-handle.cpp \
   contrib/ndn-cxx/ndn-cxx/util/scheduler.cpp \
-  contrib/ndn-cxx/ndn-cxx/util/time_cpp.cpp \
   src/common.cpp \
   src/control-parameters.cpp \
   src/control-response.cpp \
@@ -2918,9 +2915,6 @@ contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)
 	@: > contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp)
 contrib/ndn-cxx/ndn-cxx/util/scheduler.lo:  \
-	contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp) \
-	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp)
-contrib/ndn-cxx/ndn-cxx/util/time_cpp.lo:  \
 	contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp) \
 	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/$(am__dirstamp)
 src/$(am__dirstamp):
@@ -4442,7 +4436,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time_cpp.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/channel-status.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/chatbuf.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/control-parameters.pb.Po@am__quote@ # am--include-marker
@@ -7527,7 +7520,6 @@ distclean: distclean-recursive
 	-rm -f contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo
-	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time_cpp.Plo
 	-rm -f examples/$(DEPDIR)/channel-status.pb.Po
 	-rm -f examples/$(DEPDIR)/chatbuf.pb.Po
 	-rm -f examples/$(DEPDIR)/control-parameters.pb.Po
@@ -7964,7 +7956,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo
-	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/time_cpp.Plo
 	-rm -f examples/$(DEPDIR)/channel-status.pb.Po
 	-rm -f examples/$(DEPDIR)/chatbuf.pb.Po
 	-rm -f examples/$(DEPDIR)/control-parameters.pb.Po
