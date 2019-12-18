@@ -29,7 +29,6 @@
 #include <boost/scope_exit.hpp>
 
 namespace ndn {
-namespace util {
 namespace scheduler {
 
 using std::shared_ptr;
@@ -101,7 +100,7 @@ Scheduler::EventQueueCompare::operator()(const shared_ptr<EventInfo>& a,
 }
 
 Scheduler::Scheduler(boost::asio::io_service& ioService)
-  : m_timer(make_unique<detail::SteadyTimer>(ioService))
+  : m_timer(make_unique<SteadyTimer>(ioService))
 {
 }
 
@@ -186,7 +185,6 @@ Scheduler::executeEvent(const boost::system::error_code& error)
 }
 
 } // namespace scheduler
-} // namespace util
 } // namespace ndn
 
 #endif // NDN_IND_HAVE_BOOST_ASIO

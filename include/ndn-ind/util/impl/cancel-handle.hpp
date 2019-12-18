@@ -29,7 +29,7 @@
 #include <functional>
 
 namespace ndn {
-namespace detail {
+namespace scheduler {
 
 /** \brief Handle to cancel an operation.
  */
@@ -99,7 +99,7 @@ private:
   CancelHandle m_hdl;
 };
 
-} // namespace detail
+} // namespace scheduler
 } // namespace ndn
 
 #endif // NDN_DETAIL_CANCEL_HANDLE_HPP

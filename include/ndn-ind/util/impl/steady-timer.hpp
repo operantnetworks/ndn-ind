@@ -31,8 +31,7 @@
 #include <boost/asio/basic_waitable_timer.hpp>
 
 namespace ndn {
-namespace util {
-namespace detail {
+namespace scheduler {
 
 class SteadyTimer : public boost::asio::basic_waitable_timer<time::steady_clock>
 {
@@ -40,8 +39,7 @@ public:
   using boost::asio::basic_waitable_timer<time::steady_clock>::basic_waitable_timer;
 };
 
-} // namespace detail
-} // namespace util
+} // namespace scheduler
 } // namespace ndn
 
 #endif // NDN_UTIL_IMPL_STEADY_TIMER_HPP

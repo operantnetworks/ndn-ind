@@ -36,14 +36,10 @@
 #include <set>
 
 namespace ndn {
-namespace util {
-
-namespace detail {
-class SteadyTimer;
-} // namespace detail
 
 namespace scheduler {
 
+class SteadyTimer;
 class Scheduler;
 class EventInfo;
 
@@ -62,19 +58,12 @@ using EventCallback = std::function<void()>;
  *  \warning Canceling an event after the scheduler has been destructed may trigger undefined
  *           behavior.
  */
-class EventId : public ndn::detail::CancelHandle
+class EventId : public CancelHandle
 {
 public:
   /** \brief Constructs an empty EventId
    */
   EventId() noexcept = default;
-
-  /** \brief Allow implicit conversion from nullptr.
-   */
-  [[deprecated]]
-  EventId(std::nullptr_t) noexcept
-  {
-  }
 
   /** \brief Determine whether the event is valid.
    *  \retval true The event is valid.
@@ -130,20 +119,12 @@ operator<<(std::ostream& os, const EventId& eventId);
  *  \warning Canceling an event after the scheduler has been destructed may trigger undefined
  *           behavior.
  */
-class ScopedEventId : public ndn::detail::ScopedCancelHandle
+class ScopedEventId : public ScopedCancelHandle
 {
 public:
   using ScopedCancelHandle::ScopedCancelHandle;
 
   ScopedEventId() noexcept = default;
-
-  /** \deprecated Scheduler argument is no longer necessary. Use default construction instead.
-   */
-  [[deprecated]]
-  explicit
-  ScopedEventId(Scheduler&) noexcept
-  {
-  }
 };
 
 /** \brief Generic time-based scheduler
@@ -161,24 +142,6 @@ public:
    */
   EventId
   schedule(std::chrono::nanoseconds after, EventCallback callback);
-
-  /** \deprecated use schedule(after, callback)
-   */
-  [[deprecated("use schedule(after, callback)")]]
-  EventId
-  scheduleEvent(std::chrono::nanoseconds after, EventCallback callback)
-  {
-    return schedule(after, std::move(callback));
-  }
-
-  /** \deprecated use EventId::cancel()
-   */
-  [[deprecated("use EventId::cancel()")]]
-  void
-  cancelEvent(const EventId& eid)
-  {
-    eid.cancel();
-  }
 
   /** \brief Cancel all scheduled events
    */
@@ -213,7 +176,7 @@ private:
   using EventQueue = std::multiset<std::shared_ptr<EventInfo>, EventQueueCompare>;
   EventQueue m_queue;
 
-  std::unique_ptr<util::detail::SteadyTimer> m_timer;
+  std::unique_ptr<SteadyTimer> m_timer;
   bool m_isEventExecuting = false;
 
   friend EventId;
@@ -221,17 +184,6 @@ private:
 };
 
 } // namespace scheduler
-
-// for backwards compatibility
-using Scheduler [[deprecated]] = scheduler::Scheduler;
-
-} // namespace util
-
-namespace scheduler = util::scheduler;
-using scheduler::Scheduler;
-
-// for backwards compatibility
-using EventId [[deprecated]] = util::scheduler::EventId;
 
 } // namespace ndn
 
