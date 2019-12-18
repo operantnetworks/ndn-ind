@@ -1,10 +1,13 @@
-Interim changes since NDN-CPP v0.17 (2019-12-17)
+Interim changes since NDN-CPP v0.17 (2019-12-18)
 ------------------------------------------------
 
 Changes
 * Renamed NDN-CPP to NDN-IND. Renamed include paths to <ndn-ind/...>. Renamed the
   libraries to libndn-ind.a, etc.
-* Added ndn::util::Scheduler and time utilities in ndn::time .
+* contrib/ndn-cxx: Put Scheduler, ScopedEventId, etc. in the ndn::scheduler namespace.
+  Change to use std::chrono. Remove unneeded CustomClock and system_clock wrapper.
+  Renamed the ndn::time::steady_clock wrapper (only needed for macOS) to
+  ndn::scheduler::MonotonicSteadyClock.
 * In Interest, changed the MustBeFresh default value to false.
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .
 * In examples and unit tests, use the default Face which doesn't require TCP.
