@@ -27,6 +27,7 @@
 #ifdef NDN_IND_HAVE_BOOST_ASIO
 
 #include <boost/asio.hpp>
+#include <boost/move/unique_ptr.hpp>
 #include "face.hpp"
 
 namespace ndn {
@@ -259,7 +260,7 @@ private:
   getDefaultConnectionInfo();
 
   // This is only used if the io_service is not supplied to the constructor.
-  std::unique_ptr<boost::asio::io_service> internalIoService_;
+  boost::movelib::unique_ptr<boost::asio::io_service> internalIoService_;
   boost::asio::io_service& ioService_;
 };
 

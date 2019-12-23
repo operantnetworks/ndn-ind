@@ -24,6 +24,7 @@
 #ifdef NDN_IND_HAVE_BOOST_ASIO
 
 #include <boost/bind.hpp>
+#include <boost/move/make_unique.hpp>
 #include <ndn-ind/transport/tcp-transport.hpp>
 #include <ndn-ind/transport/async-tcp-transport.hpp>
 #include <ndn-ind/transport/async-unix-transport.hpp>
@@ -81,7 +82,7 @@ ThreadsafeFace::ThreadsafeFace()
     // Pass in a default transport. We will reset it below.
   : Face(ptr_lib::make_shared<TcpTransport>(),
          ptr_lib::make_shared<TcpTransport::ConnectionInfo>("unused")),
-    internalIoService_(make_unique<boost::asio::io_service>()),
+    internalIoService_(boost::movelib::make_unique<boost::asio::io_service>()),
     ioService_(*internalIoService_)
 {
   // Now reset the Node using the internalIoService_ .
