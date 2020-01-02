@@ -150,7 +150,7 @@ ThreadsafeFace::registerPrefix
     (boost::bind
      (&Node::registerPrefix, node_, registeredPrefixId,
       ptr_lib::make_shared<const Name>(prefix), onInterest, onRegisterFailed,
-      onRegisterSuccess, boost::ref(registrationOptions), boost::ref(wireFormat), this));
+      onRegisterSuccess, registrationOptions, boost::ref(wireFormat), this));
 
   return registeredPrefixId;
 }
