@@ -1,4 +1,4 @@
-Interim changes since NDN-CPP v0.17 (2020-01-02)
+Interim changes since NDN-CPP v0.17 (2020-01-09)
 ------------------------------------------------
 
 Changes
@@ -9,6 +9,7 @@ Changes
   Renamed the ndn::time::steady_clock wrapper (only needed for macOS) to
   ndn::scheduler::MonotonicSteadyClock.
 * In Interest, changed the MustBeFresh default value to false.
+* Added Tlv0_3WireFormat.
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .
 * In examples and unit tests, use the default Face which doesn't require TCP.
 
