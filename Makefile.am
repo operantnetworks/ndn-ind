@@ -44,18 +44,14 @@ CLEANFILES = \
   tools/usersync/content-meta-info.pb.cc
 
 check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
-  bin/unit-tests/test-aes-algorithm bin/unit-tests/test-certificate \
-  bin/unit-tests/test-consumer bin/unit-tests/test-consumer-db \
+  bin/unit-tests/test-certificate \
   bin/unit-tests/test-control-parameters-encode-decode \
   bin/unit-tests/test-control-response \
   bin/unit-tests/test-data-methods bin/unit-tests/test-decryptor-v2 \
   bin/unit-tests/test-der-encode-decode \
-  bin/unit-tests/test-encrypted-content bin/unit-tests/test-encryptor \
-  bin/unit-tests/test-encryptor-v2 \
-  bin/unit-tests/test-face-methods bin/unit-tests/test-group-manager-db \
-  bin/unit-tests/test-group-manager bin/unit-tests/test-identity-methods \
-  bin/unit-tests/test-interest-methods \
-  bin/unit-tests/test-interval bin/unit-tests/test-key-chain \
+  bin/unit-tests/test-encrypted-content bin/unit-tests/test-encryptor-v2 \
+  bin/unit-tests/test-face-methods bin/unit-tests/test-identity-methods \
+  bin/unit-tests/test-interest-methods bin/unit-tests/test-key-chain \
   bin/unit-tests/test-invertible-bloom-lookup-table \
   bin/unit-tests/test-name-conventions \
   bin/unit-tests/test-name-methods bin/unit-tests/test-pib-certificate-container \
@@ -63,11 +59,8 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
   bin/unit-tests/test-pib-identity-impl bin/unit-tests/test-pib-impl \
   bin/unit-tests/test-pib-key-container bin/unit-tests/test-pib-key-impl \
   bin/unit-tests/test-policy-manager bin/unit-tests/test-policy-manager-v2 \
-  bin/unit-tests/test-producer bin/unit-tests/test-producer-db \
   bin/unit-tests/test-psync-state bin/unit-tests/test-regex \
   bin/unit-tests/test-registration-callbacks \
-  bin/unit-tests/test-repetitive-interval \
-  bin/unit-tests/test-rsa-algorithm bin/unit-tests/test-schedule \
   bin/unit-tests/test-signing-info bin/unit-tests/test-tpm-back-ends \
   bin/unit-tests/test-tpm-private-key bin/unit-tests/test-validation-policy-command-interest \
   bin/unit-tests/test-validation-policy-config bin/unit-tests/test-validator-null \
@@ -151,27 +144,9 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/encoding/tlv-wire-format.hpp \
   include/ndn-ind/encoding/wire-format.hpp \
   include/ndn-ind/encrypt/access-manager-v2.hpp \
-  include/ndn-ind/encrypt/consumer.hpp \
-  include/ndn-ind/encrypt/consumer-db.hpp \
-  include/ndn-ind/encrypt/decrypt-key.hpp \
   include/ndn-ind/encrypt/decryptor-v2.hpp \
-  include/ndn-ind/encrypt/encrypt-key.hpp \
   include/ndn-ind/encrypt/encrypted-content.hpp \
   include/ndn-ind/encrypt/encryptor-v2.hpp \
-  include/ndn-ind/encrypt/interval.hpp \
-  include/ndn-ind/encrypt/group-manager.hpp \
-  include/ndn-ind/encrypt/group-manager-db.hpp \
-  include/ndn-ind/encrypt/producer.hpp \
-  include/ndn-ind/encrypt/producer-db.hpp \
-  include/ndn-ind/encrypt/repetitive-interval.hpp \
-  include/ndn-ind/encrypt/schedule.hpp \
-  include/ndn-ind/encrypt/sqlite3-consumer-db.hpp \
-  include/ndn-ind/encrypt/sqlite3-group-manager-db.hpp \
-  include/ndn-ind/encrypt/sqlite3-producer-db.hpp \
-  include/ndn-ind/encrypt/algo/aes-algorithm.hpp \
-  include/ndn-ind/encrypt/algo/encrypt-params.hpp \
-  include/ndn-ind/encrypt/algo/encryptor.hpp \
-  include/ndn-ind/encrypt/algo/rsa-algorithm.hpp \
   include/ndn-ind/in-memory-storage/in-memory-storage-retaining.hpp \
   include/ndn-ind/lite/common-lite.hpp \
   include/ndn-ind/lite/control-parameters-lite.hpp \
@@ -194,7 +169,6 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/lite/encrypt/encrypted-content-lite.hpp \
   include/ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp \
   include/ndn-ind/lite/encrypt/algo/des-algorithm-lite.hpp \
-  include/ndn-ind/lite/encrypt/algo/encrypt-params-lite.hpp \
   include/ndn-ind/lite/lp/congestion-mark-lite.hpp \
   include/ndn-ind/lite/lp/incoming-face-id-lite.hpp \
   include/ndn-ind/lite/lp/lp-packet-lite.hpp \
@@ -298,7 +272,6 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/util/exponential-re-express.hpp \
   include/ndn-ind/util/logging.hpp \
   include/ndn-ind/util/memory-content-cache.hpp \
-  include/ndn-ind/util/scheduler.hpp \
   include/ndn-ind/util/segment-fetcher.hpp \
   include/ndn-ind/util/signed-blob.hpp \
   include/ndn-ind/util/impl/asio-fwd.hpp \
@@ -350,7 +323,6 @@ libndn_c_la_SOURCES = ${ndn_ind_c_headers} \
   src/c/encrypt/encrypted-content.h \
   src/c/encrypt/algo/aes-algorithm_c.c src/c/encrypt/algo/aes-algorithm.h \
   src/c/encrypt/algo/des-algorithm_c.c src/c/encrypt/algo/des-algorithm.h \
-  src/c/encrypt/algo/encrypt-params.h \
   src/c/lp/congestion-mark_c.c src/c/lp/congestion-mark.h \
   src/c/lp/incoming-face-id_c.c src/c/lp/incoming-face-id.h \
   src/c/lp/lp-packet.h \
@@ -411,25 +383,9 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/encoding/der/der-exception.cpp src/encoding/der/der-exception.hpp \
   src/encoding/der/der-node.cpp src/encoding/der/der-node.hpp \
   src/encrypt/access-manager-v2.cpp \
-  src/encrypt/consumer.cpp \
-  src/encrypt/consumer-db.cpp \
   src/encrypt/decryptor-v2.cpp \
   src/encrypt/encrypted-content.cpp \
   src/encrypt/encryptor-v2.cpp \
-  src/encrypt/group-manager.cpp \
-  src/encrypt/group-manager-db.cpp \
-  src/encrypt/interval.cpp \
-  src/encrypt/producer.cpp \
-  src/encrypt/producer-db.cpp \
-  src/encrypt/repetitive-interval.cpp \
-  src/encrypt/schedule.cpp \
-  src/encrypt/sqlite3-consumer-db.cpp \
-  src/encrypt/sqlite3-group-manager-db.cpp \
-  src/encrypt/sqlite3-producer-db.cpp \
-  src/encrypt/algo/aes-algorithm.cpp \
-  src/encrypt/algo/encrypt-params.cpp \
-  src/encrypt/algo/encryptor.cpp \
-  src/encrypt/algo/rsa-algorithm.cpp \
   src/impl/delayed-call-table.cpp src/impl/delayed-call-table.hpp \
   src/impl/interest-filter-table.cpp src/impl/interest-filter-table.hpp \
   src/impl/pending-interest-table.cpp src/impl/pending-interest-table.hpp \
@@ -453,7 +409,6 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/lite/encrypt/encrypted-content-lite.cpp \
   src/lite/encrypt/algo/aes-algorithm-lite.cpp \
   src/lite/encrypt/algo/des-algorithm-lite.cpp \
-  src/lite/encrypt/algo/encrypt-params-lite.cpp \
   src/lite/lp/congestion-mark-lite.cpp \
   src/lite/lp/incoming-face-id-lite.cpp \
   src/lite/lp/lp-packet-lite.cpp \
@@ -670,21 +625,9 @@ bin_unit_tests_test_access_manager_v2_SOURCES = tests/unit-tests/test-access-man
 bin_unit_tests_test_access_manager_v2_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_access_manager_v2_LDADD = libndn-ind.la
 
-bin_unit_tests_test_aes_algorithm_SOURCES = tests/unit-tests/test-aes-algorithm.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_aes_algorithm_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_aes_algorithm_LDADD = libndn-ind.la
-
 bin_unit_tests_test_certificate_SOURCES = tests/unit-tests/test-certificate.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_certificate_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_certificate_LDADD = libndn-ind.la
-
-bin_unit_tests_test_consumer_SOURCES = tests/unit-tests/test-consumer.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_consumer_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_consumer_LDADD = libndn-ind.la
-
-bin_unit_tests_test_consumer_db_SOURCES = tests/unit-tests/test-consumer-db.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_consumer_db_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_consumer_db_LDADD = libndn-ind.la
 
 bin_unit_tests_test_control_parameters_encode_decode_SOURCES = tests/unit-tests/test-control-parameters-encode-decode.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_control_parameters_encode_decode_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
@@ -714,10 +657,6 @@ bin_unit_tests_test_encrypted_content_SOURCES = tests/unit-tests/test-encrypted-
 bin_unit_tests_test_encrypted_content_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_encrypted_content_LDADD = libndn-ind.la
 
-bin_unit_tests_test_encryptor_SOURCES = tests/unit-tests/test-encryptor.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_encryptor_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_encryptor_LDADD = libndn-ind.la
-
 bin_unit_tests_test_encryptor_v2_SOURCES = tests/unit-tests/test-encryptor-v2.cpp \
   tests/unit-tests/encrypt-static-data.cpp \
   tests/unit-tests/identity-management-fixture.cpp \
@@ -730,14 +669,6 @@ bin_unit_tests_test_face_methods_SOURCES = tests/unit-tests/test-face-methods.cp
 bin_unit_tests_test_face_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_face_methods_LDADD = libndn-ind.la
 
-bin_unit_tests_test_group_manager_SOURCES = tests/unit-tests/test-group-manager.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_group_manager_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_group_manager_LDADD = libndn-ind.la
-
-bin_unit_tests_test_group_manager_db_SOURCES = tests/unit-tests/test-group-manager-db.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_group_manager_db_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_group_manager_db_LDADD = libndn-ind.la
-
 bin_unit_tests_test_identity_methods_SOURCES = tests/unit-tests/test-identity-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_identity_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_identity_methods_LDADD = libndn-ind.la
@@ -745,10 +676,6 @@ bin_unit_tests_test_identity_methods_LDADD = libndn-ind.la
 bin_unit_tests_test_interest_methods_SOURCES = tests/unit-tests/test-interest-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_interest_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_interest_methods_LDADD = libndn-ind.la
-
-bin_unit_tests_test_interval_SOURCES = tests/unit-tests/test-interval.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_interval_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_interval_LDADD = libndn-ind.la
 
 bin_unit_tests_test_key_chain_SOURCES = tests/unit-tests/test-key-chain.cpp \
   tests/unit-tests/identity-management-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
@@ -807,14 +734,6 @@ bin_unit_tests_test_policy_manager_v2_SOURCES = tests/unit-tests/test-policy-man
 bin_unit_tests_test_policy_manager_v2_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_policy_manager_v2_LDADD = libndn-ind.la
 
-bin_unit_tests_test_producer_SOURCES = tests/unit-tests/test-producer.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_producer_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_producer_LDADD = libndn-ind.la
-
-bin_unit_tests_test_producer_db_SOURCES = tests/unit-tests/test-producer-db.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_producer_db_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_producer_db_LDADD = libndn-ind.la
-
 bin_unit_tests_test_regex_SOURCES = tests/unit-tests/test-regex.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_regex_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_regex_LDADD = libndn-ind.la
@@ -826,18 +745,6 @@ bin_unit_tests_test_psync_state_LDADD = libndn-ind.la
 bin_unit_tests_test_registration_callbacks_SOURCES = tests/unit-tests/test-registration-callbacks.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_registration_callbacks_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_registration_callbacks_LDADD = libndn-ind.la
-
-bin_unit_tests_test_repetitive_interval_SOURCES = tests/unit-tests/test-repetitive-interval.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_repetitive_interval_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_repetitive_interval_LDADD = libndn-ind.la
-
-bin_unit_tests_test_rsa_algorithm_SOURCES = tests/unit-tests/test-rsa-algorithm.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_rsa_algorithm_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_rsa_algorithm_LDADD = libndn-ind.la
-
-bin_unit_tests_test_schedule_SOURCES = tests/unit-tests/test-schedule.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_schedule_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_schedule_LDADD = libndn-ind.la
 
 bin_unit_tests_test_signing_info_SOURCES = tests/unit-tests/test-signing-info.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_signing_info_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
