@@ -386,45 +386,6 @@ Tlv0_3WireFormat::decodeDelegationSet
 }
 
 Blob
-Tlv0_3WireFormat::encodeEncryptedContent
-  (const EncryptedContent& encryptedContent)
-{
-  struct ndn_NameComponent keyNameComponents[100];
-  EncryptedContentLite encryptedContentLite
-    (keyNameComponents,
-     sizeof(keyNameComponents) / sizeof(keyNameComponents[0]));
-  encryptedContent.get(encryptedContentLite);
-
-  DynamicUInt8Vector output(256);
-  ndn_Error error;
-  size_t encodingLength;
-  if ((error = Tlv0_3WireFormatLite::encodeEncryptedContent
-       (encryptedContentLite, DynamicUInt8ArrayLite::downCast(output),
-        &encodingLength)))
-    throw runtime_error(ndn_getErrorString(error));
-
-  return output.finish(encodingLength);
-}
-
-void
-Tlv0_3WireFormat::decodeEncryptedContent
-  (EncryptedContent& encryptedContent, const uint8_t *input,
-   size_t inputLength)
-{
-  struct ndn_NameComponent keyNameComponents[100];
-  EncryptedContentLite encryptedContentLite
-    (keyNameComponents,
-     sizeof(keyNameComponents) / sizeof(keyNameComponents[0]));
-
-  ndn_Error error;
-  if ((error = Tlv0_3WireFormatLite::decodeEncryptedContent
-       (encryptedContentLite, input, inputLength)))
-    throw runtime_error(ndn_getErrorString(error));
-
-  encryptedContent.set(encryptedContentLite);
-}
-
-Blob
 Tlv0_3WireFormat::encodeEncryptedContentV2
   (const EncryptedContent& encryptedContent)
 {

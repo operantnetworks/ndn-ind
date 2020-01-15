@@ -48,8 +48,7 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
   bin/unit-tests/test-control-parameters-encode-decode \
   bin/unit-tests/test-control-response \
   bin/unit-tests/test-data-methods bin/unit-tests/test-decryptor-v2 \
-  bin/unit-tests/test-der-encode-decode \
-  bin/unit-tests/test-encrypted-content bin/unit-tests/test-encryptor-v2 \
+  bin/unit-tests/test-der-encode-decode bin/unit-tests/test-encryptor-v2 \
   bin/unit-tests/test-face-methods bin/unit-tests/test-identity-methods \
   bin/unit-tests/test-interest-methods bin/unit-tests/test-key-chain \
   bin/unit-tests/test-invertible-bloom-lookup-table \
@@ -652,10 +651,6 @@ bin_unit_tests_test_decryptor_v2_LDADD = libndn-ind.la
 bin_unit_tests_test_der_encode_decode_SOURCES = tests/unit-tests/test-der-encode-decode.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_der_encode_decode_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_der_encode_decode_LDADD = libndn-ind.la
-
-bin_unit_tests_test_encrypted_content_SOURCES = tests/unit-tests/test-encrypted-content.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_encrypted_content_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_encrypted_content_LDADD = libndn-ind.la
 
 bin_unit_tests_test_encryptor_v2_SOURCES = tests/unit-tests/test-encryptor-v2.cpp \
   tests/unit-tests/encrypt-static-data.cpp \

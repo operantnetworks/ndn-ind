@@ -22,49 +22,6 @@
 #include "tlv-name.h"
 #include "tlv-encrypted-content.h"
 
-/**
- * This private function is called by ndn_TlvEncoder_writeNestedTlv to write the TLVs
- * in the body of the EncryptedContent v1 value.
- * @param context This is the ndn_EncryptedContent struct pointer which was
- * passed to writeTlv.
- * @param encoder the ndn_TlvEncoder which is calling this.
- * @return 0 for success, else an error code.
- */
-static ndn_Error
-encodeEncryptedContentValue(const void *context, struct ndn_TlvEncoder *encoder)
-{
-  struct ndn_EncryptedContent *encryptedContent =
-    (struct ndn_EncryptedContent *)context;
-  ndn_Error error;
-
-  if ((error = ndn_TlvEncoder_writeNestedTlv
-       (encoder, ndn_Tlv_KeyLocator, ndn_encodeTlvKeyLocatorValue,
-        &encryptedContent->keyLocator, 0)))
-    return error;
-  if ((error = ndn_TlvEncoder_writeNonNegativeIntegerTlv
-       (encoder, ndn_Tlv_Encrypt_EncryptionAlgorithm,
-        encryptedContent->algorithmType)))
-    return error;
-  if ((error = ndn_TlvEncoder_writeOptionalBlobTlv
-       (encoder, ndn_Tlv_Encrypt_InitialVector, &encryptedContent->initialVector)))
-    return error;
-  if ((error = ndn_TlvEncoder_writeBlobTlv
-       (encoder, ndn_Tlv_Encrypt_EncryptedPayload, &encryptedContent->payload)))
-    return error;
-
-  return NDN_ERROR_success;
-}
-
-ndn_Error
-ndn_encodeTlvEncryptedContent
-  (const struct ndn_EncryptedContent *encryptedContent,
-   struct ndn_TlvEncoder *encoder)
-{
-  return ndn_TlvEncoder_writeNestedTlv
-    (encoder, ndn_Tlv_Encrypt_EncryptedContent, encodeEncryptedContentValue,
-     encryptedContent, 0);
-}
-
 ndn_Error
 ndn_decodeTlvEncryptedContent
   (struct ndn_EncryptedContent *encryptedContent, struct ndn_TlvDecoder *decoder)

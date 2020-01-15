@@ -181,18 +181,6 @@ public:
   }
 
   /**
-   * Encode this to an EncryptedContent v1 wire encoding.
-   * @param wireFormat (optional) A WireFormat object used to encode this
-   * EncryptedContent. If omitted, use WireFormat::getDefaultWireFormat().
-   * @return The encoded byte array.
-   */
-  Blob
-  wireEncode(WireFormat& wireFormat = *WireFormat::getDefaultWireFormat()) const
-  {
-    return wireFormat.encodeEncryptedContent(*this);
-  }
-
-  /**
    * Encode this to an EncryptedContent v2 (used in Name-based Access Control
    * v2) wire encoding.
    * @param wireFormat (optional) A WireFormat object used to encode this
@@ -203,52 +191,6 @@ public:
   wireEncodeV2(WireFormat& wireFormat = *WireFormat::getDefaultWireFormat()) const
   {
     return wireFormat.encodeEncryptedContentV2(*this);
-  }
-
-  /**
-   * Decode the input as an EncryptedContent v1 using a particular wire format
-   * and update this EncryptedContent.
-   * @param input The input byte array to be decoded.
-   * @param inputLength The length of input.
-   * @param wireFormat (optional) A WireFormat object used to decode the input.
-   * If omitted, use WireFormat::getDefaultWireFormat().
-   */
-  void
-  wireDecode
-    (const uint8_t *input, size_t inputLength,
-     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
-  {
-    wireFormat.decodeEncryptedContent(*this, input, inputLength);
-  }
-
-  /**
-   * Decode the input as an EncryptedContent v1 using a particular wire format
-   * and update this EncryptedContent.
-   * @param input The input byte array to be decoded.
-   * @param wireFormat (optional) A WireFormat object used to decode the input.
-   * If omitted, use WireFormat::getDefaultWireFormat().
-   */
-  void
-  wireDecode
-    (const std::vector<uint8_t>& input,
-     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
-  {
-    wireDecode(&input[0], input.size(), wireFormat);
-  }
-
-  /**
-   * Decode the input as an EncryptedContent v1 using a particular wire format
-   * and update this EncryptedContent.
-   * @param input The input byte array to be decoded as an immutable Blob.
-   * @param wireFormat (optional) A WireFormat object used to decode the input.
-   * If omitted, use WireFormat::getDefaultWireFormat().
-   */
-  void
-  wireDecode
-    (const Blob& input,
-     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
-  {
-    wireDecode(input.buf(), input.size(), wireFormat);
   }
 
   /**

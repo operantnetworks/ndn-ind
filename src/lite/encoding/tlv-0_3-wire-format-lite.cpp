@@ -183,24 +183,6 @@ Tlv0_3WireFormatLite::decodeDelegationSet_Delegation
 }
 
 ndn_Error
-Tlv0_3WireFormatLite::encodeEncryptedContent
-  (const EncryptedContentLite& encryptedContent,
-   DynamicUInt8ArrayLite& output, size_t* encodingLength)
-{
-  return ndn_Tlv0_2WireFormat_encodeEncryptedContent
-    (&encryptedContent, &output, encodingLength);
-}
-
-ndn_Error
-Tlv0_3WireFormatLite::decodeEncryptedContent
-  (EncryptedContentLite& encryptedContent, const uint8_t* input,
-   size_t inputLength)
-{
-  return ndn_Tlv0_2WireFormat_decodeEncryptedContent
-    (&encryptedContent, input, inputLength);
-}
-
-ndn_Error
 Tlv0_3WireFormatLite::encodeEncryptedContentV2
   (const EncryptedContentLite& encryptedContent,
    DynamicUInt8ArrayLite& output, size_t* encodingLength)

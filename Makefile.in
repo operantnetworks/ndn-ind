@@ -100,7 +100,6 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2$(EXEEXT) \
 	bin/unit-tests/test-data-methods$(EXEEXT) \
 	bin/unit-tests/test-decryptor-v2$(EXEEXT) \
 	bin/unit-tests/test-der-encode-decode$(EXEEXT) \
-	bin/unit-tests/test-encrypted-content$(EXEEXT) \
 	bin/unit-tests/test-encryptor-v2$(EXEEXT) \
 	bin/unit-tests/test-face-methods$(EXEEXT) \
 	bin/unit-tests/test-identity-methods$(EXEEXT) \
@@ -590,11 +589,6 @@ am_bin_unit_tests_test_der_encode_decode_OBJECTS = tests/unit-tests/bin_unit_tes
 bin_unit_tests_test_der_encode_decode_OBJECTS =  \
 	$(am_bin_unit_tests_test_der_encode_decode_OBJECTS)
 bin_unit_tests_test_der_encode_decode_DEPENDENCIES = libndn-ind.la
-am_bin_unit_tests_test_encrypted_content_OBJECTS = tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.$(OBJEXT) \
-	contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.$(OBJEXT)
-bin_unit_tests_test_encrypted_content_OBJECTS =  \
-	$(am_bin_unit_tests_test_encrypted_content_OBJECTS)
-bin_unit_tests_test_encrypted_content_DEPENDENCIES = libndn-ind.la
 am_bin_unit_tests_test_encryptor_v2_OBJECTS = tests/unit-tests/bin_unit_tests_test_encryptor_v2-test-encryptor-v2.$(OBJEXT) \
 	tests/unit-tests/bin_unit_tests_test_encryptor_v2-encrypt-static-data.$(OBJEXT) \
 	tests/unit-tests/bin_unit_tests_test_encryptor_v2-identity-management-fixture.$(OBJEXT) \
@@ -779,7 +773,6 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_data_methods-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-gtest-all.Po \
-	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_face_methods-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_identity_methods-gtest-all.Po \
@@ -1064,7 +1057,6 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-in-memory-storage-face.Po \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-test-decryptor-v2.Po \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-test-der-encode-decode.Po \
-	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Po \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-encrypt-static-data.Po \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-identity-management-fixture.Po \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-in-memory-storage-face.Po \
@@ -1180,7 +1172,6 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_unit_tests_test_data_methods_SOURCES) \
 	$(bin_unit_tests_test_decryptor_v2_SOURCES) \
 	$(bin_unit_tests_test_der_encode_decode_SOURCES) \
-	$(bin_unit_tests_test_encrypted_content_SOURCES) \
 	$(bin_unit_tests_test_encryptor_v2_SOURCES) \
 	$(bin_unit_tests_test_face_methods_SOURCES) \
 	$(bin_unit_tests_test_identity_methods_SOURCES) \
@@ -1240,7 +1231,6 @@ DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_unit_tests_test_data_methods_SOURCES) \
 	$(bin_unit_tests_test_decryptor_v2_SOURCES) \
 	$(bin_unit_tests_test_der_encode_decode_SOURCES) \
-	$(bin_unit_tests_test_encrypted_content_SOURCES) \
 	$(bin_unit_tests_test_encryptor_v2_SOURCES) \
 	$(bin_unit_tests_test_face_methods_SOURCES) \
 	$(bin_unit_tests_test_identity_methods_SOURCES) \
@@ -2308,9 +2298,6 @@ bin_unit_tests_test_decryptor_v2_LDADD = libndn-ind.la
 bin_unit_tests_test_der_encode_decode_SOURCES = tests/unit-tests/test-der-encode-decode.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_der_encode_decode_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_der_encode_decode_LDADD = libndn-ind.la
-bin_unit_tests_test_encrypted_content_SOURCES = tests/unit-tests/test-encrypted-content.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_encrypted_content_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_encrypted_content_LDADD = libndn-ind.la
 bin_unit_tests_test_encryptor_v2_SOURCES = tests/unit-tests/test-encryptor-v2.cpp \
   tests/unit-tests/encrypt-static-data.cpp \
   tests/unit-tests/identity-management-fixture.cpp \
@@ -3592,16 +3579,6 @@ contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_der_encode_decode-gtest-
 bin/unit-tests/test-der-encode-decode$(EXEEXT): $(bin_unit_tests_test_der_encode_decode_OBJECTS) $(bin_unit_tests_test_der_encode_decode_DEPENDENCIES) $(EXTRA_bin_unit_tests_test_der_encode_decode_DEPENDENCIES) bin/unit-tests/$(am__dirstamp)
 	@rm -f bin/unit-tests/test-der-encode-decode$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(bin_unit_tests_test_der_encode_decode_OBJECTS) $(bin_unit_tests_test_der_encode_decode_LDADD) $(LIBS)
-tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.$(OBJEXT):  \
-	tests/unit-tests/$(am__dirstamp) \
-	tests/unit-tests/$(DEPDIR)/$(am__dirstamp)
-contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.$(OBJEXT):  \
-	contrib/gtest-1.7.0/fused-src/gtest/$(am__dirstamp) \
-	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/$(am__dirstamp)
-
-bin/unit-tests/test-encrypted-content$(EXEEXT): $(bin_unit_tests_test_encrypted_content_OBJECTS) $(bin_unit_tests_test_encrypted_content_DEPENDENCIES) $(EXTRA_bin_unit_tests_test_encrypted_content_DEPENDENCIES) bin/unit-tests/$(am__dirstamp)
-	@rm -f bin/unit-tests/test-encrypted-content$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(bin_unit_tests_test_encrypted_content_OBJECTS) $(bin_unit_tests_test_encrypted_content_LDADD) $(LIBS)
 tests/unit-tests/bin_unit_tests_test_encryptor_v2-test-encryptor-v2.$(OBJEXT):  \
 	tests/unit-tests/$(am__dirstamp) \
 	tests/unit-tests/$(DEPDIR)/$(am__dirstamp)
@@ -4028,7 +4005,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_data_methods-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-gtest-all.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_face_methods-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_identity_methods-gtest-all.Po@am__quote@ # am--include-marker
@@ -4323,7 +4299,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-in-memory-storage-face.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-test-decryptor-v2.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-test-der-encode-decode.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-encrypt-static-data.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-identity-management-fixture.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-in-memory-storage-face.Po@am__quote@ # am--include-marker
@@ -4705,34 +4680,6 @@ contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_der_encode_decode-gtest-
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc' object='contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_der_encode_decode-gtest-all.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_der_encode_decode_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_der_encode_decode-gtest-all.obj `if test -f 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; then $(CYGPATH_W) 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; else $(CYGPATH_W) '$(srcdir)/contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; fi`
-
-tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.o: tests/unit-tests/test-encrypted-content.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.o -MD -MP -MF tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Tpo -c -o tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.o `test -f 'tests/unit-tests/test-encrypted-content.cpp' || echo '$(srcdir)/'`tests/unit-tests/test-encrypted-content.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Tpo tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unit-tests/test-encrypted-content.cpp' object='tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.o `test -f 'tests/unit-tests/test-encrypted-content.cpp' || echo '$(srcdir)/'`tests/unit-tests/test-encrypted-content.cpp
-
-tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.obj: tests/unit-tests/test-encrypted-content.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.obj -MD -MP -MF tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Tpo -c -o tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.obj `if test -f 'tests/unit-tests/test-encrypted-content.cpp'; then $(CYGPATH_W) 'tests/unit-tests/test-encrypted-content.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/unit-tests/test-encrypted-content.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Tpo tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='tests/unit-tests/test-encrypted-content.cpp' object='tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o tests/unit-tests/bin_unit_tests_test_encrypted_content-test-encrypted-content.obj `if test -f 'tests/unit-tests/test-encrypted-content.cpp'; then $(CYGPATH_W) 'tests/unit-tests/test-encrypted-content.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/unit-tests/test-encrypted-content.cpp'; fi`
-
-contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.o: contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.o -MD -MP -MF contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Tpo -c -o contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.o `test -f 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc' || echo '$(srcdir)/'`contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Tpo contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc' object='contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.o `test -f 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc' || echo '$(srcdir)/'`contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-
-contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.obj: contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.obj -MD -MP -MF contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Tpo -c -o contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.obj `if test -f 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; then $(CYGPATH_W) 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; else $(CYGPATH_W) '$(srcdir)/contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Tpo contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc' object='contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encrypted_content_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_encrypted_content-gtest-all.obj `if test -f 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; then $(CYGPATH_W) 'contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; else $(CYGPATH_W) '$(srcdir)/contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc'; fi`
 
 tests/unit-tests/bin_unit_tests_test_encryptor_v2-test-encryptor-v2.o: tests/unit-tests/test-encryptor-v2.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bin_unit_tests_test_encryptor_v2_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT tests/unit-tests/bin_unit_tests_test_encryptor_v2-test-encryptor-v2.o -MD -MP -MF tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-test-encryptor-v2.Tpo -c -o tests/unit-tests/bin_unit_tests_test_encryptor_v2-test-encryptor-v2.o `test -f 'tests/unit-tests/test-encryptor-v2.cpp' || echo '$(srcdir)/'`tests/unit-tests/test-encryptor-v2.cpp
@@ -6094,13 +6041,6 @@ bin/unit-tests/test-der-encode-decode.log: bin/unit-tests/test-der-encode-decode
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-bin/unit-tests/test-encrypted-content.log: bin/unit-tests/test-encrypted-content$(EXEEXT)
-	@p='bin/unit-tests/test-encrypted-content$(EXEEXT)'; \
-	b='bin/unit-tests/test-encrypted-content'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
 bin/unit-tests/test-encryptor-v2.log: bin/unit-tests/test-encryptor-v2$(EXEEXT)
 	@p='bin/unit-tests/test-encryptor-v2$(EXEEXT)'; \
 	b='bin/unit-tests/test-encryptor-v2'; \
@@ -6651,7 +6591,6 @@ distclean: distclean-recursive
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_data_methods-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-gtest-all.Po
-	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_face_methods-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_identity_methods-gtest-all.Po
@@ -6946,7 +6885,6 @@ distclean: distclean-recursive
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-in-memory-storage-face.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-test-decryptor-v2.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-test-der-encode-decode.Po
-	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-encrypt-static-data.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-identity-management-fixture.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-in-memory-storage-face.Po
@@ -7049,7 +6987,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_data_methods-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-gtest-all.Po
-	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encrypted_content-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_face_methods-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_identity_methods-gtest-all.Po
@@ -7344,7 +7281,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-in-memory-storage-face.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_decryptor_v2-test-decryptor-v2.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_der_encode_decode-test-der-encode-decode.Po
-	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encrypted_content-test-encrypted-content.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-encrypt-static-data.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-identity-management-fixture.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_encryptor_v2-in-memory-storage-face.Po
