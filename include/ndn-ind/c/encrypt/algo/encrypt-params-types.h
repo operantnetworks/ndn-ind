@@ -36,16 +36,6 @@ typedef enum {
   ndn_EncryptAlgorithmType_RsaOaep = 3
 } ndn_EncryptAlgorithmType;
 
-/**
- * An ndn_EncryptParams holds an algorithm type and other parameters used to
- * encrypt and decrypt.
- * @note This class is an experimental feature. The API may change.
- */
-struct ndn_EncryptParams {
-  ndn_EncryptAlgorithmType algorithmType; /**< -1 for none */
-  struct ndn_Blob initialVector;
-};
-
 #ifdef __cplusplus
 }
 #endif
