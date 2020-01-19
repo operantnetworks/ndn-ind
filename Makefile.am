@@ -147,7 +147,6 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/encrypt/encrypted-content.hpp \
   include/ndn-ind/encrypt/encryptor-v2.hpp \
   include/ndn-ind/in-memory-storage/in-memory-storage-retaining.hpp \
-  include/ndn-ind/lite/common-lite.hpp \
   include/ndn-ind/lite/control-parameters-lite.hpp \
   include/ndn-ind/lite/control-response-lite.hpp \
   include/ndn-ind/lite/data-lite.hpp \
