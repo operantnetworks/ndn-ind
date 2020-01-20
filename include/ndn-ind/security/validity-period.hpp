@@ -120,13 +120,24 @@ public:
 
   /**
    * Check if the time falls within the validity period.
-   * @param time (optional) The time to check as milliseconds since Jan 1,
-   * 1970 UTC. If omitted, use the current time.
+   * @param time The time to check.
    * @return True if the beginning of the validity period is less than or equal
    * to time and time is less than or equal to the end of the validity period.
    */
   bool
-  isValid(MillisecondsSince1970 time = -1.0) const;
+  isValid(const MillisecondsSince1970& time) const
+  {
+    return validityPeriod_.isValid(time);
+  }
+
+  /**
+   * Check if the current time falls within the validity period.
+   * @return True if the beginning of the validity period is less than or equal
+   * to the current time and the current time is less than or equal to the end
+   * of the validity period.
+   */
+  bool
+  isValid() const;
 
   /**
    * If the signature is a type that has a ValidityPeriod (so that

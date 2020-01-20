@@ -31,13 +31,10 @@ using namespace std;
 namespace ndn {
 
 bool
-ValidityPeriod::isValid(MillisecondsSince1970 time) const
+ValidityPeriod::isValid() const
 {
-  if (time < 0.0)
-    // Round up to the nearest second like in setPeriod.
-    time = round(ceil(round(ndn_getNowMilliseconds()) / 1000.0) * 1000.0);
-
-  return validityPeriod_.isValid(time);
+  // Round up to the nearest second like in setPeriod.
+  return isValid(round(ceil(round(ndn_getNowMilliseconds()) / 1000.0) * 1000.0));
 }
 
 bool
