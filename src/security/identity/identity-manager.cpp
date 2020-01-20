@@ -258,8 +258,8 @@ IdentityManager::generateEcdsaKeyPairAsDefault(const Name& identityName, bool is
 Name
 IdentityManager::createIdentityCertificate(const Name& certificatePrefix,
                                            const Name& signerCertificateName,
-                                           const MillisecondsSince1970& notBefore,
-                                           const MillisecondsSince1970& notAfter)
+                                           MillisecondsSince1970 notBefore,
+                                           MillisecondsSince1970 notAfter)
 {
   Name keyName = getKeyNameFromCertificatePrefix(certificatePrefix);
 
@@ -278,8 +278,8 @@ ptr_lib::shared_ptr<IdentityCertificate>
 IdentityManager::createIdentityCertificate(const Name& certificatePrefix,
                                            const PublicKey& publicKey,
                                            const Name& signerCertificateName,
-                                           const MillisecondsSince1970& notBefore,
-                                           const MillisecondsSince1970& notAfter)
+                                           MillisecondsSince1970 notBefore,
+                                           MillisecondsSince1970 notAfter)
 {
   ptr_lib::shared_ptr<IdentityCertificate> certificate(new IdentityCertificate());
   Name keyName = getKeyNameFromCertificatePrefix(certificatePrefix);

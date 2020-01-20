@@ -544,7 +544,7 @@ public:
    * @return The ISO string.
    */
   static std::string
-  toIsoString(const MillisecondsSince1970& time, bool includeFraction = false);
+  toIsoString(MillisecondsSince1970 time, bool includeFraction = false);
 
   /**
    * Convert from the ISO string representation to the internal time format.

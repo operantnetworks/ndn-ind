@@ -165,7 +165,7 @@ public:
    * @throws runtime_error If the SignatureInfo doesn't have a ValidityPeriod.
    */
   bool
-  isValid(const MillisecondsSince1970& time) const
+  isValid(MillisecondsSince1970 time) const
   {
     return getValidityPeriod().isValid(time);
   }

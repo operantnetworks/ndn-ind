@@ -125,7 +125,7 @@ public:
    * to time and time is less than or equal to the end of the validity period.
    */
   bool
-  isValid(const MillisecondsSince1970& time) const
+  isValid(MillisecondsSince1970 time) const
   {
     return validityPeriod_.isValid(time);
   }

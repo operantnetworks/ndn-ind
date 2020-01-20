@@ -448,7 +448,7 @@ DerNode::DerGeneralizedTime::toDerTimeString(MillisecondsSince1970 msSince1970)
 
 string
 DerNode::DerGeneralizedTime::toIsoString
-  (const MillisecondsSince1970& time, bool includeFraction)
+  (MillisecondsSince1970 time, bool includeFraction)
 {
   char isoString[25];
   ndn_Error error;

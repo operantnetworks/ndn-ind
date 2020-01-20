@@ -101,7 +101,7 @@ public:
   getExtensionList() { return extensionList_; }
 
   void
-  setNotBefore(const MillisecondsSince1970& notBefore) { notBefore_ = notBefore; }
+  setNotBefore(MillisecondsSince1970 notBefore) { notBefore_ = notBefore; }
 
   MillisecondsSince1970&
   getNotBefore() { return notBefore_; }
