@@ -29,6 +29,7 @@
 #include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 class TestKeyChain : public ::testing::Test {
@@ -150,10 +151,10 @@ TEST_F(TestKeyChain, SelfSignedCertValidity)
   ASSERT_TRUE(certificate->isValid());
   // Check 10 years from now.
   ASSERT_TRUE(certificate->isValid
-    (ndn_getNowMilliseconds() + 10 * 365 * 24 * 3600 * 1000.0));
+    (system_clock::now() + hours(10 * 365 * 24)));
   // Check that notAfter is later than 10 years from now.
   ASSERT_TRUE(certificate->getValidityPeriod().getNotAfter() >
-    ndn_getNowMilliseconds() + 10 * 365 * 24 * 3600 * 1000.0);
+    system_clock::now() + hours(10 * 365 * 24));
 }
 
 int

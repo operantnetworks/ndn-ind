@@ -24,6 +24,7 @@
 #include <ndn-ind/security/v2/validation-policy-command-interest.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 namespace ndn {
@@ -57,7 +58,7 @@ ValidationPolicyCommandInterest::checkPolicy
    const ValidationContinuation& continueValidation)
 {
   Name keyName;
-  MillisecondsSince1970 timestamp;
+  system_clock::time_point timestamp;
   if (!parseCommandInterest(interest, state, keyName, timestamp))
     return;
 
@@ -71,8 +72,8 @@ void
 ValidationPolicyCommandInterest::cleanUp()
 {
   // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
-  MillisecondsSince1970 expiring = now - options_.recordLifetime_;
+  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  auto expiring = now -  milliseconds((int64_t)options_.recordLifetime_);
 
   while ((container_.size() > 0 && container_[0]->lastRefreshed_ <= expiring) ||
          (options_.maxRecords_ >= 0 && container_.size() > options_.maxRecords_))
@@ -82,10 +83,10 @@ ValidationPolicyCommandInterest::cleanUp()
 bool
 ValidationPolicyCommandInterest::parseCommandInterest
   (const Interest& interest, const ptr_lib::shared_ptr<ValidationState>& state,
-   Name& keyLocatorName, MillisecondsSince1970& timestamp)
+   Name& keyLocatorName, system_clock::time_point& timestamp)
 {
   keyLocatorName = Name();
-  timestamp = 0;
+  timestamp = system_clock::time_point();
 
   const Name& name = interest.getName();
   if (name.size() < CommandInterestSigner::MINIMUM_SIZE) {
@@ -94,8 +95,8 @@ ValidationPolicyCommandInterest::parseCommandInterest
     return false;
   }
 
-  timestamp = (MillisecondsSince1970)name.get
-    (CommandInterestSigner::POS_TIMESTAMP).toNumber();
+  timestamp = fromMillisecondsSince1970(name.get
+    (CommandInterestSigner::POS_TIMESTAMP).toNumber());
 
   keyLocatorName = getKeyLocatorName(interest, *state);
   if (state->isOutcomeFailed())
@@ -108,14 +109,14 @@ ValidationPolicyCommandInterest::parseCommandInterest
 bool
 ValidationPolicyCommandInterest::checkTimestamp
   (const ptr_lib::shared_ptr<ValidationState>& state, const Name& keyName,
-   MillisecondsSince1970 timestamp)
+   system_clock::time_point timestamp)
 {
   cleanUp();
 
   // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
-  if (timestamp < now - options_.gracePeriod_ ||
-      timestamp > now + options_.gracePeriod_) {
+  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  if (timestamp < now - milliseconds((int64_t)options_.gracePeriod_) ||
+      timestamp > now + milliseconds((int64_t)options_.gracePeriod_)) {
     state->fail(ValidationError(ValidationError::POLICY_ERROR,
       "Timestamp is outside the grace period for key " + keyName.toUri()));
     return false;
@@ -142,10 +143,10 @@ ValidationPolicyCommandInterest::checkTimestamp
 void
 ValidationPolicyCommandInterest::insertNewRecord
   (const Interest& interest, const Name& keyName,
-   MillisecondsSince1970 timestamp)
+   system_clock::time_point timestamp)
 {
   // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
+  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
   ptr_lib::shared_ptr<LastTimestampRecord> newRecord
     (new LastTimestampRecord(keyName, timestamp, now));
 

@@ -31,17 +31,9 @@
 #include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
-
-static MillisecondsSince1970
-getNowMilliseconds()
-{
-  struct timeval t;
-  // Note: configure.ac requires gettimeofday.
-  gettimeofday(&t, 0);
-  return t.tv_sec * 1000.0 + t.tv_usec / 1000.0;
-}
 
 class CallbackCounter
 {
@@ -127,7 +119,7 @@ public:
 // Returns a CallbackCounter object so we can test data callback and timeout behavior.
 CallbackCounter
 runExpressNameTest
-  (Face& face, const string& interestName, Milliseconds timeout = 10000,
+  (Face& face, const string& interestName, nanoseconds timeout = milliseconds(10000),
    bool useOnNack = false)
 {
   Name name(interestName);
@@ -142,8 +134,8 @@ runExpressNameTest
       (name, bind(&CallbackCounter::onData, &counter, _1, _2),
        bind(&CallbackCounter::onTimeout, &counter, _1));
 
-  MillisecondsSince1970 startTime = getNowMilliseconds();
-  while (getNowMilliseconds() - startTime < timeout &&
+  auto startTime = system_clock::now();
+  while (system_clock::now() - startTime < timeout &&
          counter.onDataCallCount_ == 0 && counter.onTimeoutCallCount_ == 0) {
     face.processEvents();
     // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
@@ -168,9 +160,9 @@ public:
     faceOut.shutdown();
 
     // Give time to shut down the face before the next test.
-    Milliseconds timeout = 500;
-    MillisecondsSince1970 startTime = getNowMilliseconds();
-    while (getNowMilliseconds() - startTime < timeout) {
+    auto timeout = milliseconds(500);
+    auto startTime = system_clock::now();
+    while (system_clock::now() - startTime < timeout) {
       faceIn.processEvents();
       faceOut.processEvents();
       // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
@@ -195,9 +187,9 @@ TEST_F(TestFaceRegisterMethods, RegisterPrefixResponse)
      bind(&RegisterCounter::onRegisterFailed, &registerCounter, _1));
 
   // Give the "server" time to register the interest.
-  Milliseconds timeout = 1000;
-  MillisecondsSince1970 startTime = getNowMilliseconds();
-  while (getNowMilliseconds() - startTime < timeout) {
+  auto timeout = milliseconds(1000);
+  auto startTime = system_clock::now();
+  while (system_clock::now() - startTime < timeout) {
     faceIn.processEvents();
     usleep(10000);
   }
@@ -206,16 +198,16 @@ TEST_F(TestFaceRegisterMethods, RegisterPrefixResponse)
   CallbackCounter counter;
   // Add the timestamp so it is unique and we don't get a cached response.
   ostringstream component;
-  component << "hello" << (uint64_t)getNowMilliseconds();
+  component << "hello" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
   Name interestName = Name(prefixName).append(component.str());
   faceOut.expressInterest
     (interestName, bind(&CallbackCounter::onData, &counter, _1, _2),
      bind(&CallbackCounter::onTimeout, &counter, _1));
 
   // Process events for the in and out faces.
-  timeout = 10000;
-  startTime = getNowMilliseconds();
-  while (getNowMilliseconds() - startTime < timeout) {
+  timeout = milliseconds(10000);
+  startTime = system_clock::now();
+  while (system_clock::now() - startTime < timeout) {
     faceIn.processEvents();
     faceOut.processEvents();
 
@@ -261,9 +253,9 @@ public:
     face.shutdown();
 
     // Give time to shut down the face before the next test.
-    Milliseconds timeout = 500;
-    MillisecondsSince1970 startTime = getNowMilliseconds();
-    while (getNowMilliseconds() - startTime < timeout) {
+    auto timeout = milliseconds(500);
+    auto startTime = system_clock::now();
+    while (system_clock::now() - startTime < timeout) {
       face.processEvents();
       // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
       usleep(10000);
@@ -315,9 +307,9 @@ TEST_F(TestFaceInterestMethods, RemovePending)
 
   face.removePendingInterest(interestID);
 
-  Milliseconds timeout = 10000;
-  MillisecondsSince1970 startTime = getNowMilliseconds();
-  while (getNowMilliseconds() - startTime < timeout &&
+  auto timeout = milliseconds(10000);
+  auto startTime = system_clock::now();
+  while (system_clock::now() - startTime < timeout &&
          counter.onDataCallCount_ == 0 && counter.onTimeoutCallCount_ == 0) {
     face.processEvents();
     // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
@@ -355,9 +347,9 @@ TEST_F(TestFaceInterestMethods, MaxNdnPacketSize)
 TEST_F(TestFaceInterestMethods, NetworkNack)
 {
   ostringstream uri;
-  uri << "/noroute" << getNowMilliseconds();
+  uri << "/noroute" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
     // Use a short timeout since we expect an immediate Nack.
-  CallbackCounter counter = runExpressNameTest(face, uri.str(), 1000, true);
+  CallbackCounter counter = runExpressNameTest(face, uri.str(), milliseconds(1000), true);
 
   // We're expecting a network Nack callback, and only 1.
   ASSERT_EQ(0, counter.onDataCallCount_) <<

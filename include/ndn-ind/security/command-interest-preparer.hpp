@@ -68,7 +68,7 @@ public:
   }
 
 private:
-  MillisecondsSince1970 lastUsedTimestamp_;
+  std::chrono::system_clock::time_point lastUsedTimestamp_;
   Milliseconds nowOffsetMilliseconds_;
 };
 

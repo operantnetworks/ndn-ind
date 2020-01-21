@@ -26,7 +26,6 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
-#include <time.h>
 #include <unistd.h>
 #include <poll.h>
 #include <math.h>
@@ -47,6 +46,7 @@
 #endif
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -80,7 +80,7 @@ public:
   void
   initialize()
   {
-    int sessionNo = (int)::round(getNowMilliseconds()  / 1000.0);
+    int sessionNo = duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
     ostringstream tempStream;
     tempStream << screenName_ << sessionNo;
     userName_ = tempStream.str();
@@ -105,14 +105,6 @@ public:
   // Send leave message and leave.
   void
   leave();
-
-  /**
-   * Use gettimeofday to return the current time in milliseconds.
-   * @return The current time in milliseconds since 1/1/1970, including fractions
-   * of a millisecond according to timeval.tv_usec.
-   */
-  static MillisecondsSince1970
-  getNowMilliseconds();
 
 private:
   // Initialization: push the JOIN message in to the messageCache_, update roster and start heartbeat.
@@ -198,7 +190,7 @@ private:
   class CachedMessage {
   public:
     CachedMessage
-      (int sequenceNo, int messageType, const string& message, MillisecondsSince1970 time)
+      (int sequenceNo, int messageType, const string& message, system_clock::time_point time)
     : sequenceNo_(sequenceNo), messageType_(messageType), message_(message), time_(time)
     {}
 
@@ -211,7 +203,7 @@ private:
     const string&
     getMessage() const { return message_; }
 
-    MillisecondsSince1970
+    system_clock::time_point
     getTime() const { return time_; }
 
   private:
@@ -220,7 +212,7 @@ private:
     //   in int so that the head doesn't need to include the protobuf header.
     int messageType_;
     string message_;
-    MillisecondsSince1970 time_;
+    system_clock::time_point time_;
   };
 
   vector<ptr_lib::shared_ptr<CachedMessage> > messageCache_;
@@ -316,14 +308,14 @@ Chat::onInterest
         content.set_from(screenName_);
         content.set_to(chatRoom_);
         content.set_type((SyncDemo::ChatMessage_ChatMessageType)messageCache_[i]->getMessageType());
-        content.set_timestamp(::round(messageCache_[i]->getTime() / 1000.0));
+        content.set_timestamp(duration_cast<seconds>(messageCache_[i]->getTime().time_since_epoch()).count());
       }
       else {
         content.set_from(screenName_);
         content.set_to(chatRoom_);
         content.set_type((SyncDemo::ChatMessage_ChatMessageType)messageCache_[i]->getMessageType());
         content.set_data(messageCache_[i]->getMessage());
-        content.set_timestamp(::round(messageCache_[i]->getTime() / 1000.0));
+        content.set_timestamp(duration_cast<seconds>(messageCache_[i]->getTime().time_since_epoch()).count());
       }
       break;
     }
@@ -351,7 +343,8 @@ Chat::onData
 {
   SyncDemo::ChatMessage content;
   content.ParseFromArray(data->getContent().buf(), data->getContent().size());
-  if (getNowMilliseconds() - content.timestamp() * 1000.0 < 120000.0) {
+  if (system_clock::now() - system_clock::time_point(seconds(content.timestamp())) <
+      seconds(12)) {
     string name = content.from();
     string prefix = data->getName().getPrefix(-2).toUri();
     int sessionNo = ::atoi(data->getName().get(-2).toEscapedString().c_str());
@@ -470,7 +463,7 @@ void
 Chat::messageCacheAppend(int messageType, const string& message)
 {
   messageCache_.push_back(ptr_lib::make_shared<CachedMessage>
-    (sync_->getSequenceNo(), messageType, message, getNowMilliseconds()));
+    (sync_->getSequenceNo(), messageType, message, system_clock::now()));
   while (messageCache_.size() > maxMessageCacheLength_)
     messageCache_.erase(messageCache_.begin());
 }
@@ -506,15 +499,6 @@ void
 Chat::onRegisterFailed(const ptr_lib::shared_ptr<const Name>& prefix)
 {
   cout << "Register failed for prefix " << prefix->toUri() << endl;
-}
-
-MillisecondsSince1970
-Chat::getNowMilliseconds()
-{
-  struct timeval t;
-  // Note: configure.ac requires gettimeofday.
-  gettimeofday(&t, 0);
-  return t.tv_sec * 1000.0 + t.tv_usec / 1000.0;
 }
 
 void
@@ -773,10 +757,10 @@ int main(int argc, char** argv)
     // The user entered the command to leave.
     chat->leave();
     // Wait a little bit to allow other applications to fetch the leave message.
-    ndn_MillisecondsSince1970 startTime = Chat::getNowMilliseconds();
+    auto startTime = system_clock::now();
     while (true)
     {
-      if (Chat::getNowMilliseconds() - startTime >= 1000.0)
+      if (system_clock::now() - startTime >= seconds(1))
         break;
 
       face.processEvents();

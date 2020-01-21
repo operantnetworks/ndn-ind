@@ -35,9 +35,8 @@ namespace ndn {
 class MetaInfo {
 public:
   MetaInfo()
-  : changeCount_(0)
+  : changeCount_(0), timestampMilliseconds_(std::chrono::milliseconds(-1))
   {
-    timestampMilliseconds_ = -1;
     type_ = ndn_ContentType_BLOB;
     otherTypeCode_ = -1;
     freshnessPeriod_ = -1;
@@ -63,7 +62,7 @@ public:
   /**
    * @deprecated Use the application-specific content to store a timestamp.
    */
-  MillisecondsSince1970
+  std::chrono::system_clock::time_point
   DEPRECATED_IN_NDN_IND getTimestampMilliseconds() const
   {
     return timestampMilliseconds_;
@@ -117,7 +116,7 @@ public:
    */
   void
   DEPRECATED_IN_NDN_IND setTimestampMilliseconds
-    (MillisecondsSince1970 timestampMilliseconds)
+    (std::chrono::system_clock::time_point timestampMilliseconds)
   {
     timestampMilliseconds_ = timestampMilliseconds;
     ++changeCount_;
@@ -192,7 +191,7 @@ public:
   getChangeCount() const { return changeCount_; }
 
 private:
-  MillisecondsSince1970 timestampMilliseconds_; /**< milliseconds since 1/1/1970. -1 for none */
+  std::chrono::system_clock::time_point timestampMilliseconds_; /**< time_point. -1 for none */
   ndn_ContentType type_;         /**< default is ndn_ContentType_BLOB. -1 for none */
   int otherTypeCode_;
   Milliseconds freshnessPeriod_; /**< -1 for none */

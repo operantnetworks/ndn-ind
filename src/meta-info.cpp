@@ -32,7 +32,8 @@ MetaInfo::get(MetaInfoLite& metaInfoLite) const
 {
   // Set the deprecated timestamp from the struct ndn_MetaInfo since
   //   MetaInfoLite doesn't expose it.
-  ((struct ndn_MetaInfo *)&metaInfoLite)->timestampMilliseconds = timestampMilliseconds_;
+  ((struct ndn_MetaInfo *)&metaInfoLite)->timestampMilliseconds = 
+    toMillisecondsSince1970(timestampMilliseconds_);
   metaInfoLite.setType(type_);
   metaInfoLite.setOtherTypeCode(otherTypeCode_);
   metaInfoLite.setFreshnessPeriod(freshnessPeriod_);
@@ -44,7 +45,8 @@ MetaInfo::set(const MetaInfoLite& metaInfoLite)
 {
   // Get the deprecated timestamp from the struct ndn_MetaInfo since
   //   MetaInfoLite doesn't expose it.
-  timestampMilliseconds_ = ((struct ndn_MetaInfo *)&metaInfoLite)->timestampMilliseconds;
+  timestampMilliseconds_ = fromMillisecondsSince1970
+    (((struct ndn_MetaInfo *)&metaInfoLite)->timestampMilliseconds);
   setType(metaInfoLite.getType());
   // Set otherTypeCode_ directly to avoid the non-negative check.
   otherTypeCode_ = metaInfoLite.getOtherTypeCode();

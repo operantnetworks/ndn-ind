@@ -116,7 +116,7 @@ public:
   ptr_lib::shared_ptr<IdentityCertificate>
   prepareUnsignedIdentityCertificate
     (const Name& keyName, const Name& signingIdentity,
-     MillisecondsSince1970 notBefore, MillisecondsSince1970 notAfter,
+     std::chrono::system_clock::time_point notBefore, std::chrono::system_clock::time_point notAfter,
      std::vector<CertificateSubjectDescription>& subjectDescription,
      const Name* certPrefix = 0);
 
@@ -142,8 +142,8 @@ public:
   ptr_lib::shared_ptr<IdentityCertificate>
   prepareUnsignedIdentityCertificate
     (const Name& keyName, const PublicKey& publicKey,
-     const Name& signingIdentity, MillisecondsSince1970 notBefore,
-     MillisecondsSince1970 notAfter,
+     const Name& signingIdentity, std::chrono::system_clock::time_point notBefore,
+     std::chrono::system_clock::time_point notAfter,
      std::vector<CertificateSubjectDescription>& subjectDescription,
      const Name* certPrefix = 0);
 
@@ -284,8 +284,8 @@ public:
    */
   Name
   createIdentityCertificate
-    (const Name& certificatePrefix, const Name& signerCertificateName, MillisecondsSince1970 notBefore,
-     MillisecondsSince1970 notAfter);
+    (const Name& certificatePrefix, const Name& signerCertificateName, std::chrono::system_clock::time_point notBefore,
+     std::chrono::system_clock::time_point notAfter);
 
   /**
    * Create an identity certificate for a public key supplied by the caller.
@@ -299,7 +299,7 @@ public:
   ptr_lib::shared_ptr<IdentityCertificate>
   createIdentityCertificate
     (const Name& certificatePrefix, const PublicKey& publickey, const Name& signerCertificateName,
-     MillisecondsSince1970 notBefore, MillisecondsSince1970 notAfter);
+     std::chrono::system_clock::time_point notBefore, std::chrono::system_clock::time_point notAfter);
 
   /**
    * Add a certificate into the public key identity storage.

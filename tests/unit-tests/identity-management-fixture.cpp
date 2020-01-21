@@ -26,6 +26,7 @@
 #include "identity-management-fixture.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 IdentityManagementFixture::~IdentityManagementFixture()
@@ -95,9 +96,9 @@ IdentityManagementFixture::addSubCertificate
 
   SigningInfo certificateParams(issuer);
   // Validity period of 20 years.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
+  auto now = system_clock::now();
   certificateParams.setValidityPeriod
-    (ValidityPeriod(now, now + 20 * 365 * 24 * 3600 * 1000.0));
+    (ValidityPeriod(now, now + hours(20 * 365 * 24)));
 
   // Skip the AdditionalDescription.
 
@@ -126,8 +127,8 @@ IdentityManagementFixture::addCertificate
 
   SigningInfo params(key);
   // Validity period of 10 days.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
-  params.setValidityPeriod(ValidityPeriod(now, now + 10 * 24 * 3600 * 1000.0));
+  auto now = system_clock::now();
+  params.setValidityPeriod(ValidityPeriod(now, now + hours(10 * 24)));
 
   keyChain_.sign(*certificate, params);
   return certificate;

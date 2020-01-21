@@ -25,6 +25,7 @@
 #include <ndn-ind/security/v2/validation-policy-simple-hierarchy.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -116,9 +117,9 @@ public:
     // Set SigningInfo.
     SigningInfo params(parentKey);
     // Validity period from 10 days before to 10 days after now.
-    MillisecondsSince1970 now = ndn_getNowMilliseconds();
+    auto now = system_clock::now();
     params.setValidityPeriod(ValidityPeriod
-      (now - 10 * 24 * 3600 * 1000.0, now + 10 * 24 * 3600 * 1000.0));
+      (now - hours(10 * 24), now + hours(10 * 24)));
 
     fixture_.keyChain_.sign(*certificate, params);
     onData(ptr_lib::make_shared<Interest>(interest), certificate);
@@ -134,9 +135,9 @@ public:
     // Set SigningInfo.
     SigningInfo params(signer);
     // Validity period from 100 days before to 100 days after now.
-    MillisecondsSince1970 now = ndn_getNowMilliseconds();
+    auto now = system_clock::now();
     params.setValidityPeriod(ValidityPeriod
-      (now - 100 * 24 * 3600 * 1000.0, now + 100 * 24 * 3600 * 1000.0));
+      (now - hours(100 * 24), now + hours(100 * 24)));
     fixture_.keyChain_.sign(request, params);
     fixture_.keyChain_.addCertificate(key, request);
 
@@ -243,9 +244,8 @@ TEST_F(TestValidator, ExpiredCertificate)
     (*fixture_.subIdentity_->getDefaultKey()->getDefaultCertificate()));
   SigningInfo info(fixture_.identity_);
   // Validity period from 2 hours ago do 1 hour ago.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
-  info.setValidityPeriod
-    (ValidityPeriod(now - 2 * 3600 * 1000, now - 3600 * 1000.0));
+  auto now = system_clock::now();
+  info.setValidityPeriod(ValidityPeriod(now - hours(2), now - hours(1)));
   fixture_.keyChain_.sign(*expiredCertificate, info);
   ASSERT_NO_THROW(CertificateV2(*expiredCertificate).wireEncode());
 

@@ -34,17 +34,9 @@
 #include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
-
-static MillisecondsSince1970
-getNowMilliseconds()
-{
-  struct timeval t;
-  // Note: configure.ac requires gettimeofday.
-  gettimeofday(&t, 0);
-  return t.tv_sec * 1000.0 + t.tv_usec / 1000.0;
-}
 
 class RegisterCounter
 {
@@ -98,9 +90,9 @@ TEST_F(TestRegistrationCallbacks, RegistrationCallbacks)
      bind(&RegisterCounter::onRegisterFailed, &counter, _1),
      bind(&RegisterCounter::onRegisterSuccess, &counter, _1, _2));
 
-  double timeout = 10000;
-  MillisecondsSince1970 startTime = getNowMilliseconds();
-  while (getNowMilliseconds() - startTime < timeout &&
+  auto timeout = seconds(10);
+  auto startTime = system_clock::now();
+  while (system_clock::now() - startTime < timeout &&
          counter.onRegisterFailedCallCount_ == 0 &&
          counter.onRegisterSuccessCallCount_ == 0) {
     face.processEvents();

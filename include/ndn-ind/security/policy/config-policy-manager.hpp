@@ -297,14 +297,14 @@ private:
     public:
       DirectoryInfo
         (const std::vector<std::string>& certificateNames,
-         MillisecondsSince1970 nextRefresh, Milliseconds refreshPeriod)
+         std::chrono::system_clock::time_point nextRefresh, Milliseconds refreshPeriod)
       : certificateNames_(certificateNames), nextRefresh_(nextRefresh),
         refreshPeriod_(refreshPeriod)
       {
       }
 
       std::vector<std::string> certificateNames_;
-      MillisecondsSince1970 nextRefresh_;
+      std::chrono::system_clock::time_point nextRefresh_;
       Milliseconds refreshPeriod_;
     };
 
@@ -420,7 +420,7 @@ private:
    */
   bool
   interestTimestampIsFresh
-    (const Name& keyName, MillisecondsSince1970 timestamp,
+    (const Name& keyName, std::chrono::system_clock::time_point timestamp,
      std::string& failureReason) const;
 
   /**
@@ -432,7 +432,7 @@ private:
    * @param timestamp The timestamp extracted from the interest name.
    */
   void
-  updateTimestampForKey(const Name& keyName, MillisecondsSince1970 timestamp);
+  updateTimestampForKey(const Name& keyName, std::chrono::system_clock::time_point timestamp);
 
   /**
    * Check the type of signatureInfo to get the KeyLocator. Look in the
@@ -516,8 +516,8 @@ private:
   ptr_lib::shared_ptr<CertificateCache> certificateCache_;
   ptr_lib::shared_ptr<CertificateCacheV2> certificateCacheV2_;
   int maxDepth_;
-  Milliseconds keyGraceInterval_;
-  Milliseconds keyTimestampTtl_;
+  std::chrono::milliseconds keyGraceInterval_;
+  std::chrono::milliseconds keyTimestampTtl_;
   int maxTrackedKeys_;
   // fixedCertificateCache_ stores the fixed-signer certificate name associated with
   //    validation rules so we don't keep loading from files.
@@ -525,7 +525,7 @@ private:
   // keyTimestamps_ stores the timestamps for each public key used in command
   //   interests to avoid replay attacks.
   // key is the public key name, value is the last timestamp.
-  std::map<std::string, MillisecondsSince1970> keyTimestamps_;
+  std::map<std::string, std::chrono::system_clock::time_point> keyTimestamps_;
   ptr_lib::shared_ptr<BoostInfoParser> config_;
   bool requiresVerification_;
   ptr_lib::shared_ptr<TrustAnchorRefreshManager> refreshManager_;

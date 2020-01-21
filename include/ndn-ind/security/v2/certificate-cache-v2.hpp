@@ -90,7 +90,7 @@ public:
   clear()
   {
     certificatesByName_.clear();
-    nextRefreshTime_ = DBL_MAX;
+    nextRefreshTime_ = std::chrono::system_clock::time_point::max();
   }
 
   /**
@@ -119,22 +119,19 @@ public:
     /**
      * Create a new CertificateCacheV2::Entry with the given values.
      * @param certificate The certificate.
-     * @param removalTime The removal time for this entry  as milliseconds since
-     * Jan 1, 1970 UTC.
+     * @param removalTime The removal time for this entry.
      */
     Entry
       (const ptr_lib::shared_ptr<CertificateV2>& certificate,
-       MillisecondsSince1970 removalTime)
+       std::chrono::system_clock::time_point removalTime)
     : certificate_(certificate), removalTime_(removalTime)
     {}
 
     Entry()
-    {
-      removalTime_ = 0;
-    }
+    {}
 
     ptr_lib::shared_ptr<CertificateV2> certificate_;
-    MillisecondsSince1970 removalTime_;
+    std::chrono::system_clock::time_point removalTime_;
   };
 
   /**
@@ -160,7 +157,7 @@ private:
   CertificateCacheV2& operator=(const CertificateCacheV2& other);
 
   std::map<Name, Entry> certificatesByName_;
-  MillisecondsSince1970 nextRefreshTime_;
+  std::chrono::system_clock::time_point nextRefreshTime_;
   Milliseconds maxLifetimeMilliseconds_;
   Milliseconds nowOffsetMilliseconds_;
 };

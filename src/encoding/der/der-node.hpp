@@ -511,13 +511,13 @@ public:
 class DerNode::DerGeneralizedTime : public DerNode {
 public:
   /**
-   * Create a DerGeneralizedTime with the given milliseconds since 1970.
-   * @param msSince1970 The timestamp as milliseconds since Jan 1, 1970.
+   * Create a DerGeneralizedTime with the given time.
+   * @param time The time.
    */
-  DerGeneralizedTime(MillisecondsSince1970 msSince1970)
+  DerGeneralizedTime(std::chrono::system_clock::time_point time)
   : DerNode(DerNodeType_GeneralizedTime)
   {
-    std::string derTime = toDerTimeString(msSince1970);
+    std::string derTime = toDerTimeString(time);
     payloadAppend((const uint8_t*)&derTime[0], derTime.size());
     encodeHeader(payloadPosition_);
   }
@@ -528,40 +528,39 @@ public:
   }
 
   /**
-   * Interpret the result of toVal() as a time string and return the
-   * milliseconds since 1970.
-   * @return The timestamp value as milliseconds since 1970.
+   * Interpret the result of toVal() as a time string and return the time.
+   * @return The time.
    */
-  MillisecondsSince1970
+  std::chrono::system_clock::time_point
   toMillisecondsSince1970();
 
   /**
    * Convert to the ISO string representation of the time.
-   * @param time Milliseconds since 1/1/1970.
+   * @param time The time.
    * @param includeFraction (optional) If true, include the six-digit fractions
    * of a second. If false or omitted, round to the second and don't include the
    * fraction.
    * @return The ISO string.
    */
   static std::string
-  toIsoString(MillisecondsSince1970 time, bool includeFraction = false);
+  toIsoString(std::chrono::system_clock::time_point time, bool includeFraction = false);
 
   /**
    * Convert from the ISO string representation to the internal time format.
    * @param isoString The ISO time formatted string.
-   * @return The time in milliseconds since 1/1/1970.
+   * @return The time.
    */
-  static MillisecondsSince1970
+  static std::chrono::system_clock::time_point
   fromIsoString(const std::string& isoString);
 
 private:
   /**
    * Convert a UNIX timestamp to the internal string representation.
-   * @param msSince1970 Timestamp as milliseconds since Jan 1, 1970.
+   * @param time The time.
    * @return The string representation.
    */
   static std::string
-  toDerTimeString(MillisecondsSince1970 msSince1970);
+  toDerTimeString(std::chrono::system_clock::time_point time);
 };
 
 }

@@ -27,14 +27,16 @@
 #include <ndn-ind/security/validity-period.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
 bool
 ValidityPeriod::isValid() const
 {
-  // Round up to the nearest second like in setPeriod.
-  return isValid(round(ceil(round(ndn_getNowMilliseconds()) / 1000.0) * 1000.0));
+  // Round up to the nearest second.
+  return isValid(fromMillisecondsSince1970(round(ceil(round
+    (toMillisecondsSince1970(system_clock::now())) / 1000.0) * 1000.0)));
 }
 
 bool

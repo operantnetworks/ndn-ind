@@ -26,18 +26,19 @@
 #include "../../src/encoding/der/der-node.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
-static MillisecondsSince1970
+static system_clock::time_point
 fromIsoString(const string& dateString)
 {
   return DerNode::DerGeneralizedTime::fromIsoString(dateString);
 }
 
 string
-toIsoString(MillisecondsSince1970 msSince1970)
+toIsoString(system_clock::time_point time)
 {
-  return DerNode::DerGeneralizedTime::toIsoString(msSince1970);
+  return DerNode::DerGeneralizedTime::toIsoString(time);
 }
 
 static const uint8_t PUBLIC_KEY[] = {

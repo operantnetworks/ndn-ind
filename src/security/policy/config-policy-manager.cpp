@@ -41,6 +41,7 @@
 #include <ndn-ind/security/policy/config-policy-manager.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 INIT_LOGGER("ndn.ConfigPolicyManager");
@@ -72,8 +73,8 @@ ConfigPolicyManager::ConfigPolicyManager
    int searchDepth, Milliseconds graceInterval, Milliseconds keyTimestampTtl,
    int maxTrackedKeys)
   : maxDepth_(searchDepth),
-    keyGraceInterval_(graceInterval),
-    keyTimestampTtl_(keyTimestampTtl),
+    keyGraceInterval_((int64_t)graceInterval),
+    keyTimestampTtl_((int64_t)keyTimestampTtl),
     maxTrackedKeys_(maxTrackedKeys)
 {
   isSecurityV1_ = true;
@@ -96,8 +97,8 @@ ConfigPolicyManager::ConfigPolicyManager
    int maxTrackedKeys)
   : certificateCacheV2_(certificateCache),
     maxDepth_(searchDepth),
-    keyGraceInterval_(graceInterval),
-    keyTimestampTtl_(keyTimestampTtl),
+    keyGraceInterval_((int64_t)graceInterval),
+    keyTimestampTtl_((int64_t)keyTimestampTtl),
     maxTrackedKeys_(maxTrackedKeys)
 {
   isSecurityV1_ = false;
@@ -274,7 +275,7 @@ ConfigPolicyManager::checkVerificationPolicy
     else
       // For security V2, the KeyLocator name is already the key name.
       keyName = signatureName;
-    MillisecondsSince1970 timestamp = interest->getName().get(-4).toNumber();
+    system_clock::time_point timestamp(milliseconds(interest->getName().get(-4).toNumber()));
 
     if (!interestTimestampIsFresh(keyName, timestamp, failureReason)) {
       try {
@@ -834,21 +835,21 @@ ConfigPolicyManager::extractSignature
 
 bool
 ConfigPolicyManager::interestTimestampIsFresh
-  (const Name& keyName, MillisecondsSince1970 timestamp,
+  (const Name& keyName, system_clock::time_point timestamp,
    string& failureReason) const
 {
-  map<string, MillisecondsSince1970>::const_iterator lastTimestamp =
+  map<string, system_clock::time_point>::const_iterator lastTimestamp =
     keyTimestamps_.find(keyName.toUri());
   if (lastTimestamp == keyTimestamps_.end()) {
-    MillisecondsSince1970 now = ndn_getNowMilliseconds();
-    MillisecondsSince1970 notBefore = now - keyGraceInterval_;
-    MillisecondsSince1970 notAfter = now + keyGraceInterval_;
+    auto now = system_clock::now();
+    auto notBefore = now - keyGraceInterval_;
+    auto notAfter = now + keyGraceInterval_;
 
     if (!(timestamp > notBefore && timestamp < notAfter)) {
       ostringstream message;
       message <<
         "The command interest timestamp is not within the first use grace period of " <<
-        keyGraceInterval_ << " milliseconds.";
+        keyGraceInterval_.count() << " milliseconds.";
       failureReason = message.str();
       return false;
     }
@@ -868,22 +869,22 @@ ConfigPolicyManager::interestTimestampIsFresh
 
 void
 ConfigPolicyManager::updateTimestampForKey
-  (const Name& keyName, MillisecondsSince1970 timestamp)
+  (const Name& keyName, system_clock::time_point timestamp)
 {
   keyTimestamps_[keyName.toUri()] = timestamp;
 
   if (keyTimestamps_.size() >= maxTrackedKeys_) {
-    MillisecondsSince1970 now = ndn_getNowMilliseconds();
-    MillisecondsSince1970 oldestTimestamp = now;
+    auto now = system_clock::now();
+    auto oldestTimestamp = now;
     string oldestKey;
 
     // Get the keys to erase without disturbing the map.
     vector<string> keysToErase;
 
-    for (map<string, MillisecondsSince1970>::iterator entry = keyTimestamps_.begin();
+    for (map<string, system_clock::time_point>::iterator entry = keyTimestamps_.begin();
          entry != keyTimestamps_.end(); ++entry) {
       const string& keyUri = entry->first;
-      MillisecondsSince1970 ts = entry->second;
+      auto ts = entry->second;
       if (now - ts > keyTimestampTtl_)
         keysToErase.push_back(keyUri);
       else if (ts < oldestTimestamp) {
@@ -1083,25 +1084,25 @@ ConfigPolicyManager::TrustAnchorRefreshManager::addDirectory
   ::closedir(directory);
 
   refreshDirectories_[directoryName] = ptr_lib::make_shared<DirectoryInfo>
-    (certificateNames, ndn_getNowMilliseconds() + refreshPeriod,
+    (certificateNames, system_clock::now() + milliseconds((int64_t)refreshPeriod),
      refreshPeriod);
 }
 
 void
 ConfigPolicyManager::TrustAnchorRefreshManager::refreshAnchors()
 {
-  MillisecondsSince1970 refreshTime = ndn_getNowMilliseconds();
+  auto refreshTime = system_clock::now();
   // Save info in a list for calling addDirectory later so that it doesn't
   //   modify refreshDirectories_ while we are iterating.
   vector<string> directoriesToAdd;
-  vector<MillisecondsSince1970> refreshPeriodsToAdd;
+  vector<Milliseconds> refreshPeriodsToAdd;
 
   for (map<string, ptr_lib::shared_ptr<DirectoryInfo> >::iterator it =
         refreshDirectories_.begin(); it != refreshDirectories_.end(); ++it) {
     const string& directory = it->first;
     const DirectoryInfo& info = *(it->second);
 
-    MillisecondsSince1970 nextRefreshTime = info.nextRefresh_;
+    auto nextRefreshTime = info.nextRefresh_;
     if (nextRefreshTime <= refreshTime) {
       vector<string> certificateList(info.certificateNames_);
 

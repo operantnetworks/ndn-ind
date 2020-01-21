@@ -51,6 +51,7 @@
 INIT_LOGGER("ndn.KeyChain");
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 namespace ndn {
@@ -398,9 +399,10 @@ KeyChain::selfSign(ptr_lib::shared_ptr<PibKey>& key, WireFormat& wireFormat)
   ptr_lib::shared_ptr<CertificateV2> certificate(new CertificateV2());
 
   // Set the name.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
+  auto now = system_clock::now();
   Name certificateName = key->getName();
-  certificateName.append("self").appendVersion((uint64_t)now);
+  certificateName.append("self").appendVersion
+    (duration_cast<milliseconds>(now.time_since_epoch()).count());
   certificate->setName(certificateName);
 
   // Set the MetaInfo.
@@ -415,7 +417,7 @@ KeyChain::selfSign(ptr_lib::shared_ptr<PibKey>& key, WireFormat& wireFormat)
   SigningInfo signingInfo(key);
   // Set a 20-year validity period.
   signingInfo.setValidityPeriod
-    (ValidityPeriod(now, now + 20 * 365 * 24 * 3600 * 1000.0));
+    (ValidityPeriod(now, now + hours(20 * 365 * 24)));
 
   sign(*certificate, signingInfo, wireFormat);
 

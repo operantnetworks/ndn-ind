@@ -47,14 +47,14 @@ public:
 
   /**
    * Get the beginning of the validity period range.
-   * @return The time as milliseconds since Jan 1, 1970 UTC.
+   * @return The time.
    */
   ndn_MillisecondsSince1970
   getNotBefore() const { return notBefore; }
 
   /**
    * Get the end of the validity period range.
-   * @return The time as milliseconds since Jan 1, 1970 UTC.
+   * @return The time.
    */
   ndn_MillisecondsSince1970
   getNotAfter() const { return notAfter; }
@@ -88,7 +88,7 @@ public:
 
   /**
    * Check if the time falls within the validity period.
-   * @param time The time to check as milliseconds since Jan 1, 1970 UTC.
+   * @param time The time to check.
    * @return True if the beginning of the validity period is less than or equal
    * to time and time is less than or equal to the end of the validity period.
    */

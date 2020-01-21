@@ -422,8 +422,8 @@ BasicIdentityStorage::addCertificate(const IdentityCertificate& certificate)
   sqlite3_bind_text(statement, 4, keyId, SQLITE_TRANSIENT);
 
   // Convert from milliseconds to seconds since 1/1/1970.
-  sqlite3_bind_int64(statement, 5, (sqlite3_int64)floor(certificate.getNotBefore() / 1000.0));
-  sqlite3_bind_int64(statement, 6, (sqlite3_int64)floor(certificate.getNotAfter() / 1000.0));
+  sqlite3_bind_int64(statement, 5, (sqlite3_int64)floor(toMillisecondsSince1970(certificate.getNotBefore()) / 1000.0));
+  sqlite3_bind_int64(statement, 6, (sqlite3_int64)floor(toMillisecondsSince1970(certificate.getNotAfter()) / 1000.0));
 
   // wireEncode returns the cached encoding if available.
   sqlite3_bind_blob(statement, 7, certificate.wireEncode().buf(), certificate.wireEncode().size(), SQLITE_TRANSIENT);

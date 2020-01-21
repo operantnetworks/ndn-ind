@@ -31,6 +31,7 @@
 #include <ndn-ind/security/safe-bag.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -87,9 +88,9 @@ SafeBag::makeSelfSignedCertificate
   ptr_lib::shared_ptr<CertificateV2> certificate(new CertificateV2());
 
   // Set the name.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
+  auto now = system_clock::now();
   Name certificateName(keyName);
-  certificateName.append("self").appendVersion((uint64_t)now);
+  certificateName.append("self").appendVersion((uint64_t)toMillisecondsSince1970(now));
   certificate->setName(certificateName);
 
   // Set the MetaInfo.
@@ -120,7 +121,7 @@ SafeBag::makeSelfSignedCertificate
 
   // Set a 20-year validity period.
   ValidityPeriod::getFromSignature(signatureInfo).setPeriod
-    (now, now + 20 * 365 * 24 * 3600 * 1000.0);
+    (now, now + hours(20 * 365 * 24));
 
   // Encode once to get the signed portion.
   SignedBlob encoding = certificate->wireEncode(wireFormat);

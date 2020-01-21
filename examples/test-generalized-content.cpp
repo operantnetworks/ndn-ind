@@ -32,6 +32,7 @@
 #include <ndn-ind-tools/usersync/generalized-content.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 using namespace ndntools;
@@ -126,7 +127,7 @@ publishAndFetch
     ContentMetaInfo metaInfo;
     string metaInfoText = "Hi there!";
     metaInfo.setContentType("text/html")
-      .setTimestamp(1477681379)
+      .setTimestamp(system_clock::time_point(milliseconds(1477681379)))
       .setHasSegments(true)
       .setOther(Blob((const uint8_t*)&metaInfoText[0], metaInfoText.size()));
 
@@ -159,7 +160,7 @@ printMetaInfoAndContent
   *enabled = false;
   cout << "Received _meta info:" << endl;
   cout << "ContentType: " << metaInfo->getContentType() << endl;
-  cout << "Timestamp: " << metaInfo->getTimestamp() << endl;
+  cout << "Timestamp: " << duration_cast<milliseconds>(metaInfo->getTimestamp().time_since_epoch()).count() << endl;
   cout << "HasSegments: " << (metaInfo->getHasSegments() ? "true" : "false") << endl;
   cout << "Other: " <<
     (metaInfo->getOther().isNull() ? string("<none>") : metaInfo->getOther().toRawStr()) <<

@@ -145,14 +145,14 @@ private:
   {
   public:
     LastTimestampRecord
-      (const Name& keyName, MillisecondsSince1970 timestamp,
-       MillisecondsSince1970 lastRefreshed)
+      (const Name& keyName, std::chrono::system_clock::time_point timestamp,
+       std::chrono::system_clock::time_point lastRefreshed)
     : keyName_(keyName), timestamp_(timestamp), lastRefreshed_(lastRefreshed)
     {}
 
     Name keyName_;
-    MillisecondsSince1970 timestamp_;
-    MillisecondsSince1970 lastRefreshed_;
+    std::chrono::system_clock::time_point timestamp_;
+    std::chrono::system_clock::time_point lastRefreshed_;
   };
 
   void
@@ -163,31 +163,30 @@ private:
    * @param interest The Interest to parse.
    * @param state On error, this calls state.fail and returns false.
    * @param keyLocatorName Set this to the KeyLocator name.
-   * @param timestamp Set this to the timestamp as milliseconds since Jan 1,
-   * 1970 UTC.
+   * @param timestamp Set this to the timestamp.
    * @return On success, return true. On error, call state.fail and return false.
    */
   static bool
   parseCommandInterest
     (const Interest& interest, const ptr_lib::shared_ptr<ValidationState>& state,
-     Name& keyLocatorName, MillisecondsSince1970& timestamp);
+     Name& keyLocatorName, std::chrono::system_clock::time_point& timestamp);
 
   /**
    *
    * @param state On error, this calls state.fail and returns false.
    * @param keyName The key name.
-   * @param timestamp The timestamp as milliseconds since Jan 1, 1970 UTC.
+   * @param timestamp The timestamp.
    * @return On success, return true. On error, call state.fail and return false.
    */
   bool
   checkTimestamp
     (const ptr_lib::shared_ptr<ValidationState>& state, const Name& keyName,
-     MillisecondsSince1970 timestamp);
+     std::chrono::system_clock::time_point timestamp);
 
   void
   insertNewRecord
     (const Interest& interest, const Name& keyName,
-     MillisecondsSince1970 timestamp);
+     std::chrono::system_clock::time_point timestamp);
 
   /**
    * Find the record in container_ which has the keyName.
