@@ -45,13 +45,13 @@ public:
   /**
    * Create a new Interest with the given name and interest lifetime and "none" for other values.
    * @param name The name for the interest.
-   * @param interestLifetimeMilliseconds The interest lifetime in milliseconds, or -1 for none.
+   * @param interestLifetime The interest lifetime, or -1 millisecond for none.
    */
-  Interest(const Name& name, Milliseconds interestLifetimeMilliseconds)
+  Interest(const Name& name, std::chrono::nanoseconds interestLifetime)
   : name_(name), getNonceChangeCount_(0), getDefaultWireEncodingChangeCount_(0), changeCount_(0)
   {
     construct();
-    interestLifetimeMilliseconds_ = interestLifetimeMilliseconds;
+    interestLifetime_ = interestLifetime;
   }
 
   /**
@@ -71,7 +71,7 @@ public:
     keyLocator_(interest.keyLocator_), exclude_(interest.exclude_),
     childSelector_(interest.childSelector_),
     mustBeFresh_(interest.mustBeFresh_),
-    interestLifetimeMilliseconds_(interest.interestLifetimeMilliseconds_),
+    interestLifetime_(interest.interestLifetime_),
     nonce_(interest.nonce_), getNonceChangeCount_(0),
     forwardingHint_(interest.forwardingHint_), 
     applicationParameters_(interest.applicationParameters_),
@@ -260,8 +260,23 @@ public:
   bool
   getMustBeFresh() const { return mustBeFresh_; }
 
-  Milliseconds
-  getInterestLifetimeMilliseconds() const { return interestLifetimeMilliseconds_; }
+  /**
+   * Get the interest lifetime.
+   * @return The interest lifetime.
+   */
+  std::chrono::nanoseconds
+  getInterestLifetime() const { return interestLifetime_; }
+
+  /**
+   * Get the interest lifetime as milliseconds.
+   * @return The interest lifetime in milliseconds, which may have fractions of
+   * a millisecond.
+   */
+  double
+  getInterestLifetimeMilliseconds() const
+  {
+    return toMilliseconds(interestLifetime_);
+  }
 
   /**
    * Return the nonce value from the incoming interest.  If you change any of the fields in this Interest object,
@@ -460,14 +475,29 @@ public:
 
   /**
    * Set the interest lifetime.
-   * @param interestLifetimeMilliseconds The interest lifetime in milliseconds.
+   * @param interestLifetime The interest lifetime.
+   * If not specified, set to std::chrono::milliseconds(-1).
+   * @return This Interest so that you can chain calls to update values.
+   */
+  Interest&
+  setInterestLifetime(std::chrono::nanoseconds interestLifetime)
+  {
+    interestLifetime_ = interestLifetime;
+    ++changeCount_;
+    return *this;
+  }
+
+  /**
+   * Set the interest lifetime.
+   * @param interestLifetimeMilliseconds The interest lifetime in milliseconds,
+   * which may have fractions of a millisecond.
    * If not specified, set to -1.
    * @return This Interest so that you can chain calls to update values.
    */
   Interest&
-  setInterestLifetimeMilliseconds(Milliseconds interestLifetimeMilliseconds)
+  setInterestLifetimeMilliseconds(double interestLifetimeMilliseconds)
   {
-    interestLifetimeMilliseconds_ = interestLifetimeMilliseconds;
+    interestLifetime_ = fromMilliseconds(interestLifetimeMilliseconds);
     ++changeCount_;
     return *this;
   }
@@ -736,7 +766,7 @@ private:
     didSetCanBePrefix_ = didSetDefaultCanBePrefix_;
     childSelector_ = -1;
     mustBeFresh_ = false;
-    interestLifetimeMilliseconds_ = -1.0;
+    interestLifetime_ = std::chrono::milliseconds(-1);
     linkWireEncodingFormat_ = 0;
     selectedDelegationIndex_ = -1;
   }
@@ -761,7 +791,7 @@ private:
   ChangeCounter<Exclude> exclude_;
   int childSelector_;       /**< -1 for none */
   bool mustBeFresh_;
-  Milliseconds interestLifetimeMilliseconds_; /**< -1 for none */
+  std::chrono::nanoseconds interestLifetime_; /**< -1 ms for none */
   Blob nonce_;
   uint64_t getNonceChangeCount_;
   ChangeCounter<DelegationSet> forwardingHint_;

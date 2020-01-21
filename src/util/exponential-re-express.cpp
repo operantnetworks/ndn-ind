@@ -25,6 +25,7 @@
 INIT_LOGGER("ndn.ExponentialReExpress");
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 namespace ndn {
@@ -32,7 +33,7 @@ namespace ndn {
 OnTimeout
 ExponentialReExpress::makeOnTimeout
   (Face* face, const OnData& onData, const OnTimeout& onTimeout,
-   Milliseconds maxInterestLifetime)
+   nanoseconds maxInterestLifetime)
 {
   ptr_lib::shared_ptr<ExponentialReExpress> reExpress
     (new ExponentialReExpress(face, onData, onTimeout, maxInterestLifetime));
@@ -43,8 +44,8 @@ void
 ExponentialReExpress::onTimeout
   (const ptr_lib::shared_ptr<const Interest>& interest)
 {
-  Milliseconds interestLifetime = interest->getInterestLifetimeMilliseconds();
-  if (interestLifetime < 0) {
+  auto interestLifetime = interest->getInterestLifetime();
+  if (interestLifetime.count() < 0) {
     // Can't re-express.
     if (callerOnTimeout_) {
       try {
@@ -59,7 +60,7 @@ ExponentialReExpress::onTimeout
     return;
   }
 
-  Milliseconds nextInterestLifetime = interestLifetime * 2;
+  auto nextInterestLifetime = interestLifetime * 2;
   if (nextInterestLifetime > maxInterestLifetime_) {
     if (callerOnTimeout_) {
       try {
@@ -75,7 +76,7 @@ ExponentialReExpress::onTimeout
   }
 
   Interest nextInterest(*interest);
-  nextInterest.setInterestLifetimeMilliseconds(nextInterestLifetime);
+  nextInterest.setInterestLifetime(nextInterestLifetime);
   face_->expressInterest
     (nextInterest, callerOnData_,
      bind(&ExponentialReExpress::onTimeout, shared_from_this(), _1));

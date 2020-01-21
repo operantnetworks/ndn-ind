@@ -23,6 +23,7 @@
 #include "command-interest-generator.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -34,9 +35,9 @@ CommandInterestGenerator::generate
   prepareCommandInterestName(interest, wireFormat);
   keyChain.sign(interest, certificateName, wireFormat);
 
-  if (interest.getInterestLifetimeMilliseconds() < 0)
+  if (interest.getInterestLifetime().count() < 0)
     // The caller has not set the interest lifetime, so set it here.
-    interest.setInterestLifetimeMilliseconds(1000.0);
+    interest.setInterestLifetime(seconds(1));
 }
 
 }

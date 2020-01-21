@@ -43,6 +43,7 @@
 #include "face-status.pb.h"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -147,7 +148,7 @@ processFaceStatus
 
     Interest interest(Name("/localhost/nfd/faces/create"));
     interest.getName().append(encodedControlParameters);
-    interest.setInterestLifetimeMilliseconds(10000);
+    interest.setInterestLifetime(seconds(10));
 
     // Sign and express the interest.
     face->makeCommandInterest(interest);
@@ -241,7 +242,7 @@ registerRoute(const Name& prefix, uint64_t faceId, Face* face, bool* enabled)
 
   Interest interest(Name("/localhost/nfd/rib/register"));
   interest.getName().append(encodedControlParameters);
-  interest.setInterestLifetimeMilliseconds(10000);
+  interest.setInterestLifetime(seconds(10));
 
   // Sign and express the interest.
   face->makeCommandInterest(interest);

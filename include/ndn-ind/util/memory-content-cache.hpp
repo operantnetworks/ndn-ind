@@ -101,14 +101,14 @@ public:
     bool
     isTimedOut(std::chrono::system_clock::time_point now) const
     {
-      return now >= timeoutTimeMilliseconds_;
+      return now >= timeoutTime_;
     }
 
   private:
     ptr_lib::shared_ptr<const Interest> interest_;
     Face& face_;
     std::chrono::system_clock::time_point timeoutPeriodStart_;
-    std::chrono::system_clock::time_point timeoutTimeMilliseconds_; /**< The time when the
+    std::chrono::system_clock::time_point timeoutTime_; /**< The time when the
       * interest times out according to system_clock::now(), or -1 for no timeout. */
   };
 

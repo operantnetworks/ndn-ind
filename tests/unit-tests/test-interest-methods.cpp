@@ -33,6 +33,7 @@
 #include <ndn-ind/interest.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -229,7 +230,7 @@ createFreshInterest()
   freshInterest.setMustBeFresh(false)
     .setMinSuffixComponents(4)
     .setMaxSuffixComponents(6)
-    .setInterestLifetimeMilliseconds(30000)
+    .setInterestLifetime(seconds(30))
     .setChildSelector(1)
     .setMustBeFresh(true);
   freshInterest.getKeyLocator().setType(ndn_KeyLocatorType_KEY_LOCATOR_DIGEST);
@@ -377,7 +378,7 @@ TEST_F(TestInterestMethods, SetRemovesNonce)
   ASSERT_FALSE(referenceInterest.getNonce().isNull());
   Interest interest(referenceInterest);
   // Change a child object.
-  interest.setInterestLifetimeMilliseconds(1);
+  interest.setInterestLifetime(milliseconds(1));
   ASSERT_TRUE(interest.getNonce().isNull()) << "Interest should not have a nonce after changing fields";
 }
 

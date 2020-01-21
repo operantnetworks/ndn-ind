@@ -28,6 +28,7 @@
 #include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -244,7 +245,7 @@ int main(int argc, char** argv)
     Interest freshInterest(Name("/ndn/abc"));
     freshInterest.setMinSuffixComponents(4)
       .setMaxSuffixComponents(6)
-      .setInterestLifetimeMilliseconds(30000)
+      .setInterestLifetime(seconds(30))
       .setChildSelector(1)
       .setMustBeFresh(true);
     freshInterest.getKeyLocator().setType(ndn_KeyLocatorType_KEY_LOCATOR_DIGEST);

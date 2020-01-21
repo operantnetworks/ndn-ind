@@ -34,6 +34,7 @@
 #include <ndn-ind/sync/full-psync2017-with-users.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 INIT_LOGGER("ndn.FullPSync2017WithUsers");
@@ -48,7 +49,7 @@ FullPSync2017WithUsers::Impl::Impl(const OnUpdate& onUpdate)
 void
 FullPSync2017WithUsers::Impl::initialize
   (size_t expectedNEntries, Face& face, const Name& syncPrefix,
-   const Name& userPrefix, KeyChain& keyChain, Milliseconds syncInterestLifetime,
+   const Name& userPrefix, KeyChain& keyChain, nanoseconds syncInterestLifetime,
    Milliseconds syncReplyFreshnessPeriod, const SigningInfo& signingInfo)
 {
   fullPSync_ = ptr_lib::make_shared<FullPSync2017>

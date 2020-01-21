@@ -66,8 +66,7 @@ public:
    * exceptions.
    * @param keyChain The KeyChain for signing Data packets.
    * @param syncInterestLifetime (optional) The Interest lifetime for the sync
-   * Interests, in milliseconds. If omitted, use
-   * FullPSync2017::DEFAULT_SYNC_INTEREST_LIFETIME.
+   * Interests. If omitted, use FullPSync2017::DEFAULT_SYNC_INTEREST_LIFETIME.
    * @param syncReplyFreshnessPeriod (optional) The freshness period of the sync
    * Data packet, in milliseconds. If omitted, use
    * FullPSync2017::DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD.
@@ -77,7 +76,7 @@ public:
   FullPSync2017WithUsers
     (size_t expectedNEntries, Face& face, const Name& syncPrefix,
      const Name& userPrefix, const OnUpdate& onUpdate, KeyChain& keyChain,
-     Milliseconds syncInterestLifetime = FullPSync2017::DEFAULT_SYNC_INTEREST_LIFETIME,
+     std::chrono::nanoseconds syncInterestLifetime = FullPSync2017::DEFAULT_SYNC_INTEREST_LIFETIME,
      Milliseconds syncReplyFreshnessPeriod = FullPSync2017::DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
      const SigningInfo& signingInfo = SigningInfo())
   : impl_(new Impl(onUpdate))
@@ -159,7 +158,7 @@ private:
     initialize
       (size_t expectedNEntries, Face& face, const Name& syncPrefix,
        const Name& userPrefix, KeyChain& keyChain, 
-       Milliseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
+       std::chrono::nanoseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
        const SigningInfo& signingInfo);
 
     int

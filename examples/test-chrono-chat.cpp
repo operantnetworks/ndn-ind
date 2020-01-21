@@ -63,7 +63,7 @@ public:
      const Name& hubPrefix, Face& face, KeyChain& keyChain,
      const Name& certificateName)
     : screenName_(screenName), chatRoom_(chatRoom), maxMessageCacheLength_(100),
-      isRecoverySyncState_(true), syncLifetime_(5000.0), face_(face),
+      isRecoverySyncState_(true), syncLifetime_(seconds(5)), face_(face),
       keyChain_(keyChain), certificateName_(certificateName)
   {
     // This should only be called once, so get the random string here.
@@ -223,7 +223,7 @@ private:
   string chatRoom_;
   string userName_;
   Name chatPrefix_;
-  Milliseconds syncLifetime_;
+  nanoseconds syncLifetime_;
   ptr_lib::shared_ptr<ChronoSync2013> sync_;
   Face& face_;
   KeyChain& keyChain_;
@@ -237,7 +237,7 @@ Chat::initial()
   // heartbeat() function will call itself again after a timeout.
   // TODO: Are we sure using a "/local/timeout" interest is the best future call approach?
   Interest timeout("/local/timeout");
-  timeout.setInterestLifetimeMilliseconds(60000);
+  timeout.setInterestLifetime(seconds(60));
   face_.expressInterest(timeout, dummyOnData, bind(&Chat::heartbeat, shared_from_this(), _1));
 
   if (rosterFind(userName_) < 0) {
@@ -286,7 +286,7 @@ Chat::sendInterest
     ostringstream uri;
     uri << sendList[i] << "/" << sessionNoList[i] << "/" << sequenceNoList[i];
     Interest interest(uri.str());
-    interest.setInterestLifetimeMilliseconds(syncLifetime_);
+    interest.setInterestLifetime(syncLifetime_);
     face_.expressInterest
       (interest, bind(&Chat::onData, shared_from_this(), _1, _2),
        bind(&Chat::chatTimeout, shared_from_this(), _1));
@@ -375,7 +375,7 @@ Chat::onData
     // Set the alive timeout using the Interest timeout mechanism.
     // TODO: Are we sure using a "/local/timeout" interest is the best future call approach?
     Interest timeout("/local/timeout");
-    timeout.setInterestLifetimeMilliseconds(120000);
+    timeout.setInterestLifetime(seconds(12));
     face_.expressInterest
       (timeout, dummyOnData,
        bind(&Chat::alive, shared_from_this(), _1, sequenceNo, name, sessionNo, prefix));
@@ -415,7 +415,7 @@ Chat::heartbeat(const ptr_lib::shared_ptr<const Interest> &interest)
   // Call again.
   // TODO: Are we sure using a "/local/timeout" interest is the best future call approach?
   Interest timeout("/local/timeout");
-  timeout.setInterestLifetimeMilliseconds(60000);
+  timeout.setInterestLifetime(seconds(60));
   face_.expressInterest(timeout, dummyOnData, bind(&Chat::heartbeat, shared_from_this(), _1));
 }
 

@@ -93,8 +93,7 @@ public:
    * calls keyChain.sign(data, certificateName).
    * @param certificateName The certificate name of the key to use for signing a
    * data packet containing a sync state message.
-   * @param syncLifetime The interest lifetime in milliseconds for sending
-   * sync interests.
+   * @param syncLifetime The interest lifetime for sending sync interests.
    * @param onRegisterFailed If failed to register the prefix to receive
    * interests for the applicationBroadcastPrefix, this calls
    * onRegisterFailed(applicationBroadcastPrefix).
@@ -111,7 +110,7 @@ public:
      const OnInitialized& onInitialized, const Name& applicationDataPrefix,
      const Name& applicationBroadcastPrefix, int sessionNo,
      Face& face, KeyChain& keyChain, const Name& certificateName,
-     Milliseconds syncLifetime, const OnRegisterFailed& onRegisterFailed,
+     std::chrono::nanoseconds syncLifetime, const OnRegisterFailed& onRegisterFailed,
      int previousSequenceNumber = -1)
   : impl_(new Impl
       (onReceivedSyncState, onInitialized, applicationDataPrefix,
@@ -319,7 +318,7 @@ private:
        const OnInitialized& onInitialized, const Name& applicationDataPrefix,
        const Name& applicationBroadcastPrefix, int sessionNo,
        Face& face, KeyChain& keyChain, const Name& certificateName,
-       Milliseconds syncLifetime, int previousSequenceNumber);
+       std::chrono::nanoseconds syncLifetime, int previousSequenceNumber);
 
     /**
      * Initialize the digest log with a digest of "00" and and empty content.
@@ -462,7 +461,7 @@ private:
     Face& face_;
     KeyChain& keyChain_;
     Name certificateName_;
-    Milliseconds syncLifetime_;
+    std::chrono::nanoseconds syncLifetime_;
     OnReceivedSyncState onReceivedSyncState_;
     OnInitialized onInitialized_;
     std::vector<ptr_lib::shared_ptr<DigestLogEntry> > digestLog_;

@@ -53,14 +53,14 @@ public:
    * NOTE: The library will log any exceptions thrown by this callback, but for
    * better error handling the callback should catch and properly handle any
    * exceptions.
-   * @param maxInterestLifetime (optional) The maximum lifetime in milliseconds
-   * for re-expressed interests. If omitted, use 16000.
+   * @param maxInterestLifetime (optional) The maximum lifetime for re-expressed 
+   * interests. If omitted, use 16 seconds.
    * @return The OnTimeout function object to pass to expressInterest.
    */
   static OnTimeout
   makeOnTimeout
     (Face* face, const OnData& onData, const OnTimeout& onTimeout,
-     Milliseconds maxInterestLifetime = 16000.0);
+     std::chrono::nanoseconds maxInterestLifetime = std::chrono::seconds(16));
 
 private:
   /**
@@ -71,7 +71,7 @@ private:
    */
   ExponentialReExpress
     (Face* face, const OnData& onData, const OnTimeout& onTimeout,
-     Milliseconds maxInterestLifetime)
+     std::chrono::nanoseconds maxInterestLifetime)
   : face_(face), callerOnData_(onData), callerOnTimeout_(onTimeout),
     maxInterestLifetime_(maxInterestLifetime)
   {}
@@ -82,7 +82,7 @@ private:
   Face* face_;
   OnData callerOnData_;
   OnTimeout callerOnTimeout_;
-  Milliseconds maxInterestLifetime_;
+  std::chrono::nanoseconds maxInterestLifetime_;
 };
 
 }

@@ -34,6 +34,7 @@
 INIT_LOGGER("ndn.Node");
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 namespace ndn {
@@ -371,12 +372,12 @@ Node::nfdRegisterPrefix
   if (isLocal()) {
     commandInterest->setName(Name("/localhost/nfd/rib/register"));
     // The interest is answered by the local host, so set a short timeout.
-    commandInterest->setInterestLifetimeMilliseconds(2000.0);
+    commandInterest->setInterestLifetime(seconds(2));
   }
   else {
     commandInterest->setName(Name("/localhop/nfd/rib/register"));
     // The host is remote, so set a longer timeout.
-    commandInterest->setInterestLifetimeMilliseconds(4000.0);
+    commandInterest->setInterestLifetime(seconds(4));
   }
   // NFD only accepts TlvWireFormat packets.
   commandInterest->getName().append
@@ -508,15 +509,15 @@ Node::expressInterestHelper
     // removePendingInterest was already called with the pendingInterestId.
     return;
 
-  if (onTimeout || interestCopy->getInterestLifetimeMilliseconds() >= 0.0) {
+  if (onTimeout || interestCopy->getInterestLifetime().count() >= 0) {
     // Set up the timeout.
-    double delayMilliseconds = interestCopy->getInterestLifetimeMilliseconds();
-    if (delayMilliseconds < 0.0)
+    auto delayMilliseconds = interestCopy->getInterestLifetime();
+    if (delayMilliseconds.count() < 0)
       // Use a default timeout delay.
-      delayMilliseconds = 4000.0;
+      delayMilliseconds = seconds(4);
 
     face->callLater
-      (delayMilliseconds,
+      (toMilliseconds(delayMilliseconds),
        bind(&Node::processInterestTimeout, this, pendingInterest));
   }
 

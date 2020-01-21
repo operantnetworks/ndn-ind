@@ -106,15 +106,15 @@ public:
    * NOTE: The library will log any exceptions thrown by this callback, but for
    * better error handling the callback should catch and properly handle any
    * exceptions.
-   * @param interestLifetimeMilliseconds (optional) The Interest lifetime in
-   * milliseconds for fetching the _meta info and segments. If omitted, use the
-   * default value from the default Interest object.
+   * @param interestLifetime (optional) The Interest lifetime for fetching the 
+   * _meta info and segments. If omitted, use the default value from the default
+   * Interest object.
    */
   static void
   fetch
     (ndn::Face& face, const ndn::Name& prefix, ndn::KeyChain* validatorKeyChain,
      const OnComplete& onComplete, const OnError& onError,
-     ndn::Milliseconds interestLifetimeMilliseconds = 4000.0);
+     std::chrono::nanoseconds interestLifetime = std::chrono::seconds(4));
 
 private:
   /**
@@ -124,10 +124,10 @@ private:
   GeneralizedContent
     (ndn::Face& face, const ndn::Name& prefix, ndn::KeyChain* validatorKeyChain,
      const OnComplete& onComplete, const OnError& onError,
-     ndn::Milliseconds interestLifetimeMilliseconds)
+     std::chrono::nanoseconds interestLifetime)
   : face_(face), prefix_(prefix), validatorKeyChain_(validatorKeyChain),
     onComplete_(onComplete), onError_(onError),
-    interestLifetimeMilliseconds_(interestLifetimeMilliseconds)
+    interestLifetime_(interestLifetime)
   {
   }
 
@@ -154,7 +154,7 @@ private:
   ndn::KeyChain* validatorKeyChain_;
   OnComplete onComplete_;
   OnError onError_;
-  ndn::Milliseconds interestLifetimeMilliseconds_;
+  std::chrono::nanoseconds interestLifetime_;
   ndn::ptr_lib::shared_ptr<ContentMetaInfo> metaInfo_;
 };
 

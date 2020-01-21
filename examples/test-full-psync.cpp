@@ -39,6 +39,7 @@
 #include <ndn-ind/sync/full-psync2017.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -220,7 +221,8 @@ public:
   : face_(face),
     fullPSync_
       (80, face_, syncPrefix,
-       bind(&Producer::processSyncUpdate, this, _1), keyChain, 1600, 1600),
+       bind(&Producer::processSyncUpdate, this, _1), keyChain, milliseconds(1600),
+       1600),
     nDataPrefixes_(nDataPrefixes),
     maxNPublished_(maxNPublished),
     delayRangeMaxMs_(6000.0)

@@ -37,6 +37,7 @@
 #include "rib-entry.pb.h"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -56,7 +57,7 @@ int main(int argc, char** argv)
     Face face;
 
     Interest interest(Name("/localhost/nfd/rib/list"));
-    interest.setInterestLifetimeMilliseconds(4000);
+    interest.setInterestLifetime(seconds(4));
     cout << "Express request " << interest.getName().toUri() << endl;
 
     bool enabled = true;

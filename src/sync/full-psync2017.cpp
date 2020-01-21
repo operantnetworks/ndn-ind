@@ -34,6 +34,7 @@
 #include <ndn-ind/sync/full-psync2017.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 INIT_LOGGER("ndn.FullPSync2017");
@@ -43,7 +44,7 @@ namespace ndn {
 FullPSync2017::Impl::Impl
   (size_t expectedNEntries, Face& face, const Name& syncPrefix,
    const OnNamesUpdate& onNamesUpdate, KeyChain& keyChain,
-   Milliseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
+   nanoseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
    const SigningInfo& signingInfo, const CanAddToSyncData& canAddToSyncData,
    const CanAddReceivedName& canAddReceivedName)
 : PSyncProducerBase(expectedNEntries, syncPrefix, syncReplyFreshnessPeriod),
@@ -104,17 +105,17 @@ FullPSync2017::Impl::sendSyncInterest()
   // random1 is from 0.0 to 1.0.
   float random1;
   CryptoLite::generateRandomFloat(random1);
-  // Get a jitter of +/- syncInterestLifetime_ * 0.2 .
-  Milliseconds jitter = (random1 - 0.5) * (syncInterestLifetime_ * 0.2);
+  // Get a jitter of +/- syncInterestLifetime_ milliseconds * 0.2 .
+  double jitter = (random1 - 0.5) * (toMilliseconds(syncInterestLifetime_) * 0.2);
 
   face_.callLater
-    (syncInterestLifetime_ / 2 + jitter, 
+    (toMilliseconds(syncInterestLifetime_) / 2 + jitter,
      bind(&FullPSync2017::Impl::sendSyncInterest,
           static_pointer_cast<FullPSync2017::Impl>(shared_from_this())));
 
   ptr_lib::shared_ptr<Interest> syncInterest
     (ptr_lib::make_shared<Interest>(syncInterestName));
-  syncInterest->setInterestLifetimeMilliseconds(syncInterestLifetime_);
+  syncInterest->setInterestLifetime(syncInterestLifetime_);
   syncInterest->setNonce(Blob((const uint8_t*)"0000", 4));
   syncInterest->refreshNonce();
 

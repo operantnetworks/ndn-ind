@@ -724,7 +724,7 @@ protected:
       return interestCopy;
     }
     else
-      return ptr_lib::make_shared<Interest>(name, 4000.0);
+      return ptr_lib::make_shared<Interest>(name, std::chrono::seconds(4));
   }
 
   Node *node_;

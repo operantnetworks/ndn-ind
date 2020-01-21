@@ -352,13 +352,14 @@ MemoryContentCache::PendingInterest::PendingInterest
   (const ptr_lib::shared_ptr<const Interest>& interest, Face& face)
   : interest_(interest), face_(face), timeoutPeriodStart_(system_clock::now())
 {
-  // Set up timeoutTimeMilliseconds_.
-  Milliseconds interestLifetime = interest_->getInterestLifetimeMilliseconds();
-  if (interestLifetime < 0.0)
+  // Set up timeoutTime_.
+  auto interestLifetime = interest_->getInterestLifetime();
+  if (interestLifetime.count() < 0)
     // The InterestLifetime is omitted, so use a default.
-    interestLifetime = 4000.0;
+    interestLifetime = seconds(4);
 
-  timeoutTimeMilliseconds_ = timeoutPeriodStart_ + milliseconds((int64_t)interestLifetime);
+  timeoutTime_ =
+    timeoutPeriodStart_ + duration_cast<system_clock::duration>(interestLifetime);
 }
 
 }
