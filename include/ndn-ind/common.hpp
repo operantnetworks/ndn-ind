@@ -173,6 +173,32 @@ fromMillisecondsSince1970(double ms)
      (std::chrono::nanoseconds((int64_t)(ms * 1e6))));
 }
 
+/**
+ * Convert the duration to a double value of the number of milliseconds. This is
+ * needed because lower-level functions don't use std::chrono.
+ * @param duration The duration, which may have fractions of a millisecond.
+ * @return Milliseconds since the epoch, which may have fractions of a millisecond.
+ */
+static __inline double
+toMilliseconds(std::chrono::nanoseconds duration)
+{
+  // Use nanoseconds so that we can get fractions of a millisecond.
+  return 1e-6 * (double)duration.count();
+}
+
+/**
+ * Convert the double value of the number of milliseconds to a nanoseconds
+ * duration. This is needed because lower-level functions don't use std::chrono.
+ * @param ms The number of milliseconds, which may have fractions of a millisecond.
+ * @return The system_clock::time_point time.
+ */
+static __inline std::chrono::nanoseconds
+fromMilliseconds(double ms)
+{
+  // Use nanoseconds so that we can get fractions of a millisecond.
+  return std::chrono::nanoseconds((int64_t)(ms * 1e6));
+}
+
 }
 
 #endif
