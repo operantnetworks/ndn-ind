@@ -87,11 +87,6 @@ namespace ndn {
 typedef double Milliseconds;
 
 /**
- * The calendar time represented as the number of milliseconds since 1/1/1970.
- */
-typedef double MillisecondsSince1970;
-
-/**
  * Write the hex representation of the bytes in array to the result.
  * @param array The array of bytes.
  * @param arrayLength The number of bytes in array.
