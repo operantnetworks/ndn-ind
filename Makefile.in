@@ -438,12 +438,9 @@ am_bin_analog_reading_consumer_OBJECTS =  \
 bin_analog_reading_consumer_OBJECTS =  \
 	$(am_bin_analog_reading_consumer_OBJECTS)
 bin_analog_reading_consumer_DEPENDENCIES = libndn-ind.la
-am_bin_basic_insertion_OBJECTS =  \
-	examples/repo-ng/repo-command-parameter.pb.$(OBJEXT) \
-	examples/repo-ng/repo-command-response.pb.$(OBJEXT) \
-	examples/repo-ng/basic-insertion.$(OBJEXT)
-bin_basic_insertion_OBJECTS = $(am_bin_basic_insertion_OBJECTS)
-bin_basic_insertion_DEPENDENCIES = libndn-ind.la
+bin_basic_insertion_SOURCES = bin/basic-insertion.c
+bin_basic_insertion_OBJECTS = bin/basic-insertion.$(OBJEXT)
+bin_basic_insertion_LDADD = $(LDADD)
 am_bin_test_channel_discovery_OBJECTS =  \
 	examples/test-channel-discovery.$(OBJEXT)
 bin_test_channel_discovery_OBJECTS =  \
@@ -743,12 +740,9 @@ am_bin_unit_tests_test_verification_rules_OBJECTS = tests/unit-tests/bin_unit_te
 bin_unit_tests_test_verification_rules_OBJECTS =  \
 	$(am_bin_unit_tests_test_verification_rules_OBJECTS)
 bin_unit_tests_test_verification_rules_DEPENDENCIES = libndn-ind.la
-am_bin_watched_insertion_OBJECTS =  \
-	examples/repo-ng/repo-command-parameter.pb.$(OBJEXT) \
-	examples/repo-ng/repo-command-response.pb.$(OBJEXT) \
-	examples/repo-ng/watched-insertion.$(OBJEXT)
-bin_watched_insertion_OBJECTS = $(am_bin_watched_insertion_OBJECTS)
-bin_watched_insertion_DEPENDENCIES = libndn-ind.la
+bin_watched_insertion_SOURCES = bin/watched-insertion.c
+bin_watched_insertion_OBJECTS = bin/watched-insertion.$(OBJEXT)
+bin_watched_insertion_LDADD = $(LDADD)
 SCRIPTS = $(dist_noinst_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -765,7 +759,9 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
+am__depfiles_remade = bin/$(DEPDIR)/basic-insertion.Po \
+	bin/$(DEPDIR)/watched-insertion.Po \
+	contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_access_manager_v2-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_certificate-gtest-all.Po \
 	contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_control_parameters_encode_decode-gtest-all.Po \
@@ -832,10 +828,6 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	examples/$(DEPDIR)/test-register-route.Po \
 	examples/$(DEPDIR)/test-sign-verify-data-hmac.Po \
 	examples/arduino/$(DEPDIR)/analog-reading-consumer.Po \
-	examples/repo-ng/$(DEPDIR)/basic-insertion.Po \
-	examples/repo-ng/$(DEPDIR)/repo-command-parameter.pb.Po \
-	examples/repo-ng/$(DEPDIR)/repo-command-response.pb.Po \
-	examples/repo-ng/$(DEPDIR)/watched-insertion.Po \
 	src/$(DEPDIR)/common.Plo src/$(DEPDIR)/control-parameters.Plo \
 	src/$(DEPDIR)/control-response.Plo src/$(DEPDIR)/data.Plo \
 	src/$(DEPDIR)/delegation-set.Plo \
@@ -1143,8 +1135,7 @@ am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(libndn_ind_la_SOURCES) \
-	$(bin_analog_reading_consumer_SOURCES) \
-	$(bin_basic_insertion_SOURCES) \
+	$(bin_analog_reading_consumer_SOURCES) bin/basic-insertion.c \
 	$(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
@@ -1199,11 +1190,10 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_unit_tests_test_validator_SOURCES) \
 	$(bin_unit_tests_test_validator_null_SOURCES) \
 	$(bin_unit_tests_test_verification_rules_SOURCES) \
-	$(bin_watched_insertion_SOURCES)
+	bin/watched-insertion.c
 DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(libndn_ind_la_SOURCES) \
-	$(bin_analog_reading_consumer_SOURCES) \
-	$(bin_basic_insertion_SOURCES) \
+	$(bin_analog_reading_consumer_SOURCES) bin/basic-insertion.c \
 	$(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
@@ -1258,7 +1248,7 @@ DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_unit_tests_test_validator_SOURCES) \
 	$(bin_unit_tests_test_validator_null_SOURCES) \
 	$(bin_unit_tests_test_verification_rules_SOURCES) \
-	$(bin_watched_insertion_SOURCES)
+	bin/watched-insertion.c
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -1737,8 +1727,6 @@ CLEANFILES = \
   examples/face-query-filter.pb.cc \
   examples/face-status.pb.cc \
   examples/fib-entry.pb.cc \
-  examples/repo-ng/repo-command-parameter.pb.cc \
-  examples/repo-ng/repo-command-response.pb.cc \
   examples/rib-entry.pb.cc \
   src/sync/sync-state.pb.cc \
   tools/usersync/content-meta-info.pb.cc
@@ -2249,16 +2237,6 @@ bin_analog_reading_consumer_SOURCES = examples/arduino/analog-reading-consumer.c
 bin_analog_reading_consumer_LDADD = libndn-ind.la
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
 bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la
-bin_basic_insertion_SOURCES = \
-  examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
-  examples/repo-ng/basic-insertion.cpp
-
-bin_basic_insertion_LDADD = libndn-ind.la
-bin_watched_insertion_SOURCES = \
-  examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
-  examples/repo-ng/watched-insertion.cpp
-
-bin_watched_insertion_LDADD = libndn-ind.la
 bin_test_register_route_SOURCES = \
   examples/control-parameters.pb.cc examples/face-query-filter.pb.cc \
   examples/face-status.pb.cc examples/test-register-route.cpp
@@ -3310,25 +3288,15 @@ bin/$(am__dirstamp):
 bin/analog-reading-consumer$(EXEEXT): $(bin_analog_reading_consumer_OBJECTS) $(bin_analog_reading_consumer_DEPENDENCIES) $(EXTRA_bin_analog_reading_consumer_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/analog-reading-consumer$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(bin_analog_reading_consumer_OBJECTS) $(bin_analog_reading_consumer_LDADD) $(LIBS)
-examples/repo-ng/$(am__dirstamp):
-	@$(MKDIR_P) examples/repo-ng
-	@: > examples/repo-ng/$(am__dirstamp)
-examples/repo-ng/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) examples/repo-ng/$(DEPDIR)
-	@: > examples/repo-ng/$(DEPDIR)/$(am__dirstamp)
-examples/repo-ng/repo-command-parameter.pb.$(OBJEXT):  \
-	examples/repo-ng/$(am__dirstamp) \
-	examples/repo-ng/$(DEPDIR)/$(am__dirstamp)
-examples/repo-ng/repo-command-response.pb.$(OBJEXT):  \
-	examples/repo-ng/$(am__dirstamp) \
-	examples/repo-ng/$(DEPDIR)/$(am__dirstamp)
-examples/repo-ng/basic-insertion.$(OBJEXT):  \
-	examples/repo-ng/$(am__dirstamp) \
-	examples/repo-ng/$(DEPDIR)/$(am__dirstamp)
+bin/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) bin/$(DEPDIR)
+	@: > bin/$(DEPDIR)/$(am__dirstamp)
+bin/basic-insertion.$(OBJEXT): bin/$(am__dirstamp) \
+	bin/$(DEPDIR)/$(am__dirstamp)
 
 bin/basic-insertion$(EXEEXT): $(bin_basic_insertion_OBJECTS) $(bin_basic_insertion_DEPENDENCIES) $(EXTRA_bin_basic_insertion_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/basic-insertion$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(bin_basic_insertion_OBJECTS) $(bin_basic_insertion_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(bin_basic_insertion_OBJECTS) $(bin_basic_insertion_LDADD) $(LIBS)
 examples/$(am__dirstamp):
 	@$(MKDIR_P) examples
 	@: > examples/$(am__dirstamp)
@@ -3893,16 +3861,16 @@ contrib/gtest-1.7.0/fused-src/gtest/bin_unit_tests_test_verification_rules-gtest
 bin/unit-tests/test-verification-rules$(EXEEXT): $(bin_unit_tests_test_verification_rules_OBJECTS) $(bin_unit_tests_test_verification_rules_DEPENDENCIES) $(EXTRA_bin_unit_tests_test_verification_rules_DEPENDENCIES) bin/unit-tests/$(am__dirstamp)
 	@rm -f bin/unit-tests/test-verification-rules$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(bin_unit_tests_test_verification_rules_OBJECTS) $(bin_unit_tests_test_verification_rules_LDADD) $(LIBS)
-examples/repo-ng/watched-insertion.$(OBJEXT):  \
-	examples/repo-ng/$(am__dirstamp) \
-	examples/repo-ng/$(DEPDIR)/$(am__dirstamp)
+bin/watched-insertion.$(OBJEXT): bin/$(am__dirstamp) \
+	bin/$(DEPDIR)/$(am__dirstamp)
 
 bin/watched-insertion$(EXEEXT): $(bin_watched_insertion_OBJECTS) $(bin_watched_insertion_DEPENDENCIES) $(EXTRA_bin_watched_insertion_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/watched-insertion$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(bin_watched_insertion_OBJECTS) $(bin_watched_insertion_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(bin_watched_insertion_OBJECTS) $(bin_watched_insertion_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f bin/*.$(OBJEXT)
 	-rm -f contrib/apache/*.$(OBJEXT)
 	-rm -f contrib/apache/*.lo
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/*.$(OBJEXT)
@@ -3914,7 +3882,6 @@ mostlyclean-compile:
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/*.lo
 	-rm -f examples/*.$(OBJEXT)
 	-rm -f examples/arduino/*.$(OBJEXT)
-	-rm -f examples/repo-ng/*.$(OBJEXT)
 	-rm -f src/*.$(OBJEXT)
 	-rm -f src/*.lo
 	-rm -f src/c/*.$(OBJEXT)
@@ -3996,6 +3963,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@bin/$(DEPDIR)/basic-insertion.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@bin/$(DEPDIR)/watched-insertion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/apache/$(DEPDIR)/apr_base64.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_access_manager_v2-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_certificate-gtest-all.Po@am__quote@ # am--include-marker
@@ -4063,10 +4032,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-register-route.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-sign-verify-data-hmac.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/arduino/$(DEPDIR)/analog-reading-consumer.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@examples/repo-ng/$(DEPDIR)/basic-insertion.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@examples/repo-ng/$(DEPDIR)/repo-command-parameter.pb.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@examples/repo-ng/$(DEPDIR)/repo-command-response.pb.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@examples/repo-ng/$(DEPDIR)/watched-insertion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/common.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/control-parameters.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/control-response.Plo@am__quote@ # am--include-marker
@@ -6475,6 +6440,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f bin/$(DEPDIR)/$(am__dirstamp)
 	-rm -f bin/$(am__dirstamp)
 	-rm -f bin/unit-tests/$(am__dirstamp)
 	-rm -f contrib/apache/$(DEPDIR)/$(am__dirstamp)
@@ -6491,8 +6457,6 @@ distclean-generic:
 	-rm -f examples/$(am__dirstamp)
 	-rm -f examples/arduino/$(DEPDIR)/$(am__dirstamp)
 	-rm -f examples/arduino/$(am__dirstamp)
-	-rm -f examples/repo-ng/$(DEPDIR)/$(am__dirstamp)
-	-rm -f examples/repo-ng/$(am__dirstamp)
 	-rm -f src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/$(am__dirstamp)
 	-rm -f src/c/$(DEPDIR)/$(am__dirstamp)
@@ -6582,7 +6546,9 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libLTLIBRARIES \
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-		-rm -f contrib/apache/$(DEPDIR)/apr_base64.Plo
+		-rm -f bin/$(DEPDIR)/basic-insertion.Po
+	-rm -f bin/$(DEPDIR)/watched-insertion.Po
+	-rm -f contrib/apache/$(DEPDIR)/apr_base64.Plo
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_access_manager_v2-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_certificate-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_control_parameters_encode_decode-gtest-all.Po
@@ -6649,10 +6615,6 @@ distclean: distclean-recursive
 	-rm -f examples/$(DEPDIR)/test-register-route.Po
 	-rm -f examples/$(DEPDIR)/test-sign-verify-data-hmac.Po
 	-rm -f examples/arduino/$(DEPDIR)/analog-reading-consumer.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/basic-insertion.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/repo-command-parameter.pb.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/repo-command-response.pb.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/watched-insertion.Po
 	-rm -f src/$(DEPDIR)/common.Plo
 	-rm -f src/$(DEPDIR)/control-parameters.Plo
 	-rm -f src/$(DEPDIR)/control-response.Plo
@@ -6978,7 +6940,9 @@ installcheck-am:
 maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-		-rm -f contrib/apache/$(DEPDIR)/apr_base64.Plo
+		-rm -f bin/$(DEPDIR)/basic-insertion.Po
+	-rm -f bin/$(DEPDIR)/watched-insertion.Po
+	-rm -f contrib/apache/$(DEPDIR)/apr_base64.Plo
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_access_manager_v2-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_certificate-gtest-all.Po
 	-rm -f contrib/gtest-1.7.0/fused-src/gtest/$(DEPDIR)/bin_unit_tests_test_control_parameters_encode_decode-gtest-all.Po
@@ -7045,10 +7009,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f examples/$(DEPDIR)/test-register-route.Po
 	-rm -f examples/$(DEPDIR)/test-sign-verify-data-hmac.Po
 	-rm -f examples/arduino/$(DEPDIR)/analog-reading-consumer.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/basic-insertion.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/repo-command-parameter.pb.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/repo-command-response.pb.Po
-	-rm -f examples/repo-ng/$(DEPDIR)/watched-insertion.Po
 	-rm -f src/$(DEPDIR)/common.Plo
 	-rm -f src/$(DEPDIR)/control-parameters.Plo
 	-rm -f src/$(DEPDIR)/control-response.Plo

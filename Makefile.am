@@ -37,8 +37,6 @@ CLEANFILES = \
   examples/face-query-filter.pb.cc \
   examples/face-status.pb.cc \
   examples/fib-entry.pb.cc \
-  examples/repo-ng/repo-command-parameter.pb.cc \
-  examples/repo-ng/repo-command-response.pb.cc \
   examples/rib-entry.pb.cc \
   src/sync/sync-state.pb.cc \
   tools/usersync/content-meta-info.pb.cc
@@ -597,16 +595,6 @@ bin_analog_reading_consumer_LDADD = libndn-ind.la
 
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
 bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la
-
-bin_basic_insertion_SOURCES = \
-  examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
-  examples/repo-ng/basic-insertion.cpp
-bin_basic_insertion_LDADD = libndn-ind.la
-
-bin_watched_insertion_SOURCES = \
-  examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
-  examples/repo-ng/watched-insertion.cpp
-bin_watched_insertion_LDADD = libndn-ind.la
 
 bin_test_register_route_SOURCES = \
   examples/control-parameters.pb.cc examples/face-query-filter.pb.cc \
