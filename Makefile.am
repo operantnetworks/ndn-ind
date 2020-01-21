@@ -73,7 +73,7 @@ noinst_PROGRAMS = bin/test-channel-discovery bin/test-chrono-chat \
   bin/test-prefix-discovery \
   bin/test-publish-async-nfd bin/test-publish-async-nfd-lite \
   bin/test-register-route bin/test-sign-verify-data-hmac \
-  bin/analog-reading-consumer bin/basic-insertion bin/watched-insertion
+  bin/analog-reading-consumer
 
 # Public C headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_c_headers in include/Makefile.am.
