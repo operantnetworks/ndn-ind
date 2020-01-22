@@ -35,12 +35,11 @@ namespace ndn {
 class MetaInfo {
 public:
   MetaInfo()
-  : changeCount_(0)
+  : timestamp_(std::chrono::milliseconds(-1)), changeCount_(0)
   {
-    timestampMilliseconds_ = -1;
     type_ = ndn_ContentType_BLOB;
     otherTypeCode_ = -1;
-    freshnessPeriod_ = -1;
+    freshnessPeriod_ = std::chrono::nanoseconds(-1);
   }
 
   /**
@@ -63,10 +62,10 @@ public:
   /**
    * @deprecated Use the application-specific content to store a timestamp.
    */
-  MillisecondsSince1970
-  DEPRECATED_IN_NDN_IND getTimestampMilliseconds() const
+  std::chrono::system_clock::time_point
+  DEPRECATED_IN_NDN_IND getTimestamp() const
   {
-    return timestampMilliseconds_;
+    return timestamp_;
   }
 
   /**
@@ -86,17 +85,8 @@ public:
   int
   getOtherTypeCode() const { return otherTypeCode_; }
 
-  Milliseconds
+  std::chrono::nanoseconds
   getFreshnessPeriod() const { return freshnessPeriod_; }
-
-  /**
-   * @deprecated Use getFreshnessPeriod.
-   */
-  int
-  DEPRECATED_IN_NDN_IND getFreshnessSeconds() const
-  {
-    return freshnessPeriod_ < 0 ? -1 : (int)round(freshnessPeriod_ / 1000.0);
-  }
 
   /**
    * Get the final block ID.
@@ -116,10 +106,10 @@ public:
    * @deprecated Use the application-specific content to store a timestamp.
    */
   void
-  DEPRECATED_IN_NDN_IND setTimestampMilliseconds
-    (MillisecondsSince1970 timestampMilliseconds)
+  DEPRECATED_IN_NDN_IND setTimestamp
+    (std::chrono::system_clock::time_point timestamp)
   {
-    timestampMilliseconds_ = timestampMilliseconds;
+    timestamp_ = timestamp;
     ++changeCount_;
   }
 
@@ -147,19 +137,10 @@ public:
   setOtherTypeCode(int otherTypeCode);
 
   void
-  setFreshnessPeriod(Milliseconds freshnessPeriod)
+  setFreshnessPeriod(std::chrono::nanoseconds freshnessPeriod)
   {
     freshnessPeriod_ = freshnessPeriod;
     ++changeCount_;
-  }
-
-  /**
-   * @deprecated Use setFreshnessPeriod.
-   */
-  void
-  DEPRECATED_IN_NDN_IND setFreshnessSeconds(int freshnessSeconds)
-  {
-    setFreshnessPeriod(freshnessSeconds < 0 ? -1.0 : (double)freshnessSeconds * 1000.0);
   }
 
   /**
@@ -192,10 +173,10 @@ public:
   getChangeCount() const { return changeCount_; }
 
 private:
-  MillisecondsSince1970 timestampMilliseconds_; /**< milliseconds since 1/1/1970. -1 for none */
+  std::chrono::system_clock::time_point timestamp_; /**< time_point. -1 ms for none */
   ndn_ContentType type_;         /**< default is ndn_ContentType_BLOB. -1 for none */
   int otherTypeCode_;
-  Milliseconds freshnessPeriod_; /**< -1 for none */
+  std::chrono::nanoseconds freshnessPeriod_; /**< -1 ms for none */
   Name::Component finalBlockId_; /** size 0 for none */
   uint64_t changeCount_;
 };

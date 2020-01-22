@@ -25,6 +25,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <chrono>
 // common.h includes ndn-ind-config.h.
 #include "c/common.h"
 
@@ -81,16 +82,6 @@ namespace ndn { namespace func_lib = boost; }
 namespace ndn {
 
 /**
- * A time interval represented as the number of milliseconds.
- */
-typedef double Milliseconds;
-
-/**
- * The calendar time represented as the number of milliseconds since 1/1/1970.
- */
-typedef double MillisecondsSince1970;
-
-/**
  * Write the hex representation of the bytes in array to the result.
  * @param array The array of bytes.
  * @param arrayLength The number of bytes in array.
@@ -145,6 +136,63 @@ ndn_trim(std::string& str);
  */
 bool
 equalsIgnoreCase(const std::string& s1, const std::string& s2);
+
+/**
+ * Convert the system_clock::time_point to a double value of the number of
+ * milliseconds since the epoch (January 1, 1970). This is needed because
+ * lower-level functions don't use std::chrono.
+ * @param t The system_clock::time_point.
+ * @return Milliseconds since the epoch, which may have fractions of a millisecond.
+ */
+static __inline double
+toMillisecondsSince1970(std::chrono::system_clock::time_point t)
+{
+  // Use nanoseconds so that we can get fractions of a millisecond.
+  return 1e-6 * (double)std::chrono::duration_cast<std::chrono::nanoseconds>
+    (t.time_since_epoch()).count();
+}
+
+/**
+ * Convert the double value of the number of milliseconds since the epoch to a
+ * system_clock::time_point. This is needed because lower-level functions don't
+ * use std::chrono.
+ * @param ms Milliseconds since the epoch, which may have fractions of a millisecond.
+ * @return The system_clock::time_point time.
+ */
+static __inline std::chrono::system_clock::time_point
+fromMillisecondsSince1970(double ms)
+{
+  // Use nanoseconds so that we can get fractions of a millisecond.
+  return std::chrono::system_clock::time_point
+    (std::chrono::duration_cast<std::chrono::system_clock::duration>
+     (std::chrono::nanoseconds((int64_t)(ms * 1e6))));
+}
+
+/**
+ * Convert the duration to a double value of the number of milliseconds. This is
+ * needed because lower-level functions don't use std::chrono.
+ * @param duration The duration, which may have fractions of a millisecond.
+ * @return Milliseconds since the epoch, which may have fractions of a millisecond.
+ */
+static __inline double
+toMilliseconds(std::chrono::nanoseconds duration)
+{
+  // Use nanoseconds so that we can get fractions of a millisecond.
+  return 1e-6 * (double)duration.count();
+}
+
+/**
+ * Convert the double value of the number of milliseconds to a nanoseconds
+ * duration. This is needed because lower-level functions don't use std::chrono.
+ * @param ms The number of milliseconds, which may have fractions of a millisecond.
+ * @return The system_clock::time_point time.
+ */
+static __inline std::chrono::nanoseconds
+fromMilliseconds(double ms)
+{
+  // Use nanoseconds so that we can get fractions of a millisecond.
+  return std::chrono::nanoseconds((int64_t)(ms * 1e6));
+}
 
 }
 

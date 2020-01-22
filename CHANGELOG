@@ -1,9 +1,11 @@
-Interim changes since NDN-CPP v0.17 (2020-01-14)
+Interim changes since NDN-CPP v0.17 (2020-01-21)
 ------------------------------------------------
 
 Changes
 * Renamed NDN-CPP to NDN-IND. Renamed include paths to <ndn-ind/...>. Renamed the
   libraries to libndn-ind.a, etc.
+* Globally changed to use std::chrono::system_clock::time_point and std::chrono::nanoseconds
+  instead of double MillisecondsSince1970 and Milliseconds.
 * contrib/ndn-cxx: Put Scheduler, ScopedEventId, etc. in the ndn::scheduler namespace.
   Change to use std::chrono. Remove unneeded CustomClock and system_clock wrapper.
   Renamed the ndn::time::steady_clock wrapper (only needed for macOS) to

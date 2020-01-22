@@ -38,6 +38,7 @@
 #include <ndn-ind-tools/usersync/channel-discovery.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 using namespace ndntools;
@@ -159,7 +160,7 @@ int main(int argc, char** argv)
 
     Name applicationDataPrefix("/ndn/edu/ucla/remap");
     applicationDataPrefix.append(username).append("flume").append("discovery");
-    Milliseconds syncLifetime = 5000.0;
+    auto syncLifetime = seconds(5);
     ChannelDiscovery channelDiscovery
       (applicationDataPrefix, channelListFilePath, 
        Name("/ndn/broadcast/flume/discovery"), face, keyChain, certificateName,

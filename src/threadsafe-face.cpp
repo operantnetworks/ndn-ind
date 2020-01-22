@@ -32,6 +32,7 @@
 #include "node.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -265,11 +266,12 @@ waitHandler
 
 void
 ThreadsafeFace::callLater
-  (Milliseconds delayMilliseconds, const Callback& callback)
+  (nanoseconds delay, const Callback& callback)
 {
   ptr_lib::shared_ptr<boost::asio::deadline_timer> timer
     (new boost::asio::deadline_timer
-     (ioService_, boost::posix_time::milliseconds((uint64_t)delayMilliseconds)));
+     (ioService_, 
+      boost::posix_time::milliseconds(duration_cast<milliseconds>(delay).count())));
 
   // Pass the timer to waitHandler to keep it alive.
   timer->async_wait(boost::bind(&waitHandler, _1, callback, timer));

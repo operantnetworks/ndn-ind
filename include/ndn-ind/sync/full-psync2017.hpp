@@ -65,11 +65,9 @@ public:
    * exceptions.
    * @param keyChain The KeyChain for signing Data packets.
    * @param syncInterestLifetime (optional) The Interest lifetime for the sync
-   * Interests, in milliseconds. If omitted, use
-   * DEFAULT_SYNC_INTEREST_LIFETIME.
+   * Interests. If omitted, use DEFAULT_SYNC_INTEREST_LIFETIME.
    * @param syncReplyFreshnessPeriod (optional) The freshness period of the sync
-   * Data packet, in milliseconds. If omitted, use
-   * DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD.
+   * Data packet. If omitted, use DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD.
    * @param signingInfo (optional) The SigningInfo for signing Data packets,
    * which is copied. If omitted, use the default SigningInfo().
    * @param canAddToSyncData (optional) When a new IBLT is received in a sync
@@ -88,8 +86,8 @@ public:
   FullPSync2017
     (size_t expectedNEntries, Face& face, const Name& syncPrefix,
      const OnNamesUpdate& onNamesUpdate, KeyChain& keyChain,
-     Milliseconds syncInterestLifetime = DEFAULT_SYNC_INTEREST_LIFETIME,
-     Milliseconds syncReplyFreshnessPeriod = DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
+     std::chrono::nanoseconds syncInterestLifetime = DEFAULT_SYNC_INTEREST_LIFETIME,
+     std::chrono::nanoseconds syncReplyFreshnessPeriod = DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
      const SigningInfo& signingInfo = SigningInfo(),
      const CanAddToSyncData& canAddToSyncData = CanAddToSyncData(),
      const CanAddReceivedName& canAddReceivedName = CanAddReceivedName())
@@ -122,8 +120,10 @@ public:
     impl_->removeName(name);
   }
 
-  static const int DEFAULT_SYNC_INTEREST_LIFETIME = 1000;
-  static const int DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD = 1000;
+  static constexpr std::chrono::nanoseconds DEFAULT_SYNC_INTEREST_LIFETIME =
+    std::chrono::seconds(1);
+  static constexpr std::chrono::nanoseconds DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD =
+    std::chrono::seconds(1);
 
 private:
   /**
@@ -141,7 +141,8 @@ private:
     Impl
       (size_t expectedNEntries, Face& face, const Name& syncPrefix,
        const OnNamesUpdate& onNamesUpdate, KeyChain& keyChain,
-       Milliseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
+       std::chrono::nanoseconds syncInterestLifetime, 
+       std::chrono::nanoseconds syncReplyFreshnessPeriod,
        const SigningInfo& signingInfo, const CanAddToSyncData& canAddToSyncData,
        const CanAddReceivedName& canAddReceivedName);
 
@@ -260,7 +261,7 @@ private:
     SigningInfo signingInfo_;
     ptr_lib::shared_ptr<PSyncSegmentPublisher> segmentPublisher_;
     std::map<Name, ptr_lib::shared_ptr<PendingEntryInfoFull> > pendingEntries_;
-    Milliseconds syncInterestLifetime_;
+    std::chrono::nanoseconds syncInterestLifetime_;
     OnNamesUpdate onNamesUpdate_;
     CanAddToSyncData canAddToSyncData_;
     CanAddReceivedName canAddReceivedName_;

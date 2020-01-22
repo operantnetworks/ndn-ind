@@ -55,7 +55,7 @@ AccessManagerV2::Impl::initialize(const Name& dataset)
 
   Data kekData(*nacKey_->getDefaultCertificate());
   kekData.setName(Name(kekPrefix).append(nacKeyId));
-  kekData.getMetaInfo().setFreshnessPeriod(DEFAULT_KEK_FRESHNESS_PERIOD_MS);
+  kekData.getMetaInfo().setFreshnessPeriod(DEFAULT_KEK_FRESHNESS_PERIOD);
   keyChain_->sign(kekData, SigningInfo(identity_));
   // A KEK looks like a certificate, but doesn't have a ValidityPeriod.
   storage_.insert(kekData);
@@ -170,7 +170,7 @@ AccessManagerV2::Impl::addMember(const CertificateV2& memberCertificate)
   ptr_lib::shared_ptr<Data> kdkData = ptr_lib::make_shared<Data>(kdkName);
   kdkData->setContent(encryptedContent.wireEncodeV2());
   // FreshnessPeriod can serve as a soft access control for revoking access.
-  kdkData->getMetaInfo().setFreshnessPeriod(DEFAULT_KDK_FRESHNESS_PERIOD_MS);
+  kdkData->getMetaInfo().setFreshnessPeriod(DEFAULT_KDK_FRESHNESS_PERIOD);
   keyChain_->sign(*kdkData, SigningInfo(identity_));
 
   storage_.insert(*kdkData);

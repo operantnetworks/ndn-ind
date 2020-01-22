@@ -26,38 +26,38 @@
 #include <ndn-ind/security/v2/certificate-cache-v2.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 INIT_LOGGER("ndn.CertificateCacheV2");
 
 namespace ndn {
 
-CertificateCacheV2::CertificateCacheV2(Milliseconds maxLifetimeMilliseconds)
-: maxLifetimeMilliseconds_(maxLifetimeMilliseconds),
-  nextRefreshTime_(DBL_MAX),
-  nowOffsetMilliseconds_(0)
+CertificateCacheV2::CertificateCacheV2(nanoseconds maxLifetime)
+: maxLifetime_(maxLifetime),
+  nextRefreshTime_(system_clock::time_point::max()),
+  nowOffset_(0)
 {
 }
 
 void
 CertificateCacheV2::insert(const CertificateV2& certificate)
 {
-  MillisecondsSince1970 notAfterTime =
-    certificate.getValidityPeriod().getNotAfter();
-  // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
+  auto notAfterTime = certificate.getValidityPeriod().getNotAfter();
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   if (notAfterTime < now) {
     _LOG_DEBUG("Not adding " << certificate.getName().toUri() <<
       ": already expired at " << DerNode::DerGeneralizedTime::toIsoString(notAfterTime));
     return;
   }
 
-  MillisecondsSince1970 removalTime =
-    min(notAfterTime, now + maxLifetimeMilliseconds_);
+  auto removalTime =
+    min(notAfterTime, now + duration_cast<system_clock::duration>(maxLifetime_));
   if (removalTime < nextRefreshTime_)
     // We need to run refresh() sooner.)
     nextRefreshTime_ = removalTime;
 
-  Milliseconds removalHours = (removalTime - now) / (3600 * 1000.0);
+  auto removalHours = duration_cast<hours>(removalTime - now).count();
   _LOG_DEBUG("Adding " << certificate.getName().toUri() << ", will remove in "
     << removalHours << " hours");
   ptr_lib::shared_ptr<CertificateV2> certificateCopy(new CertificateV2(certificate));
@@ -117,13 +117,13 @@ CertificateCacheV2::deleteCertificate(const Name& certificateName)
 void
 CertificateCacheV2::refresh()
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   if (now < nextRefreshTime_)
     return;
 
   // We recompute nextRefreshTime_.
-  MillisecondsSince1970 nextRefreshTime = DBL_MAX;
+  auto nextRefreshTime = system_clock::time_point::max();
   // Keep a separate list of entries to erase since we can't erase while iterating.
   vector<Name> namesToErase;
   for (map<Name, Entry>::const_iterator i = certificatesByName_.begin();

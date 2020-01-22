@@ -39,6 +39,7 @@
 #include <ndn-ind/sync/full-psync2017.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -220,7 +221,8 @@ public:
   : face_(face),
     fullPSync_
       (80, face_, syncPrefix,
-       bind(&Producer::processSyncUpdate, this, _1), keyChain, 1600, 1600),
+       bind(&Producer::processSyncUpdate, this, _1), keyChain, milliseconds(1600),
+       milliseconds(1600)),
     nDataPrefixes_(nDataPrefixes),
     maxNPublished_(maxNPublished),
     delayRangeMaxMs_(6000.0)
@@ -236,7 +238,7 @@ public:
       // random1 is from 0.0 to 1.0.
       float random1;
       CryptoLite::generateRandomFloat(random1);
-      Milliseconds delay = random1 * delayRangeMaxMs_;
+      milliseconds delay((int64_t)(random1 * delayRangeMaxMs_));
 
       face_.callLater(delay, bind(&Producer::doUpdate, this, dataPrefix));
     }
@@ -257,7 +259,7 @@ private:
       // random1 is from 0.0 to 1.0.
       float random1;
       CryptoLite::generateRandomFloat(random1);
-      Milliseconds delay = random1 * delayRangeMaxMs_;
+      milliseconds delay((int64_t)(random1 * delayRangeMaxMs_));
 
       face_.callLater(delay, bind(&Producer::doUpdate, this, dataPrefix));
     }
@@ -277,7 +279,7 @@ private:
   int nDataPrefixes_;
   int maxNPublished_;
   map<Name, int> nPublished_;
-  Milliseconds delayRangeMaxMs_;
+  double delayRangeMaxMs_;
 };
 
 int main(int argc, char** argv)

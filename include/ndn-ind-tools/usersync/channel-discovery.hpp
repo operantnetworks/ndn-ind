@@ -66,8 +66,8 @@ public:
    * calls keyChain.sign(data, certificateName).
    * @param certificateName The certificate name of the key to use for signing a
    * data packet containing a sync state message.
-   * @param syncLifetime The interest lifetime in milliseconds for sending
-   * sync interests, for example 5000.0.
+   * @param syncLifetime The interest lifetime for sending sync interests, for 
+   * example std::chrono::seconds(5).
    * @param onReceivedChannelList On receiving a channel list from another user,
    * this calls onReceivedChannelList(channelDiscovery, userPrefix) where
    * channelDiscovery is this ChannelDiscovery object and userPrefix is the Name
@@ -87,7 +87,7 @@ public:
      const std::string& channelListFilePath,
      const ndn::Name& applicationBroadcastPrefix, ndn::Face& face,
      ndn::KeyChain& keyChain, const ndn::Name& certificateName,
-     ndn::Milliseconds syncLifetime,
+     std::chrono::nanoseconds syncLifetime,
      const OnReceivedChannelList& onReceivedChannelList, const OnError& onError)
   : impl_(new Impl
       (*this, applicationDataPrefix, channelListFilePath, face, keyChain,
@@ -170,7 +170,7 @@ private:
       (ChannelDiscovery& parent, const ndn::Name& applicationDataPrefix,
        const std::string& channelListFilePath, ndn::Face& face,
        ndn::KeyChain& keyChain, const ndn::Name& certificateName,
-       ndn::Milliseconds syncLifetime,
+       std::chrono::nanoseconds syncLifetime,
        const OnReceivedChannelList& onReceivedChannelList, const OnError& onError);
 
     /**
@@ -311,7 +311,7 @@ private:
     ndn::Face& face_;
     ndn::KeyChain& keyChain_;
     ndn::Name certificateName_;
-    ndn::Milliseconds syncLifetime_;
+    std::chrono::nanoseconds syncLifetime_;
     OnReceivedChannelList onReceivedChannelList_;
     OnError onError_;
     ndn::ptr_lib::shared_ptr<ndn::ChronoSync2013> sync_;

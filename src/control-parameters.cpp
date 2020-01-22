@@ -42,7 +42,7 @@ ControlParameters::get
   controlParametersLite.setCost(cost_);
   flags_.get(controlParametersLite.getForwardingFlags());
   strategy_.get(controlParametersLite.getStrategy());
-  controlParametersLite.setExpirationPeriod(expirationPeriod_);
+  controlParametersLite.setExpirationPeriod(toMilliseconds(expirationPeriod_));
 }
 
 void
@@ -60,7 +60,7 @@ ControlParameters::set(const ControlParametersLite& controlParametersLite)
   cost_ = controlParametersLite.getCost();
   flags_.set(controlParametersLite.getForwardingFlags());
   strategy_.set(controlParametersLite.getStrategy());
-  expirationPeriod_ = controlParametersLite.getExpirationPeriod();
+  expirationPeriod_ = fromMilliseconds(controlParametersLite.getExpirationPeriod());
 }
 
 }

@@ -42,18 +42,18 @@ public:
 
   /**
    * Create a ValidityPeriod with the given period.
-   * @param notBefore The beginning of the validity period range as milliseconds
-   * since Jan 1, 1970 UTC. Note that this is rounded up to the nearest whole
-   * second.
-   * @param notAfter The end of the validity period range as milliseconds
-   * since Jan 1, 1970 UTC. Note that this is rounded down to the nearest whole
-   * second.
+   * @param notBefore The beginning of the validity period range. Note that this
+   * is rounded up to the nearest whole second.
+   * @param notAfter The end of the validity period range. Note that this is
+   * rounded down to the nearest whole second.
    */
   ValidityPeriod
-    (MillisecondsSince1970 notBefore,
-     MillisecondsSince1970 notAfter)
+    (std::chrono::system_clock::time_point notBefore,
+     std::chrono::system_clock::time_point notAfter)
   {
-    validityPeriod_.setPeriod(notBefore, notAfter);
+    validityPeriod_.setPeriod
+      (toMillisecondsSince1970(notBefore),
+       toMillisecondsSince1970(notAfter));
   }
 
   /**
@@ -66,17 +66,23 @@ public:
 
   /**
    * Get the beginning of the validity period range.
-   * @return The time as milliseconds since Jan 1, 1970 UTC.
+   * @return The time.
    */
-  MillisecondsSince1970
-  getNotBefore() const { return validityPeriod_.getNotBefore(); }
+  std::chrono::system_clock::time_point
+  getNotBefore() const
+  {
+    return fromMillisecondsSince1970(validityPeriod_.getNotBefore());
+  }
 
   /**
    * Get the end of the validity period range.
-   * @return The time as milliseconds since Jan 1, 1970 UTC.
+   * @return The time.
    */
-  MillisecondsSince1970
-  getNotAfter() const { return validityPeriod_.getNotAfter(); }
+  std::chrono::system_clock::time_point
+  getNotAfter() const
+  {
+    return fromMillisecondsSince1970(validityPeriod_.getNotAfter());
+  }
 
   /** Reset to a default ValidityPeriod where the period is not specified.
    */
@@ -89,20 +95,19 @@ public:
 
   /**
    * Set the validity period.
-   * @param notBefore The beginning of the validity period range as milliseconds
-   * since Jan 1, 1970 UTC. Note that this is rounded up to the nearest whole
-   * second.
-   * @param notAfter The end of the validity period range as milliseconds
-   * since Jan 1, 1970 UTC. Note that this is rounded down to the nearest whole
-   * second.
+   * @param notBefore The beginning of the validity period range. Note that this
+   * is rounded up to the nearest whole second.
+   * @param notAfter The end of the validity period range. Note that this is
+   * rounded down to the nearest whole second.
    * @return This ValidityPeriod so that you can chain calls to update values.
    */
   ValidityPeriod&
   setPeriod
-    (MillisecondsSince1970 notBefore,
-     MillisecondsSince1970 notAfter)
+    (std::chrono::system_clock::time_point notBefore,
+     std::chrono::system_clock::time_point notAfter)
   {
-    validityPeriod_.setPeriod(notBefore, notAfter);
+    validityPeriod_.setPeriod
+      (toMillisecondsSince1970(notBefore), toMillisecondsSince1970(notAfter));
     ++changeCount_;
     return *this;
   }
@@ -120,13 +125,24 @@ public:
 
   /**
    * Check if the time falls within the validity period.
-   * @param time (optional) The time to check as milliseconds since Jan 1,
-   * 1970 UTC. If omitted, use the current time.
+   * @param time The time to check.
    * @return True if the beginning of the validity period is less than or equal
    * to time and time is less than or equal to the end of the validity period.
    */
   bool
-  isValid(MillisecondsSince1970 time = -1.0) const;
+  isValid(std::chrono::system_clock::time_point time) const
+  {
+    return validityPeriod_.isValid(toMillisecondsSince1970(time));
+  }
+
+  /**
+   * Check if the current time falls within the validity period.
+   * @return True if the beginning of the validity period is less than or equal
+   * to the current time and the current time is less than or equal to the end
+   * of the validity period.
+   */
+  bool
+  isValid() const;
 
   /**
    * If the signature is a type that has a ValidityPeriod (so that

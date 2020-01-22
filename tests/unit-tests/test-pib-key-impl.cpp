@@ -28,6 +28,7 @@
 #include "pib-data-fixture.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 class TestPibKeyImpl : public ::testing::Test {
@@ -162,7 +163,7 @@ TEST_F(TestPibKeyImpl, Overwrite)
     (new CertificateV2(*fixture.id1Key1Cert1));
   dynamic_cast<Sha256WithRsaSignature*>(otherCert->getSignature())
     ->getValidityPeriod().setPeriod
-      (ndn_getNowMilliseconds(), ndn_getNowMilliseconds() + 1000);
+      (system_clock::now(), system_clock::now() + seconds(1));
   // Don't bother resigning so we don't have to load a private key.
 
   ASSERT_EQ(fixture.id1Key1Cert1->getName(), otherCert->getName());

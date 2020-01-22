@@ -81,7 +81,7 @@ TEST_F(TestNameConventions, Timestamp)
   // 40 years (not counting leap years) in microseconds.
   uint64_t number = (uint64_t)40 * 365 * 24 * 3600 * 1000000;
   ASSERT_EQ(Name().appendTimestamp(number), expected) << "appendTimestamp did not create the expected component";
-  ASSERT_EQ(expected[0].toTimestamp(), number) << "toTimestamp did not return the expected value";
+  ASSERT_EQ(expected[0].toTimestampMicroseconds(), number) << "toTimestamp did not return the expected value";
 }
 
 int

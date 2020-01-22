@@ -44,7 +44,7 @@ Interest& Interest::operator=(const Interest& interest)
   setExclude(interest.exclude_.get());
   setChildSelector(interest.childSelector_);
   mustBeFresh_ = interest.mustBeFresh_;
-  setInterestLifetimeMilliseconds(interest.interestLifetimeMilliseconds_);
+  setInterestLifetime(interest.interestLifetime_);
   setNonce(interest.nonce_);
 
   linkWireEncoding_ = interest.linkWireEncoding_;
@@ -80,7 +80,7 @@ Interest::get
   exclude_.get().get(interestLite.getExclude());
   interestLite.setChildSelector(childSelector_);
   interestLite.setMustBeFresh(mustBeFresh_);
-  interestLite.setInterestLifetimeMilliseconds(interestLifetimeMilliseconds_);
+  interestLite.setInterestLifetimeMilliseconds(toMilliseconds(interestLifetime_));
   interestLite.setNonce(nonce_);
   interestLite.setApplicationParameters(applicationParameters_);
   if (getForwardingHint().size() > 0) {
@@ -207,8 +207,8 @@ Interest::toUri() const
   if (childSelector_ >= 0)
     selectors << "&ndn.ChildSelector=" << childSelector_;
   selectors << "&ndn.MustBeFresh=" << (mustBeFresh_ ? 1 : 0);
-  if (interestLifetimeMilliseconds_ >= 0)
-    selectors << "&ndn.InterestLifetime=" << (uint64_t)round(interestLifetimeMilliseconds_);
+  if (interestLifetime_.count() >= 0)
+    selectors << "&ndn.InterestLifetime=" << (uint64_t)round(getInterestLifetimeMilliseconds());
   if (getNonce().size() > 0) {
     selectors << "&ndn.Nonce=";
     Name::toEscapedString(*getNonce(), selectors);

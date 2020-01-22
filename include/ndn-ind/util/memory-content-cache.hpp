@@ -41,14 +41,15 @@ public:
    * Create a new MemoryContentCache to use the given Face.
    * @param face The Face to use to call registerPrefix and setInterestFilter,
    * and which will call this object's OnInterest callback.
-   * @param cleanupIntervalMilliseconds (optional) The interval in milliseconds
-   * between each check to clean up stale content in the cache. If omitted,
-   * use a default of 1000 milliseconds. If this is a large number, then
-   * effectively the stale content will not be removed from the cache.
+   * @param cleanupInterval (optional) The interval between each
+   * check to clean up stale content in the cache. If omitted, use a default of
+   * 1 second. If this is a large number, then effectively the stale content
+   * will not be removed from the cache.
    */
   MemoryContentCache
-    (Face* face, Milliseconds cleanupIntervalMilliseconds = 1000.0)
-  : impl_(new Impl(face, cleanupIntervalMilliseconds))
+    (Face* face, 
+     std::chrono::nanoseconds cleanupInterval = std::chrono::seconds(1))
+  : impl_(new Impl(face, cleanupInterval))
   {
     impl_->initialize();
   }
@@ -82,10 +83,9 @@ public:
      * Return the time when this pending interest entry was created (the time
      * when the unsatisfied interest arrived and was added to the pending
      * interest table). The interest timeout is based on this value.
-     * @return The timeout period start time in milliseconds since 1/1/1970,
-     * as returned by ndn_getNowMilliseconds.
+     * @return The timeout period start time, as returned by system_clock::now().
      */
-    MillisecondsSince1970
+    std::chrono::system_clock::time_point
     getTimeoutPeriodStart() const { return timeoutPeriodStart_; }
 
     /**
@@ -96,23 +96,21 @@ public:
 
     /**
      * Check if this interest is timed out.
-     * @param nowMilliseconds The current time in milliseconds from
-     * ndn_getNowMilliseconds.
+     * @param now The current time from system_clock::now().
      * @return true if this interest timed out, otherwise false.
      */
     bool
-    isTimedOut(MillisecondsSince1970 nowMilliseconds) const
+    isTimedOut(std::chrono::system_clock::time_point now) const
     {
-      return nowMilliseconds >= timeoutTimeMilliseconds_;
+      return now >= timeoutTime_;
     }
 
   private:
     ptr_lib::shared_ptr<const Interest> interest_;
     Face& face_;
-    MillisecondsSince1970 timeoutPeriodStart_;
-    MillisecondsSince1970 timeoutTimeMilliseconds_; /**< The time when the
-      * interest times out in milliseconds according to ndn_getNowMilliseconds,
-      * or -1 for no timeout. */
+    std::chrono::system_clock::time_point timeoutPeriodStart_;
+    std::chrono::system_clock::time_point timeoutTime_; /**< The time when the
+      * interest times out according to system_clock::now(), or -1 for no timeout. */
   };
 
   /**
@@ -314,8 +312,8 @@ public:
    * negative, set the staleness time to now plus the maximum of
    * data.getMetaInfo().getFreshnessPeriod() and minimumCacheLifetime, which is
    * checked during cleanup to remove stale content.
-   * This also checks if cleanupIntervalMilliseconds
-   * milliseconds have passed and removes stale content from the cache. After
+   * This also checks if the cleanupInterval has passed and
+   * removes stale content from the cache. After
    * removing stale content, remove timed-out pending interests from
    * storePendingInterest(), then if the added Data packet satisfies any
    * interest, send it through the transport and remove the interest from the
@@ -416,9 +414,9 @@ public:
 
   /**
    * Get the minimum lifetime before removing stale content from the cache.
-   * @return The minimum cache lifetime in milliseconds.
+   * @return The minimum cache lifetime.
    */
-  Milliseconds
+  std::chrono::nanoseconds
   getMinimumCacheLifetime() { return impl_->getMinimumCacheLifetime(); }
 
   /**
@@ -427,10 +425,10 @@ public:
    * info. This can be useful for matching interests where MustBeFresh is false.
    * The default minimum cache lifetime is zero, meaning that content is removed
    * when its lifetime expires.
-   * @param minimumCacheLifetime The minimum cache lifetime in milliseconds.
+   * @param minimumCacheLifetime The minimum cache lifetime.
    */
   void
-  setMinimumCacheLifetime(Milliseconds minimumCacheLifetime)
+  setMinimumCacheLifetime(std::chrono::nanoseconds minimumCacheLifetime)
   {
     impl_->setMinimumCacheLifetime(minimumCacheLifetime);
   }
@@ -448,7 +446,7 @@ private:
      * call initialize().  See the MemoryContentCache constructor for parameter
      * documentation.
      */
-    Impl(Face* face, Milliseconds cleanupIntervalMilliseconds);
+    Impl(Face* face, std::chrono::nanoseconds cleanupInterval);
 
     /**
      * Complete the work of the constructor. This is needed because we can't
@@ -501,11 +499,11 @@ private:
       onContentRemoved_ = onContentRemoved;
     }
 
-    Milliseconds
+    std::chrono::nanoseconds
     getMinimumCacheLifetime() { return minimumCacheLifetime_; }
 
     void
-    setMinimumCacheLifetime(Milliseconds minimumCacheLifetime)
+    setMinimumCacheLifetime(std::chrono::nanoseconds minimumCacheLifetime)
     {
       minimumCacheLifetime_ = minimumCacheLifetime;
     }
@@ -513,7 +511,7 @@ private:
     /**
      * This is the OnInterestCallback which is called when the library receives
      * an interest whose name has the prefix given to registerPrefix. First
-     * check if cleanupIntervalMilliseconds milliseconds have passed and remove
+     * check if the cleanupInterval has passed and remove
      * stale content from the cache. Then search the cache for the Data packet,
      * matching any interest selectors including ChildSelector, and send the
      * Data packet to the transport. If no matching Data packet is in the cache,
@@ -528,53 +526,50 @@ private:
 
   private:
     /**
-     * StaleTimeContent extends Content to include the cacheRemovalTimeMilliseconds_
+     * StaleTimeContent extends Content to include the cacheRemovalTime_
      * for when this entry should be cleaned up from the cache.
      */
     class StaleTimeContent : public Content {
     public:
       /**
        * Create a new StaleTimeContent to hold data's name and wire encoding
-       * as well as the cacheRemovalTimeMilliseconds_ which is now plus the
+       * as well as the cacheRemovalTime_ which is now plus the
        * maximum of data.getMetaInfo().getFreshnessPeriod() and the
        * minimumCacheLifetime.
        * @param data The Data packet whose name and wire encoding are copied.
-       * @param nowMilliseconds The current time in milliseconds from
-       * ndn_getNowMilliseconds.
-       * @param minimumCacheLifetime The minimum cache lifetime in milliseconds.
+       * @param now The current time from system_clock::now().
+       * @param minimumCacheLifetime The minimum cache lifetime.
        */
       StaleTimeContent
-        (const Data& data, MillisecondsSince1970 nowMilliseconds,
-         Milliseconds minimumCacheLifetime);
+        (const Data& data, std::chrono::system_clock::time_point now,
+         std::chrono::nanoseconds minimumCacheLifetime);
 
       /**
        * Check if this content is stale and should be removed from the cache,
        * according to the content freshness period and the minimumCacheLifetime.
-       * @param nowMilliseconds The current time in milliseconds from
-       * ndn_getNowMilliseconds.
+       * @param now The current time from system_clock::now().
        * @return True if this content should be removed, otherwise false.
        */
       bool
-      isPastRemovalTime(MillisecondsSince1970 nowMilliseconds) const
+      isPastRemovalTime(std::chrono::system_clock::time_point now) const
       {
-        return cacheRemovalTimeMilliseconds_ <= nowMilliseconds;
+        return cacheRemovalTime_ <= now;
       }
 
       /**
        * Check if the content is still fresh according to its freshness period
        * (independent of when to remove from the cache).
-       * @param nowMilliseconds The current time in milliseconds from
-       * ndn_getNowMilliseconds.
+       * @param now The current time from system_clock::now().
        * @return True if the content is still fresh, otherwise false.
        */
       bool
-      isFresh(MillisecondsSince1970 nowMilliseconds) const
+      isFresh(std::chrono::system_clock::time_point now) const
       {
-        return freshnessExpiryTimeMilliseconds_ > nowMilliseconds;
+        return freshnessExpiryTime_ > now;
       }
 
       /**
-       * Compare shared_ptrs to Content based only on cacheRemovalTimeMilliseconds_.
+       * Compare shared_ptrs to Content based only on cacheRemovalTime_.
        */
       class Compare {
       public:
@@ -583,31 +578,30 @@ private:
           (const ptr_lib::shared_ptr<const StaleTimeContent>& x,
            const ptr_lib::shared_ptr<const StaleTimeContent>& y) const
         {
-          return x->cacheRemovalTimeMilliseconds_ < y->cacheRemovalTimeMilliseconds_;
+          return x->cacheRemovalTime_ < y->cacheRemovalTime_;
         }
       };
 
     private:
-      MillisecondsSince1970 cacheRemovalTimeMilliseconds_; /**< The time when the content
-        becomes stale and should be removed from the cache in milliseconds
-        according to ndn_getNowMilliseconds */
-      MillisecondsSince1970 freshnessExpiryTimeMilliseconds_; /**< The time when
+      std::chrono::system_clock::time_point cacheRemovalTime_; /**< The time when the content
+        becomes stale and should be removed from the cache according to 
+        system_clock::now() */
+      std::chrono::system_clock::time_point freshnessExpiryTime_; /**< The time when
         the freshness period of the content expires (independent of when to
-        remove from the cache) in milliseconds according to ndn_getNowMilliseconds */
+        remove from the cache) according to system_clock::now() */
     };
 
     /**
      * Check if now is greater than nextCleanupTime_ and, if so, remove stale
      * content from staleTimeCache_ and reset nextCleanupTime_ based on
-     * cleanupIntervalMilliseconds_. Since add(Data) does a sorted insert into
+     * cleanupInterval_. Since add(Data) does a sorted insert into
      * staleTimeCache_, the check for stale data is quick and does not require
      * searching the entire staleTimeCache_. If onContentRemoved_ is defined,
      * this calls onContentRemoved_(content) for the removed content.
-     * @param nowMilliseconds The current time in milliseconds from
-     * ndn_getNowMilliseconds.
+     * @param now The current time from system_clock::now().
      */
     void
-    doCleanup(MillisecondsSince1970 nowMilliseconds);
+    doCleanup(std::chrono::system_clock::time_point now);
 
     /**
      * This is a private method to return for setting storePendingInterestCallback_.
@@ -625,8 +619,8 @@ private:
     }
 
     Face* face_;
-    Milliseconds cleanupIntervalMilliseconds_;
-    MillisecondsSince1970 nextCleanupTime_;
+    std::chrono::nanoseconds cleanupInterval_;
+    std::chrono::system_clock::time_point nextCleanupTime_;
     std::map<std::string, OnInterestCallback> onDataNotFoundForPrefix_; /**< The map key is the prefix.toUri() */
     std::vector<uint64_t> interestFilterIdList_;
     std::vector<uint64_t> registeredPrefixIdList_;
@@ -639,7 +633,7 @@ private:
     OnInterestCallback storePendingInterestCallback_;
     OnContentRemoved onContentRemoved_;
     bool isDoingCleanup_;
-    Milliseconds minimumCacheLifetime_;
+    std::chrono::nanoseconds minimumCacheLifetime_;
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

@@ -44,6 +44,7 @@
 #include <ndn-ind/security/identity/identity-manager.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -258,8 +259,8 @@ IdentityManager::generateEcdsaKeyPairAsDefault(const Name& identityName, bool is
 Name
 IdentityManager::createIdentityCertificate(const Name& certificatePrefix,
                                            const Name& signerCertificateName,
-                                           const MillisecondsSince1970& notBefore,
-                                           const MillisecondsSince1970& notAfter)
+                                           system_clock::time_point notBefore,
+                                           system_clock::time_point notAfter)
 {
   Name keyName = getKeyNameFromCertificatePrefix(certificatePrefix);
 
@@ -278,8 +279,8 @@ ptr_lib::shared_ptr<IdentityCertificate>
 IdentityManager::createIdentityCertificate(const Name& certificatePrefix,
                                            const PublicKey& publicKey,
                                            const Name& signerCertificateName,
-                                           const MillisecondsSince1970& notBefore,
-                                           const MillisecondsSince1970& notAfter)
+                                           system_clock::time_point notBefore,
+                                           system_clock::time_point notAfter)
 {
   ptr_lib::shared_ptr<IdentityCertificate> certificate(new IdentityCertificate());
   Name keyName = getKeyNameFromCertificatePrefix(certificatePrefix);
@@ -321,7 +322,7 @@ IdentityManager::createIdentityCertificate(const Name& certificatePrefix,
 ptr_lib::shared_ptr<IdentityCertificate>
 IdentityManager::prepareUnsignedIdentityCertificate
   (const Name& keyName, const Name& signingIdentity,
-   MillisecondsSince1970 notBefore, MillisecondsSince1970 notAfter,
+   system_clock::time_point notBefore, system_clock::time_point notAfter,
    vector<CertificateSubjectDescription>& subjectDescription,
    const Name* certPrefix)
 {
@@ -341,8 +342,8 @@ IdentityManager::prepareUnsignedIdentityCertificate
 ptr_lib::shared_ptr<IdentityCertificate>
 IdentityManager::prepareUnsignedIdentityCertificate
   (const Name& keyName, const PublicKey& publicKey,
-   const Name& signingIdentity, MillisecondsSince1970 notBefore,
-   MillisecondsSince1970 notAfter,
+   const Name& signingIdentity, system_clock::time_point notBefore,
+   system_clock::time_point notAfter,
    vector<CertificateSubjectDescription>& subjectDescription,
    const Name* certPrefix)
 {
@@ -549,9 +550,9 @@ IdentityManager::selfSign(const Name& keyName)
   current.tm_hour = 0;
   current.tm_min  = 0;
   current.tm_sec  = 0;
-  MillisecondsSince1970 notBefore = timegm(&current) * 1000.0;
+  auto notBefore = fromMillisecondsSince1970(timegm(&current) * 1000.0);
   current.tm_year = current.tm_year + 2;
-  MillisecondsSince1970 notAfter = timegm(&current) * 1000.0;
+  auto notAfter = fromMillisecondsSince1970(timegm(&current) * 1000.0);
 
   certificate->setNotBefore(notBefore);
   certificate->setNotAfter(notAfter);

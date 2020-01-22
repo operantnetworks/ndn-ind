@@ -27,6 +27,7 @@
 #include "der-node.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -427,7 +428,7 @@ DerNode::DerOid::decode128(size_t offset, size_t& skip)
   return result;
 }
 
-MillisecondsSince1970
+system_clock::time_point
 DerNode::DerGeneralizedTime::toMillisecondsSince1970()
 {
   string payloadString((const char*)&payload_[0], payloadPosition_);
@@ -437,9 +438,9 @@ DerNode::DerGeneralizedTime::toMillisecondsSince1970()
 }
 
 string
-DerNode::DerGeneralizedTime::toDerTimeString(MillisecondsSince1970 msSince1970)
+DerNode::DerGeneralizedTime::toDerTimeString(system_clock::time_point time)
 {
-  string pTimeStr = toIsoString(msSince1970, true);
+  string pTimeStr = toIsoString(time, true);
   // The ISO string has the 'T' in the middle. Convert to UTC with 'Z' at the end.
   size_t index = pTimeStr.find_first_of('T');
   return pTimeStr.substr(0, index) +
@@ -448,25 +449,26 @@ DerNode::DerGeneralizedTime::toDerTimeString(MillisecondsSince1970 msSince1970)
 
 string
 DerNode::DerGeneralizedTime::toIsoString
-  (const MillisecondsSince1970& time, bool includeFraction)
+  (system_clock::time_point time, bool includeFraction)
 {
   char isoString[25];
   ndn_Error error;
-  if ((error = ndn_toIsoString(time, includeFraction ? 1 : 0, isoString)))
+  if ((error = ndn_toIsoString
+       (ndn::toMillisecondsSince1970(time), includeFraction ? 1 : 0, isoString)))
     throw runtime_error(ndn_getErrorString(error));
 
   return isoString;
 }
 
-MillisecondsSince1970
+system_clock::time_point
 DerNode::DerGeneralizedTime::fromIsoString(const string& isoString)
 {
-  MillisecondsSince1970 milliseconds;
+  ndn_MillisecondsSince1970 milliseconds;
   ndn_Error error;
   if ((error = ndn_fromIsoString(isoString.c_str(), &milliseconds)))
     throw runtime_error(ndn_getErrorString(error));
 
-  return milliseconds;
+  return fromMillisecondsSince1970(milliseconds);
 }
 
 }

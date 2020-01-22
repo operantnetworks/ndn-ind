@@ -26,18 +26,19 @@
 #include "../../src/encoding/der/der-node.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
-static MillisecondsSince1970
+static system_clock::time_point
 fromIsoString(const string& dateString)
 {
   return DerNode::DerGeneralizedTime::fromIsoString(dateString);
 }
 
 string
-toIsoString(MillisecondsSince1970 msSince1970)
+toIsoString(system_clock::time_point time)
 {
-  return DerNode::DerGeneralizedTime::toIsoString(msSince1970);
+  return DerNode::DerGeneralizedTime::toIsoString(time);
 }
 
 static const uint8_t PUBLIC_KEY[] = {
@@ -177,7 +178,7 @@ TEST_F(TestCertificate, Setters)
 {
   CertificateV2 certificate;
   certificate.setName("/ndn/site1/KEY/ksk-1416425377094/0123/%FD%00%00%01I%C9%8B");
-  certificate.getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+  certificate.getMetaInfo().setFreshnessPeriod(hours(1));
   certificate.setContent(Blob(PUBLIC_KEY, sizeof(PUBLIC_KEY)));
   certificate.setSignature(generateFakeSignature());
 
@@ -203,7 +204,7 @@ TEST_F(TestCertificate, ValidityPeriodChecking)
   CertificateV2 certificate;
   certificate.setName
     (Name("/ndn/site1/KEY/ksk-1416425377094/0123/%FD%00%00%01I%C9%8B"));
-  certificate.getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+  certificate.getMetaInfo().setFreshnessPeriod(hours(1));
   certificate.setContent(Blob(PUBLIC_KEY, sizeof(PUBLIC_KEY)));
   certificate.setSignature(generateFakeSignature());
 

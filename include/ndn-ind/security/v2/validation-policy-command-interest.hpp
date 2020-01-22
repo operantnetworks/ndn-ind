@@ -53,8 +53,9 @@ public:
      * use 1 hour.
      */
     Options
-      (Milliseconds gracePeriod = 2 * 60 * 1000.0, int maxRecords = 1000,
-       Milliseconds recordLifetime = 3600 * 1000.0)
+      (std::chrono::nanoseconds gracePeriod = std::chrono::minutes(2),
+       int maxRecords = 1000,
+       std::chrono::nanoseconds recordLifetime = std::chrono::hours(1))
     : gracePeriod_(gracePeriod),
       maxRecords_(maxRecords),
       recordLifetime_(recordLifetime)
@@ -62,7 +63,7 @@ public:
     }
 
     /**
-     * gracePeriod is the tolerance of the initial timestamp in milliseconds.
+     * gracePeriod is the tolerance of the initial timestamp.
      *
      * A stop-and-wait command Interest is considered "initial" if the validator
      * has not recorded the last timestamp from the same public key, or when
@@ -75,7 +76,7 @@ public:
      * validator to require exactly the same timestamp as the system clock,
      * which most likely rejects all command Interests.
      */
-    Milliseconds gracePeriod_;
+    std::chrono::nanoseconds gracePeriod_;
 
     /**
      * maxRecords is the maximum number of distinct public keys of which to
@@ -97,15 +98,14 @@ public:
     int maxRecords_;
 
     /**
-     * recordLifetime is the maximum lifetime of a last timestamp record in
-     * milliseconds.
+     * recordLifetime is the maximum lifetime of a last timestamp record.
      *
      * A last timestamp record expires and can be deleted if it has not been
      * refreshed within this duration. Setting this option to 0 or negative
      * makes last timestamp records expire immediately and causes every command
      * Interest to be processed as initial.
      */
-    Milliseconds recordLifetime_;
+    std::chrono::nanoseconds recordLifetime_;
   };
 
   /**
@@ -132,12 +132,12 @@ public:
   /**
    * Set the offset when insertNewRecord() and cleanUp() get the current time,
    * which should only be used for testing.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
+  setNowOffset_(std::chrono::nanoseconds nowOffset)
   {
-    nowOffsetMilliseconds_ = nowOffsetMilliseconds;
+    nowOffset_ = nowOffset;
   }
 
 private:
@@ -145,14 +145,14 @@ private:
   {
   public:
     LastTimestampRecord
-      (const Name& keyName, MillisecondsSince1970 timestamp,
-       MillisecondsSince1970 lastRefreshed)
+      (const Name& keyName, std::chrono::system_clock::time_point timestamp,
+       std::chrono::system_clock::time_point lastRefreshed)
     : keyName_(keyName), timestamp_(timestamp), lastRefreshed_(lastRefreshed)
     {}
 
     Name keyName_;
-    MillisecondsSince1970 timestamp_;
-    MillisecondsSince1970 lastRefreshed_;
+    std::chrono::system_clock::time_point timestamp_;
+    std::chrono::system_clock::time_point lastRefreshed_;
   };
 
   void
@@ -163,31 +163,30 @@ private:
    * @param interest The Interest to parse.
    * @param state On error, this calls state.fail and returns false.
    * @param keyLocatorName Set this to the KeyLocator name.
-   * @param timestamp Set this to the timestamp as milliseconds since Jan 1,
-   * 1970 UTC.
+   * @param timestamp Set this to the timestamp.
    * @return On success, return true. On error, call state.fail and return false.
    */
   static bool
   parseCommandInterest
     (const Interest& interest, const ptr_lib::shared_ptr<ValidationState>& state,
-     Name& keyLocatorName, MillisecondsSince1970& timestamp);
+     Name& keyLocatorName, std::chrono::system_clock::time_point& timestamp);
 
   /**
    *
    * @param state On error, this calls state.fail and returns false.
    * @param keyName The key name.
-   * @param timestamp The timestamp as milliseconds since Jan 1, 1970 UTC.
+   * @param timestamp The timestamp.
    * @return On success, return true. On error, call state.fail and return false.
    */
   bool
   checkTimestamp
     (const ptr_lib::shared_ptr<ValidationState>& state, const Name& keyName,
-     MillisecondsSince1970 timestamp);
+     std::chrono::system_clock::time_point timestamp);
 
   void
   insertNewRecord
     (const Interest& interest, const Name& keyName,
-     MillisecondsSince1970 timestamp);
+     std::chrono::system_clock::time_point timestamp);
 
   /**
    * Find the record in container_ which has the keyName.
@@ -199,7 +198,7 @@ private:
 
   Options options_;
   std::vector<ptr_lib::shared_ptr<LastTimestampRecord> > container_;
-  Milliseconds nowOffsetMilliseconds_;
+  std::chrono::nanoseconds nowOffset_;
 };
 
 }

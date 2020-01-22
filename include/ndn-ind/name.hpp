@@ -440,9 +440,24 @@ public:
      * @throws runtime_error If the first byte of the component is not the expected marker.
      */
     uint64_t
-    toTimestamp() const
+    toTimestampMicroseconds() const
     {
       return toNumberWithMarker(0xFC);
+    }
+
+    /**
+     * Interpret this name component as a timestamp  according to NDN naming
+     * conventions for "Timestamp" (marker 0xFC).
+     * http://named-data.net/doc/tech-memos/naming-conventions.pdf
+     * @return The time, which has been converted from the number of microseconds
+     * since the UNIX epoch (Thursday, 1 January 1970) not counting leap seconds.
+     * @throws runtime_error If the first byte of the component is not the expected marker.
+     */
+    std::chrono::system_clock::time_point
+    toTimestamp() const
+    {
+      return std::chrono::system_clock::time_point
+        (std::chrono::microseconds(toTimestampMicroseconds()));
     }
 
     /**
@@ -554,6 +569,22 @@ public:
     fromTimestamp(uint64_t timestamp)
     {
       return fromNumberWithMarker(timestamp, 0xFC);
+    }
+
+    /**
+     * Create a component with the encoded timestamp according to NDN naming
+     * conventions for "Timestamp" (marker 0xFC).
+     * http://named-data.net/doc/tech-memos/naming-conventions.pdf
+     * @param timestamp The time, which is converted to the number of
+     * microseconds since the UNIX epoch (Thursday, 1 January 1970) not counting
+     * leap seconds.
+     * @return The new Component.
+     */
+    static Component
+    fromTimestamp(std::chrono::system_clock::time_point timestamp)
+    {
+      return fromTimestamp(std::chrono::duration_cast<std::chrono::microseconds>
+        (timestamp.time_since_epoch()).count());
     }
 
     /**
@@ -1222,6 +1253,21 @@ public:
    */
   Name&
   appendTimestamp(uint64_t timestamp)
+  {
+    return append(Component::fromTimestamp(timestamp));
+  }
+
+  /**
+   * Append a component with the encoded timestamp according to NDN naming
+   * conventions for "Timestamp" (marker 0xFC).
+   * http://named-data.net/doc/tech-memos/naming-conventions.pdf
+   * @param timestamp The timestamp, which is converted to the number of
+   * microseconds since the UNIX epoch (Thursday, 1 January 1970) not counting
+   * leap seconds.
+   * @return This name so that you can chain calls to append.
+   */
+  Name&
+  appendTimestamp(std::chrono::system_clock::time_point timestamp)
   {
     return append(Component::fromTimestamp(timestamp));
   }

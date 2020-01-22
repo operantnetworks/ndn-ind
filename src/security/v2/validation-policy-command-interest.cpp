@@ -24,6 +24,7 @@
 #include <ndn-ind/security/v2/validation-policy-command-interest.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 namespace ndn {
@@ -32,15 +33,15 @@ ValidationPolicyCommandInterest::ValidationPolicyCommandInterest
   (const ptr_lib::shared_ptr<ValidationPolicy>& innerPolicy, const Options& options)
 // This copies the options.
 : options_(options),
-  nowOffsetMilliseconds_(0)
+  nowOffset_(0)
 {
   if (!innerPolicy)
     throw invalid_argument("inner policy is missing");
 
   setInnerPolicy(innerPolicy);
 
-  if (options_.gracePeriod_ < 0.0)
-    options_.gracePeriod_ = 0.0;
+  if (options_.gracePeriod_.count() < 0)
+    options_.gracePeriod_ = seconds(0);
 }
 
 void
@@ -57,7 +58,7 @@ ValidationPolicyCommandInterest::checkPolicy
    const ValidationContinuation& continueValidation)
 {
   Name keyName;
-  MillisecondsSince1970 timestamp;
+  system_clock::time_point timestamp;
   if (!parseCommandInterest(interest, state, keyName, timestamp))
     return;
 
@@ -70,9 +71,9 @@ ValidationPolicyCommandInterest::checkPolicy
 void
 ValidationPolicyCommandInterest::cleanUp()
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
-  MillisecondsSince1970 expiring = now - options_.recordLifetime_;
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
+  auto expiring = now -  options_.recordLifetime_;
 
   while ((container_.size() > 0 && container_[0]->lastRefreshed_ <= expiring) ||
          (options_.maxRecords_ >= 0 && container_.size() > options_.maxRecords_))
@@ -82,10 +83,10 @@ ValidationPolicyCommandInterest::cleanUp()
 bool
 ValidationPolicyCommandInterest::parseCommandInterest
   (const Interest& interest, const ptr_lib::shared_ptr<ValidationState>& state,
-   Name& keyLocatorName, MillisecondsSince1970& timestamp)
+   Name& keyLocatorName, system_clock::time_point& timestamp)
 {
   keyLocatorName = Name();
-  timestamp = 0;
+  timestamp = system_clock::time_point();
 
   const Name& name = interest.getName();
   if (name.size() < CommandInterestSigner::MINIMUM_SIZE) {
@@ -94,8 +95,8 @@ ValidationPolicyCommandInterest::parseCommandInterest
     return false;
   }
 
-  timestamp = (MillisecondsSince1970)name.get
-    (CommandInterestSigner::POS_TIMESTAMP).toNumber();
+  timestamp = fromMillisecondsSince1970(name.get
+    (CommandInterestSigner::POS_TIMESTAMP).toNumber());
 
   keyLocatorName = getKeyLocatorName(interest, *state);
   if (state->isOutcomeFailed())
@@ -108,12 +109,12 @@ ValidationPolicyCommandInterest::parseCommandInterest
 bool
 ValidationPolicyCommandInterest::checkTimestamp
   (const ptr_lib::shared_ptr<ValidationState>& state, const Name& keyName,
-   MillisecondsSince1970 timestamp)
+   system_clock::time_point timestamp)
 {
   cleanUp();
 
-  // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   if (timestamp < now - options_.gracePeriod_ ||
       timestamp > now + options_.gracePeriod_) {
     state->fail(ValidationError(ValidationError::POLICY_ERROR,
@@ -142,10 +143,10 @@ ValidationPolicyCommandInterest::checkTimestamp
 void
 ValidationPolicyCommandInterest::insertNewRecord
   (const Interest& interest, const Name& keyName,
-   MillisecondsSince1970 timestamp)
+   system_clock::time_point timestamp)
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   ptr_lib::shared_ptr<LastTimestampRecord> newRecord
     (new LastTimestampRecord(keyName, timestamp, now));
 

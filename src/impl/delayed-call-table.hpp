@@ -30,17 +30,17 @@ namespace ndn {
 class DelayedCallTable {
 public:
   DelayedCallTable()
-  : nowOffsetMilliseconds_(0)
+  : nowOffset_(0)
   {}
 
   /**
    * Call callback() after the given delay. This adds to the delayed call
    * table which is used by callTimedOut().
-   * @param delayMilliseconds The delay in milliseconds.
+   * @param delay The delay.
    * @param callback This calls callback() after the delay.
    */
   void
-  callLater(Milliseconds delayMilliseconds, const Face::Callback& callback);
+  callLater(std::chrono::nanoseconds delay, const Face::Callback& callback);
 
   /**
    * Call and remove timed-out callback entries. Since callLater does a sorted
@@ -53,12 +53,12 @@ public:
   /**
    * Set the offset when insert() and refresh() get the current time, which
    * should only be used for testing.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
+  setNowOffset_(std::chrono::nanoseconds nowOffset)
   {
-    nowOffsetMilliseconds_ = nowOffsetMilliseconds;
+    nowOffset_ = nowOffset;
   }
 
 private:
@@ -66,17 +66,17 @@ private:
   public:
     /**
      * Create a new DelayedCallTable::Entry and set the call time based on the
-     * current time and the delayMilliseconds.
-     * @param delayMilliseconds The delay in milliseconds.
+     * current time and the delay.
+     * @param delay The delay.
      * @param callback This calls callback() after the delay.
      */
-    Entry(Milliseconds delayMilliseconds, const Face::Callback& callback);
+    Entry(std::chrono::nanoseconds delay, const Face::Callback& callback);
 
     /**
      * Get the time at which the callback should be called.
-     * @return The call time in milliseconds, similar to ndn_getNowMilliseconds.
+     * @return The call time.
      */
-    MillisecondsSince1970
+    std::chrono::system_clock::time_point
     getCallTime() const { return callTime_; }
 
     /**
@@ -102,13 +102,13 @@ private:
 
   private:
     const Face::Callback callback_;
-    MillisecondsSince1970 callTime_;
+    std::chrono::system_clock::time_point callTime_;
   };
 
   // Use a deque so we can efficiently remove from the front.
   std::deque<ptr_lib::shared_ptr<Entry> > table_;
   Entry::Compare entryCompare_;
-  Milliseconds nowOffsetMilliseconds_;
+  std::chrono::nanoseconds nowOffset_;
 };
 
 }

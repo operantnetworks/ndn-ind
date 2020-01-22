@@ -29,6 +29,7 @@
 #include "../../src/encoding/der/der-node.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 typedef DerNode::DerSequence DerSequence;
@@ -118,8 +119,8 @@ class TestCertificate : public ::testing::Test {
 public:
   TestCertificate()
   {
-    toyCertNotBefore = 1388100174000L;
-    toyCertNotAfter = 1388100174000L;
+    toyCertNotBefore = system_clock::time_point(milliseconds(1388100174000L));
+    toyCertNotAfter = system_clock::time_point(milliseconds(1388100174000L));
     Certificate cert;
     cert.setName(Name("/test/KEY/ksk-1457560485494/ID-CERT/%FD%00%00%01S%80H%E1%F3"));
     cert.setNotBefore(toyCertNotBefore);
@@ -133,8 +134,8 @@ public:
     toyCert = cert;
   }
 
-  MillisecondsSince1970 toyCertNotBefore;
-  MillisecondsSince1970 toyCertNotAfter;
+  system_clock::time_point toyCertNotBefore;
+  system_clock::time_point toyCertNotAfter;
   Certificate toyCert;
 };
 

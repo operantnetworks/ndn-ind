@@ -24,6 +24,7 @@
 #include <ndn-ind/security/v2/trust-anchor-container.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -52,7 +53,7 @@ TrustAnchorContainer::insert
 
 void
 TrustAnchorContainer::insert
-  (const string& groupId, const string& path, Milliseconds refreshPeriod,
+  (const string& groupId, const string& path, nanoseconds refreshPeriod,
    bool isDirectory)
 {
   if (groups_.count(groupId) != 0)

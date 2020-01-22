@@ -101,21 +101,21 @@ public:
   getExtensionList() { return extensionList_; }
 
   void
-  setNotBefore(const MillisecondsSince1970& notBefore) { notBefore_ = notBefore; }
+  setNotBefore(std::chrono::system_clock::time_point notBefore) { notBefore_ = notBefore; }
 
-  MillisecondsSince1970&
+  std::chrono::system_clock::time_point&
   getNotBefore() { return notBefore_; }
 
-  const MillisecondsSince1970&
+  const std::chrono::system_clock::time_point&
   getNotBefore() const { return notBefore_; }
 
   void
-  setNotAfter(const MillisecondsSince1970& notAfter) { notAfter_ = notAfter; }
+  setNotAfter(const std::chrono::system_clock::time_point& notAfter) { notAfter_ = notAfter; }
 
-  MillisecondsSince1970&
+  std::chrono::system_clock::time_point&
   getNotAfter() { return notAfter_; }
 
-  const MillisecondsSince1970&
+  const std::chrono::system_clock::time_point&
   getNotAfter() const { return notAfter_; }
 
   void
@@ -150,7 +150,7 @@ public:
   isTooLate() const;
 
   bool
-  isInValidityPeriod(MillisecondsSince1970 time) const
+  isInValidityPeriod(std::chrono::system_clock::time_point time) const
   {
     // Debug: Generalize this from Sha256WithRsaSignature.
     return dynamic_cast<const Sha256WithRsaSignature *>
@@ -168,8 +168,8 @@ protected:
   decode();
 
   SubjectDescriptionList subjectDescriptionList_;
-  MillisecondsSince1970 notBefore_;
-  MillisecondsSince1970 notAfter_;
+  std::chrono::system_clock::time_point notBefore_;
+  std::chrono::system_clock::time_point notAfter_;
   PublicKey key_;
   ExtensionList extensionList_;
 

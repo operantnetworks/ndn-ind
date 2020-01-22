@@ -34,6 +34,7 @@
 INIT_LOGGER("ndn.ChronoSync2013");
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 namespace ndn {
@@ -42,7 +43,7 @@ ChronoSync2013::Impl::Impl
   (const OnReceivedSyncState& onReceivedSyncState,
    const OnInitialized& onInitialized, const Name& applicationDataPrefix,
    const Name& applicationBroadcastPrefix, int sessionNo, Face& face,
-   KeyChain& keyChain, const Name& certificateName, Milliseconds syncLifetime,
+   KeyChain& keyChain, const Name& certificateName, nanoseconds syncLifetime,
    int previousSequenceNumber)
 : onReceivedSyncState_(onReceivedSyncState), onInitialized_(onInitialized),
   applicationDataPrefixUri_(applicationDataPrefix.toUri()),
@@ -69,7 +70,7 @@ ChronoSync2013::Impl::initialize(const OnRegisterFailed& onRegisterFailed)
 
   Interest interest(applicationBroadcastPrefix_);
   interest.getName().append("00");
-  interest.setInterestLifetimeMilliseconds(1000);
+  interest.setInterestLifetime(seconds(1));
   face_.expressInterest
     (interest, bind(&ChronoSync2013::Impl::onData, shared_from_this(), _1, _2),
      bind(&ChronoSync2013::Impl::initialTimeOut, shared_from_this(), _1));
@@ -163,7 +164,7 @@ ChronoSync2013::Impl::publishNextSequenceNo(const Blob& applicationInfo)
   //   final publish of the session?
   Interest interest(applicationBroadcastPrefix_);
   interest.getName().append(digestTree_->getRoot());
-  interest.setInterestLifetimeMilliseconds(syncLifetime_);
+  interest.setInterestLifetime(syncLifetime_);
   face_.expressInterest
     (interest, bind(&ChronoSync2013::Impl::onData, shared_from_this(), _1, _2),
      bind(&ChronoSync2013::Impl::syncTimeout, shared_from_this(), _1));
@@ -205,7 +206,7 @@ ChronoSync2013::Impl::onInterest
         // using the Interest timeout mechanism.
         // TODO: Are we sure using a "/local/timeout" interest is the best future call approach?
         Interest timeout("/local/timeout");
-        timeout.setInterestLifetimeMilliseconds(2000);
+        timeout.setInterestLifetime(seconds(2));
         face_.expressInterest
           (timeout, dummyOnData,
            bind(&ChronoSync2013::Impl::judgeRecovery, shared_from_this(), _1,
@@ -277,7 +278,7 @@ ChronoSync2013::Impl::onData
   Name name(applicationBroadcastPrefix_);
   name.append(digestTree_->getRoot());
   Interest syncInterest(name);
-  syncInterest.setInterestLifetimeMilliseconds(syncLifetime_);
+  syncInterest.setInterestLifetime(syncLifetime_);
   face_.expressInterest
     (syncInterest, bind(&ChronoSync2013::Impl::onData, shared_from_this(), _1, _2),
      bind(&ChronoSync2013::Impl::syncTimeout, shared_from_this(), _1));
@@ -307,7 +308,7 @@ ChronoSync2013::Impl::processRecoveryInterest
       data.setContent(Blob(array, false));
       if (interest.getName().get(-1).toEscapedString() == "00")
         // Limit the lifetime of replies to interest for "00" since they can be different.
-        data.getMetaInfo().setFreshnessPeriod(1000);
+        data.getMetaInfo().setFreshnessPeriod(seconds(1));
 
       keyChain_.sign(data, certificateName_);
       try {
@@ -395,7 +396,7 @@ ChronoSync2013::Impl::sendRecovery(const string& syncdigest_t)
   Name name(applicationBroadcastPrefix_);
   name.append("recovery").append(syncdigest_t);
   Interest interest(name);
-  interest.setInterestLifetimeMilliseconds(syncLifetime_);
+  interest.setInterestLifetime(syncLifetime_);
   face_.expressInterest
     (interest, bind(&ChronoSync2013::Impl::onData, shared_from_this(), _1, _2),
      bind(&ChronoSync2013::Impl::syncTimeout, shared_from_this(), _1));
@@ -435,7 +436,7 @@ ChronoSync2013::Impl::syncTimeout(const ptr_lib::shared_ptr<const Interest>& int
   if (component == digestTree_->getRoot()) {
     Name name(interest->getName());
     Interest retryInterest(interest->getName());
-    retryInterest.setInterestLifetimeMilliseconds(syncLifetime_);
+    retryInterest.setInterestLifetime(syncLifetime_);
     face_.expressInterest
       (retryInterest, bind(&ChronoSync2013::Impl::onData, shared_from_this(), _1, _2),
        bind(&ChronoSync2013::Impl::syncTimeout, shared_from_this(), _1));
@@ -551,7 +552,7 @@ ChronoSync2013::Impl::initialTimeOut(const ptr_lib::shared_ptr<const Interest>& 
   Name name(applicationBroadcastPrefix_);
   name.append(digestTree_->getRoot());
   Interest retryInterest(name);
-  retryInterest.setInterestLifetimeMilliseconds(syncLifetime_);
+  retryInterest.setInterestLifetime(syncLifetime_);
   face_.expressInterest
     (retryInterest, bind(&ChronoSync2013::Impl::onData, shared_from_this(), _1, _2),
      bind(&ChronoSync2013::Impl::syncTimeout, shared_from_this(), _1));

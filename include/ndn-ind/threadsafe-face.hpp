@@ -246,11 +246,11 @@ public:
    * Override to call callback() after the given delay, using a
    * basic_deadline_timer with the ioService given to the constructor. Even
    * though this is public, it is not part of the public API of Face.
-   * @param delayMilliseconds The delay in milliseconds.
+   * @param delay The delay.
    * @param callback This calls callback.callback() after the delay.
    */
   virtual void
-  callLater(Milliseconds delayMilliseconds, const Callback& callback);
+  callLater(std::chrono::nanoseconds delay, const Callback& callback);
 
 private:
   static ptr_lib::shared_ptr<Transport>

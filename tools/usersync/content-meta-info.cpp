@@ -30,6 +30,7 @@
 #include <ndn-ind-tools/usersync/content-meta-info.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 extern "C" {
@@ -48,7 +49,7 @@ void
 ContentMetaInfo::clear()
 {
   contentType_ = "";
-  timestamp_ = -1;
+  timestamp_ = system_clock::time_point(milliseconds(-1));
   hasSegments_ = false;
   other_ = Blob();
 }
@@ -56,12 +57,13 @@ ContentMetaInfo::clear()
 Blob
 ContentMetaInfo::wireEncode() const
 {
-  if (timestamp_ < 0)
+  if (toMillisecondsSince1970(timestamp_) < 0)
     throw runtime_error("ContentMetaInfo.wireEncode: The timestamp is not specified");
 
   ndn_message::ContentMetaInfoMessage meta;
   meta.mutable_content_meta_info()->set_content_type(contentType_);
-  meta.mutable_content_meta_info()->set_timestamp((uint64_t)::round(timestamp_));
+  meta.mutable_content_meta_info()->set_timestamp
+    ((uint64_t)::round(toMillisecondsSince1970(timestamp_)));
   meta.mutable_content_meta_info()->set_has_segments(hasSegments_);
   if (!other_.isNull())
     meta.mutable_content_meta_info()->set_other(other_.buf(), other_.size());
@@ -80,7 +82,7 @@ ContentMetaInfo::wireDecode(const uint8_t *input, size_t inputLength)
     meta = decodedMeta.content_meta_info();
 
   contentType_ = meta.content_type();
-  timestamp_ = meta.timestamp();
+  timestamp_ = fromMillisecondsSince1970(meta.timestamp());
   hasSegments_ = meta.has_segments();
   if (meta.has_other())
     other_ = Blob((const uint8_t*)&meta.other()[0], meta.other().size());

@@ -39,15 +39,14 @@ class CertificateCacheV2 {
 public:
   /**
    * Create a CertificateCacheV2.
-   * @param maxLifetimeMilliseconds (optional) The maximum time that
-   * certificates can live inside the cache, in milliseconds. If omitted, use
-   * getDefaultLifetime().
+   * @param maxLifetime (optional) The maximum time that certificates can live
+   * inside the cache. If omitted, use getDefaultLifetime().
    */
-  CertificateCacheV2(Milliseconds maxLifetimeMilliseconds = getDefaultLifetime());
+  CertificateCacheV2(std::chrono::nanoseconds maxLifetime = getDefaultLifetime());
 
   /**
    * Insert the certificate into the cache. The inserted certificate will be
-   * removed no later than its NotAfter time, or maxLifetimeMilliseconds given
+   * removed no later than its NotAfter time, or maxLifetime given
    * to the constructor.
    * @param certificate The certificate object, which is copied.
    */
@@ -90,25 +89,25 @@ public:
   clear()
   {
     certificatesByName_.clear();
-    nextRefreshTime_ = DBL_MAX;
+    nextRefreshTime_ = std::chrono::system_clock::time_point::max();
   }
 
   /**
    * Get the default maximum lifetime (1 hour).
-   * @return The lifetime in milliseconds.
+   * @return The default lifetime.
    */
-  static Milliseconds
-  getDefaultLifetime() { return 3600.0 * 1000; }
+  static std::chrono::nanoseconds
+  getDefaultLifetime() { return std::chrono::hours(1); }
 
   /**
    * Set the offset when insert() and refresh() get the current time, which
    * should only be used for testing.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
+  setNowOffset_(std::chrono::nanoseconds nowOffset)
   {
-    nowOffsetMilliseconds_ = nowOffsetMilliseconds;
+    nowOffset_ = nowOffset;
   }
 
   /**
@@ -119,22 +118,19 @@ public:
     /**
      * Create a new CertificateCacheV2::Entry with the given values.
      * @param certificate The certificate.
-     * @param removalTime The removal time for this entry  as milliseconds since
-     * Jan 1, 1970 UTC.
+     * @param removalTime The removal time for this entry.
      */
     Entry
       (const ptr_lib::shared_ptr<CertificateV2>& certificate,
-       MillisecondsSince1970 removalTime)
+       std::chrono::system_clock::time_point removalTime)
     : certificate_(certificate), removalTime_(removalTime)
     {}
 
     Entry()
-    {
-      removalTime_ = 0;
-    }
+    {}
 
     ptr_lib::shared_ptr<CertificateV2> certificate_;
-    MillisecondsSince1970 removalTime_;
+    std::chrono::system_clock::time_point removalTime_;
   };
 
   /**
@@ -160,9 +156,9 @@ private:
   CertificateCacheV2& operator=(const CertificateCacheV2& other);
 
   std::map<Name, Entry> certificatesByName_;
-  MillisecondsSince1970 nextRefreshTime_;
-  Milliseconds maxLifetimeMilliseconds_;
-  Milliseconds nowOffsetMilliseconds_;
+  std::chrono::system_clock::time_point nextRefreshTime_;
+  std::chrono::nanoseconds maxLifetime_;
+  std::chrono::nanoseconds nowOffset_;
 };
 
 }

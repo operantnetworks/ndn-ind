@@ -21,6 +21,7 @@
 #include "in-memory-storage-face.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 uint64_t
@@ -65,9 +66,9 @@ InMemoryStorageFace::putData(const Data& data, WireFormat& wireFormat)
 }
 
 void
-InMemoryStorageFace::callLater(Milliseconds delayMilliseconds, const Face::Callback& callback)
+InMemoryStorageFace::callLater(nanoseconds delay, const Face::Callback& callback)
 {
-  delayedCallTable_.callLater(delayMilliseconds, callback);
+  delayedCallTable_.callLater(delay, callback);
 }
 
 void

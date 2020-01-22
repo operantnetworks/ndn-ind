@@ -34,6 +34,7 @@
 #include <ndn-ind/security/policy/config-policy-manager.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -368,9 +369,8 @@ TEST_F(TestConfigPolicyManager, Refresh10s)
   SigningInfo signingInfo;
   signingInfo.setSigningIdentity(identityName_);
   // Make sure the validity period is current for two years.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
-  signingInfo.setValidityPeriod(ValidityPeriod
-    (now, now + 2 * 365 * 24 * 3600 * 1000.0));
+  auto now = system_clock::now();
+  signingInfo.setValidityPeriod(ValidityPeriod(now, now + hours(2 * 365 * 24)));
 
   keyChain_->sign(cert, signingInfo);
   Blob signedCertBlob = cert.wireEncode();

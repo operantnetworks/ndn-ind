@@ -25,6 +25,7 @@
 #include <ndn-ind/util/memory-content-cache.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 INIT_LOGGER("ndn.MemoryContentCache");
@@ -32,9 +33,9 @@ INIT_LOGGER("ndn.MemoryContentCache");
 namespace ndn {
 
 MemoryContentCache::Impl::Impl
-  (Face* face, Milliseconds cleanupIntervalMilliseconds)
-: face_(face), cleanupIntervalMilliseconds_(cleanupIntervalMilliseconds),
-  nextCleanupTime_(ndn_getNowMilliseconds() + cleanupIntervalMilliseconds),
+  (Face* face, nanoseconds cleanupInterval)
+: face_(face), cleanupInterval_(cleanupInterval),
+  nextCleanupTime_(system_clock::now() + duration_cast<system_clock::duration>(cleanupInterval)),
   isDoingCleanup_(false), minimumCacheLifetime_(0)
 {
 }
@@ -105,14 +106,14 @@ MemoryContentCache::Impl::unregisterAll()
 void
 MemoryContentCache::Impl::add(const Data& data)
 {
-  MillisecondsSince1970 nowMilliseconds = ndn_getNowMilliseconds();
-  doCleanup(nowMilliseconds);
+  auto now = system_clock::now();
+  doCleanup(now);
 
-  if (data.getMetaInfo().getFreshnessPeriod() >= 0.0) {
+  if (data.getMetaInfo().getFreshnessPeriod().count() >= 0.0) {
     // The content will go stale, so use staleTimeCache_.
     ptr_lib::shared_ptr<const StaleTimeContent> content
-      (new StaleTimeContent(data, nowMilliseconds, minimumCacheLifetime_));
-    // Insert into staleTimeCache_, sorted on content->cacheRemovalTimeMilliseconds_.
+      (new StaleTimeContent(data, now, minimumCacheLifetime_));
+    // Insert into staleTimeCache_, sorted on content->cacheRemovalTime_.
     staleTimeCache_.insert
       (std::lower_bound(staleTimeCache_.begin(), staleTimeCache_.end(), content, contentCompare_),
        content);
@@ -126,7 +127,7 @@ MemoryContentCache::Impl::add(const Data& data)
   // interest.
   // Go backwards through the list so we can erase entries.
   for (int i = (int)pendingInterestTable_.size() - 1; i >= 0; --i) {
-    if (pendingInterestTable_[i]->isTimedOut(nowMilliseconds)) {
+    if (pendingInterestTable_[i]->isTimedOut(now)) {
       pendingInterestTable_.erase(pendingInterestTable_.begin() + i);
       continue;
     }
@@ -165,9 +166,9 @@ MemoryContentCache::Impl::getPendingInterestsForName
 
   // Remove timed-out interests as we add results.
   // Go backwards through the list so we can erase entries.
-  MillisecondsSince1970 nowMilliseconds = ndn_getNowMilliseconds();
+  auto now = system_clock::now();
   for (int i = (int)pendingInterestTable_.size() - 1; i >= 0; --i) {
-    if (pendingInterestTable_[i]->isTimedOut(nowMilliseconds)) {
+    if (pendingInterestTable_[i]->isTimedOut(now)) {
       pendingInterestTable_.erase(pendingInterestTable_.begin() + i);
       continue;
     }
@@ -186,9 +187,9 @@ MemoryContentCache::Impl::getPendingInterestsWithPrefix
 
   // Remove timed-out interests as we add results.
   // Go backwards through the list so we can erase entries.
-  MillisecondsSince1970 nowMilliseconds = ndn_getNowMilliseconds();
+  auto now = system_clock::now();
   for (int i = (int)pendingInterestTable_.size() - 1; i >= 0; --i) {
-    if (pendingInterestTable_[i]->isTimedOut(nowMilliseconds)) {
+    if (pendingInterestTable_[i]->isTimedOut(now)) {
       pendingInterestTable_.erase(pendingInterestTable_.begin() + i);
       continue;
     }
@@ -207,8 +208,8 @@ MemoryContentCache::Impl::onInterest
 {
   _LOG_TRACE("MemoryContentCache:  Received Interest " << interest->toUri());
 
-  MillisecondsSince1970 nowMilliseconds = ndn_getNowMilliseconds();
-  doCleanup(nowMilliseconds);
+  auto now = system_clock::now();
+  doCleanup(now);
 
   const Name::Component* selectedComponent = 0;
   Blob selectedEncoding;
@@ -220,7 +221,7 @@ MemoryContentCache::Impl::onInterest
     if (i < staleTimeCache_.size()) {
       const StaleTimeContent *staleTimeContent = staleTimeCache_[i].get();
       content = staleTimeContent;
-      isFresh = staleTimeContent->isFresh(nowMilliseconds);
+      isFresh = staleTimeContent->isFresh(now);
     }
     else
       // We have iterated over the first array. Get from the second.
@@ -291,7 +292,7 @@ MemoryContentCache::Impl::onInterest
 }
 
 void
-MemoryContentCache::Impl::doCleanup(MillisecondsSince1970 nowMilliseconds)
+MemoryContentCache::Impl::doCleanup(system_clock::time_point now)
 {
   if (isDoingCleanup_)
     // The OnContentRemoved callback may have called add, which has called this
@@ -301,11 +302,11 @@ MemoryContentCache::Impl::doCleanup(MillisecondsSince1970 nowMilliseconds)
   isDoingCleanup_ = true;
 
   ptr_lib::shared_ptr<ContentList> contentList;
-  if (nowMilliseconds >= nextCleanupTime_) {
-    // staleTimeCache_ is sorted on cacheRemovalTimeMilliseconds_, so we only need to
+  if (now >= nextCleanupTime_) {
+    // staleTimeCache_ is sorted on cacheRemovalTime_, so we only need to
     // erase the stale entries at the front, then quit.
     while (staleTimeCache_.size() > 0 &&
-           staleTimeCache_.front()->isPastRemovalTime(nowMilliseconds)) {
+           staleTimeCache_.front()->isPastRemovalTime(now)) {
       if (onContentRemoved_) {
         // Add to the list of removed content for the OnContentRemoved callback.
         // We make a separate list instead of calling the callback each time
@@ -319,7 +320,7 @@ MemoryContentCache::Impl::doCleanup(MillisecondsSince1970 nowMilliseconds)
       staleTimeCache_.erase(staleTimeCache_.begin());
     }
 
-    nextCleanupTime_ = nowMilliseconds + cleanupIntervalMilliseconds_;
+    nextCleanupTime_ = now + duration_cast<system_clock::duration>(cleanupInterval_);
   }
 
   if (onContentRemoved_ && contentList) {
@@ -336,28 +337,29 @@ MemoryContentCache::Impl::doCleanup(MillisecondsSince1970 nowMilliseconds)
 }
 
 MemoryContentCache::Impl::StaleTimeContent::StaleTimeContent
-  (const Data& data, MillisecondsSince1970 nowMilliseconds,
-   Milliseconds minimumCacheLifetime)
+  (const Data& data, system_clock::time_point now,
+   nanoseconds minimumCacheLifetime)
 // wireEncode returns the cached encoding if available.
 : Content(data)
 {
-  cacheRemovalTimeMilliseconds_ = nowMilliseconds +
-    max(data.getMetaInfo().getFreshnessPeriod(), minimumCacheLifetime);
-  freshnessExpiryTimeMilliseconds_ = nowMilliseconds +
-    data.getMetaInfo().getFreshnessPeriod();
+  cacheRemovalTime_ = now + duration_cast<system_clock::duration>
+    (max(data.getMetaInfo().getFreshnessPeriod(), minimumCacheLifetime));
+  freshnessExpiryTime_ = now + duration_cast<system_clock::duration>
+    (data.getMetaInfo().getFreshnessPeriod());
 }
 
 MemoryContentCache::PendingInterest::PendingInterest
   (const ptr_lib::shared_ptr<const Interest>& interest, Face& face)
-  : interest_(interest), face_(face), timeoutPeriodStart_(ndn_getNowMilliseconds())
+  : interest_(interest), face_(face), timeoutPeriodStart_(system_clock::now())
 {
-  // Set up timeoutTimeMilliseconds_.
-  Milliseconds interestLifetime = interest_->getInterestLifetimeMilliseconds();
-  if (interestLifetime < 0.0)
+  // Set up timeoutTime_.
+  auto interestLifetime = interest_->getInterestLifetime();
+  if (interestLifetime.count() < 0)
     // The InterestLifetime is omitted, so use a default.
-    interestLifetime = 4000.0;
+    interestLifetime = seconds(4);
 
-  timeoutTimeMilliseconds_ = timeoutPeriodStart_ + interestLifetime;
+  timeoutTime_ =
+    timeoutPeriodStart_ + duration_cast<system_clock::duration>(interestLifetime);
 }
 
 }

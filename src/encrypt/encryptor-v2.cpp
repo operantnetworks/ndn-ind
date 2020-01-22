@@ -242,7 +242,7 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
           "Retrieval of KEK [" + interest->getName().toUri() + "] timed out");
         _LOG_TRACE("Scheduling retry after all timeouts");
         parent_->face_->callLater
-          (RETRY_DELAY_KEK_RETRIEVAL_MS,
+          (RETRY_DELAY_KEK_RETRIEVAL,
            bind(&EncryptorV2::Impl::retryFetchingKek, parent_));
       }
     }
@@ -255,7 +255,7 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
       parent_->kekPendingInterestId_ = 0;
       if (nTriesLeft_ > 1) {
         parent_->face_->callLater
-          (RETRY_DELAY_AFTER_NACK_MS,
+          (RETRY_DELAY_AFTER_NACK,
            bind(&EncryptorV2::Impl::fetchKekAndPublishCkData, parent_,
                 onReady_, onError_, nTriesLeft_ - 1));
       }
@@ -266,7 +266,7 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
         onError_(EncryptError::ErrorCode::KekRetrievalFailure, message.str());
         _LOG_TRACE("Scheduling retry from NACK");
         parent_->face_->callLater
-          (RETRY_DELAY_KEK_RETRIEVAL_MS,
+          (RETRY_DELAY_KEK_RETRIEVAL,
            bind(&EncryptorV2::Impl::retryFetchingKek, parent_));
       }
     }
@@ -320,7 +320,7 @@ EncryptorV2::Impl::makeAndPublishCkData(const EncryptError::OnError& onError)
        .append(kekData_->getName()));
     ckData.setContent(content.wireEncodeV2());
     // FreshnessPeriod can serve as a soft access control for revoking access.
-    ckData.getMetaInfo().setFreshnessPeriod(DEFAULT_CK_FRESHNESS_PERIOD_MS);
+    ckData.getMetaInfo().setFreshnessPeriod(DEFAULT_CK_FRESHNESS_PERIOD);
     keyChain_->sign(ckData, ckDataSigningInfo_);
     storage_.insert(ckData);
 

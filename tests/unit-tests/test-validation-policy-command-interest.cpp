@@ -28,6 +28,7 @@
 #include <ndn-ind/security/v2/validation-policy-command-interest.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -50,16 +51,15 @@ public:
 
   /**
    * Set the offset for the validation policy and signer.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setNowOffsetMilliseconds(Milliseconds nowOffsetMilliseconds)
+  setNowOffset(nanoseconds nowOffset)
   {
     dynamic_cast<ValidationPolicyCommandInterest&>
-     (validator_.getPolicy()).setNowOffsetMilliseconds_
-       (nowOffsetMilliseconds);
-    validator_.setCacheNowOffsetMilliseconds_(nowOffsetMilliseconds);
-    signer_.setNowOffsetMilliseconds_(nowOffsetMilliseconds);
+     (validator_.getPolicy()).setNowOffset_(nowOffset);
+    validator_.setCacheNowOffset_(nowOffset);
+    signer_.setNowOffset_(nowOffset);
   }
 
   CommandInterestSigner signer_;
@@ -197,7 +197,7 @@ TEST_F(TestValidationPolicyCommandInterest, Basic)
     (fixture_->identity_);
   validateExpectSuccess(*interest1, "Should succeed (within grace period)");
 
-  fixture_->setNowOffsetMilliseconds(5 * 1000.0);
+  fixture_->setNowOffset(seconds(5));
   ptr_lib::shared_ptr<Interest> interest2 = fixture_->makeCommandInterest
     (fixture_->identity_);
   validateExpectSuccess(*interest2, "Should succeed (timestamp larger than previous)");
@@ -279,13 +279,13 @@ TEST_F(TestValidationPolicyCommandInterest, InnerPolicyReject)
 TEST_F(TestValidationPolicyCommandInterest, TimestampOutOfGracePositive)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Verifying at +16 seconds.
-  fixture_->setNowOffsetMilliseconds(16 * 1000.0);
+  fixture_->setNowOffset(seconds(16));
   validateExpectFailure(*interest1,
     "Should fail (timestamp outside the grace period)");
 
@@ -298,22 +298,22 @@ TEST_F(TestValidationPolicyCommandInterest, TimestampOutOfGracePositive)
 TEST_F(TestValidationPolicyCommandInterest, TimestampOutOfGraceNegative)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +1 seconds.
-  fixture_->setNowOffsetMilliseconds(1 * 1000.0);
+  fixture_->setNowOffset(seconds(1));
   ptr_lib::shared_ptr<Interest> interest2 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +2 seconds.
-  fixture_->setNowOffsetMilliseconds(2 * 1000.0);
+  fixture_->setNowOffset(seconds(2));
   ptr_lib::shared_ptr<Interest> interest3 = fixture_->makeCommandInterest
     (fixture_->identity_);
 
   // Verifying at -16 seconds.
-  fixture_->setNowOffsetMilliseconds(-16 * 1000.0);
+  fixture_->setNowOffset(seconds(-16));
   validateExpectFailure(*interest1,
     "Should fail (timestamp outside the grace period)");
 
@@ -324,7 +324,7 @@ TEST_F(TestValidationPolicyCommandInterest, TimestampOutOfGraceNegative)
   // The CommandInterestValidator should not remember interest2's timestamp, and
   // should treat interest3 as initial.
   // Verifying at +2 seconds.
-  fixture_->setNowOffsetMilliseconds(2 * 1000.0);
+  fixture_->setNowOffset(seconds(2));
   validateExpectSuccess(*interest3, "Should succeed");
 }
 
@@ -344,7 +344,7 @@ TEST_F(TestValidationPolicyCommandInterest, TimestampReorderEqual)
   validateExpectFailure(*interest2, "Should fail (timestamp reordered)");
 
   // Signed at +2 seconds.
-  fixture_->setNowOffsetMilliseconds(2 * 1000.0);
+  fixture_->setNowOffset(seconds(2));
   ptr_lib::shared_ptr<Interest> interest3 = fixture_->makeCommandInterest
     (fixture_->identity_);
   validateExpectSuccess(*interest3, "Should succeed");
@@ -356,40 +356,40 @@ TEST_F(TestValidationPolicyCommandInterest, TimestampReorderNegative)
   ptr_lib::shared_ptr<Interest> interest2 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +200 milliseconds.
-  fixture_->setNowOffsetMilliseconds(200.0);
+  fixture_->setNowOffset(milliseconds(200));
   ptr_lib::shared_ptr<Interest> interest3 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +1100 milliseconds.
-  fixture_->setNowOffsetMilliseconds(1100.0);
+  fixture_->setNowOffset(milliseconds(1100));
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +1400 milliseconds.
-  fixture_->setNowOffsetMilliseconds(1400.0);
+  fixture_->setNowOffset(milliseconds(1400));
   ptr_lib::shared_ptr<Interest> interest4 = fixture_->makeCommandInterest
     (fixture_->identity_);
 
   // Verifying at +1100 milliseconds.
-  fixture_->setNowOffsetMilliseconds(1100.0);
+  fixture_->setNowOffset(milliseconds(1100));
   validateExpectSuccess(*interest1, "Should succeed");
 
   // Verifying at 0 milliseconds.
-  fixture_->setNowOffsetMilliseconds(0.0);
+  fixture_->setNowOffset(milliseconds(0));
   validateExpectFailure(*interest2, "Should fail (timestamp reordered)");
 
   // The CommandInterestValidator should not remember interest2's timestamp.
   // Verifying at +200 milliseconds.
-  fixture_->setNowOffsetMilliseconds(200.0);
+  fixture_->setNowOffset(milliseconds(200));
   validateExpectFailure(*interest3, "Should fail (timestamp reordered)");
 
   // Verifying at +1400 milliseconds.
-  fixture_->setNowOffsetMilliseconds(1400.0);
+  fixture_->setNowOffset(milliseconds(1400));
   validateExpectSuccess(*interest4, "Should succeed");
 }
 
 TEST_F(TestValidationPolicyCommandInterest, LimitedRecords)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, 3)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), 3)));
 
   ptr_lib::shared_ptr<PibIdentity> identity1 = fixture_->addSubCertificate
     ("/Security/V2/ValidatorFixture/Sub1", fixture_->identity_);
@@ -414,11 +414,11 @@ TEST_F(TestValidationPolicyCommandInterest, LimitedRecords)
   ptr_lib::shared_ptr<Interest> interest00 = fixture_->makeCommandInterest
     (identity1);
   // Signed at +1 seconds.
-  fixture_->setNowOffsetMilliseconds(1 * 1000.0);
+  fixture_->setNowOffset(seconds(1));
   ptr_lib::shared_ptr<Interest> interest01 = fixture_->makeCommandInterest
     (identity1);
   // Signed at +2 seconds.
-  fixture_->setNowOffsetMilliseconds(2 * 1000.0);
+  fixture_->setNowOffset(seconds(2));
   ptr_lib::shared_ptr<Interest> interest02 = fixture_->makeCommandInterest
     (identity1);
 
@@ -439,7 +439,7 @@ TEST_F(TestValidationPolicyCommandInterest, LimitedRecords)
 TEST_F(TestValidationPolicyCommandInterest, UnlimitedRecords)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, -1)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), -1)));
 
   vector<ptr_lib::shared_ptr<PibIdentity> > identities;
   for (int i = 0; i < 20; ++i) {
@@ -452,7 +452,7 @@ TEST_F(TestValidationPolicyCommandInterest, UnlimitedRecords)
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
     (identities[0]);
-  fixture_->setNowOffsetMilliseconds(1 * 1000.0);
+  fixture_->setNowOffset(seconds(1));
   for (int i = 0; i < 20; ++i) {
     // Signed at +1 seconds.
     ptr_lib::shared_ptr<Interest> interest2 = fixture_->makeCommandInterest
@@ -467,13 +467,13 @@ TEST_F(TestValidationPolicyCommandInterest, UnlimitedRecords)
 TEST_F(TestValidationPolicyCommandInterest, ZeroRecords)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, 0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), 0)));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +1 seconds.
-  fixture_->setNowOffsetMilliseconds(1 * 1000.0);
+  fixture_->setNowOffset(seconds(1));
   ptr_lib::shared_ptr<Interest> interest2 = fixture_->makeCommandInterest
     (fixture_->identity_);
   validateExpectSuccess(*interest2, "Should succeed");
@@ -485,28 +485,28 @@ TEST_F(TestValidationPolicyCommandInterest, ZeroRecords)
 TEST_F(TestValidationPolicyCommandInterest, LimitedRecordLifetime)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(400 * 1000.0, 1000, 300 * 1000.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(400), 1000, seconds(300))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +240 seconds.
-  fixture_->setNowOffsetMilliseconds(240 * 1000.0);
+  fixture_->setNowOffset(seconds(240));
   ptr_lib::shared_ptr<Interest> interest2 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +360 seconds.
-  fixture_->setNowOffsetMilliseconds(360 * 1000.0);
+  fixture_->setNowOffset(seconds(360));
   ptr_lib::shared_ptr<Interest> interest3 = fixture_->makeCommandInterest
     (fixture_->identity_);
 
   // Validate at 0 seconds.
-  fixture_->setNowOffsetMilliseconds(0.0);
+  fixture_->setNowOffset(seconds(0));
   validateExpectSuccess(*interest1, "Should succeed");
 
   validateExpectSuccess(*interest3, "Should succeed");
 
   // Validate at +301 seconds.
-  fixture_->setNowOffsetMilliseconds(301 * 1000.0);
+  fixture_->setNowOffset(seconds(301));
   validateExpectSuccess(*interest2,
     "Should succeed despite the timestamp being reordered, because the record has expired");
 }
@@ -514,13 +514,13 @@ TEST_F(TestValidationPolicyCommandInterest, LimitedRecordLifetime)
 TEST_F(TestValidationPolicyCommandInterest, ZeroRecordLifetime)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, 1000, 0.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), 1000, seconds(0))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
     (fixture_->identity_);
   // Signed at +1 second.
-  fixture_->setNowOffsetMilliseconds(1 * 1000.0);
+  fixture_->setNowOffset(seconds(1));
   ptr_lib::shared_ptr<Interest> interest2 = fixture_->makeCommandInterest
     (fixture_->identity_);
   validateExpectSuccess(*interest2, "Should succeed");

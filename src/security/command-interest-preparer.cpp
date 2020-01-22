@@ -27,23 +27,26 @@
 #include <ndn-ind/security/command-interest-preparer.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
 CommandInterestPreparer::CommandInterestPreparer()
-: lastUsedTimestamp_(::round(ndn_getNowMilliseconds())),
-  nowOffsetMilliseconds_(0)
+  // Fix to milliseconds.
+: lastUsedTimestamp_(duration_cast<milliseconds>(system_clock::now().time_since_epoch())),
+  nowOffset_(0)
 {}
 
 void
 CommandInterestPreparer::prepareCommandInterestName
   (Interest& interest, WireFormat& wireFormat)
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
-  MillisecondsSince1970 timestamp = ::round(now);
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
+  // Fix to milliseconds.
+  system_clock::time_point timestamp(duration_cast<milliseconds>(now.time_since_epoch()));
   while (timestamp <= lastUsedTimestamp_)
-    timestamp += 1.0;
+    timestamp += milliseconds(1);
 
   // Update the timestamp now. In the small chance that signing fails, it just
   // means that we have bumped the timestamp.
@@ -51,7 +54,7 @@ CommandInterestPreparer::prepareCommandInterestName
 
   // The timestamp is encoded as a TLV nonNegativeInteger.
   TlvEncoder encoder(8);
-  encoder.writeNonNegativeInteger((uint64_t)timestamp);
+  encoder.writeNonNegativeInteger((uint64_t)toMillisecondsSince1970(timestamp));
   interest.getName().append(Blob(encoder.finish()));
 
   // The random value is a TLV nonNegativeInteger too, but we know it is 8 bytes,

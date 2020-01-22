@@ -32,6 +32,7 @@
 #include <ndn-ind-tools/usersync/channel-discovery.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -43,7 +44,7 @@ ChannelDiscovery::Impl::Impl
   (ChannelDiscovery& parent, const Name& applicationDataPrefix,
    const string& channelListFilePath, Face& face, KeyChain& keyChain,
    const Name& certificateName,
-   Milliseconds syncLifetime, const OnReceivedChannelList& onReceivedChannelList,
+   nanoseconds syncLifetime, const OnReceivedChannelList& onReceivedChannelList,
    const OnError& onError)
   : parent_(parent), applicationDataPrefix_(applicationDataPrefix),
     channelListFilePath_(channelListFilePath), face_(face),
@@ -204,7 +205,7 @@ ChannelDiscovery::Impl::onReceivedSyncState
     sequenceNoString << syncStates[i].getSequenceNo();
     interest.getName().append(sessionNoString.str());
     interest.getName().append(sequenceNoString.str());
-    interest.setInterestLifetimeMilliseconds(syncLifetime_);
+    interest.setInterestLifetime(syncLifetime_);
 
     face_.expressInterest
       (interest,

@@ -31,7 +31,7 @@
  * use it in expressInterest to instantly reply to an Interest. It also allows
  * calls to registerPrefix to remember an OnInterestCallback. This also keeps a
  * local DelayedCallTable (to use for callLater) so that you can call its
- * setNowOffsetMilliseconds_ for testing.
+ * setNowOffset_ for testing.
  */
 class InMemoryStorageFace : public ndn::Face
 {
@@ -62,7 +62,7 @@ public:
 
   virtual void
   callLater
-    (ndn::Milliseconds delayMilliseconds, const ndn::Face::Callback& callback);
+    (std::chrono::nanoseconds delay, const ndn::Face::Callback& callback);
 
   virtual void
   processEvents();
@@ -78,7 +78,7 @@ public:
 
   std::vector<ndn::ptr_lib::shared_ptr<ndn::Interest> > sentInterests_;
   std::vector<ndn::ptr_lib::shared_ptr<ndn::Data> > sentData_;
-  // Use delayedCallTable_ here so that we can call setNowOffsetMilliseconds_().
+  // Use delayedCallTable_ here so that we can call setNowOffset_().
   ndn::DelayedCallTable delayedCallTable_;
 
 private:

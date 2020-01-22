@@ -29,6 +29,7 @@
 #include <ndn-ind/security/certificate/certificate.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -36,8 +37,8 @@ typedef DerNode::DerSequence DerSequence;
 typedef DerNode::DerGeneralizedTime DerGeneralizedTime;
 
 Certificate::Certificate()
-  : notBefore_(DBL_MAX)
-  , notAfter_(-DBL_MAX)
+  : notBefore_(system_clock::time_point::max())
+  , notAfter_(system_clock::time_point::min())
 {}
 
 Certificate::Certificate(const Data& data)
@@ -64,7 +65,7 @@ Certificate::getPublicKeyDer() const
 bool
 Certificate::isTooEarly() const
 {
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
+  auto now = system_clock::now();
   if(now < getNotBefore())
     return true;
   else
@@ -74,7 +75,7 @@ Certificate::isTooEarly() const
 bool
 Certificate::isTooLate() const
 {
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
+  auto now = system_clock::now();
   if(now > getNotAfter())
     return true;
   else

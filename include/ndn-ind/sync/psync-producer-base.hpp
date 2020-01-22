@@ -40,12 +40,11 @@ protected:
    * Create a PSyncProducerBase.
    * @param expectedNEntries The expected number of entries in the IBLT.
    * @param syncPrefix The prefix Name of the sync group, which is copied.
-   * @param syncReplyFreshnessPeriod The freshness period of the sync
-   * Data packet, in milliseconds.
+   * @param syncReplyFreshnessPeriod The freshness period of the sync Data packet.
    */
   PSyncProducerBase
     (size_t expectedNEntries, const Name& syncPrefix,
-     Milliseconds syncReplyFreshnessPeriod);
+     std::chrono::nanoseconds syncReplyFreshnessPeriod);
 
   /**
    * Insert the URI of the name into the iblt_, and update nameToHash_ and
@@ -85,7 +84,7 @@ protected:
 
   Name syncPrefix_;
 
-  Milliseconds syncReplyFreshnessPeriod_;
+  std::chrono::nanoseconds syncReplyFreshnessPeriod_;
 };
 
 }

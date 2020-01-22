@@ -32,6 +32,7 @@
 #include <ndn-ind/security/v2/trust-anchor-container.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 static bool
@@ -116,17 +117,17 @@ TEST_F(TestTrustAnchorContainer, Insert)
   ASSERT_EQ(certificate, anchorContainer.find(certificate1->getName()));
   // Cannot add a dynamic group when the static already exists.
   ASSERT_THROW(anchorContainer.insert
-    ("group1", certificatePath1, 400.0), TrustAnchorContainer::Error);
+    ("group1", certificatePath1, milliseconds(400)), TrustAnchorContainer::Error);
   ASSERT_EQ(1, anchorContainer.getGroup("group1").size());
   ASSERT_EQ(1, anchorContainer.size());
 
   // From file
-  anchorContainer.insert("group2", certificatePath2, 400.0);
+  anchorContainer.insert("group2", certificatePath2, milliseconds(400));
   ASSERT_TRUE(!!anchorContainer.find(certificate2->getName()));
   ASSERT_TRUE(!!anchorContainer.find(identity2->getName()));
   ASSERT_THROW(anchorContainer.insert("group2", *certificate2),
                TrustAnchorContainer::Error);
-  ASSERT_THROW(anchorContainer.insert("group2", certificatePath2, 400.0),
+  ASSERT_THROW(anchorContainer.insert("group2", certificatePath2, milliseconds(400)),
                TrustAnchorContainer::Error);
   ASSERT_EQ(1, anchorContainer.getGroup("group2").size());
   ASSERT_EQ(2, anchorContainer.size());
@@ -157,7 +158,7 @@ TEST_F(TestTrustAnchorContainer, DynamicAnchorFromDirectory)
 {
   remove(certificatePath2.c_str());
 
-  anchorContainer.insert("group", certificateDirectoryPath, 400.0, true);
+  anchorContainer.insert("group", certificateDirectoryPath, milliseconds(400), true);
 
   ASSERT_TRUE(!!anchorContainer.find(identity1->getName()));
   ASSERT_TRUE(!anchorContainer.find(identity2->getName()));
@@ -184,7 +185,7 @@ TEST_F(TestTrustAnchorContainer, DynamicAnchorFromDirectory)
 
 TEST_F(TestTrustAnchorContainer, FindByInterest)
 {
-  anchorContainer.insert("group1", certificatePath1, 400.0);
+  anchorContainer.insert("group1", certificatePath1, milliseconds(400));
   Interest interest(identity1->getName());
   ASSERT_TRUE(!!anchorContainer.find(interest));
   Interest interest1(identity1->getName().getPrefix(-1));

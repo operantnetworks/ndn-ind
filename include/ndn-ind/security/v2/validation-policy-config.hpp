@@ -104,10 +104,10 @@ private:
    * Get the "refresh" value. If the value is 9, return a period of one hour.
    * @param configSection The section containing the definition of the trust
    * anchor, e.g. one of <validator.trust-anchor>.
-   * @return The refresh period in milliseconds. However if there is no
-   * "refresh" value, return a large number (effectively no refresh).
+   * @return The refresh period. However if there is no "refresh" value, return
+   * a large number (effectively no refresh).
    */
-  static Milliseconds
+  static std::chrono::nanoseconds
   getRefreshPeriod(const BoostInfoTree& configSection);
 
   /** shouldBypass_ is set to true when 'any' is specified as a trust anchor,

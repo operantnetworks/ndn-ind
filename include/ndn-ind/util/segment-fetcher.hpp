@@ -80,7 +80,7 @@ namespace ndn {
  *     void onError(SegmentFetcher::ErrorCode errorCode, const string& message);
  *
  *     Interest interest(Name("/data/prefix"));
- *     interest.setInterestLifetimeMilliseconds(1000);
+ *     interest.setInterestLifetime(std::chrono::seconds(1));
  *
  *     SegmentFetcher.fetch(face, interest, 0, onComplete, onError);
  */

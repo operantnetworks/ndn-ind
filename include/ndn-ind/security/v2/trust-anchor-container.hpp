@@ -75,9 +75,9 @@ public:
    * Insert dynamic trust anchors from the path.
    * @param groupId The certificate group id, which must not be empty.
    * @param path The path to load the trust anchors.
-   * @param refreshPeriod  The refresh time in milliseconds for the anchors
-   * under path. This must be positive. The relevant trust anchors will only be
-   * updated when find is called.
+   * @param refreshPeriod  The refresh time for the anchors under path. This 
+   * must be positive. The relevant trust anchors will only be updated when find
+   * is called.
    * @param isDirectory (optional) If true, then path is a directory. If false
    * or omitted, it is a single file.
    * @throws std::invalid_argument If refreshPeriod is not positive.
@@ -86,7 +86,7 @@ public:
   void
   insert
     (const std::string& groupId, const std::string& path,
-     Milliseconds refreshPeriod, bool isDirectory = false);
+     std::chrono::nanoseconds refreshPeriod, bool isDirectory = false);
 
   /**
    * Remove all static and dynamic anchors.

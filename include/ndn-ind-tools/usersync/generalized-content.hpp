@@ -60,7 +60,7 @@ public:
    * After this call, the MemoryContentCache must remain valid long enough to
    * respond to Interest for the published Data packets.
    * @param prefix The Name prefix for the published Data packets.
-   * @param freshnessPeriod The freshness period in milliseconds for the packets.
+   * @param freshnessPeriod The freshness period for the packets.
    * @param signingKeyChain This calls signingKeyChain.sign to sign the packets.
    * @param signingCertificateName The certificate name of the key used in
    * signingKeyChain.sign .
@@ -76,7 +76,7 @@ public:
   static void
   publish
     (ndn::MemoryContentCache& contentCache, const ndn::Name& prefix,
-     ndn::Milliseconds freshnessPeriod, ndn::KeyChain* signingKeyChain,
+     std::chrono::nanoseconds freshnessPeriod, ndn::KeyChain* signingKeyChain,
      const ndn::Name& signingCertificateName, const ContentMetaInfo& metaInfo,
      const ndn::Blob& content, size_t contentSegmentSize);
 
@@ -106,15 +106,15 @@ public:
    * NOTE: The library will log any exceptions thrown by this callback, but for
    * better error handling the callback should catch and properly handle any
    * exceptions.
-   * @param interestLifetimeMilliseconds (optional) The Interest lifetime in
-   * milliseconds for fetching the _meta info and segments. If omitted, use the
-   * default value from the default Interest object.
+   * @param interestLifetime (optional) The Interest lifetime for fetching the 
+   * _meta info and segments. If omitted, use the default value from the default
+   * Interest object.
    */
   static void
   fetch
     (ndn::Face& face, const ndn::Name& prefix, ndn::KeyChain* validatorKeyChain,
      const OnComplete& onComplete, const OnError& onError,
-     ndn::Milliseconds interestLifetimeMilliseconds = 4000.0);
+     std::chrono::nanoseconds interestLifetime = std::chrono::seconds(4));
 
 private:
   /**
@@ -124,10 +124,10 @@ private:
   GeneralizedContent
     (ndn::Face& face, const ndn::Name& prefix, ndn::KeyChain* validatorKeyChain,
      const OnComplete& onComplete, const OnError& onError,
-     ndn::Milliseconds interestLifetimeMilliseconds)
+     std::chrono::nanoseconds interestLifetime)
   : face_(face), prefix_(prefix), validatorKeyChain_(validatorKeyChain),
     onComplete_(onComplete), onError_(onError),
-    interestLifetimeMilliseconds_(interestLifetimeMilliseconds)
+    interestLifetime_(interestLifetime)
   {
   }
 
@@ -154,7 +154,7 @@ private:
   ndn::KeyChain* validatorKeyChain_;
   OnComplete onComplete_;
   OnError onError_;
-  ndn::Milliseconds interestLifetimeMilliseconds_;
+  std::chrono::nanoseconds interestLifetime_;
   ndn::ptr_lib::shared_ptr<ContentMetaInfo> metaInfo_;
 };
 

@@ -60,10 +60,9 @@ public:
 
   /**
    * Get the time stamp.
-   * @return The time stamp as milliseconds since Jan 1, 1970 UTC. If not
-   * specified, return -1.
+   * @return The time stamp. If not specified, time_since_epoch() is negative.
    */
-  ndn::MillisecondsSince1970
+  std::chrono::system_clock::time_point
   getTimestamp() const { return timestamp_; }
 
   /**
@@ -98,7 +97,7 @@ public:
    * @return This ContentMetaInfo so that you can chain calls to update values.
    */
   ContentMetaInfo&
-  setTimestamp(ndn::MillisecondsSince1970 timestamp)
+  setTimestamp(std::chrono::system_clock::time_point timestamp)
   {
     timestamp_ = timestamp;
     return *this;
@@ -171,7 +170,7 @@ public:
 
 private:
   std::string contentType_;
-  ndn::MillisecondsSince1970 timestamp_;
+  std::chrono::system_clock::time_point timestamp_;
   bool hasSegments_;
   ndn::Blob other_;
 };

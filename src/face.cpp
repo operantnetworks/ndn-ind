@@ -31,6 +31,7 @@
 #endif
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn::func_lib;
 
 namespace ndn {
@@ -242,9 +243,9 @@ Face::shutdown()
 }
 
 void
-Face::callLater(Milliseconds delayMilliseconds, const Callback& callback)
+Face::callLater(nanoseconds delay, const Callback& callback)
 {
-  node_->callLater(delayMilliseconds, callback);
+  node_->callLater(delay, callback);
 }
 
 }

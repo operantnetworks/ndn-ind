@@ -146,8 +146,10 @@ private:
     uint64_t kekRegisteredPrefixId_;
     uint64_t kdkRegisteredPrefixId_;
 
-    static const uint64_t DEFAULT_KEK_FRESHNESS_PERIOD_MS = 3600 * 1000;
-    static const uint64_t DEFAULT_KDK_FRESHNESS_PERIOD_MS = 3600 * 1000;
+    static constexpr std::chrono::nanoseconds DEFAULT_KEK_FRESHNESS_PERIOD =
+      std::chrono::hours(1);
+    static constexpr std::chrono::nanoseconds DEFAULT_KDK_FRESHNESS_PERIOD =
+      std::chrono::hours(1);
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

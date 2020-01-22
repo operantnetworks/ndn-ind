@@ -27,6 +27,7 @@
 #include <ndn-ind-tools/usersync/generalized-content.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -37,7 +38,7 @@ namespace ndntools {
 void
 GeneralizedContent::publish
   (MemoryContentCache& contentCache, const Name& prefix,
-   Milliseconds freshnessPeriod, KeyChain* signingKeyChain,
+   nanoseconds freshnessPeriod, KeyChain* signingKeyChain,
    const Name& signingCertificateName, const ContentMetaInfo& metaInfo,
    const Blob& content, size_t contentSegmentSize)
 {
@@ -86,14 +87,13 @@ void
 GeneralizedContent::fetch
   (Face& face, const Name& prefix, KeyChain* validatorKeyChain,
    const OnComplete& onComplete, const OnError& onError,
-   Milliseconds interestLifetimeMilliseconds)
+   nanoseconds interestLifetime)
 {
   // Make a shared_ptr because we make callbacks with bind using
   //   shared_from_this() so the object remains allocated.
   ptr_lib::shared_ptr<GeneralizedContent> contentFetcher
     (new GeneralizedContent
-     (face, prefix, validatorKeyChain, onComplete, onError,
-      interestLifetimeMilliseconds));
+     (face, prefix, validatorKeyChain, onComplete, onError, interestLifetime));
   contentFetcher->fetchMetaInfo();
 }
 
@@ -102,7 +102,7 @@ GeneralizedContent::fetchMetaInfo()
 {
   Interest interest(prefix_);
   interest.getName().append("_meta");
-  interest.setInterestLifetimeMilliseconds(interestLifetimeMilliseconds_);
+  interest.setInterestLifetime(interestLifetime_);
   interest.setMustBeFresh(true);
 
   face_.expressInterest
@@ -148,7 +148,7 @@ GeneralizedContent::onMetaInfoReceived
     // Fetch the segments.
     Interest baseInterest(prefix_);
     baseInterest.getName().appendSegment(0);
-    baseInterest.setInterestLifetimeMilliseconds(interestLifetimeMilliseconds_);
+    baseInterest.setInterestLifetime(interestLifetime_);
     SegmentFetcher::fetch
       (face_, baseInterest, validatorKeyChain_,
        bind(&GeneralizedContent::onContentReceived, shared_from_this(), _1),

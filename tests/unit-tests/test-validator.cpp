@@ -25,6 +25,7 @@
 #include <ndn-ind/security/v2/validation-policy-simple-hierarchy.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -108,7 +109,7 @@ public:
     // Set the MetaInfo.
     certificate->getMetaInfo().setType(ndn_ContentType_KEY);
     // Set the freshness period to one hour.
-    certificate->getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+    certificate->getMetaInfo().setFreshnessPeriod(hours(1));
 
     // Set the content.
     certificate->setContent(requestedKey->getPublicKey());
@@ -116,9 +117,9 @@ public:
     // Set SigningInfo.
     SigningInfo params(parentKey);
     // Validity period from 10 days before to 10 days after now.
-    MillisecondsSince1970 now = ndn_getNowMilliseconds();
+    auto now = system_clock::now();
     params.setValidityPeriod(ValidityPeriod
-      (now - 10 * 24 * 3600 * 1000.0, now + 10 * 24 * 3600 * 1000.0));
+      (now - hours(10 * 24), now + hours(10 * 24)));
 
     fixture_.keyChain_.sign(*certificate, params);
     onData(ptr_lib::make_shared<Interest>(interest), certificate);
@@ -134,9 +135,9 @@ public:
     // Set SigningInfo.
     SigningInfo params(signer);
     // Validity period from 100 days before to 100 days after now.
-    MillisecondsSince1970 now = ndn_getNowMilliseconds();
+    auto now = system_clock::now();
     params.setValidityPeriod(ValidityPeriod
-      (now - 100 * 24 * 3600 * 1000.0, now + 100 * 24 * 3600 * 1000.0));
+      (now - hours(100 * 24), now + hours(100 * 24)));
     fixture_.keyChain_.sign(request, params);
     fixture_.keyChain_.addCertificate(key, request);
 
@@ -243,9 +244,8 @@ TEST_F(TestValidator, ExpiredCertificate)
     (*fixture_.subIdentity_->getDefaultKey()->getDefaultCertificate()));
   SigningInfo info(fixture_.identity_);
   // Validity period from 2 hours ago do 1 hour ago.
-  MillisecondsSince1970 now = ndn_getNowMilliseconds();
-  info.setValidityPeriod
-    (ValidityPeriod(now - 2 * 3600 * 1000, now - 3600 * 1000.0));
+  auto now = system_clock::now();
+  info.setValidityPeriod(ValidityPeriod(now - hours(2), now - hours(1)));
   fixture_.keyChain_.sign(*expiredCertificate, info);
   ASSERT_NO_THROW(CertificateV2(*expiredCertificate).wireEncode());
 
@@ -288,7 +288,7 @@ TEST_F(TestValidator, TrustedCertificateCaching)
   fixture_.face_.sentInterests_.clear();
 
   // Make the trusted cache simulate a time 2 hours later, after expiration.
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(2 * 3600 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(hours(2));
 
   validateExpectFailure(data, "Should try and fail to retrieve certificates");
   // There should be multiple expressed interests due to retries.
@@ -331,7 +331,7 @@ TEST_F(TestValidator, UntrustedCertificateCaching)
 
   // Make the trusted cache simulate a time 20 minutes later, to expire the
   // untrusted cache (which has a lifetime of 5 minutes).
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(20 * 60 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(minutes(20));
 
   // Disable responses from the simulated Face.
   fixture_.face_.processInterest_ = 0;
@@ -357,7 +357,7 @@ TEST_F(TestValidator, InfiniteCertificateChain)
   fixture_.face_.sentInterests_.clear();
 
   // Make the trusted cache simulate a time 5 hours later, after expiration.
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(5 * 3600 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(hours(5));
 
   fixture_.validator_.setMaxDepth(30);
   ASSERT_EQ(30, fixture_.validator_.getMaxDepth());
@@ -567,7 +567,7 @@ TEST_F(TestValidatorInterestOnly, ValidateInterestsButBypassForData)
   fixture_.face_.sentInterests_.clear();
 
   // Make the trusted cache simulate a time 2 hours later, after expiration.
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(2 * 3600 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(hours(2));
 
   interest = Interest(Name("/Security/V2/ValidatorFixture/Sub1/Sub2/Interest"));
   fixture_.keyChain_.sign(interest, SigningInfo(fixture_.subSelfSignedIdentity_));

@@ -35,8 +35,8 @@ namespace ndn {
 class CertificateStorage {
 public:
   CertificateStorage()
-  : verifiedCertificateCache_(3600 * 1000.0),
-    unverifiedCertificateCache_(300 * 1000.0)
+  : verifiedCertificateCache_(std::chrono::hours(1)),
+    unverifiedCertificateCache_(std::chrono::minutes(5))
   {
   }
 
@@ -108,9 +108,9 @@ public:
    * exists.
    * @param groupId The certificate group id, which must not be empty.
    * @param path The path to load the trust anchors.
-   * @param refreshPeriod  The refresh time in milliseconds for the anchors
-   * under path. This must be positive. The relevant trust anchors will only be
-   * updated when find is called.
+   * @param refreshPeriod  The refresh time for the anchors under path. This 
+   * must be positive. The relevant trust anchors will only be updated when find
+   * is called.
    * @param isDirectory (optional) If true, then path is a directory. If false
    * or omitted, it is a single file.
    * @throws std::invalid_argument If refreshPeriod is not positive.
@@ -119,7 +119,7 @@ public:
   void
   loadAnchor
     (const std::string& groupId, const std::string& path,
-     Milliseconds refreshPeriod, bool isDirectory = false)
+     std::chrono::nanoseconds refreshPeriod, bool isDirectory = false)
   {
     trustAnchors_.insert(groupId, path, refreshPeriod, isDirectory);
   }
@@ -149,13 +149,13 @@ public:
   /**
    * Set the offset when the cache insert() and refresh() get the current time,
    * which should only be used for testing.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setCacheNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
+  setCacheNowOffset_(std::chrono::nanoseconds nowOffset)
   {
-    verifiedCertificateCache_.setNowOffsetMilliseconds_(nowOffsetMilliseconds);
-    unverifiedCertificateCache_.setNowOffsetMilliseconds_(nowOffsetMilliseconds);
+    verifiedCertificateCache_.setNowOffset_(nowOffset);
+    unverifiedCertificateCache_.setNowOffset_(nowOffset);
   }
 
 private:

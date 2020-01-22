@@ -37,8 +37,6 @@ CLEANFILES = \
   examples/face-query-filter.pb.cc \
   examples/face-status.pb.cc \
   examples/fib-entry.pb.cc \
-  examples/repo-ng/repo-command-parameter.pb.cc \
-  examples/repo-ng/repo-command-response.pb.cc \
   examples/rib-entry.pb.cc \
   src/sync/sync-state.pb.cc \
   tools/usersync/content-meta-info.pb.cc
@@ -75,7 +73,7 @@ noinst_PROGRAMS = bin/test-channel-discovery bin/test-chrono-chat \
   bin/test-prefix-discovery \
   bin/test-publish-async-nfd bin/test-publish-async-nfd-lite \
   bin/test-register-route bin/test-sign-verify-data-hmac \
-  bin/analog-reading-consumer bin/basic-insertion bin/watched-insertion
+  bin/analog-reading-consumer
 
 # Public C headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_c_headers in include/Makefile.am.
@@ -147,7 +145,6 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/encrypt/encrypted-content.hpp \
   include/ndn-ind/encrypt/encryptor-v2.hpp \
   include/ndn-ind/in-memory-storage/in-memory-storage-retaining.hpp \
-  include/ndn-ind/lite/common-lite.hpp \
   include/ndn-ind/lite/control-parameters-lite.hpp \
   include/ndn-ind/lite/control-response-lite.hpp \
   include/ndn-ind/lite/data-lite.hpp \
@@ -598,16 +595,6 @@ bin_analog_reading_consumer_LDADD = libndn-ind.la
 
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
 bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la
-
-bin_basic_insertion_SOURCES = \
-  examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
-  examples/repo-ng/basic-insertion.cpp
-bin_basic_insertion_LDADD = libndn-ind.la
-
-bin_watched_insertion_SOURCES = \
-  examples/repo-ng/repo-command-parameter.pb.cc examples/repo-ng/repo-command-response.pb.cc \
-  examples/repo-ng/watched-insertion.cpp
-bin_watched_insertion_LDADD = libndn-ind.la
 
 bin_test_register_route_SOURCES = \
   examples/control-parameters.pb.cc examples/face-query-filter.pb.cc \

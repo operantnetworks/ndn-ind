@@ -30,6 +30,7 @@
 #include <ndn-ind/sync/psync-producer-base.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 INIT_LOGGER("ndn.PSyncProducerBase");
 
@@ -37,7 +38,7 @@ namespace ndn {
 
 PSyncProducerBase::PSyncProducerBase
   (size_t expectedNEntries, const Name& syncPrefix,
-   Milliseconds syncReplyFreshnessPeriod)
+   nanoseconds syncReplyFreshnessPeriod)
 : iblt_(new InvertibleBloomLookupTable(expectedNEntries)),
   expectedNEntries_(expectedNEntries),
   threshold_(expectedNEntries / 2),

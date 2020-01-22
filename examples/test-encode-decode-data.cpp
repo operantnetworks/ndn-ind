@@ -33,6 +33,7 @@
 #include <ndn-ind/generic-signature.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -200,8 +201,8 @@ static void dumpData(const Data& data)
       cout << "other code " << data.getMetaInfo().getOtherTypeCode() << endl;
   }
   cout << "metaInfo.freshnessPeriod (milliseconds): ";
-  if (data.getMetaInfo().getFreshnessPeriod() >= 0)
-    cout << data.getMetaInfo().getFreshnessPeriod() << endl;
+  if (data.getMetaInfo().getFreshnessPeriod().count() > 0)
+    cout << duration_cast<milliseconds>(data.getMetaInfo().getFreshnessPeriod()).count() << endl;
   else
     cout << "<none>" << endl;
   cout << "metaInfo.finalBlockId: "
@@ -314,7 +315,7 @@ int main(int argc, char** argv)
     ptr_lib::shared_ptr<Data> freshData(new Data(Name("/ndn/abc")));
     const uint8_t freshContent[] = "SUCCESS!";
     freshData->setContent(freshContent, sizeof(freshContent) - 1);
-    freshData->getMetaInfo().setFreshnessPeriod(5000);
+    freshData->getMetaInfo().setFreshnessPeriod(seconds(5));
     freshData->getMetaInfo().setFinalBlockId(Name("/%00%09")[0]);
     keyChain.sign(*freshData);
     cout << endl << "Freshly-signed Data:" << endl;
