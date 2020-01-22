@@ -70,11 +70,11 @@ onInterestValidationFailedWrapper
 ConfigPolicyManager::ConfigPolicyManager
   (const string& configFileName,
    const ptr_lib::shared_ptr<CertificateCache>& certificateCache,
-   int searchDepth, Milliseconds graceInterval, Milliseconds keyTimestampTtl,
+   int searchDepth, nanoseconds graceInterval, nanoseconds keyTimestampTtl,
    int maxTrackedKeys)
   : maxDepth_(searchDepth),
-    keyGraceInterval_((int64_t)graceInterval),
-    keyTimestampTtl_((int64_t)keyTimestampTtl),
+    keyGraceInterval_(graceInterval),
+    keyTimestampTtl_(keyTimestampTtl),
     maxTrackedKeys_(maxTrackedKeys)
 {
   isSecurityV1_ = true;
@@ -93,12 +93,12 @@ ConfigPolicyManager::ConfigPolicyManager
 ConfigPolicyManager::ConfigPolicyManager
   (const std::string& configFileName,
    const ptr_lib::shared_ptr<CertificateCacheV2>& certificateCache,
-   int searchDepth, Milliseconds graceInterval, Milliseconds keyTimestampTtl,
+   int searchDepth, nanoseconds graceInterval, nanoseconds keyTimestampTtl,
    int maxTrackedKeys)
   : certificateCacheV2_(certificateCache),
     maxDepth_(searchDepth),
-    keyGraceInterval_((int64_t)graceInterval),
-    keyTimestampTtl_((int64_t)keyTimestampTtl),
+    keyGraceInterval_(graceInterval),
+    keyTimestampTtl_(keyTimestampTtl),
     maxTrackedKeys_(maxTrackedKeys)
 {
   isSecurityV1_ = false;
@@ -489,7 +489,8 @@ ConfigPolicyManager::loadTrustAnchorCertificates()
       }
 
       // Convert refreshPeriod from seconds to milliseconds.
-      refreshManager_->addDirectory(dirName, refreshPeriod * 1000);
+      refreshManager_->addDirectory
+        (dirName, milliseconds((int64_t)refreshPeriod * 1000));
       continue;
     }
     else if (typeName == "any") {
@@ -849,7 +850,7 @@ ConfigPolicyManager::interestTimestampIsFresh
       ostringstream message;
       message <<
         "The command interest timestamp is not within the first use grace period of " <<
-        keyGraceInterval_.count() << " milliseconds.";
+        duration_cast<milliseconds>(keyGraceInterval_).count() << " milliseconds.";
       failureReason = message.str();
       return false;
     }
@@ -1029,7 +1030,7 @@ ConfigPolicyManager::TrustAnchorRefreshManager::getCertificateV2(Name certificat
 
 void
 ConfigPolicyManager::TrustAnchorRefreshManager::addDirectory
-  (const string& directoryName, Milliseconds refreshPeriod)
+  (const string& directoryName, nanoseconds refreshPeriod)
 {
   DIR *directory = ::opendir(directoryName.c_str());
   if (directory == NULL)
@@ -1084,7 +1085,8 @@ ConfigPolicyManager::TrustAnchorRefreshManager::addDirectory
   ::closedir(directory);
 
   refreshDirectories_[directoryName] = ptr_lib::make_shared<DirectoryInfo>
-    (certificateNames, system_clock::now() + milliseconds((int64_t)refreshPeriod),
+    (certificateNames,
+     system_clock::now() + duration_cast<system_clock::duration>(refreshPeriod),
      refreshPeriod);
 }
 
@@ -1095,7 +1097,7 @@ ConfigPolicyManager::TrustAnchorRefreshManager::refreshAnchors()
   // Save info in a list for calling addDirectory later so that it doesn't
   //   modify refreshDirectories_ while we are iterating.
   vector<string> directoriesToAdd;
-  vector<Milliseconds> refreshPeriodsToAdd;
+  vector<nanoseconds> refreshPeriodsToAdd;
 
   for (map<string, ptr_lib::shared_ptr<DirectoryInfo> >::iterator it =
         refreshDirectories_.begin(); it != refreshDirectories_.end(); ++it) {

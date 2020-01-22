@@ -150,7 +150,7 @@ public:
    * Create a dynamic trust anchor group.
    *
    * This loads all the certificates from the path and will refresh certificates
-   * every refreshPeriod milliseconds.
+   * every refreshPeriod.
    *
    * Note that refresh is not scheduled, but is performed upon each "find"
    * operations.
@@ -174,15 +174,15 @@ public:
    * @param path The file path for trust anchor(s), which could be a directory
    * or a file. If it is a directory, all the certificates in the directory will
    * be loaded.
-   * @param refreshPeriod  The refresh time in milliseconds for the anchors
-   * under path. This must be positive.
+   * @param refreshPeriod  The refresh time for the anchors under path. This
+   * must be positive.
    * @param isDirectory (optional) If true, then path is a directory. If false
    * or omitted, it is a single file.
    * @throws std::invalid_argument If refreshPeriod is not positive.
    */
   DynamicTrustAnchorGroup
     (CertificateContainerInterface& certificateContainer, const std::string& id,
-     const std::string& path, Milliseconds refreshPeriod,
+     const std::string& path, std::chrono::nanoseconds refreshPeriod,
      bool isDirectory = false);
 
   /**
@@ -197,8 +197,8 @@ private:
 
   bool isDirectory_;
   std::string path_;
-  Milliseconds refreshPeriod_;
-  Milliseconds expireTime_;
+  std::chrono::nanoseconds refreshPeriod_;
+  std::chrono::system_clock::time_point expireTime_;
 };
 
 }

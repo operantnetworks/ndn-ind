@@ -35,6 +35,7 @@
 #include <ndn-ind/security/v2/validation-policy-config.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -183,7 +184,7 @@ ValidationPolicyConfig::processConfigTrustAnchor
     if (!fileName)
       throw ValidatorConfigError("Expected <trust-anchor.file-name>");
 
-    Milliseconds refreshPeriod = getRefreshPeriod(configSection);
+    nanoseconds refreshPeriod = getRefreshPeriod(configSection);
     validator_->loadAnchor(*fileName, *fileName, refreshPeriod, false);
 
     return;
@@ -212,7 +213,7 @@ ValidationPolicyConfig::processConfigTrustAnchor
     if (!dirString)
       throw ValidatorConfigError("Expected <trust-anchor.dir>");
 
-    Milliseconds refreshPeriod = getRefreshPeriod(configSection);
+    nanoseconds refreshPeriod = getRefreshPeriod(configSection);
     validator_->loadAnchor(*dirString, *dirString, refreshPeriod, true);
 
     return;
@@ -223,13 +224,13 @@ ValidationPolicyConfig::processConfigTrustAnchor
     throw ValidatorConfigError("Unsupported trust-anchor.type");
 }
 
-Milliseconds
+nanoseconds
 ValidationPolicyConfig::getRefreshPeriod(const BoostInfoTree& configSection)
 {
   const string* refreshString = configSection.getFirstValue("refresh");
   if (!refreshString)
     // Return a large value (effectively no refresh).
-    return 1e14;
+    return milliseconds((int64_t)1e14);
 
   double refreshSeconds = 0;
   regex_lib::regex regex1("(\\d+)([hms])");
@@ -245,10 +246,10 @@ ValidationPolicyConfig::getRefreshPeriod(const BoostInfoTree& configSection)
 
   if (refreshSeconds == 0.0)
     // Use an hour instead of 0.
-    return 3600 * 1000.0;
+    return hours(1);
   else
     // Convert from seconds to milliseconds.
-    return refreshSeconds * 1000.0;
+    return milliseconds((int64_t)(refreshSeconds * 1000.0));
 }
 
 }

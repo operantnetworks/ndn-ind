@@ -32,6 +32,7 @@
 INIT_LOGGER("ndn.TrustAnchorGroup");
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -93,29 +94,30 @@ StaticTrustAnchorGroup::remove(const Name& certificateName)
 
 DynamicTrustAnchorGroup::DynamicTrustAnchorGroup
   (CertificateContainerInterface& certificateContainer, const string& id,
-   const string& path, Milliseconds refreshPeriod, bool isDirectory)
+   const string& path, nanoseconds refreshPeriod, bool isDirectory)
 : TrustAnchorGroup(certificateContainer, id),
   isDirectory_(isDirectory),
   path_(path),
   refreshPeriod_(refreshPeriod),
-  expireTime_(0)
+  expireTime_(seconds(0))
 {
-  if (refreshPeriod <= 0)
+  if (refreshPeriod.count() <= 0)
     throw runtime_error("Refresh period for the dynamic group must be positive");
 
   _LOG_TRACE("Create a dynamic trust anchor group " << id << " for file/dir " <<
-    path << " with refresh time " << refreshPeriod);
+    path << " with refresh time " << duration_cast<milliseconds>(refreshPeriod).count() <<
+    " ms");
   refresh();
 }
 
 void
 DynamicTrustAnchorGroup::refresh()
 {
-  Milliseconds now = ndn_getNowMilliseconds();
+  system_clock::time_point now = system_clock::now();
   if (expireTime_ > now)
     return;
 
-  expireTime_ = now + refreshPeriod_;
+  expireTime_ = now + duration_cast<system_clock::duration>(refreshPeriod_);
   _LOG_TRACE("Reloading the dynamic trust anchor group");
 
   // Save a copy of anchorNames_ .

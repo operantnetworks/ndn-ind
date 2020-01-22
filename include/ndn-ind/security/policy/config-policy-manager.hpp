@@ -74,12 +74,11 @@ public:
    * CertificateCache.
    * @param searchDepth (optional) The maximum number of links to follow when
    * verifying a certificate chain.
-   * @param graceInterval (optional) The window of time difference (in milliseconds)
+   * @param graceInterval (optional) The window of time difference
    * allowed between the timestamp of the first interest signed with a new
    * public key and the validation time. If omitted, use a default value.
    * @param keyTimestampTtl (optional) How long a public key's last-used
-   * timestamp is kept in the store (milliseconds). If omitted, use a default
-   * value.
+   * timestamp is kept in the store. If omitted, use a default value.
    * @param maxTrackedKeys (optional) The maximum number of public key use
    * timestamps to track. If omitted, use a default.
    */
@@ -87,7 +86,8 @@ public:
     (const std::string& configFileName = "",
      const ptr_lib::shared_ptr<CertificateCache>& certificateCache =
      ptr_lib::shared_ptr<CertificateCache>(), int searchDepth = 5,
-     Milliseconds graceInterval = 3000, Milliseconds keyTimestampTtl = 3600000,
+     std::chrono::nanoseconds graceInterval = std::chrono::seconds(3),
+     std::chrono::nanoseconds keyTimestampTtl = std::chrono::hours(1),
      int maxTrackedKeys = 1000);
 
   /**
@@ -100,20 +100,21 @@ public:
    * @param certificateCache A CertificateCacheV2 to hold known certificates.
    * @param searchDepth (optional) The maximum number of links to follow when
    * verifying a certificate chain.
-   * @param graceInterval (optional) The window of time difference (in milliseconds)
+   * @param graceInterval (optional) The window of time difference
    * allowed between the timestamp of the first interest signed with a new
    * public key and the validation time. If omitted, use a default value.
    * @param keyTimestampTtl (optional) How long a public key's last-used
-   * timestamp is kept in the store (milliseconds). If omitted, use a default
-   * value.
+   * timestamp is kept in the store. If omitted, use a default value.
    * @param maxTrackedKeys (optional) The maximum number of public key use
    * timestamps to track. If omitted, use a default.
    */
   ConfigPolicyManager
     (const std::string& configFileName,
      const ptr_lib::shared_ptr<CertificateCacheV2>& certificateCache,
-     int searchDepth = 5, Milliseconds graceInterval = 3000,
-     Milliseconds keyTimestampTtl = 3600000, int maxTrackedKeys = 1000);
+     int searchDepth = 5, 
+     std::chrono::nanoseconds graceInterval = std::chrono::seconds(3),
+     std::chrono::nanoseconds keyTimestampTtl = std::chrono::hours(1),
+     int maxTrackedKeys = 1000);
 
   /**
    * The virtual destructor.
@@ -287,7 +288,8 @@ private:
     getCertificateV2(Name certificateName) const;
 
     void
-    addDirectory(const std::string& directoryName, Milliseconds refreshPeriod);
+    addDirectory
+      (const std::string& directoryName, std::chrono::nanoseconds refreshPeriod);
 
     void
     refreshAnchors();
@@ -297,7 +299,8 @@ private:
     public:
       DirectoryInfo
         (const std::vector<std::string>& certificateNames,
-         std::chrono::system_clock::time_point nextRefresh, Milliseconds refreshPeriod)
+         std::chrono::system_clock::time_point nextRefresh, 
+         std::chrono::nanoseconds refreshPeriod)
       : certificateNames_(certificateNames), nextRefresh_(nextRefresh),
         refreshPeriod_(refreshPeriod)
       {
@@ -305,7 +308,7 @@ private:
 
       std::vector<std::string> certificateNames_;
       std::chrono::system_clock::time_point nextRefresh_;
-      Milliseconds refreshPeriod_;
+      std::chrono::nanoseconds refreshPeriod_;
     };
 
     bool isSecurityV1_;
@@ -516,8 +519,8 @@ private:
   ptr_lib::shared_ptr<CertificateCache> certificateCache_;
   ptr_lib::shared_ptr<CertificateCacheV2> certificateCacheV2_;
   int maxDepth_;
-  std::chrono::milliseconds keyGraceInterval_;
-  std::chrono::milliseconds keyTimestampTtl_;
+  std::chrono::nanoseconds keyGraceInterval_;
+  std::chrono::nanoseconds keyTimestampTtl_;
   int maxTrackedKeys_;
   // fixedCertificateCache_ stores the fixed-signer certificate name associated with
   //    validation rules so we don't keep loading from files.
