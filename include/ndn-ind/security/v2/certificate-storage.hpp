@@ -35,8 +35,8 @@ namespace ndn {
 class CertificateStorage {
 public:
   CertificateStorage()
-  : verifiedCertificateCache_(3600 * 1000.0),
-    unverifiedCertificateCache_(300 * 1000.0)
+  : verifiedCertificateCache_(std::chrono::hours(1)),
+    unverifiedCertificateCache_(std::chrono::minutes(5))
   {
   }
 

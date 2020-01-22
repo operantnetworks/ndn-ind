@@ -32,8 +32,8 @@ INIT_LOGGER("ndn.CertificateCacheV2");
 
 namespace ndn {
 
-CertificateCacheV2::CertificateCacheV2(Milliseconds maxLifetimeMilliseconds)
-: maxLifetimeMilliseconds_(maxLifetimeMilliseconds),
+CertificateCacheV2::CertificateCacheV2(nanoseconds maxLifetime)
+: maxLifetime_(maxLifetime),
   nextRefreshTime_(system_clock::time_point::max()),
   nowOffset_(0)
 {
@@ -52,7 +52,7 @@ CertificateCacheV2::insert(const CertificateV2& certificate)
   }
 
   auto removalTime =
-    min(notAfterTime, now + milliseconds((int64_t)maxLifetimeMilliseconds_));
+    min(notAfterTime, now + duration_cast<system_clock::duration>(maxLifetime_));
   if (removalTime < nextRefreshTime_)
     // We need to run refresh() sooner.)
     nextRefreshTime_ = removalTime;

@@ -23,6 +23,7 @@
 #include "validator-fixture.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -31,7 +32,7 @@ ValidatorFixture::ValidatorFixture
 : validator_(policy, ptr_lib::make_shared<CertificateFetcherFromNetwork>(face_)),
   policy_(policy),
   // Set maxLifetime to 100 days.
-  cache_(100 * 24 * 3600 * 1000.0)
+  cache_(hours(100 * 24))
 {
   face_.processInterest_ =
     bind(&ValidatorFixture::processInterestFromCache, this, _1, _2, _3, _4);

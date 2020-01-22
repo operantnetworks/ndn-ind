@@ -39,15 +39,14 @@ class CertificateCacheV2 {
 public:
   /**
    * Create a CertificateCacheV2.
-   * @param maxLifetimeMilliseconds (optional) The maximum time that
-   * certificates can live inside the cache, in milliseconds. If omitted, use
-   * getDefaultLifetime().
+   * @param maxLifetime (optional) The maximum time that certificates can live
+   * inside the cache. If omitted, use getDefaultLifetime().
    */
-  CertificateCacheV2(Milliseconds maxLifetimeMilliseconds = getDefaultLifetime());
+  CertificateCacheV2(std::chrono::nanoseconds maxLifetime = getDefaultLifetime());
 
   /**
    * Insert the certificate into the cache. The inserted certificate will be
-   * removed no later than its NotAfter time, or maxLifetimeMilliseconds given
+   * removed no later than its NotAfter time, or maxLifetime given
    * to the constructor.
    * @param certificate The certificate object, which is copied.
    */
@@ -95,10 +94,10 @@ public:
 
   /**
    * Get the default maximum lifetime (1 hour).
-   * @return The lifetime in milliseconds.
+   * @return The default lifetime.
    */
-  static Milliseconds
-  getDefaultLifetime() { return 3600.0 * 1000; }
+  static std::chrono::nanoseconds
+  getDefaultLifetime() { return std::chrono::hours(1); }
 
   /**
    * Set the offset when insert() and refresh() get the current time, which
@@ -158,7 +157,7 @@ private:
 
   std::map<Name, Entry> certificatesByName_;
   std::chrono::system_clock::time_point nextRefreshTime_;
-  Milliseconds maxLifetimeMilliseconds_;
+  std::chrono::nanoseconds maxLifetime_;
   std::chrono::nanoseconds nowOffset_;
 };
 
