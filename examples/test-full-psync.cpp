@@ -279,7 +279,7 @@ private:
   int nDataPrefixes_;
   int maxNPublished_;
   map<Name, int> nPublished_;
-  Milliseconds delayRangeMaxMs_;
+  double delayRangeMaxMs_;
 };
 
 int main(int argc, char** argv)

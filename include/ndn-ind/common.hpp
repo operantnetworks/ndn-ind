@@ -82,11 +82,6 @@ namespace ndn { namespace func_lib = boost; }
 namespace ndn {
 
 /**
- * A time interval represented as the number of milliseconds.
- */
-typedef double Milliseconds;
-
-/**
  * Write the hex representation of the bytes in array to the result.
  * @param array The array of bytes.
  * @param arrayLength The number of bytes in array.

@@ -280,7 +280,7 @@ private:
   FullPSync2017WithUsers fullPSync_;
   int nUserPrefixes_;
   int maxPublishedSequenceNo_;
-  Milliseconds delayRangeMaxMs_;
+  double delayRangeMaxMs_;
 };
 
 int main(int argc, char** argv)
