@@ -33,7 +33,7 @@ ValidationPolicyCommandInterest::ValidationPolicyCommandInterest
   (const ptr_lib::shared_ptr<ValidationPolicy>& innerPolicy, const Options& options)
 // This copies the options.
 : options_(options),
-  nowOffsetMilliseconds_(0)
+  nowOffset_(0)
 {
   if (!innerPolicy)
     throw invalid_argument("inner policy is missing");
@@ -71,8 +71,8 @@ ValidationPolicyCommandInterest::checkPolicy
 void
 ValidationPolicyCommandInterest::cleanUp()
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   auto expiring = now -  milliseconds((int64_t)options_.recordLifetime_);
 
   while ((container_.size() > 0 && container_[0]->lastRefreshed_ <= expiring) ||
@@ -113,8 +113,8 @@ ValidationPolicyCommandInterest::checkTimestamp
 {
   cleanUp();
 
-  // nowOffsetMilliseconds_ is only used for testing.
-  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   if (timestamp < now - milliseconds((int64_t)options_.gracePeriod_) ||
       timestamp > now + milliseconds((int64_t)options_.gracePeriod_)) {
     state->fail(ValidationError(ValidationError::POLICY_ERROR,
@@ -145,8 +145,8 @@ ValidationPolicyCommandInterest::insertNewRecord
   (const Interest& interest, const Name& keyName,
    system_clock::time_point timestamp)
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   ptr_lib::shared_ptr<LastTimestampRecord> newRecord
     (new LastTimestampRecord(keyName, timestamp, now));
 

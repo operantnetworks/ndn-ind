@@ -30,7 +30,7 @@ namespace ndn {
 class DelayedCallTable {
 public:
   DelayedCallTable()
-  : nowOffsetMilliseconds_(0)
+  : nowOffset_(0)
   {}
 
   /**
@@ -53,12 +53,12 @@ public:
   /**
    * Set the offset when insert() and refresh() get the current time, which
    * should only be used for testing.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
+  setNowOffset_(std::chrono::nanoseconds nowOffset)
   {
-    nowOffsetMilliseconds_ = nowOffsetMilliseconds;
+    nowOffset_ = nowOffset;
   }
 
 private:
@@ -108,7 +108,7 @@ private:
   // Use a deque so we can efficiently remove from the front.
   std::deque<ptr_lib::shared_ptr<Entry> > table_;
   Entry::Compare entryCompare_;
-  Milliseconds nowOffsetMilliseconds_;
+  std::chrono::nanoseconds nowOffset_;
 };
 
 }

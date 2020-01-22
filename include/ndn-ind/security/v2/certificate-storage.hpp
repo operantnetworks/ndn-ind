@@ -149,13 +149,13 @@ public:
   /**
    * Set the offset when the cache insert() and refresh() get the current time,
    * which should only be used for testing.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setCacheNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
+  setCacheNowOffset_(std::chrono::nanoseconds nowOffset)
   {
-    verifiedCertificateCache_.setNowOffsetMilliseconds_(nowOffsetMilliseconds);
-    unverifiedCertificateCache_.setNowOffsetMilliseconds_(nowOffsetMilliseconds);
+    verifiedCertificateCache_.setNowOffset_(nowOffset);
+    unverifiedCertificateCache_.setNowOffset_(nowOffset);
   }
 
 private:

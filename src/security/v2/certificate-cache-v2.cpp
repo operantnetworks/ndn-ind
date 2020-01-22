@@ -35,7 +35,7 @@ namespace ndn {
 CertificateCacheV2::CertificateCacheV2(Milliseconds maxLifetimeMilliseconds)
 : maxLifetimeMilliseconds_(maxLifetimeMilliseconds),
   nextRefreshTime_(system_clock::time_point::max()),
-  nowOffsetMilliseconds_(0)
+  nowOffset_(0)
 {
 }
 
@@ -43,8 +43,8 @@ void
 CertificateCacheV2::insert(const CertificateV2& certificate)
 {
   auto notAfterTime = certificate.getValidityPeriod().getNotAfter();
-  // nowOffsetMilliseconds_ is only used for testing.
-  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   if (notAfterTime < now) {
     _LOG_DEBUG("Not adding " << certificate.getName().toUri() <<
       ": already expired at " << DerNode::DerGeneralizedTime::toIsoString(notAfterTime));
@@ -117,8 +117,8 @@ CertificateCacheV2::deleteCertificate(const Name& certificateName)
 void
 CertificateCacheV2::refresh()
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   if (now < nextRefreshTime_)
     return;
 

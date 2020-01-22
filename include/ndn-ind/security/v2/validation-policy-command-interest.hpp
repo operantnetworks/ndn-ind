@@ -132,12 +132,12 @@ public:
   /**
    * Set the offset when insertNewRecord() and cleanUp() get the current time,
    * which should only be used for testing.
-   * @param nowOffsetMilliseconds The offset in milliseconds.
+   * @param nowOffset The offset.
    */
   void
-  setNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
+  setNowOffset_(std::chrono::nanoseconds nowOffset)
   {
-    nowOffsetMilliseconds_ = nowOffsetMilliseconds;
+    nowOffset_ = nowOffset;
   }
 
 private:
@@ -198,7 +198,7 @@ private:
 
   Options options_;
   std::vector<ptr_lib::shared_ptr<LastTimestampRecord> > container_;
-  Milliseconds nowOffsetMilliseconds_;
+  std::chrono::nanoseconds nowOffset_;
 };
 
 }

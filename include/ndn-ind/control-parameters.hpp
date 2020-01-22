@@ -27,6 +27,9 @@
 #include "encoding/wire-format.hpp"
 #include "lite/control-parameters-lite.hpp"
 
+using namespace std;
+using namespace std::chrono;
+
 namespace ndn {
 
 /**
@@ -38,7 +41,7 @@ class ControlParameters {
 public:
   ControlParameters()
   : hasName_(false), faceId_(-1), localControlFeature_(-1), origin_(-1), cost_(-1),
-    expirationPeriod_(-1.0)
+    expirationPeriod_(milliseconds(-1))
   {
   }
 
@@ -128,7 +131,7 @@ public:
   const Name&
   getStrategy() const { return strategy_; }
 
-  Milliseconds
+  std::chrono::nanoseconds
   getExpirationPeriod() const { return expirationPeriod_; }
 
   /**
@@ -241,12 +244,11 @@ public:
 
   /**
    * Set the expiration period.
-   * @param expirationPeriod The expiration period in milliseconds, or
-   * null for not specified.
+   * @param expirationPeriod The expiration period, or -1 ms for not specified.
    * @return This ControlParameters so that you can chain calls to update values.
    */
   ControlParameters&
-  setExpirationPeriod(Milliseconds expirationPeriod)
+  setExpirationPeriod(std::chrono::nanoseconds expirationPeriod)
   {
     expirationPeriod_ = expirationPeriod;
     return *this;
@@ -262,7 +264,7 @@ private:
   int cost_;                      /**< -1 for none. */
   RegistrationOptions flags_;
   Name strategy_;                 /**< empty for none. */
-  Milliseconds expirationPeriod_; /**< -1 for none. */
+  std::chrono::nanoseconds expirationPeriod_; /**< -1 ms for none. */
 };
 
 }

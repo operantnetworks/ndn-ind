@@ -288,7 +288,7 @@ TEST_F(TestValidator, TrustedCertificateCaching)
   fixture_.face_.sentInterests_.clear();
 
   // Make the trusted cache simulate a time 2 hours later, after expiration.
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(2 * 3600 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(hours(2));
 
   validateExpectFailure(data, "Should try and fail to retrieve certificates");
   // There should be multiple expressed interests due to retries.
@@ -331,7 +331,7 @@ TEST_F(TestValidator, UntrustedCertificateCaching)
 
   // Make the trusted cache simulate a time 20 minutes later, to expire the
   // untrusted cache (which has a lifetime of 5 minutes).
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(20 * 60 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(minutes(20));
 
   // Disable responses from the simulated Face.
   fixture_.face_.processInterest_ = 0;
@@ -357,7 +357,7 @@ TEST_F(TestValidator, InfiniteCertificateChain)
   fixture_.face_.sentInterests_.clear();
 
   // Make the trusted cache simulate a time 5 hours later, after expiration.
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(5 * 3600 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(hours(5));
 
   fixture_.validator_.setMaxDepth(30);
   ASSERT_EQ(30, fixture_.validator_.getMaxDepth());
@@ -567,7 +567,7 @@ TEST_F(TestValidatorInterestOnly, ValidateInterestsButBypassForData)
   fixture_.face_.sentInterests_.clear();
 
   // Make the trusted cache simulate a time 2 hours later, after expiration.
-  fixture_.validator_.setCacheNowOffsetMilliseconds_(2 * 3600 * 1000.0);
+  fixture_.validator_.setCacheNowOffset_(hours(2));
 
   interest = Interest(Name("/Security/V2/ValidatorFixture/Sub1/Sub2/Interest"));
   fixture_.keyChain_.sign(interest, SigningInfo(fixture_.subSelfSignedIdentity_));

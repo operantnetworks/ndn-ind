@@ -34,15 +34,15 @@ namespace ndn {
 CommandInterestPreparer::CommandInterestPreparer()
   // Fix to milliseconds.
 : lastUsedTimestamp_(duration_cast<milliseconds>(system_clock::now().time_since_epoch())),
-  nowOffsetMilliseconds_(0)
+  nowOffset_(0)
 {}
 
 void
 CommandInterestPreparer::prepareCommandInterestName
   (Interest& interest, WireFormat& wireFormat)
 {
-  // nowOffsetMilliseconds_ is only used for testing.
-  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
+  // nowOffset_ is only used for testing.
+  auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
   // Fix to milliseconds.
   system_clock::time_point timestamp(duration_cast<milliseconds>(now.time_since_epoch()));
   while (timestamp <= lastUsedTimestamp_)

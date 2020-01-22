@@ -38,6 +38,7 @@
 #include "encrypt-static-data.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -177,7 +178,7 @@ TEST_F(TestEncryptorV2, KekRetrievalFailure)
   // Check recovery.
   fixture_->publishData();
 
-  fixture_->face_.delayedCallTable_.setNowOffsetMilliseconds_(73000);
+  fixture_->face_.delayedCallTable_.setNowOffset_(seconds(73));
   fixture_->face_.processEvents();
 
   ptr_lib::shared_ptr<Data> kekData = fixture_->face_.sentData_[0];
