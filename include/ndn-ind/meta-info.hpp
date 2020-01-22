@@ -35,7 +35,7 @@ namespace ndn {
 class MetaInfo {
 public:
   MetaInfo()
-  : changeCount_(0), timestamp_(std::chrono::milliseconds(-1))
+  : timestamp_(std::chrono::milliseconds(-1)), changeCount_(0)
   {
     type_ = ndn_ContentType_BLOB;
     otherTypeCode_ = -1;
