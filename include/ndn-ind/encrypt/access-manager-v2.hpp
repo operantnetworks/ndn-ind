@@ -31,6 +31,11 @@ class TestAccessManagerV2_EnumerateDataFromInMemoryStorage_Test;
 
 namespace ndn {
 
+const std::chrono::nanoseconds DEFAULT_KEK_FRESHNESS_PERIOD =
+  std::chrono::hours(1);
+const std::chrono::nanoseconds DEFAULT_KDK_FRESHNESS_PERIOD =
+  std::chrono::hours(1);
+
 /**
  * AccessManagerV2 controls the decryption policy by publishing granular
  * per-namespace access policies in the form of key encryption
@@ -145,11 +150,6 @@ private:
     InMemoryStorageRetaining storage_;
     uint64_t kekRegisteredPrefixId_;
     uint64_t kdkRegisteredPrefixId_;
-
-    static constexpr std::chrono::nanoseconds DEFAULT_KEK_FRESHNESS_PERIOD =
-      std::chrono::hours(1);
-    static constexpr std::chrono::nanoseconds DEFAULT_KDK_FRESHNESS_PERIOD =
-      std::chrono::hours(1);
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

@@ -35,6 +35,9 @@ class TestEncryptorV2_EnumerateDataFromInMemoryStorage_Test;
 
 namespace ndn {
 
+const std::chrono::nanoseconds RETRY_DELAY_AFTER_NACK = std::chrono::seconds(1);
+const std::chrono::nanoseconds RETRY_DELAY_KEK_RETRIEVAL = std::chrono::minutes(1);
+
 /**
  * EncryptorV2 encrypts the requested content for name-based access control (NAC)
  * using security v2. For the meaning of "KEK", etc. see:
@@ -132,11 +135,6 @@ public:
 
   static const Name::Component&
   getNAME_COMPONENT_CK() { return getValues().NAME_COMPONENT_CK; }
-
-  static constexpr std::chrono::nanoseconds RETRY_DELAY_AFTER_NACK =
-    std::chrono::seconds(1);
-  static constexpr std::chrono::nanoseconds RETRY_DELAY_KEK_RETRIEVAL =
-    std::chrono::minutes(1);
 
   static const int AES_KEY_SIZE = 32;
   static const int AES_IV_SIZE = 16;

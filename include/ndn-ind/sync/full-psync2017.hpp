@@ -30,6 +30,11 @@
 
 namespace ndn {
 
+const std::chrono::nanoseconds DEFAULT_SYNC_INTEREST_LIFETIME =
+  std::chrono::seconds(1);
+const std::chrono::nanoseconds DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD =
+  std::chrono::seconds(1);
+
 class PSyncSegmentPublisher;
 
 /**
@@ -119,11 +124,6 @@ public:
   {
     impl_->removeName(name);
   }
-
-  static constexpr std::chrono::nanoseconds DEFAULT_SYNC_INTEREST_LIFETIME =
-    std::chrono::seconds(1);
-  static constexpr std::chrono::nanoseconds DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD =
-    std::chrono::seconds(1);
 
 private:
   /**

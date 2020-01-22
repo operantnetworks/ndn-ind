@@ -75,8 +75,8 @@ public:
   FullPSync2017WithUsers
     (size_t expectedNEntries, Face& face, const Name& syncPrefix,
      const Name& userPrefix, const OnUpdate& onUpdate, KeyChain& keyChain,
-     std::chrono::nanoseconds syncInterestLifetime = FullPSync2017::DEFAULT_SYNC_INTEREST_LIFETIME,
-     std::chrono::nanoseconds syncReplyFreshnessPeriod = FullPSync2017::DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
+     std::chrono::nanoseconds syncInterestLifetime = DEFAULT_SYNC_INTEREST_LIFETIME,
+     std::chrono::nanoseconds syncReplyFreshnessPeriod = DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
      const SigningInfo& signingInfo = SigningInfo())
   : impl_(new Impl(onUpdate))
   {
