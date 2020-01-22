@@ -327,13 +327,13 @@ public:
   /**
    * Call callback() after the given delay. This adds to delayedCallTable_ which
    * is used by processEvents().
-   * @param delayMilliseconds The delay in milliseconds.
+   * @param delay The delay.
    * @param callback This calls callback() after the delay.
    */
   void
-  callLater(Milliseconds delayMilliseconds, const Face::Callback& callback)
+  callLater(std::chrono::nanoseconds delay, const Face::Callback& callback)
   {
-    delayedCallTable_.callLater(delayMilliseconds, callback);
+    delayedCallTable_.callLater(delay, callback);
   }
 
   /**

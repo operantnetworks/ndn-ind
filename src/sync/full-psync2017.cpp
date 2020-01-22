@@ -44,7 +44,7 @@ namespace ndn {
 FullPSync2017::Impl::Impl
   (size_t expectedNEntries, Face& face, const Name& syncPrefix,
    const OnNamesUpdate& onNamesUpdate, KeyChain& keyChain,
-   nanoseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
+   nanoseconds syncInterestLifetime, nanoseconds syncReplyFreshnessPeriod,
    const SigningInfo& signingInfo, const CanAddToSyncData& canAddToSyncData,
    const CanAddReceivedName& canAddReceivedName)
 : PSyncProducerBase(expectedNEntries, syncPrefix, syncReplyFreshnessPeriod),
@@ -106,10 +106,11 @@ FullPSync2017::Impl::sendSyncInterest()
   float random1;
   CryptoLite::generateRandomFloat(random1);
   // Get a jitter of +/- syncInterestLifetime_ milliseconds * 0.2 .
-  double jitter = (random1 - 0.5) * (toMilliseconds(syncInterestLifetime_) * 0.2);
+  double lifetimeMilliseconds = toMilliseconds(syncInterestLifetime_);
+  double jitter = (random1 - 0.5) * (lifetimeMilliseconds * 0.2);
 
   face_.callLater
-    (toMilliseconds(syncInterestLifetime_) / 2 + jitter,
+    (fromMilliseconds(lifetimeMilliseconds / 2 + jitter),
      bind(&FullPSync2017::Impl::sendSyncInterest,
           static_pointer_cast<FullPSync2017::Impl>(shared_from_this())));
 
@@ -223,7 +224,7 @@ FullPSync2017::Impl::onSyncInterest
   ptr_lib::shared_ptr<PendingEntryInfoFull> entry(new PendingEntryInfoFull(iblt));
   pendingEntries_[interestName] = entry;
   face_.callLater
-    (interest->getInterestLifetimeMilliseconds(),
+    (interest->getInterestLifetime(),
      bind(&FullPSync2017::Impl::delayedRemovePendingEntry,
           static_pointer_cast<FullPSync2017::Impl>(shared_from_this()),
           interest->getName(), entry, interest->getNonce()));

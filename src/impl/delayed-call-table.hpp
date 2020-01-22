@@ -36,11 +36,11 @@ public:
   /**
    * Call callback() after the given delay. This adds to the delayed call
    * table which is used by callTimedOut().
-   * @param delayMilliseconds The delay in milliseconds.
+   * @param delay The delay.
    * @param callback This calls callback() after the delay.
    */
   void
-  callLater(Milliseconds delayMilliseconds, const Face::Callback& callback);
+  callLater(std::chrono::nanoseconds delay, const Face::Callback& callback);
 
   /**
    * Call and remove timed-out callback entries. Since callLater does a sorted
@@ -56,7 +56,7 @@ public:
    * @param nowOffsetMilliseconds The offset in milliseconds.
    */
   void
-  setNowOffsetMilliseconds_(ndn_Milliseconds nowOffsetMilliseconds)
+  setNowOffsetMilliseconds_(Milliseconds nowOffsetMilliseconds)
   {
     nowOffsetMilliseconds_ = nowOffsetMilliseconds;
   }
@@ -66,17 +66,17 @@ private:
   public:
     /**
      * Create a new DelayedCallTable::Entry and set the call time based on the
-     * current time and the delayMilliseconds.
-     * @param delayMilliseconds The delay in milliseconds.
+     * current time and the delay.
+     * @param delay The delay.
      * @param callback This calls callback() after the delay.
      */
-    Entry(ndn_Milliseconds delayMilliseconds, const Face::Callback& callback);
+    Entry(std::chrono::nanoseconds delay, const Face::Callback& callback);
 
     /**
      * Get the time at which the callback should be called.
-     * @return The call time in milliseconds, similar to ndn_getNowMilliseconds.
+     * @return The call time.
      */
-    ndn_MillisecondsSince1970
+    std::chrono::system_clock::time_point
     getCallTime() const { return callTime_; }
 
     /**
@@ -102,13 +102,13 @@ private:
 
   private:
     const Face::Callback callback_;
-    ndn_MillisecondsSince1970 callTime_;
+    std::chrono::system_clock::time_point callTime_;
   };
 
   // Use a deque so we can efficiently remove from the front.
   std::deque<ptr_lib::shared_ptr<Entry> > table_;
   Entry::Compare entryCompare_;
-  ndn_Milliseconds nowOffsetMilliseconds_;
+  Milliseconds nowOffsetMilliseconds_;
 };
 
 }

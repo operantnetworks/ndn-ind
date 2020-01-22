@@ -62,7 +62,7 @@ public:
 
   virtual void
   callLater
-    (ndn::Milliseconds delayMilliseconds, const ndn::Face::Callback& callback);
+    (std::chrono::nanoseconds delay, const ndn::Face::Callback& callback);
 
   virtual void
   processEvents();

@@ -60,7 +60,7 @@ public:
    * After this call, the MemoryContentCache must remain valid long enough to
    * respond to Interest for the published Data packets.
    * @param prefix The Name prefix for the published Data packets.
-   * @param freshnessPeriod The freshness period in milliseconds for the packets.
+   * @param freshnessPeriod The freshness period for the packets.
    * @param signingKeyChain This calls signingKeyChain.sign to sign the packets.
    * @param signingCertificateName The certificate name of the key used in
    * signingKeyChain.sign .
@@ -76,7 +76,7 @@ public:
   static void
   publish
     (ndn::MemoryContentCache& contentCache, const ndn::Name& prefix,
-     ndn::Milliseconds freshnessPeriod, ndn::KeyChain* signingKeyChain,
+     std::chrono::nanoseconds freshnessPeriod, ndn::KeyChain* signingKeyChain,
      const ndn::Name& signingCertificateName, const ContentMetaInfo& metaInfo,
      const ndn::Blob& content, size_t contentSegmentSize);
 

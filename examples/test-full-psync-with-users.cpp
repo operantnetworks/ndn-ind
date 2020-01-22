@@ -222,7 +222,7 @@ public:
     fullPSync_
       (80, face_, syncPrefix, Name(),
        bind(&Producer::processSyncUpdate, this, _1), keyChain, milliseconds(1600),
-       1600),
+       milliseconds(1600)),
     nUserPrefixes_(nUserPrefixes),
     maxPublishedSequenceNo_(maxPublishedSequenceNo),
     delayRangeMaxMs_(6000.0)
@@ -238,7 +238,7 @@ public:
       // random1 is from 0.0 to 1.0.
       float random1;
       CryptoLite::generateRandomFloat(random1);
-      Milliseconds delay = random1 * delayRangeMaxMs_;
+      milliseconds delay((int64_t)(random1 * delayRangeMaxMs_));
 
       face_.callLater(delay, bind(&Producer::doUpdate, this, prefix));
     }
@@ -257,7 +257,7 @@ private:
       // random1 is from 0.0 to 1.0.
       float random1;
       CryptoLite::generateRandomFloat(random1);
-      Milliseconds delay = random1 * delayRangeMaxMs_;
+      milliseconds delay((int64_t)(random1 * delayRangeMaxMs_));
 
       face_.callLater(delay, bind(&Producer::doUpdate, this, prefix));
     }

@@ -56,7 +56,7 @@ public:
    * onError(errorCode, message) where errorCode is from the
    * EncryptError::ErrorCode enum, and message is an error string. The encrypt
    * method will continue trying to retrieve the KEK until success (with each
-   * attempt separated by RETRY_DELAY_KEK_RETRIEVAL_MS) and onError may be
+   * attempt separated by RETRY_DELAY_KEK_RETRIEVAL) and onError may be
    * called multiple times.
    * NOTE: The library will log any exceptions thrown by this callback, but for
    * better error handling the callback should catch and properly handle any
@@ -133,8 +133,10 @@ public:
   static const Name::Component&
   getNAME_COMPONENT_CK() { return getValues().NAME_COMPONENT_CK; }
 
-  static const uint64_t RETRY_DELAY_AFTER_NACK_MS = 1000;
-  static const uint64_t RETRY_DELAY_KEK_RETRIEVAL_MS = 60 * 1000;
+  static constexpr std::chrono::nanoseconds RETRY_DELAY_AFTER_NACK =
+    std::chrono::seconds(1);
+  static constexpr std::chrono::nanoseconds RETRY_DELAY_KEK_RETRIEVAL =
+    std::chrono::minutes(1);
 
   static const int AES_KEY_SIZE = 32;
   static const int AES_IV_SIZE = 16;
@@ -277,7 +279,8 @@ private:
     KeyChain* keyChain_;
     Face* face_;
 
-    static const uint64_t DEFAULT_CK_FRESHNESS_PERIOD_MS = 3600 * 1000;
+    static constexpr std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD =
+      std::chrono::hours(1);
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

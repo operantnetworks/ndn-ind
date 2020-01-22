@@ -67,8 +67,7 @@ public:
    * @param syncInterestLifetime (optional) The Interest lifetime for the sync
    * Interests. If omitted, use DEFAULT_SYNC_INTEREST_LIFETIME.
    * @param syncReplyFreshnessPeriod (optional) The freshness period of the sync
-   * Data packet, in milliseconds. If omitted, use
-   * DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD.
+   * Data packet. If omitted, use DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD.
    * @param signingInfo (optional) The SigningInfo for signing Data packets,
    * which is copied. If omitted, use the default SigningInfo().
    * @param canAddToSyncData (optional) When a new IBLT is received in a sync
@@ -88,7 +87,7 @@ public:
     (size_t expectedNEntries, Face& face, const Name& syncPrefix,
      const OnNamesUpdate& onNamesUpdate, KeyChain& keyChain,
      std::chrono::nanoseconds syncInterestLifetime = DEFAULT_SYNC_INTEREST_LIFETIME,
-     Milliseconds syncReplyFreshnessPeriod = DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
+     std::chrono::nanoseconds syncReplyFreshnessPeriod = DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
      const SigningInfo& signingInfo = SigningInfo(),
      const CanAddToSyncData& canAddToSyncData = CanAddToSyncData(),
      const CanAddReceivedName& canAddReceivedName = CanAddReceivedName())
@@ -123,7 +122,8 @@ public:
 
   static constexpr std::chrono::nanoseconds DEFAULT_SYNC_INTEREST_LIFETIME =
     std::chrono::seconds(1);
-  static const int DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD = 1000;
+  static constexpr std::chrono::nanoseconds DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD =
+    std::chrono::seconds(1);
 
 private:
   /**
@@ -141,7 +141,8 @@ private:
     Impl
       (size_t expectedNEntries, Face& face, const Name& syncPrefix,
        const OnNamesUpdate& onNamesUpdate, KeyChain& keyChain,
-       std::chrono::nanoseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
+       std::chrono::nanoseconds syncInterestLifetime, 
+       std::chrono::nanoseconds syncReplyFreshnessPeriod,
        const SigningInfo& signingInfo, const CanAddToSyncData& canAddToSyncData,
        const CanAddReceivedName& canAddReceivedName);
 

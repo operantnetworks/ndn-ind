@@ -47,14 +47,13 @@ public:
    * is normal if this list only has one prefix.)
    * @param face The Face for calling expressInterest to request the list of
    * prefixes. Usually the Face should be connected to the local NFD.
-   * @param periodMilliseconds (optional) The period in milliseconds between
-   * each interest to request the current list of prefixes. If omitted, use the
-   * default 60000 (one minute).
+   * @param period (optional) The period between each interest to request the
+   * current list of prefixes. If omitted, use the default one minute.
    */
   PrefixDiscovery
     (OnPrefixes onPrefixes, ndn::Face* face,
-     ndn::Milliseconds periodMilliseconds = 60000.0)
-  : impl_(new Impl(onPrefixes, face, periodMilliseconds))
+     std::chrono::nanoseconds period = std::chrono::minutes(1))
+  : impl_(new Impl(onPrefixes, face, period))
   {
   }
 
@@ -83,9 +82,9 @@ private:
   class Impl : public ndn::ptr_lib::enable_shared_from_this<Impl> {
   public:
     Impl(OnPrefixes onPrefixes, ndn::Face* face,
-         ndn::Milliseconds periodMilliseconds)
+         std::chrono::nanoseconds period)
     : onPrefixes_(onPrefixes), face_(face),
-      periodMilliseconds_(periodMilliseconds), isEnabled_(false)
+      period_(period), isEnabled_(false)
     {
     }
 
@@ -116,7 +115,7 @@ private:
 
     OnPrefixes onPrefixes_;
     ndn::Face* face_;
-    ndn::Milliseconds periodMilliseconds_;
+    std::chrono::nanoseconds period_;
     std::vector<ndn::Name> prefixes_;
     bool isEnabled_;
   };

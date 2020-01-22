@@ -23,13 +23,14 @@
 #include "psync-segment-publisher.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
 void
 PSyncSegmentPublisher::publish
   (const Name& interestName, const Name& dataName, Blob content,
-   Milliseconds freshnessPeriod, const SigningInfo& signingInfo)
+   nanoseconds freshnessPeriod, const SigningInfo& signingInfo)
 {
   uint64_t interestSegment = 0;
   if (interestName[-1].isSegment())

@@ -24,14 +24,15 @@
 #include "delayed-call-table.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
 void
 DelayedCallTable::callLater
-  (Milliseconds delayMilliseconds, const Face::Callback& callback)
+  (nanoseconds delay, const Face::Callback& callback)
 {
-  ptr_lib::shared_ptr<Entry> entry(new Entry(delayMilliseconds, callback));
+  ptr_lib::shared_ptr<Entry> entry(new Entry(delay, callback));
   // Insert into table_, sorted on getCallTime().
   table_.insert
     (lower_bound(table_.begin(), table_.end(), entry, entryCompare_), entry);
@@ -40,8 +41,8 @@ DelayedCallTable::callLater
 void
 DelayedCallTable::callTimedOut()
 {
-    // nowOffsetMilliseconds_ is only used for testing.
-  ndn_MillisecondsSince1970 now = ndn_getNowMilliseconds() + nowOffsetMilliseconds_;
+  // nowOffsetMilliseconds_ is only used for testing.
+  auto now = system_clock::now() + milliseconds((int64_t)nowOffsetMilliseconds_);
   // table_ is sorted on _callTime, so we only need to process the timed-out
   // entries at the front, then quit.
   while (table_.size() > 0 && table_.front()->getCallTime() <= now) {
@@ -52,9 +53,9 @@ DelayedCallTable::callTimedOut()
 }
 
 DelayedCallTable::Entry::Entry
-  (ndn_Milliseconds delayMilliseconds, const Face::Callback& callback)
+  (nanoseconds delay, const Face::Callback& callback)
   : callback_(callback),
-    callTime_(ndn_getNowMilliseconds() + delayMilliseconds)
+    callTime_(system_clock::now() + duration_cast<system_clock::duration>(delay))
 {
 }
 

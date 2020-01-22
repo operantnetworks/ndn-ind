@@ -38,6 +38,7 @@
 #include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 static double
@@ -224,7 +225,7 @@ benchmarkEncodeDataSecondsCpp
     Data data(name);
     data.setContent(content);
     if (useComplex) {
-      data.getMetaInfo().setFreshnessPeriod(1000);
+      data.getMetaInfo().setFreshnessPeriod(seconds(1));
       data.getMetaInfo().setFinalBlockId(finalBlockId);
     }
 

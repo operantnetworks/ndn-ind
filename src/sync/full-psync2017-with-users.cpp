@@ -50,7 +50,7 @@ void
 FullPSync2017WithUsers::Impl::initialize
   (size_t expectedNEntries, Face& face, const Name& syncPrefix,
    const Name& userPrefix, KeyChain& keyChain, nanoseconds syncInterestLifetime,
-   Milliseconds syncReplyFreshnessPeriod, const SigningInfo& signingInfo)
+   nanoseconds syncReplyFreshnessPeriod, const SigningInfo& signingInfo)
 {
   fullPSync_ = ptr_lib::make_shared<FullPSync2017>
     (expectedNEntries, face, syncPrefix,

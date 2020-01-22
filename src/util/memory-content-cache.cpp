@@ -33,9 +33,9 @@ INIT_LOGGER("ndn.MemoryContentCache");
 namespace ndn {
 
 MemoryContentCache::Impl::Impl
-  (Face* face, Milliseconds cleanupIntervalMilliseconds)
-: face_(face), cleanupIntervalMilliseconds_(cleanupIntervalMilliseconds),
-  nextCleanupTime_(system_clock::now() + milliseconds((int64_t)cleanupIntervalMilliseconds)),
+  (Face* face, nanoseconds cleanupInterval)
+: face_(face), cleanupInterval_(cleanupInterval),
+  nextCleanupTime_(system_clock::now() + duration_cast<system_clock::duration>(cleanupInterval)),
   isDoingCleanup_(false), minimumCacheLifetime_(0)
 {
 }
@@ -109,7 +109,7 @@ MemoryContentCache::Impl::add(const Data& data)
   auto now = system_clock::now();
   doCleanup(now);
 
-  if (data.getMetaInfo().getFreshnessPeriod() >= 0.0) {
+  if (data.getMetaInfo().getFreshnessPeriod().count() >= 0.0) {
     // The content will go stale, so use staleTimeCache_.
     ptr_lib::shared_ptr<const StaleTimeContent> content
       (new StaleTimeContent(data, now, minimumCacheLifetime_));
@@ -320,7 +320,7 @@ MemoryContentCache::Impl::doCleanup(system_clock::time_point now)
       staleTimeCache_.erase(staleTimeCache_.begin());
     }
 
-    nextCleanupTime_ = now + milliseconds((int64_t)cleanupIntervalMilliseconds_);
+    nextCleanupTime_ = now + duration_cast<system_clock::duration>(cleanupInterval_);
   }
 
   if (onContentRemoved_ && contentList) {
@@ -338,14 +338,14 @@ MemoryContentCache::Impl::doCleanup(system_clock::time_point now)
 
 MemoryContentCache::Impl::StaleTimeContent::StaleTimeContent
   (const Data& data, system_clock::time_point now,
-   Milliseconds minimumCacheLifetime)
+   nanoseconds minimumCacheLifetime)
 // wireEncode returns the cached encoding if available.
 : Content(data)
 {
-  cacheRemovalTime_ = now + milliseconds((int64_t)
-    max(data.getMetaInfo().getFreshnessPeriod(), minimumCacheLifetime));
-  freshnessExpiryTime_ = now +  milliseconds((int64_t)
-    data.getMetaInfo().getFreshnessPeriod());
+  cacheRemovalTime_ = now + duration_cast<system_clock::duration>
+    (max(data.getMetaInfo().getFreshnessPeriod(), minimumCacheLifetime));
+  freshnessExpiryTime_ = now + duration_cast<system_clock::duration>
+    (data.getMetaInfo().getFreshnessPeriod());
 }
 
 MemoryContentCache::PendingInterest::PendingInterest

@@ -58,14 +58,15 @@ public:
    * send the Data packet for the segment to the Face.
    * @param dataName The Data name, which has components after the Interest name.
    * @param content The content of the data to be segmented.
-   * @param freshnessPeriod The freshness period of the segments, in milliseconds.
+   * @param freshnessPeriod The freshness period of the segments.
    * @param signingInfo (optional) The SigningInfo for signing segment Data
    * packets. If omitted, use the default SigningInfo().
    */
   void
   publish
     (const Name& interestName, const Name& dataName, Blob content,
-     Milliseconds freshnessPeriod, const SigningInfo& signingInfo = SigningInfo());
+     std::chrono::nanoseconds freshnessPeriod,
+     const SigningInfo& signingInfo = SigningInfo());
 
   /**
    * Try to reply to the Interest name from the memory store.

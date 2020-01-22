@@ -54,7 +54,7 @@ CertificateV2::checkFormat()
   if (getMetaInfo().getType() != ndn_ContentType_KEY)
     throw Error("The Data ContentType is not KEY");
 
-  if (getMetaInfo().getFreshnessPeriod() < 0.0)
+  if (getMetaInfo().getFreshnessPeriod().count() < 0)
     throw Error("The Data FreshnessPeriod is not set");
 
   if (getContent().size() == 0)

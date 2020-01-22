@@ -178,7 +178,7 @@ TEST_F(TestCertificate, Setters)
 {
   CertificateV2 certificate;
   certificate.setName("/ndn/site1/KEY/ksk-1416425377094/0123/%FD%00%00%01I%C9%8B");
-  certificate.getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+  certificate.getMetaInfo().setFreshnessPeriod(hours(1));
   certificate.setContent(Blob(PUBLIC_KEY, sizeof(PUBLIC_KEY)));
   certificate.setSignature(generateFakeSignature());
 
@@ -204,7 +204,7 @@ TEST_F(TestCertificate, ValidityPeriodChecking)
   CertificateV2 certificate;
   certificate.setName
     (Name("/ndn/site1/KEY/ksk-1416425377094/0123/%FD%00%00%01I%C9%8B"));
-  certificate.getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+  certificate.getMetaInfo().setFreshnessPeriod(hours(1));
   certificate.setContent(Blob(PUBLIC_KEY, sizeof(PUBLIC_KEY)));
   certificate.setSignature(generateFakeSignature());
 

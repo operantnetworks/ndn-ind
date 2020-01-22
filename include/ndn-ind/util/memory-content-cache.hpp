@@ -41,14 +41,15 @@ public:
    * Create a new MemoryContentCache to use the given Face.
    * @param face The Face to use to call registerPrefix and setInterestFilter,
    * and which will call this object's OnInterest callback.
-   * @param cleanupIntervalMilliseconds (optional) The interval in milliseconds
-   * between each check to clean up stale content in the cache. If omitted,
-   * use a default of 1000 milliseconds. If this is a large number, then
-   * effectively the stale content will not be removed from the cache.
+   * @param cleanupInterval (optional) The interval between each
+   * check to clean up stale content in the cache. If omitted, use a default of
+   * 1 second. If this is a large number, then effectively the stale content
+   * will not be removed from the cache.
    */
   MemoryContentCache
-    (Face* face, Milliseconds cleanupIntervalMilliseconds = 1000.0)
-  : impl_(new Impl(face, cleanupIntervalMilliseconds))
+    (Face* face, 
+     std::chrono::nanoseconds cleanupInterval = std::chrono::seconds(1))
+  : impl_(new Impl(face, cleanupInterval))
   {
     impl_->initialize();
   }
@@ -311,8 +312,8 @@ public:
    * negative, set the staleness time to now plus the maximum of
    * data.getMetaInfo().getFreshnessPeriod() and minimumCacheLifetime, which is
    * checked during cleanup to remove stale content.
-   * This also checks if cleanupIntervalMilliseconds
-   * milliseconds have passed and removes stale content from the cache. After
+   * This also checks if the cleanupInterval has passed and
+   * removes stale content from the cache. After
    * removing stale content, remove timed-out pending interests from
    * storePendingInterest(), then if the added Data packet satisfies any
    * interest, send it through the transport and remove the interest from the
@@ -413,9 +414,9 @@ public:
 
   /**
    * Get the minimum lifetime before removing stale content from the cache.
-   * @return The minimum cache lifetime in milliseconds.
+   * @return The minimum cache lifetime.
    */
-  Milliseconds
+  std::chrono::nanoseconds
   getMinimumCacheLifetime() { return impl_->getMinimumCacheLifetime(); }
 
   /**
@@ -424,10 +425,10 @@ public:
    * info. This can be useful for matching interests where MustBeFresh is false.
    * The default minimum cache lifetime is zero, meaning that content is removed
    * when its lifetime expires.
-   * @param minimumCacheLifetime The minimum cache lifetime in milliseconds.
+   * @param minimumCacheLifetime The minimum cache lifetime.
    */
   void
-  setMinimumCacheLifetime(Milliseconds minimumCacheLifetime)
+  setMinimumCacheLifetime(std::chrono::nanoseconds minimumCacheLifetime)
   {
     impl_->setMinimumCacheLifetime(minimumCacheLifetime);
   }
@@ -445,7 +446,7 @@ private:
      * call initialize().  See the MemoryContentCache constructor for parameter
      * documentation.
      */
-    Impl(Face* face, Milliseconds cleanupIntervalMilliseconds);
+    Impl(Face* face, std::chrono::nanoseconds cleanupInterval);
 
     /**
      * Complete the work of the constructor. This is needed because we can't
@@ -498,11 +499,11 @@ private:
       onContentRemoved_ = onContentRemoved;
     }
 
-    Milliseconds
+    std::chrono::nanoseconds
     getMinimumCacheLifetime() { return minimumCacheLifetime_; }
 
     void
-    setMinimumCacheLifetime(Milliseconds minimumCacheLifetime)
+    setMinimumCacheLifetime(std::chrono::nanoseconds minimumCacheLifetime)
     {
       minimumCacheLifetime_ = minimumCacheLifetime;
     }
@@ -510,7 +511,7 @@ private:
     /**
      * This is the OnInterestCallback which is called when the library receives
      * an interest whose name has the prefix given to registerPrefix. First
-     * check if cleanupIntervalMilliseconds milliseconds have passed and remove
+     * check if the cleanupInterval has passed and remove
      * stale content from the cache. Then search the cache for the Data packet,
      * matching any interest selectors including ChildSelector, and send the
      * Data packet to the transport. If no matching Data packet is in the cache,
@@ -537,11 +538,11 @@ private:
        * minimumCacheLifetime.
        * @param data The Data packet whose name and wire encoding are copied.
        * @param now The current time from system_clock::now().
-       * @param minimumCacheLifetime The minimum cache lifetime in milliseconds.
+       * @param minimumCacheLifetime The minimum cache lifetime.
        */
       StaleTimeContent
         (const Data& data, std::chrono::system_clock::time_point now,
-         Milliseconds minimumCacheLifetime);
+         std::chrono::nanoseconds minimumCacheLifetime);
 
       /**
        * Check if this content is stale and should be removed from the cache,
@@ -593,7 +594,7 @@ private:
     /**
      * Check if now is greater than nextCleanupTime_ and, if so, remove stale
      * content from staleTimeCache_ and reset nextCleanupTime_ based on
-     * cleanupIntervalMilliseconds_. Since add(Data) does a sorted insert into
+     * cleanupInterval_. Since add(Data) does a sorted insert into
      * staleTimeCache_, the check for stale data is quick and does not require
      * searching the entire staleTimeCache_. If onContentRemoved_ is defined,
      * this calls onContentRemoved_(content) for the removed content.
@@ -618,7 +619,7 @@ private:
     }
 
     Face* face_;
-    Milliseconds cleanupIntervalMilliseconds_;
+    std::chrono::nanoseconds cleanupInterval_;
     std::chrono::system_clock::time_point nextCleanupTime_;
     std::map<std::string, OnInterestCallback> onDataNotFoundForPrefix_; /**< The map key is the prefix.toUri() */
     std::vector<uint64_t> interestFilterIdList_;
@@ -632,7 +633,7 @@ private:
     OnInterestCallback storePendingInterestCallback_;
     OnContentRemoved onContentRemoved_;
     bool isDoingCleanup_;
-    Milliseconds minimumCacheLifetime_;
+    std::chrono::nanoseconds minimumCacheLifetime_;
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

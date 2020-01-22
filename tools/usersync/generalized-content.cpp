@@ -38,7 +38,7 @@ namespace ndntools {
 void
 GeneralizedContent::publish
   (MemoryContentCache& contentCache, const Name& prefix,
-   Milliseconds freshnessPeriod, KeyChain* signingKeyChain,
+   nanoseconds freshnessPeriod, KeyChain* signingKeyChain,
    const Name& signingCertificateName, const ContentMetaInfo& metaInfo,
    const Blob& content, size_t contentSegmentSize)
 {

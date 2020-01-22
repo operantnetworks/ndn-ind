@@ -96,7 +96,7 @@ SafeBag::makeSelfSignedCertificate
   // Set the MetaInfo.
   certificate->getMetaInfo().setType(ndn_ContentType_KEY);
   // Set a one-hour freshness period.
-  certificate->getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+  certificate->getMetaInfo().setFreshnessPeriod(hours(1));
 
   // Set the content.
   PublicKey publicKey(publicKeyEncoding);

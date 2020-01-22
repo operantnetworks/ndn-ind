@@ -109,7 +109,7 @@ public:
     // Set the MetaInfo.
     certificate->getMetaInfo().setType(ndn_ContentType_KEY);
     // Set the freshness period to one hour.
-    certificate->getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+    certificate->getMetaInfo().setFreshnessPeriod(hours(1));
 
     // Set the content.
     certificate->setContent(requestedKey->getPublicKey());

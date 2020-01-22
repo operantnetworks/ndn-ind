@@ -36,6 +36,7 @@
 #include "../../src/lp/lp-packet.hpp"
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -311,8 +312,8 @@ dumpData(const Data& data)
        "unknown")));
   }
   result.push_back(dump("metaInfo.freshnessPeriod (milliseconds):",
-    data.getMetaInfo().getFreshnessPeriod() >= 0 ?
-      toString(data.getMetaInfo().getFreshnessPeriod()) : string("<none>")));
+    data.getMetaInfo().getFreshnessPeriod().count() >= 0 ?
+      toString(duration_cast<milliseconds>(data.getMetaInfo().getFreshnessPeriod()).count()) : string("<none>")));
   result.push_back(dump("metaInfo.finalBlockId:",
     data.getMetaInfo().getFinalBlockId().getValue().size() > 0 ?
       data.getMetaInfo().getFinalBlockId().toEscapedString() : "<none>"));
@@ -479,7 +480,7 @@ public:
     ptr_lib::shared_ptr<Data> freshData(new Data(Name("/ndn/abc")));
     const uint8_t freshContent[] = "SUCCESS!";
     freshData->setContent(freshContent, sizeof(freshContent) - 1);
-    freshData->getMetaInfo().setFreshnessPeriod(5000);
+    freshData->getMetaInfo().setFreshnessPeriod(seconds(5));
     freshData->getMetaInfo().setFinalBlockId(Name("/%00%09")[0]);
 
     return freshData;

@@ -120,7 +120,7 @@ IdentityManagementFixture::addCertificate
   // Set the MetaInfo.
   certificate->getMetaInfo().setType(ndn_ContentType_KEY);
   // One hour.
-  certificate->getMetaInfo().setFreshnessPeriod(3600 * 1000.);
+  certificate->getMetaInfo().setFreshnessPeriod(hours(1));
 
   // Set the content.
   certificate->setContent(key->getPublicKey());

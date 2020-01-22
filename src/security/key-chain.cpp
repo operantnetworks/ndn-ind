@@ -408,7 +408,7 @@ KeyChain::selfSign(ptr_lib::shared_ptr<PibKey>& key, WireFormat& wireFormat)
   // Set the MetaInfo.
   certificate->getMetaInfo().setType(ndn_ContentType_KEY);
   // Set a one-hour freshness period.
-  certificate->getMetaInfo().setFreshnessPeriod(3600 * 1000.0);
+  certificate->getMetaInfo().setFreshnessPeriod(hours(1));
 
   // Set the content.
   certificate->setContent(key->getPublicKey());

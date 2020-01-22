@@ -100,8 +100,7 @@ PrefixDiscovery::Impl::onData
   }
 
   face_->callLater
-    (periodMilliseconds_,
-     bind(&PrefixDiscovery::Impl::express, shared_from_this()));
+    (period_, bind(&PrefixDiscovery::Impl::express, shared_from_this()));
 }
 
 void
@@ -112,8 +111,7 @@ PrefixDiscovery::Impl::onTimeout
      interest->getName().toUri());
 
   face_->callLater
-    (periodMilliseconds_,
-     bind(&PrefixDiscovery::Impl::express, shared_from_this()));
+    (period_, bind(&PrefixDiscovery::Impl::express, shared_from_this()));
 }
 
 }

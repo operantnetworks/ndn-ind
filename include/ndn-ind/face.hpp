@@ -691,11 +691,11 @@ public:
    * Call callback() after the given delay. Even though this is public,
    * it is not part of the public API of Face. This default implementation just
    * calls Node::callLater, but a subclass can override.
-   * @param delayMilliseconds The delay in milliseconds.
+   * @param delay The delay.
    * @param callback This calls callback.callback() after the delay.
    */
   virtual void
-  callLater(Milliseconds delayMilliseconds, const Callback& callback);
+  callLater(std::chrono::nanoseconds delay, const Callback& callback);
 
 protected:
   /**

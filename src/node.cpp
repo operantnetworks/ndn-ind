@@ -511,14 +511,13 @@ Node::expressInterestHelper
 
   if (onTimeout || interestCopy->getInterestLifetime().count() >= 0) {
     // Set up the timeout.
-    auto delayMilliseconds = interestCopy->getInterestLifetime();
-    if (delayMilliseconds.count() < 0)
+    auto delay = interestCopy->getInterestLifetime();
+    if (delay.count() < 0)
       // Use a default timeout delay.
-      delayMilliseconds = seconds(4);
+      delay = seconds(4);
 
     face->callLater
-      (toMilliseconds(delayMilliseconds),
-       bind(&Node::processInterestTimeout, this, pendingInterest));
+      (delay, bind(&Node::processInterestTimeout, this, pendingInterest));
   }
 
   // Special case: For timeoutPrefix_ we don't actually send the interest.

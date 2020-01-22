@@ -68,8 +68,7 @@ public:
    * @param syncInterestLifetime (optional) The Interest lifetime for the sync
    * Interests. If omitted, use FullPSync2017::DEFAULT_SYNC_INTEREST_LIFETIME.
    * @param syncReplyFreshnessPeriod (optional) The freshness period of the sync
-   * Data packet, in milliseconds. If omitted, use
-   * FullPSync2017::DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD.
+   * Data packet. If omitted, use FullPSync2017::DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD.
    * @param signingInfo (optional) The SigningInfo for signing Data packets,
    * which is copied. If omitted, use the default SigningInfo().
    */
@@ -77,7 +76,7 @@ public:
     (size_t expectedNEntries, Face& face, const Name& syncPrefix,
      const Name& userPrefix, const OnUpdate& onUpdate, KeyChain& keyChain,
      std::chrono::nanoseconds syncInterestLifetime = FullPSync2017::DEFAULT_SYNC_INTEREST_LIFETIME,
-     Milliseconds syncReplyFreshnessPeriod = FullPSync2017::DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
+     std::chrono::nanoseconds syncReplyFreshnessPeriod = FullPSync2017::DEFAULT_SYNC_REPLY_FRESHNESS_PERIOD,
      const SigningInfo& signingInfo = SigningInfo())
   : impl_(new Impl(onUpdate))
   {
@@ -158,7 +157,8 @@ private:
     initialize
       (size_t expectedNEntries, Face& face, const Name& syncPrefix,
        const Name& userPrefix, KeyChain& keyChain, 
-       std::chrono::nanoseconds syncInterestLifetime, Milliseconds syncReplyFreshnessPeriod,
+       std::chrono::nanoseconds syncInterestLifetime, 
+       std::chrono::nanoseconds syncReplyFreshnessPeriod,
        const SigningInfo& signingInfo);
 
     int

@@ -51,9 +51,8 @@ CertificateCacheV2::insert(const CertificateV2& certificate)
     return;
   }
 
-  auto removalTime = now + milliseconds((int64_t)maxLifetimeMilliseconds_);
-  if (notAfterTime < removalTime)
-    notAfterTime = removalTime;
+  auto removalTime =
+    min(notAfterTime, now + milliseconds((int64_t)maxLifetimeMilliseconds_));
   if (removalTime < nextRefreshTime_)
     // We need to run refresh() sooner.)
     nextRefreshTime_ = removalTime;

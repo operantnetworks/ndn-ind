@@ -134,7 +134,7 @@ publishAndFetch
     // Set the contentSegmentSize so that we publish two segments for testing.
     size_t contentSegmentSize = content.size() / 2;
     GeneralizedContent::publish
-      (*contentCache, *prefix, 40000, keyChain, *certificateName, metaInfo,
+      (*contentCache, *prefix, seconds(40), keyChain, *certificateName, metaInfo,
        Blob((const uint8_t*)&content[0], content.size()), contentSegmentSize);
 
     // Fetch the _metaInfo and content.
