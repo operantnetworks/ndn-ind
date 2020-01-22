@@ -40,8 +40,8 @@ ValidationPolicyCommandInterest::ValidationPolicyCommandInterest
 
   setInnerPolicy(innerPolicy);
 
-  if (options_.gracePeriod_ < 0.0)
-    options_.gracePeriod_ = 0.0;
+  if (options_.gracePeriod_.count() < 0)
+    options_.gracePeriod_ = seconds(0);
 }
 
 void
@@ -73,7 +73,7 @@ ValidationPolicyCommandInterest::cleanUp()
 {
   // nowOffset_ is only used for testing.
   auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
-  auto expiring = now -  milliseconds((int64_t)options_.recordLifetime_);
+  auto expiring = now -  options_.recordLifetime_;
 
   while ((container_.size() > 0 && container_[0]->lastRefreshed_ <= expiring) ||
          (options_.maxRecords_ >= 0 && container_.size() > options_.maxRecords_))
@@ -115,8 +115,8 @@ ValidationPolicyCommandInterest::checkTimestamp
 
   // nowOffset_ is only used for testing.
   auto now = system_clock::now() + duration_cast<system_clock::duration>(nowOffset_);
-  if (timestamp < now - milliseconds((int64_t)options_.gracePeriod_) ||
-      timestamp > now + milliseconds((int64_t)options_.gracePeriod_)) {
+  if (timestamp < now - options_.gracePeriod_ ||
+      timestamp > now + options_.gracePeriod_) {
     state->fail(ValidationError(ValidationError::POLICY_ERROR,
       "Timestamp is outside the grace period for key " + keyName.toUri()));
     return false;

@@ -279,7 +279,7 @@ TEST_F(TestValidationPolicyCommandInterest, InnerPolicyReject)
 TEST_F(TestValidationPolicyCommandInterest, TimestampOutOfGracePositive)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
@@ -298,7 +298,7 @@ TEST_F(TestValidationPolicyCommandInterest, TimestampOutOfGracePositive)
 TEST_F(TestValidationPolicyCommandInterest, TimestampOutOfGraceNegative)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
@@ -389,7 +389,7 @@ TEST_F(TestValidationPolicyCommandInterest, TimestampReorderNegative)
 TEST_F(TestValidationPolicyCommandInterest, LimitedRecords)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, 3)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), 3)));
 
   ptr_lib::shared_ptr<PibIdentity> identity1 = fixture_->addSubCertificate
     ("/Security/V2/ValidatorFixture/Sub1", fixture_->identity_);
@@ -439,7 +439,7 @@ TEST_F(TestValidationPolicyCommandInterest, LimitedRecords)
 TEST_F(TestValidationPolicyCommandInterest, UnlimitedRecords)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, -1)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), -1)));
 
   vector<ptr_lib::shared_ptr<PibIdentity> > identities;
   for (int i = 0; i < 20; ++i) {
@@ -467,7 +467,7 @@ TEST_F(TestValidationPolicyCommandInterest, UnlimitedRecords)
 TEST_F(TestValidationPolicyCommandInterest, ZeroRecords)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, 0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), 0)));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
@@ -485,7 +485,7 @@ TEST_F(TestValidationPolicyCommandInterest, ZeroRecords)
 TEST_F(TestValidationPolicyCommandInterest, LimitedRecordLifetime)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(400 * 1000.0, 1000, 300 * 1000.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(400), 1000, seconds(300))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest
@@ -514,7 +514,7 @@ TEST_F(TestValidationPolicyCommandInterest, LimitedRecordLifetime)
 TEST_F(TestValidationPolicyCommandInterest, ZeroRecordLifetime)
 {
   fixture_.reset(new ValidationPolicyCommandInterestFixture
-    (ValidationPolicyCommandInterest::Options(15 * 1000.0, 1000, 0.0)));
+    (ValidationPolicyCommandInterest::Options(seconds(15), 1000, seconds(0))));
 
   // Signed at 0 seconds.
   ptr_lib::shared_ptr<Interest> interest1 = fixture_->makeCommandInterest

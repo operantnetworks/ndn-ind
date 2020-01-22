@@ -53,8 +53,9 @@ public:
      * use 1 hour.
      */
     Options
-      (Milliseconds gracePeriod = 2 * 60 * 1000.0, int maxRecords = 1000,
-       Milliseconds recordLifetime = 3600 * 1000.0)
+      (std::chrono::nanoseconds gracePeriod = std::chrono::minutes(2),
+       int maxRecords = 1000,
+       std::chrono::nanoseconds recordLifetime = std::chrono::hours(1))
     : gracePeriod_(gracePeriod),
       maxRecords_(maxRecords),
       recordLifetime_(recordLifetime)
@@ -62,7 +63,7 @@ public:
     }
 
     /**
-     * gracePeriod is the tolerance of the initial timestamp in milliseconds.
+     * gracePeriod is the tolerance of the initial timestamp.
      *
      * A stop-and-wait command Interest is considered "initial" if the validator
      * has not recorded the last timestamp from the same public key, or when
@@ -75,7 +76,7 @@ public:
      * validator to require exactly the same timestamp as the system clock,
      * which most likely rejects all command Interests.
      */
-    Milliseconds gracePeriod_;
+    std::chrono::nanoseconds gracePeriod_;
 
     /**
      * maxRecords is the maximum number of distinct public keys of which to
@@ -97,15 +98,14 @@ public:
     int maxRecords_;
 
     /**
-     * recordLifetime is the maximum lifetime of a last timestamp record in
-     * milliseconds.
+     * recordLifetime is the maximum lifetime of a last timestamp record.
      *
      * A last timestamp record expires and can be deleted if it has not been
      * refreshed within this duration. Setting this option to 0 or negative
      * makes last timestamp records expire immediately and causes every command
      * Interest to be processed as initial.
      */
-    Milliseconds recordLifetime_;
+    std::chrono::nanoseconds recordLifetime_;
   };
 
   /**
