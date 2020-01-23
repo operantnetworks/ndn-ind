@@ -1,38 +1,19 @@
---------------------------------------------------------------
-NDN-IND:  A Named Data Networking client library for C++ and C
---------------------------------------------------------------
+-------------------------------------------------------
+NDN-IND: A Named Data Networking client library for C++
+-------------------------------------------------------
 
-NDN-IND is a new implementation of a Named Data Networking client library written in C++ and C.
+NDN-IND is a new implementation of a Named Data Networking client library written in C++.
 It is wire format compatible with the NDN-TLV encoding.
 
-NDN-IND conforms to the NDN Common Client Libraries API and your application should
-follow this public API:
-http://named-data.net/doc/ndn-ccl-api/ .
-Further classes and methods are in the Doxygen-generated documentation.
-
-See the file [INSTALL.md](https://github.com/named-data/ndn-cpp/blob/master/INSTALL.md) for build and install instructions.
-
-If you are new to the NDN community of software generally, read the
-[Contributor's Guide](https://github.com/named-data/NFD/blob/master/CONTRIBUTING.md).
-Proposed code contributions should use a
-[GitHub pull request](https://github.com/named-data/ndn-cpp/pulls).
+See the file [INSTALL.md](https://github.com/operantnetworks/ndn-ind/blob/master/INSTALL.md) for build and install instructions.
 
 Please submit any bugs or issues to the NDN-IND issue tracker:
-http://redmine.named-data.net/projects/ndn-cpp/issues
+https://github.com/operantnetworks/ndn-ind/issues
 
 ---
 
 The library currently requires a remote NDN daemon, and has been tested with the
 NFD forwarder: https://github.com/named-data/NFD
-
-Currently, the library has two APIs for developers:
-
-	1. The C++ API which follows the NDN Common Client Library API also used by ndn-js (JavaScript)
-     and PyNDN (Python). See http://named-data.net/doc/ndn-ccl-api .
-
-	2. A core C library implementing lower-level encoding and communication.  Applications should normally
-     use the C++ API, but core C code will also function on embedded devices and other environments
-     which don't have C++ support.
 
 License
 -------
