@@ -37,6 +37,7 @@ namespace ndn {
 
 const std::chrono::nanoseconds RETRY_DELAY_AFTER_NACK = std::chrono::seconds(1);
 const std::chrono::nanoseconds RETRY_DELAY_KEK_RETRIEVAL = std::chrono::minutes(1);
+const std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD = std::chrono::hours(1);
 
 /**
  * EncryptorV2 encrypts the requested content for name-based access control (NAC)
@@ -276,9 +277,6 @@ private:
 
     KeyChain* keyChain_;
     Face* face_;
-
-    static constexpr std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD =
-      std::chrono::hours(1);
   };
 
   ptr_lib::shared_ptr<Impl> impl_;
