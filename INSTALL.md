@@ -2,7 +2,6 @@ NDN-IND:  A Named Data Networking client library for C++ and C
 ==============================================================
 
 These are instructions to build and install NDN-IND.
-To cross compile for Anrdoid, see android-native/INSTALL-android.md .
 
 Prerequisites
 =============
