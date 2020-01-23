@@ -23,25 +23,6 @@
 #include "../../../contrib/murmur-hash/murmur-hash.h"
 #include <ndn-ind/lite/util/crypto-lite.hpp>
 
-#ifdef ARDUINO
-
-#include <Arduino.h>
-
-// Define this in a .cpp file since the random() function is overloaded.
-ndn_Error
-ndn_generateRandomBytes(uint8_t *buffer, size_t bufferLength)
-{
-  // Assume the application has already initialized it, e.g.:
-  // randomSeed(analogRead(0));
-  size_t i;
-  for (i = 0; i < bufferLength; ++i)
-    buffer[i] = random(0, 256);
-
-  return NDN_ERROR_success;
-}
-
-#endif
-
 namespace ndn {
 
 void
@@ -122,32 +103,3 @@ CryptoLite::murmurHash3(uint32_t nHashSeed, uint32_t value)
 }
 
 }
-
-#ifdef ARDUINO
-// Put the ARDUINO implementations in this C++ file, not in crypto.c.
-
-#include "../../../contrib/cryptosuite/sha256.h"
-
-void
-ndn_digestSha256(const uint8_t *data, size_t dataLength, uint8_t *digest)
-{
-  // The Arduino is single-threaded, so use the global Sha256 object.
-  Sha256.init();
-  for (size_t i = 0; i < dataLength; ++i)
-    Sha256.write(data[i]);
-  memcpy(digest, Sha256.result(), ndn_SHA256_DIGEST_SIZE);
-}
-
-void
-ndn_computeHmacWithSha256
-  (const uint8_t *key, size_t keyLength, const uint8_t *data, size_t dataLength,
-   uint8_t *digest)
-{
-  // The Arduino is single-threaded, so use the global Sha256 object.
-  Sha256.initHmac(key, keyLength);
-  for (size_t i = 0; i < dataLength; ++i)
-    Sha256.write(data[i]);
-  memcpy(digest, Sha256.resultHmac(), ndn_SHA256_DIGEST_SIZE);
-}
-
-#endif // ARDUINO

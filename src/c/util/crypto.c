@@ -20,11 +20,7 @@
 
 #include "crypto.h"
 
-#ifdef ARDUINO
-
-// ndn_generateRandomBytes is defined in a .cpp file.
-
-#elif NDN_IND_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO
 
 #include <openssl/ssl.h>
 #include <openssl/rand.h>

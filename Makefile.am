@@ -72,8 +72,7 @@ noinst_PROGRAMS = bin/test-channel-discovery bin/test-chrono-chat \
   bin/test-list-channels bin/test-list-faces bin/test-list-rib \
   bin/test-prefix-discovery \
   bin/test-publish-async-nfd bin/test-publish-async-nfd-lite \
-  bin/test-register-route bin/test-sign-verify-data-hmac \
-  bin/analog-reading-consumer
+  bin/test-register-route bin/test-sign-verify-data-hmac
 
 # Public C headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_c_headers in include/Makefile.am.
@@ -589,9 +588,6 @@ bin_test_publish_async_nfd_LDADD = libndn-ind.la
 
 bin_test_publish_async_nfd_lite_SOURCES = examples/test-publish-async-nfd-lite.cpp
 bin_test_publish_async_nfd_lite_LDADD = libndn-ind.la
-
-bin_analog_reading_consumer_SOURCES = examples/arduino/analog-reading-consumer.cpp
-bin_analog_reading_consumer_LDADD = libndn-ind.la
 
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
 bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la

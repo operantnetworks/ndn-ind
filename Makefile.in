@@ -144,8 +144,7 @@ noinst_PROGRAMS = bin/test-channel-discovery$(EXEEXT) \
 	bin/test-publish-async-nfd$(EXEEXT) \
 	bin/test-publish-async-nfd-lite$(EXEEXT) \
 	bin/test-register-route$(EXEEXT) \
-	bin/test-sign-verify-data-hmac$(EXEEXT) \
-	bin/analog-reading-consumer$(EXEEXT)
+	bin/test-sign-verify-data-hmac$(EXEEXT)
 TESTS = $(check_PROGRAMS)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -432,11 +431,6 @@ am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
 	src/util/regex/ndn-regex-repeat-matcher.lo \
 	src/util/regex/ndn-regex-top-matcher.lo
 libndn_ind_la_OBJECTS = $(am_libndn_ind_la_OBJECTS)
-am_bin_analog_reading_consumer_OBJECTS =  \
-	examples/arduino/analog-reading-consumer.$(OBJEXT)
-bin_analog_reading_consumer_OBJECTS =  \
-	$(am_bin_analog_reading_consumer_OBJECTS)
-bin_analog_reading_consumer_DEPENDENCIES = libndn-ind.la
 am_bin_test_channel_discovery_OBJECTS =  \
 	examples/test-channel-discovery.$(OBJEXT)
 bin_test_channel_discovery_OBJECTS =  \
@@ -818,7 +812,6 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	examples/$(DEPDIR)/test-publish-async-nfd.Po \
 	examples/$(DEPDIR)/test-register-route.Po \
 	examples/$(DEPDIR)/test-sign-verify-data-hmac.Po \
-	examples/arduino/$(DEPDIR)/analog-reading-consumer.Po \
 	src/$(DEPDIR)/common.Plo src/$(DEPDIR)/control-parameters.Plo \
 	src/$(DEPDIR)/control-response.Plo src/$(DEPDIR)/data.Plo \
 	src/$(DEPDIR)/delegation-set.Plo \
@@ -1125,9 +1118,7 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
-	$(libndn_ind_la_SOURCES) \
-	$(bin_analog_reading_consumer_SOURCES) \
-	$(bin_test_channel_discovery_SOURCES) \
+	$(libndn_ind_la_SOURCES) $(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
@@ -1182,9 +1173,7 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_unit_tests_test_validator_null_SOURCES) \
 	$(bin_unit_tests_test_verification_rules_SOURCES)
 DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
-	$(libndn_ind_la_SOURCES) \
-	$(bin_analog_reading_consumer_SOURCES) \
-	$(bin_test_channel_discovery_SOURCES) \
+	$(libndn_ind_la_SOURCES) $(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
@@ -2222,8 +2211,6 @@ bin_test_publish_async_nfd_SOURCES = examples/test-publish-async-nfd.cpp
 bin_test_publish_async_nfd_LDADD = libndn-ind.la
 bin_test_publish_async_nfd_lite_SOURCES = examples/test-publish-async-nfd-lite.cpp
 bin_test_publish_async_nfd_lite_LDADD = libndn-ind.la
-bin_analog_reading_consumer_SOURCES = examples/arduino/analog-reading-consumer.cpp
-bin_analog_reading_consumer_LDADD = libndn-ind.la
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
 bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la
 bin_test_register_route_SOURCES = \
@@ -3261,22 +3248,6 @@ src/util/regex/ndn-regex-top-matcher.lo:  \
 
 libndn-ind.la: $(libndn_ind_la_OBJECTS) $(libndn_ind_la_DEPENDENCIES) $(EXTRA_libndn_ind_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libndn_ind_la_OBJECTS) $(libndn_ind_la_LIBADD) $(LIBS)
-examples/arduino/$(am__dirstamp):
-	@$(MKDIR_P) examples/arduino
-	@: > examples/arduino/$(am__dirstamp)
-examples/arduino/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) examples/arduino/$(DEPDIR)
-	@: > examples/arduino/$(DEPDIR)/$(am__dirstamp)
-examples/arduino/analog-reading-consumer.$(OBJEXT):  \
-	examples/arduino/$(am__dirstamp) \
-	examples/arduino/$(DEPDIR)/$(am__dirstamp)
-bin/$(am__dirstamp):
-	@$(MKDIR_P) bin
-	@: > bin/$(am__dirstamp)
-
-bin/analog-reading-consumer$(EXEEXT): $(bin_analog_reading_consumer_OBJECTS) $(bin_analog_reading_consumer_DEPENDENCIES) $(EXTRA_bin_analog_reading_consumer_DEPENDENCIES) bin/$(am__dirstamp)
-	@rm -f bin/analog-reading-consumer$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(bin_analog_reading_consumer_OBJECTS) $(bin_analog_reading_consumer_LDADD) $(LIBS)
 examples/$(am__dirstamp):
 	@$(MKDIR_P) examples
 	@: > examples/$(am__dirstamp)
@@ -3285,6 +3256,9 @@ examples/$(DEPDIR)/$(am__dirstamp):
 	@: > examples/$(DEPDIR)/$(am__dirstamp)
 examples/test-channel-discovery.$(OBJEXT): examples/$(am__dirstamp) \
 	examples/$(DEPDIR)/$(am__dirstamp)
+bin/$(am__dirstamp):
+	@$(MKDIR_P) bin
+	@: > bin/$(am__dirstamp)
 
 bin/test-channel-discovery$(EXEEXT): $(bin_test_channel_discovery_OBJECTS) $(bin_test_channel_discovery_DEPENDENCIES) $(EXTRA_bin_test_channel_discovery_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/test-channel-discovery$(EXEEXT)
@@ -3854,7 +3828,6 @@ mostlyclean-compile:
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/*.$(OBJEXT)
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/*.lo
 	-rm -f examples/*.$(OBJEXT)
-	-rm -f examples/arduino/*.$(OBJEXT)
 	-rm -f src/*.$(OBJEXT)
 	-rm -f src/*.lo
 	-rm -f src/c/*.$(OBJEXT)
@@ -4002,7 +3975,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-publish-async-nfd.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-register-route.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-sign-verify-data-hmac.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@examples/arduino/$(DEPDIR)/analog-reading-consumer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/common.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/control-parameters.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/control-response.Plo@am__quote@ # am--include-marker
@@ -6425,8 +6397,6 @@ distclean-generic:
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(am__dirstamp)
 	-rm -f examples/$(DEPDIR)/$(am__dirstamp)
 	-rm -f examples/$(am__dirstamp)
-	-rm -f examples/arduino/$(DEPDIR)/$(am__dirstamp)
-	-rm -f examples/arduino/$(am__dirstamp)
 	-rm -f src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/$(am__dirstamp)
 	-rm -f src/c/$(DEPDIR)/$(am__dirstamp)
@@ -6582,7 +6552,6 @@ distclean: distclean-recursive
 	-rm -f examples/$(DEPDIR)/test-publish-async-nfd.Po
 	-rm -f examples/$(DEPDIR)/test-register-route.Po
 	-rm -f examples/$(DEPDIR)/test-sign-verify-data-hmac.Po
-	-rm -f examples/arduino/$(DEPDIR)/analog-reading-consumer.Po
 	-rm -f src/$(DEPDIR)/common.Plo
 	-rm -f src/$(DEPDIR)/control-parameters.Plo
 	-rm -f src/$(DEPDIR)/control-response.Plo
@@ -6974,7 +6943,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f examples/$(DEPDIR)/test-publish-async-nfd.Po
 	-rm -f examples/$(DEPDIR)/test-register-route.Po
 	-rm -f examples/$(DEPDIR)/test-sign-verify-data-hmac.Po
-	-rm -f examples/arduino/$(DEPDIR)/analog-reading-consumer.Po
 	-rm -f src/$(DEPDIR)/common.Plo
 	-rm -f src/$(DEPDIR)/control-parameters.Plo
 	-rm -f src/$(DEPDIR)/control-response.Plo

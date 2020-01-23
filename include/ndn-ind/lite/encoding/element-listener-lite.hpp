@@ -52,8 +52,6 @@ private:
   friend class TcpTransportLite;
   friend class UdpTransportLite;
   friend class UnixTransportLite;
-  friend class ArduinoYunTcpTransportLite;
-  friend class Esp8266TcpTransportLite;
 };
 
 }

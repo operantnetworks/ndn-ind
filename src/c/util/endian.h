@@ -83,10 +83,6 @@ static __inline uint64_t be64toh(uint64_t x) { return htons(1) == 1 ? x : (((uin
 #define NDN_IND_HAVE_ENDIAN_H 1
 #include <sys/endian.h>
 
-#elif defined(ARDUINO)
-
-#define NDN_IND_HAVE_ENDIAN_H 0
-
 #else
 
 // Linux, Cygwin, etc.
