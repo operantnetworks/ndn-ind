@@ -99,7 +99,6 @@ makeTpmBackEndMemory(const string& location)
 
 KeyChain::KeyChain
   (const string& pibLocator, const string& tpmLocator, bool allowReset)
-: face_(0)
 {
   construct(pibLocator, tpmLocator, allowReset);
 }
@@ -107,14 +106,12 @@ KeyChain::KeyChain
 KeyChain::KeyChain
   (const ptr_lib::shared_ptr<PibImpl>& pibImpl,
    const ptr_lib::shared_ptr<TpmBackEnd>& tpmBackEnd)
-: face_(0)
 {
   pib_.reset(new Pib("", "", pibImpl));
   tpm_.reset(new Tpm("", "", tpmBackEnd));
 }
 
 KeyChain::KeyChain()
-: face_(0)
 {
   construct("", "", true);
 }

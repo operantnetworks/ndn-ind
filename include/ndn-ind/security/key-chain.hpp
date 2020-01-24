@@ -27,7 +27,6 @@
 #include <stdexcept>
 #include "../data.hpp"
 #include "../interest.hpp"
-#include "../face.hpp"
 #include "pib/pib.hpp"
 #include "pib/pib.hpp"
 #include "tpm/tpm.hpp"
@@ -531,13 +530,6 @@ public:
   }
 
   /**
-   * Set the Face which will be used to fetch required certificates.
-   * @param face A pointer to the Face object.
-   */
-  void
-  setFace(Face* face) { face_ = face; }
-
-  /**
    * Wire encode the Data object, compute an HmacWithSha256 and update the
    * signature value.
    * @param data The Data object to be signed. It should already have an
@@ -720,8 +712,6 @@ private:
 
   static const SigningInfo&
   getDefaultSigningInfo();
-
-  Face* face_; // for security v1
 
   ptr_lib::shared_ptr<Pib> pib_;
   ptr_lib::shared_ptr<Tpm> tpm_;

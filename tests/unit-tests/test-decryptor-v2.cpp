@@ -22,6 +22,7 @@
 
 #include "gtest/gtest.h"
 #include <cstdio>
+#include <ndn-ind/face.hpp>
 #include <ndn-ind/security/validator-null.hpp>
 #include <ndn-ind/encrypt/decryptor-v2.hpp>
 #include "identity-management-fixture.hpp"
