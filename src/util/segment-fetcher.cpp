@@ -46,21 +46,7 @@ SegmentFetcher::fetch
   // Make a shared_ptr because we make callbacks with bind using
   //   shared_from_this() so the object remains allocated.
   ptr_lib::shared_ptr<SegmentFetcher> segmentFetcher
-    (new SegmentFetcher(face, 0, verifySegment, onComplete, onError));
-  segmentFetcher->fetchFirstSegment(baseInterest);
-}
-
-void
-SegmentFetcher::fetch
-  (Face& face, const Interest &baseInterest, KeyChain* validatorKeyChain,
-   const OnComplete& onComplete, const OnError& onError)
-{
-  // Make a shared_ptr because we make callbacks with bind using
-  //   shared_from_this() so the object remains allocated.
-  ptr_lib::shared_ptr<SegmentFetcher> segmentFetcher
-    (new SegmentFetcher
-     (face, validatorKeyChain, SegmentFetcher::DontVerifySegment, onComplete,
-      onError));
+    (new SegmentFetcher(face, verifySegment, onComplete, onError));
   segmentFetcher->fetchFirstSegment(baseInterest);
 }
 
@@ -99,21 +85,12 @@ SegmentFetcher::onSegmentReceived
   (const ptr_lib::shared_ptr<const Interest>& originalInterest,
    const ptr_lib::shared_ptr<Data>& data)
 {
-  if (validatorKeyChain_)
-    validatorKeyChain_->verifyData
-      (data,
-       bind(&SegmentFetcher::onVerified, shared_from_this(), _1, originalInterest),
-       // Cast to disambiguate from the deprecated OnVerifyFailed.
-       (const OnDataValidationFailed)bind
-         (&SegmentFetcher::onValidationFailed, shared_from_this(), _1, _2));
-  else {
-    if (!verifySegment_(data)) {
-      onValidationFailed(data, "verifySegment returned false");
-      return;
-    }
-
-    onVerified(data, originalInterest);
+  if (!verifySegment_(data)) {
+    onValidationFailed(data, "verifySegment returned false");
+    return;
   }
+
+  onVerified(data, originalInterest);
 }
 
 void
