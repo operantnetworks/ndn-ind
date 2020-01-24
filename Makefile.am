@@ -47,7 +47,7 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
   bin/unit-tests/test-control-response \
   bin/unit-tests/test-data-methods bin/unit-tests/test-decryptor-v2 \
   bin/unit-tests/test-der-encode-decode bin/unit-tests/test-encryptor-v2 \
-  bin/unit-tests/test-face-methods bin/unit-tests/test-identity-methods \
+  bin/unit-tests/test-face-methods \
   bin/unit-tests/test-interest-methods bin/unit-tests/test-key-chain \
   bin/unit-tests/test-invertible-bloom-lookup-table \
   bin/unit-tests/test-name-conventions \
@@ -55,13 +55,12 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
   bin/unit-tests/test-pib-identity-container \
   bin/unit-tests/test-pib-identity-impl bin/unit-tests/test-pib-impl \
   bin/unit-tests/test-pib-key-container bin/unit-tests/test-pib-key-impl \
-  bin/unit-tests/test-policy-manager bin/unit-tests/test-policy-manager-v2 \
   bin/unit-tests/test-psync-state bin/unit-tests/test-regex \
   bin/unit-tests/test-registration-callbacks \
   bin/unit-tests/test-signing-info bin/unit-tests/test-tpm-back-ends \
   bin/unit-tests/test-tpm-private-key bin/unit-tests/test-validation-policy-command-interest \
   bin/unit-tests/test-validation-policy-config bin/unit-tests/test-validator-null \
-  bin/unit-tests/test-validator bin/unit-tests/test-verification-rules
+  bin/unit-tests/test-validator
 
 noinst_PROGRAMS = bin/test-channel-discovery bin/test-chrono-chat \
   bin/test-echo-consumer bin/test-echo-consumer-lite \
@@ -196,16 +195,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/certificate/certificate-extension.hpp \
   include/ndn-ind/security/certificate/certificate-subject-description.hpp \
   include/ndn-ind/security/certificate/certificate.hpp \
-  include/ndn-ind/security/certificate/identity-certificate.hpp \
   include/ndn-ind/security/certificate/public-key.hpp \
-  include/ndn-ind/security/identity/basic-identity-storage.hpp \
-  include/ndn-ind/security/identity/file-private-key-storage.hpp \
-  include/ndn-ind/security/identity/identity-manager.hpp \
-  include/ndn-ind/security/identity/identity-storage.hpp \
-  include/ndn-ind/security/identity/memory-identity-storage.hpp \
-  include/ndn-ind/security/identity/memory-private-key-storage.hpp \
-  include/ndn-ind/security/identity/osx-private-key-storage.hpp \
-  include/ndn-ind/security/identity/private-key-storage.hpp \
   include/ndn-ind/security/pib/pib-certificate-container.hpp \
   include/ndn-ind/security/pib/pib-identity.hpp \
   include/ndn-ind/security/pib/pib-identity-container.hpp \
@@ -215,11 +205,6 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/pib/pib-memory.hpp \
   include/ndn-ind/security/pib/pib-sqlite3.hpp \
   include/ndn-ind/security/pib/pib.hpp \
-  include/ndn-ind/security/policy/config-policy-manager.hpp \
-  include/ndn-ind/security/policy/no-verify-policy-manager.hpp \
-  include/ndn-ind/security/policy/policy-manager.hpp \
-  include/ndn-ind/security/policy/self-verify-policy-manager.hpp \
-  include/ndn-ind/security/policy/validation-request.hpp \
   include/ndn-ind/security/tpm/helper-osx.hpp \
   include/ndn-ind/security/tpm/tpm.hpp \
   include/ndn-ind/security/tpm/tpm-back-end.hpp \
@@ -435,16 +420,7 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/security/certificate/certificate-extension.cpp \
   src/security/certificate/certificate-subject-description.cpp \
   src/security/certificate/certificate.cpp \
-  src/security/certificate/identity-certificate.cpp \
   src/security/certificate/public-key.cpp \
-  src/security/identity/basic-identity-storage.cpp \
-  src/security/identity/file-private-key-storage.cpp \
-  src/security/identity/identity-manager.cpp \
-  src/security/identity/identity-storage.cpp \
-  src/security/identity/memory-identity-storage.cpp \
-  src/security/identity/memory-private-key-storage.cpp \
-  src/security/identity/osx-private-key-storage.cpp \
-  src/security/identity/private-key-storage.cpp \
   src/security/pib/pib-certificate-container.cpp \
   src/security/pib/pib-identity.cpp \
   src/security/pib/pib-identity-container.cpp \
@@ -455,10 +431,6 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/security/pib/pib.cpp \
   src/security/pib/detail/pib-identity-impl.cpp \src/security/pib/detail/pib-identity-impl.hpp \
   src/security/pib/detail/pib-key-impl.cpp \src/security/pib/detail/pib-key-impl.hpp \
-  src/security/policy/config-policy-manager.cpp \
-  src/security/policy/no-verify-policy-manager.cpp \
-  src/security/policy/policy-manager.cpp \
-  src/security/policy/self-verify-policy-manager.cpp \
   src/security/tpm/tpm.cpp \
   src/security/tpm/tpm-back-end.cpp \
   src/security/tpm/tpm-back-end-file.cpp \
@@ -647,10 +619,6 @@ bin_unit_tests_test_face_methods_SOURCES = tests/unit-tests/test-face-methods.cp
 bin_unit_tests_test_face_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_face_methods_LDADD = libndn-ind.la
 
-bin_unit_tests_test_identity_methods_SOURCES = tests/unit-tests/test-identity-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_identity_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_identity_methods_LDADD = libndn-ind.la
-
 bin_unit_tests_test_interest_methods_SOURCES = tests/unit-tests/test-interest-methods.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_interest_methods_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_interest_methods_LDADD = libndn-ind.la
@@ -704,14 +672,6 @@ bin_unit_tests_test_pib_key_impl_SOURCES = tests/unit-tests/test-pib-key-impl.cp
 bin_unit_tests_test_pib_key_impl_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_pib_key_impl_LDADD = libndn-ind.la
 
-bin_unit_tests_test_policy_manager_SOURCES = tests/unit-tests/test-policy-manager.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_policy_manager_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_policy_manager_LDADD = libndn-ind.la
-
-bin_unit_tests_test_policy_manager_v2_SOURCES = tests/unit-tests/test-policy-manager-v2.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_policy_manager_v2_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_policy_manager_v2_LDADD = libndn-ind.la
-
 bin_unit_tests_test_regex_SOURCES = tests/unit-tests/test-regex.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_regex_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_regex_LDADD = libndn-ind.la
@@ -757,10 +717,6 @@ bin_unit_tests_test_validator_SOURCES = tests/unit-tests/test-validator.cpp \
   tests/unit-tests/validator-fixture.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
 bin_unit_tests_test_validator_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
 bin_unit_tests_test_validator_LDADD = libndn-ind.la
-
-bin_unit_tests_test_verification_rules_SOURCES = tests/unit-tests/test-verification-rules.cpp contrib/gtest-1.7.0/fused-src/gtest/gtest-all.cc
-bin_unit_tests_test_verification_rules_CPPFLAGS = -I./contrib/gtest-1.7.0/fused-src
-bin_unit_tests_test_verification_rules_LDADD = libndn-ind.la
 
 TESTS = ${check_PROGRAMS}
 
