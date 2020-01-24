@@ -22,6 +22,7 @@
 
 #include "gtest/gtest.h"
 #include "validator-fixture.hpp"
+#include <ndn-ind/sha256-with-rsa-signature.hpp>
 #include <ndn-ind/encoding/tlv-wire-format.hpp>
 #include <ndn-ind/security/command-interest-signer.hpp>
 #include <ndn-ind/security/v2/validation-policy-simple-hierarchy.hpp>
