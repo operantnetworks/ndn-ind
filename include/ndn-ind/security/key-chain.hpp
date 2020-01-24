@@ -28,8 +28,6 @@
 #include "../data.hpp"
 #include "../interest.hpp"
 #include "../face.hpp"
-#include "identity/identity-manager.hpp"
-#include "policy/validation-request.hpp"
 #include "pib/pib.hpp"
 #include "pib/pib.hpp"
 #include "tpm/tpm.hpp"
@@ -100,8 +98,7 @@ public:
   /**
    * Create a KeyChain to use the PIB and TPM defined by the given locators.
    * This creates a security v2 KeyChain that uses CertificateV2, Pib, Tpm and
-   * Validator (instead of v1 Certificate, IdentityStorage, PrivateKeyStorage
-   * and PolicyManager).
+   * Validator.
    * @param pibLocator The PIB locator, e.g., "pib-sqlite3:/example/dir".
    * @param tpmLocator The TPM locator, e.g., "tpm-memory:".
    * @param allowReset (optional) If true, the PIB will be reset when the
@@ -115,38 +112,14 @@ public:
      bool allowReset = false);
 
   /**
-   * Create a security v2 KeyChain with explicitly-created PIB and TPM objects,
-   * and that optionally still uses the v1 PolicyManager.
+   * Create a security v2 KeyChain with explicitly-created PIB and TPM objects.
    * @param pibImpl An explicitly-created PIB object of a subclass of PibImpl.
    * @param tpmBackEnd An explicitly-created TPM object of a subclass of
    * TpmBackEnd.
-   * @param policyManager (optional) An object of a subclass of a security v1
-   * PolicyManager. If omitted or null, use a new NoVerifyPolicyManager.
    */
   KeyChain
     (const ptr_lib::shared_ptr<PibImpl>& pibImpl,
-     const ptr_lib::shared_ptr<TpmBackEnd>& tpmBackEnd,
-     const ptr_lib::shared_ptr<PolicyManager>& policyManager =
-       ptr_lib::shared_ptr<PolicyManager>());
-
-  /**
-   * Create a new security v1 KeyChain with the given IdentityManager and
-   * PolicyManager. For security v2, use KeyChain(pibLocator, tpmLocator) or the
-   * default constructor if your .ndn folder is already initialized for v2.
-   * @param identityManager An object of a subclass of IdentityManager.
-   * @param policyManager An object of a subclass of PolicyManager.
-   */
-  KeyChain
-    (const ptr_lib::shared_ptr<IdentityManager>& identityManager,
-     const ptr_lib::shared_ptr<PolicyManager>& policyManager);
-
-  /**
-   * Create a new security v1 KeyChain with the given IdentityManager and a
-   * NoVerifyPolicyManager. For security v2, use KeyChain(pibLocator, tpmLocator)
-   * or the default constructor if your .ndn folder is already initialized for v2.
-   * @param identityManager An object of a subclass of IdentityManager.
-   */
-  KeyChain(const ptr_lib::shared_ptr<IdentityManager>& identityManager);
+     const ptr_lib::shared_ptr<TpmBackEnd>& tpmBackEnd);
 
   /**
    * Create a KeyChain with the default PIB and TPM, which are
@@ -160,30 +133,10 @@ public:
   KeyChain();
 
   Pib&
-  getPib()
-  {
-    if (isSecurityV1_)
-      throw Error("getPib is not supported for security v1");
-
-    return *pib_;
-  }
+  getPib() { return *pib_; }
 
   Tpm&
-  getTpm()
-  {
-    if (isSecurityV1_)
-      throw Error("getTpm is not supported for security v1");
-
-    return *tpm_;
-  }
-
-  /**
-   * Get the flag set by the constructor if this is a security v1 or v2 KeyChain.
-   * @return True if this is a security v1 KeyChain, false if this is a security
-   * v2 KeyChain.
-   */
-  bool
-  getIsSecurityV1() const { return isSecurityV1_; }
+  getTpm() { return *tpm_; }
 
   // Identity management
 
@@ -313,8 +266,6 @@ public:
   /**
    * Wire encode the Data object, sign it with the default key of the default
    * identity, and set its signature.
-   * If this is a security v1 KeyChain then use the IdentityManager to get the
-   * default identity. Otherwise use the PIB.
    * @param data The Data object to be signed. This replaces its Signature
    * object based on the type of key of the default identity, and updates the
    * wireEncoding.
@@ -324,12 +275,6 @@ public:
   void
   sign(Data& data, WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
-    if (isSecurityV1_) {
-      identityManager_->signByCertificate
-        (data, prepareDefaultCertificateName(), wireFormat);
-      return;
-    }
-
     sign(data, getDefaultSigningInfo(), wireFormat);
   }
 
@@ -355,8 +300,6 @@ public:
    * Sign the Interest with the default key of the default identity. Append a
    * SignatureInfo to the Interest name, sign the encoded name components and
    * append a final name component with the signature bits.
-   * If this is a security v1 KeyChain then use the IdentityManager to get the
-   * default identity. Otherwise use the PIB.
    * @param interest The Interest object to be signed. This appends name
    * components of SignatureInfo and the signature bits.
    * @param wireFormat (optional) A WireFormat object used to encode the input
@@ -367,12 +310,6 @@ public:
   sign(Interest& interest,
        WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
-    if (isSecurityV1_) {
-      identityManager_->signInterestByCertificate
-        (interest, prepareDefaultCertificateName(), wireFormat);
-      return;
-    }
-
     sign(interest, getDefaultSigningInfo(), wireFormat);
   }
 
@@ -483,56 +420,6 @@ public:
     getTpmFactories()[scheme] = makeTpmBackEnd;
   }
 
-  // Security v1 methods
-
-  /*****************************************
-   *          Identity Management          *
-   *****************************************/
-
-  /**
-   * Create a security v1 identity by creating a pair of Key-Signing-Key (KSK)
-   * for this identity and a self-signed certificate of the KSK. If a key pair
-   * or certificate for the identity already exists, use it. However, if this is
-   * a security v2 KeyChain, use createIdentityV2.
-   * @param identityName The name of the identity.
-   * @param params (optional) The key parameters if a key needs to be generated
-   * for the identity. If omitted, use getDefaultKeyParams().
-   * @return The name of the default certificate of the identity.
-   */
-  Name
-  createIdentityAndCertificate
-    (const Name& identityName, const KeyParams& params = getDefaultKeyParams())
-  {
-    if (!isSecurityV1_) {
-      ptr_lib::shared_ptr<PibIdentity> identity = createIdentityV2
-        (identityName, params);
-      return identity->getDefaultKey()->getDefaultCertificate()->getName();
-    }
-
-    return identityManager_->createIdentityAndCertificate(identityName, params);
-  }
-
-  /**
-   * Create a security v1 identity by creating a pair of Key-Signing-Key (KSK)
-   * for this identity and a self-signed certificate of the KSK. If a key pair
-   * or certificate for the identity already exists, use it.
-   * @deprecated Use createIdentityAndCertificate which returns the
-   * certificate name instead of the key name. You can use
-   * IdentityCertificate.certificateNameToPublicKeyName to convert the
-   * certificate name to the key name.
-   * @param identityName The name of the identity.
-   * @param params (optional) The key parameters if a key needs to be generated
-   * for the identity. If omitted, use getDefaultKeyParams().
-   * @return The key name of the auto-generated KSK of the identity.
-   */
-  Name
-  DEPRECATED_IN_NDN_IND createIdentity
-    (const Name& identityName, const KeyParams& params = getDefaultKeyParams())
-  {
-    return IdentityCertificate::certificateNameToPublicKeyName
-      (createIdentityAndCertificate(identityName, params));
-  }
-
   /**
    * Delete the identity from the public and private key storage. If the
    * identity to be deleted is the current default system default, this will not
@@ -542,259 +429,33 @@ public:
   void
   deleteIdentity(const Name& identityName)
   {
-    if (!isSecurityV1_) {
-      try {
-        deleteIdentity(*pib_->getIdentity(identityName));
-      } catch (const Pib::Error& ex) {
-      }
-      return;
+    try {
+      deleteIdentity(*pib_->getIdentity(identityName));
+    } catch (const Pib::Error& ex) {
     }
-
-    identityManager_->deleteIdentity(identityName);
   }
 
   /**
    * Get the default identity.
    * @return The name of default identity.
-   * @throws SecurityException (for security v1) or Pib::Error (for security v2)
-   * if the default identity is not set.
+   * @throws Pib::Error if the default identity is not set.
    */
   Name
-  getDefaultIdentity()
-  {
-    if (!isSecurityV1_)
-      return pib_->getDefaultIdentity()->getName();
-
-    return identityManager_->getDefaultIdentity();
-  }
+  getDefaultIdentity() { return pib_->getDefaultIdentity()->getName(); }
 
   /**
    * Get the default certificate name of the default identity.
    * @return The requested certificate name.
-   * @throws SecurityException (for security v1) or Pib::Error (for security v2)
-   * if the default identity is not set or the default key name for the
-   * identity is not set or the default certificate name for the key name is not
-   * set.
+   * @throws Pib::Error if the default identity is not set or the default key 
+   * name for the identity is not set or the default certificate name for the
+   * key name is not set.
    */
   Name
   getDefaultCertificateName()
   {
-    if (!isSecurityV1_)
-      return pib_->getDefaultIdentity()->getDefaultKey()->getDefaultCertificate()
-        ->getName();
-
-    return identityManager_->getDefaultCertificateName();
+    return pib_->getDefaultIdentity()->getDefaultKey()->getDefaultCertificate()
+      ->getName();
   }
-
-  /**
-   * Generate a pair of RSA keys for the specified identity.
-   * @param identityName The name of the identity.
-   * @param isKsk (optional) true for generating a Key-Signing-Key (KSK), false
-   * for a Data-Signing-Key (DSK). If omitted, generate a Data-Signing-Key.
-   * @param keySize (optional) The size of the key. If omitted, use a default
-   * secure key size.
-   * @return The generated key name.
-   */
-  Name
-  generateRSAKeyPair(const Name& identityName, bool isKsk = false, int keySize = 2048)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("generateRSAKeyPair is not supported for security v2. Use createIdentityV2.");
-
-    return identityManager_->generateRSAKeyPair(identityName, isKsk, keySize);
-  }
-
-  /**
-   * Generate a pair of ECDSA keys for the specified identity.
-   * @param identityName The name of the identity.
-   * @param isKsk (optional) true for generating a Key-Signing-Key (KSK), false
-   * for a Data-Signing-Key (DSK). If omitted, generate a Data-Signing-Key.
-   * @param keySize (optional) The size of the key. If omitted, use a default
-   * secure key size.
-   * @return The generated key name.
-   */
-  Name
-  generateEcdsaKeyPair(const Name& identityName, bool isKsk = false, int keySize = 256)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("generateEcdsaKeyPair is not supported for security v2. Use createIdentityV2.");
-
-    return identityManager_->generateEcdsaKeyPair(identityName, isKsk, keySize);
-  }
-
-  /**
-   * Set a key as the default key of an identity. The identity name is inferred
-   * from keyName.
-   * @param keyName The name of the key.
-   * @param identityNameCheck (optional) The identity name to check that the
-   * keyName contains the same identity name. If an empty name, it is ignored.
-   */
-  void
-  setDefaultKeyForIdentity(const Name& keyName, const Name& identityNameCheck = Name())
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("setDefaultKeyForIdentity is not supported for security v2. Use getPib() methods.");
-
-    return identityManager_->setDefaultKeyForIdentity(keyName, identityNameCheck);
-  }
-
-  /**
-   * Generate a pair of RSA keys for the specified identity and set it as the
-   * default key for the identity.
-   * @param identityName The name of the identity.
-   * @param isKsk (optional) true for generating a Key-Signing-Key (KSK), false
-   * for a Data-Signing-Key (DSK). If omitted, generate a Data-Signing-Key.
-   * @param keySize (optional) The size of the key. If omitted, use a default
-   * secure key size.
-   * @return The generated key name.
-   */
-  Name
-  generateRSAKeyPairAsDefault(const Name& identityName, bool isKsk = false, int keySize = 2048)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("generateRSAKeyPairAsDefault is not supported for security v2. Use createIdentityV2.");
-
-    return identityManager_->generateRSAKeyPairAsDefault(identityName, isKsk, keySize);
-  }
-
-  /**
-   * Generate a pair of ECDSA keys for the specified identity and set it as the
-   * default key for the identity.
-   * @param identityName The name of the identity.
-   * @param isKsk (optional) true for generating a Key-Signing-Key (KSK), false
-   * for a Data-Signing-Key (DSK). If omitted, generate a Data-Signing-Key.
-   * @param keySize (optional) The size of the key. If omitted, use a default
-   * secure key size.
-   * @return The generated key name.
-   */
-  Name
-  generateEcdsaKeyPairAsDefault(const Name& identityName, bool isKsk = false, int keySize = 256)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("generateEcdsaKeyPairAsDefault is not supported for security v2. Use createIdentityV2.");
-
-    return identityManager_->generateEcdsaKeyPairAsDefault(identityName, isKsk, keySize);
-  }
-
-  /**
-   * Create a public key signing request.
-   * @param keyName The name of the key.
-   * @return The signing request data.
-   */
-  Blob
-  createSigningRequest(const Name& keyName)
-  {
-    if (!isSecurityV1_)
-      return pib_->getIdentity(PibKey::extractIdentityFromKeyName(keyName))
-        ->getKey(keyName)->getPublicKey();
-
-    return identityManager_->getPublicKey(keyName)->getKeyDer();
-  }
-
-  /**
-   * Install an identity certificate into the public key identity storage.
-   * @param certificate The certificate to to added.
-   */
-  void
-  installIdentityCertificate(const IdentityCertificate& certificate)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("installIdentityCertificate is not supported for security v2. Use getPib() methods.");
-
-    identityManager_->addCertificate(certificate);
-  }
-
-  /**
-   * Set the certificate as the default for its corresponding key.
-   * @param certificate The certificate.
-   */
-  void
-  setDefaultCertificateForKey(const IdentityCertificate& certificate)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("setDefaultCertificateForKey is not supported for security v2. Use getPib() methods.");
-
-    identityManager_->setDefaultCertificateForKey(certificate);
-  }
-
-  /**
-   * Get a certificate with the specified name.
-   * @param certificateName The name of the requested certificate.
-   * @return The requested certificate.
-   */
-  ptr_lib::shared_ptr<IdentityCertificate>
-  getCertificate(const Name& certificateName)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("getCertificate is not supported for security v2. Use getPib() methods.");
-
-    return identityManager_->getCertificate(certificateName);
-  }
-
-  /**
-   * @deprecated Use getCertificate.
-   */
-  ptr_lib::shared_ptr<IdentityCertificate>
-  DEPRECATED_IN_NDN_IND getIdentityCertificate(const Name& certificateName)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("getIdentityCertificate is not supported for security v2. Use getPib() methods.");
-
-    return identityManager_->getCertificate(certificateName);
-  }
-
-  /**
-   * Revoke a key.
-   * @param keyName The name of the key that will be revoked.
-   */
-  void
-  revokeKey(const Name & keyName)
-  {
-    //TODO: Implement
-  }
-
-  /**
-   * Revoke a certificate.
-   * @param certificateName The name of the certificate that will be revoked.
-   */
-  void
-  revokeCertificate(const Name & certificateName)
-  {
-    //TODO: Implement
-  }
-
-  /**
-   * Get the identity manager given to or created by the constructor.
-   * @return The identity manager.
-   */
-  const ptr_lib::shared_ptr<IdentityManager>&
-  getIdentityManager()
-  {
-    if (!isSecurityV1_)
-      throw Error("getIdentityManager is not supported for security v2");
-
-    return identityManager_;
-  }
-
-  /*****************************************
-   *           Policy Management           *
-   *****************************************/
-
-  /**
-   * Get the policy manager given to or created by the constructor.
-   * @return The policy manager.
-   */
-  const ptr_lib::shared_ptr<PolicyManager>&
-  getPolicyManager() { return policyManager_; }
 
   /*****************************************
    *              Sign/Verify              *
@@ -810,14 +471,9 @@ public:
   sign(Data& data, const Name& certificateName,
        WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
-    if (!isSecurityV1_) {
-      SigningInfo signingInfo;
-      signingInfo.setSigningCertificateName(certificateName);
-      sign(data, signingInfo, wireFormat);
-      return;
-    }
-
-    identityManager_->signByCertificate(data, certificateName, wireFormat);
+    SigningInfo signingInfo;
+    signingInfo.setSigningCertificateName(certificateName);
+    sign(data, signingInfo, wireFormat);
   }
 
   /**
@@ -834,76 +490,9 @@ public:
     (Interest& interest, const Name& certificateName,
      WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
-    if (!isSecurityV1_) {
-      SigningInfo signingInfo;
-      signingInfo.setSigningCertificateName(certificateName);
-      sign(interest, signingInfo, wireFormat);
-      return;
-    }
-
-    identityManager_->signInterestByCertificate
-      (interest, certificateName, wireFormat);
-  }
-
-  /**
-   * Sign the byte array using a certificate name and return a Signature object.
-   * @param buffer The byte array to be signed.
-   * @param bufferLength the length of buffer.
-   * @param certificateName The certificate name used to get the signing key and which will be put into KeyLocator.
-   * @return The Signature.
-   */
-  ptr_lib::shared_ptr<Signature>
-  sign(const uint8_t* buffer, size_t bufferLength, const Name& certificateName)
-  {
-    if (!isSecurityV1_)
-      throw Error
-        ("sign(buffer, certificateName) is not supported for security v2. Use sign with SigningInfo.");
-
-    return identityManager_->signByCertificate
-      (buffer, bufferLength, certificateName);
-  }
-
-  /**
-   * Sign the byte array using a certificate name and return a Signature object.
-   * @param buffer The byte array to be signed.
-   * @param certificateName The certificate name used to get the signing key and which will be put into KeyLocator.
-   * @return The Signature.
-   */
-  ptr_lib::shared_ptr<Signature>
-  sign(const std::vector<uint8_t>& buffer, const Name& certificateName)
-  {
-    return sign(&buffer[0], buffer.size(), certificateName);
-  }
-
-  /**
-   * Wire encode the Data object, sign it and set its signature.
-   * @param data The Data object to be signed.  This updates its signature and key locator field and wireEncoding.
-   * @param identityName (optional) The identity name for the key to use for signing.  If omitted, infer the signing identity from the data packet name.
-   * @param wireFormat (optional) A WireFormat object used to encode the input. If omitted, use WireFormat getDefaultWireFormat().
-   */
-  void
-  signByIdentity(Data& data, const Name& identityName = Name(), WireFormat& wireFormat = *WireFormat::getDefaultWireFormat());
-
-  /**
-   * Sign the byte array using an identity name and return a Signature object.
-   * @param buffer The byte array to be signed.
-   * @param bufferLength the length of buffer.
-   * @param identityName The identity name.
-   * @return The Signature.
-   */
-  ptr_lib::shared_ptr<Signature>
-  signByIdentity(const uint8_t* buffer, size_t bufferLength, const Name& identityName);
-
-  /**
-   * Sign the byte array using an identity name and return a Signature object.
-   * @param buffer The byte array to be signed.
-   * @param identityName The identity name.
-   * @return The Signature.
-   */
-  ptr_lib::shared_ptr<Signature>
-  signByIdentity(const std::vector<uint8_t>& buffer, const Name& identityName)
-  {
-    return signByIdentity(&buffer[0], buffer.size(), identityName);
+    SigningInfo signingInfo;
+    signingInfo.setSigningCertificateName(certificateName);
+    sign(interest, signingInfo, wireFormat);
   }
 
   /**
@@ -918,14 +507,9 @@ public:
   signWithSha256
     (Data& data, WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
-    if (!isSecurityV1_) {
-      SigningInfo signingInfo;
-      signingInfo.setSha256Signing();
-      sign(data, signingInfo, wireFormat);
-      return;
-    }
-
-    identityManager_->signWithSha256(data, wireFormat);
+    SigningInfo signingInfo;
+    signingInfo.setSha256Signing();
+    sign(data, signingInfo, wireFormat);
   }
 
   /**
@@ -941,101 +525,10 @@ public:
   signWithSha256
     (Interest& interest, WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
-    if (!isSecurityV1_) {
-      SigningInfo signingInfo;
-      signingInfo.setSha256Signing();
-      sign(interest, signingInfo, wireFormat);
-      return;
-    }
-
-    identityManager_->signInterestWithSha256(interest, wireFormat);
+    SigningInfo signingInfo;
+    signingInfo.setSha256Signing();
+    sign(interest, signingInfo, wireFormat);
   }
-
-  /**
-   * Check the signature on the Data object and call either onVerify or
-   * onValidationFailed.
-   * We use callback functions because verify may fetch information to check the signature.
-   * @param data The Data object with the signature to check.
-   * @param onVerified If the signature is verified, this calls onVerified(data).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   * @param onValidationFailed If the signature check fails, this calls
-   * onValidationFailed(data, reason).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   */
-  void
-  verifyData
-    (const ptr_lib::shared_ptr<Data>& data, const OnVerified& onVerified,
-     const OnDataValidationFailed& onValidationFailed, int stepCount = 0);
-
-  /**
-   * Check the signature on the Data object and call either onVerify or
-   * onVerifyFailed.
-   * We use callback functions because verify may fetch information to check the signature.
-   * @deprecated Use verifyData with OnDataValidationFailed.
-   * @param data The Data object with the signature to check.
-   * @param onVerified If the signature is verified, this calls onVerified(data).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   * @param onVerifyFailed If the signature check fails, this calls
-   * onVerifyFailed(data).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   */
-  void
-  DEPRECATED_IN_NDN_IND verifyData
-    (const ptr_lib::shared_ptr<Data>& data, const OnVerified& onVerified,
-     const OnVerifyFailed& onVerifyFailed, int stepCount = 0);
-
-  /**
-   * Check the signature on the signed interest and call either onVerify or
-   * onValidationFailed. We use callback functions because verify may fetch
-   * information to check the signature.
-   * @param interest The interest with the signature to check.
-   * @param onVerified If the signature is verified, this calls onVerified(interest).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   * @param onValidationFailed If the signature check fails, this calls
-   * onValidationFailed(data, reason).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   */
-  void
-  verifyInterest
-    (const ptr_lib::shared_ptr<Interest>& interest,
-     const OnVerifiedInterest& onVerified,
-     const OnInterestValidationFailed& onValidationFailed, int stepCount = 0,
-     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat());
-
-  /**
-   * Check the signature on the signed interest and call either onVerify or
-   * onVerifyFailed. We use callback functions because verify may fetch
-   * information to check the signature.
-   * @deprecated Use verifyInterest with OnInterestValidationFailed.
-   * @param interest The interest with the signature to check.
-   * @param onVerified If the signature is verified, this calls onVerified(interest).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   * @param onVerifyFailed If the signature check fails, this calls
-   * onVerifyFailed(interest).
-   * NOTE: The library will log any exceptions thrown by this callback, but for
-   * better error handling the callback should catch and properly handle any
-   * exceptions.
-   */
-  void
-  DEPRECATED_IN_NDN_IND verifyInterest
-    (const ptr_lib::shared_ptr<Interest>& interest,
-     const OnVerifiedInterest& onVerified,
-     const OnVerifyInterestFailed& onVerifyFailed, int stepCount = 0,
-     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat());
 
   /**
    * Set the Face which will be used to fetch required certificates.
@@ -1228,48 +721,6 @@ private:
   static const SigningInfo&
   getDefaultSigningInfo();
 
-  // Private security v1 methods
-
-  void
-  onCertificateData
-    (const ptr_lib::shared_ptr<const Interest> &interest, const ptr_lib::shared_ptr<Data> &data, ptr_lib::shared_ptr<ValidationRequest> nextStep);
-
-  void
-  onCertificateInterestTimeout
-    (const ptr_lib::shared_ptr<const Interest> &interest, int retry,
-     const OnDataValidationFailed& onValidationFailed,
-     const ptr_lib::shared_ptr<Data> &data,
-     ptr_lib::shared_ptr<ValidationRequest> nextStep);
-
-  /**
-   * This is the same as onCertificateInterestTimeout, but we call
-   * onValidationFailed(originalInterest, reason) if we have too many retries.
-   */
-  void
-  onCertificateInterestTimeoutForVerifyInterest
-    (const ptr_lib::shared_ptr<const Interest> &interest, int retry,
-     const OnInterestValidationFailed& onValidationFailed,
-     const ptr_lib::shared_ptr<Interest>& originalInterest,
-     ptr_lib::shared_ptr<ValidationRequest> nextStep);
-
-  /**
-   * Get the default certificate from the identity storage and return its name.
-   * If there is no default identity or default certificate, then create one.
-   * @return The default certificate name.
-   */
-  Name
-  prepareDefaultCertificateName();
-
-  /**
-   * Create the default certificate if it is not initialized. If there is no
-   * default identity yet, creating a new tmp-identity.
-   */
-  void
-  setDefaultCertificate();
-
-  bool isSecurityV1_;
-  ptr_lib::shared_ptr<IdentityManager> identityManager_; // for security v1
-  ptr_lib::shared_ptr<PolicyManager> policyManager_;     // for security v1
   Face* face_; // for security v1
 
   ptr_lib::shared_ptr<Pib> pib_;
