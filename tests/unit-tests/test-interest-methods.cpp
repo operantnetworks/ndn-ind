@@ -22,9 +22,6 @@
  */
 
 #include "gtest/gtest.h"
-#include <ndn-ind/security/identity/memory-identity-storage.hpp>
-#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
-#include <ndn-ind/security/policy/self-verify-policy-manager.hpp>
 #include <ndn-ind/security/key-chain.hpp>
 #include <ndn-ind/interest-filter.hpp>
 #include <ndn-ind/digest-sha256-signature.hpp>
@@ -244,32 +241,6 @@ createFreshInterest()
   return freshInterest;
 }
 
-class VerifyCounter
-{
-public:
-  VerifyCounter()
-  {
-    onVerifiedCallCount_ = 0;
-    onValidationFailedCallCount_ = 0;
-  }
-
-  void
-  onVerified(const ptr_lib::shared_ptr<Interest>& interest)
-  {
-    ++onVerifiedCallCount_;
-  }
-
-  void
-  onInterestValidationFailed
-    (const ptr_lib::shared_ptr<Interest>& interest, const string& reason)
-  {
-    ++onValidationFailedCallCount_;
-  }
-
-  int onVerifiedCallCount_;
-  int onValidationFailedCallCount_;
-};
-
 class TestInterestDump : public ::testing::Test {
 public:
   TestInterestDump()
@@ -395,29 +366,19 @@ TEST_F(TestInterestMethods, RefreshNonce)
                "The refreshed nonce should be different";
 }
 
-TEST_F(TestInterestMethods, VerifyDigestSha256)
+TEST_F(TestInterestMethods, VerifyHmacWithSha256)
 {
-  // Create a KeyChain but we don't need to add keys.
-  ptr_lib::shared_ptr<MemoryIdentityStorage> identityStorage
-    (new MemoryIdentityStorage());
-  KeyChain keyChain
-    (ptr_lib::make_shared<IdentityManager>
-      (identityStorage, ptr_lib::make_shared<MemoryPrivateKeyStorage>()),
-     ptr_lib::make_shared<SelfVerifyPolicyManager>(identityStorage.get()));
-
   ptr_lib::shared_ptr<Interest> interest(new Interest(Name("/test/signed-interest")));
-  keyChain.signWithSha256(*interest);
+  const uint8_t keyBytes[] = {
+     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
+    16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+  };
+  Blob key(keyBytes, sizeof(keyBytes));
+  Name keyName("key1");
 
-  VerifyCounter counter;
-  keyChain.verifyInterest
-    (interest, bind(&VerifyCounter::onVerified, &counter, _1),
-     // Cast to disambiguate from the deprecated OnVerifyInterestFailed.
-     (const OnInterestValidationFailed)bind
-       (&VerifyCounter::onInterestValidationFailed, &counter, _1, _2));
-  ASSERT_EQ(counter.onValidationFailedCallCount_, 0) << "Signature verification failed";
-  ASSERT_EQ(counter.onVerifiedCallCount_, 1) << "Verification callback was not used.";
+  KeyChain::signWithHmacWithSha256(*interest, key, keyName);
+  ASSERT_TRUE(KeyChain::verifyInterestWithHmacWithSha256(*interest, key)) << "Signature verification failed";
 }
-
 
 TEST_F(TestInterestMethods, MatchesData)
 {
