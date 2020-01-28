@@ -23,6 +23,7 @@
 #ifndef NDN_ENCRYPTOR_V2_HPP
 #define NDN_ENCRYPTOR_V2_HPP
 
+#include "../face.hpp"
 #include "../security/key-chain.hpp"
 #include "../security/v2/validator.hpp"
 #include "../in-memory-storage/in-memory-storage-retaining.hpp"

@@ -28,9 +28,6 @@
 #if NDN_IND_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#include <ndn-ind/security/identity/memory-identity-storage.hpp>
-#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
-#include <ndn-ind/security/policy/self-verify-policy-manager.hpp>
 #include <ndn-ind/security/key-chain.hpp>
 
 using namespace std;

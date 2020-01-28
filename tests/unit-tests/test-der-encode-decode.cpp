@@ -23,9 +23,6 @@
 #include <algorithm>
 #include <sstream>
 #include <ndn-ind/security/certificate/certificate.hpp>
-#include <ndn-ind/security/identity/memory-identity-storage.hpp>
-#include <ndn-ind/security/identity/memory-private-key-storage.hpp>
-#include <ndn-ind/security/identity/identity-manager.hpp>
 #include "../../src/encoding/der/der-node.hpp"
 
 using namespace std;
@@ -242,36 +239,6 @@ TEST_F(TestCertificate, Oid)
   Blob value = derOid.toVal();
   ASSERT_EQ(oidString, string((const char*)value.buf(), value.size())) <<
     "Incorrect decoded OID";
-}
-
-TEST_F(TestCertificate, PrepareUnsignedCertificate)
-{
-  ptr_lib::shared_ptr<MemoryIdentityStorage> identityStorage
-    (new MemoryIdentityStorage());
-  ptr_lib::shared_ptr<MemoryPrivateKeyStorage> privateKeyStorage
-    (new MemoryPrivateKeyStorage());
-  IdentityManager identityManager(identityStorage, privateKeyStorage);
-  Name keyName("/test/ksk-1457560485494");
-  identityStorage->addKey
-    (keyName, KEY_TYPE_RSA, Blob(PUBLIC_KEY, sizeof(PUBLIC_KEY)));
-
-  vector<CertificateSubjectDescription> subjectDescriptions;
-  subjectDescriptions.push_back(CertificateSubjectDescription
-    (TEST_OID, "TEST NAME"));
-  ptr_lib::shared_ptr<IdentityCertificate> newCertificate =
-    identityManager.prepareUnsignedIdentityCertificate
-      (keyName, keyName.getPrefix(1), toyCertNotBefore, toyCertNotAfter,
-       subjectDescriptions);
-
-  // Update the generated certificate version to equal the one in toyCert.
-  newCertificate->setName
-    (Name(newCertificate->getName().getPrefix(-1).append
-     (toyCert.getName().get(-1))));
-
-  // Make a copy to test encoding.
-  IdentityCertificate certificateCopy(*newCertificate);
-  ASSERT_EQ(getCertificateString(toyCert), getCertificateString(certificateCopy)) <<
-    "Prepared unsigned certificate dump does not have the expected format";
 }
 
 int

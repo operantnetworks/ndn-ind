@@ -28,9 +28,6 @@
 #include <ndn-ind/lite/security/ec-public-key-lite.hpp>
 #include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
 #include <ndn-ind/security/security-exception.hpp>
-#include <ndn-ind/security/identity/basic-identity-storage.hpp>
-#include <ndn-ind/security/policy/policy-manager.hpp>
-#include <ndn-ind/security/policy/no-verify-policy-manager.hpp>
 #include <ndn-ind/security/verification-helpers.hpp>
 #include <ndn-ind/sha256-with-ecdsa-signature.hpp>
 #include <ndn-ind/sha256-with-rsa-signature.hpp>
@@ -102,64 +99,20 @@ makeTpmBackEndMemory(const string& location)
 
 KeyChain::KeyChain
   (const string& pibLocator, const string& tpmLocator, bool allowReset)
-: face_(0)
 {
-  isSecurityV1_ = false;
   construct(pibLocator, tpmLocator, allowReset);
 }
 
 KeyChain::KeyChain
   (const ptr_lib::shared_ptr<PibImpl>& pibImpl,
-   const ptr_lib::shared_ptr<TpmBackEnd>& tpmBackEnd,
-   const ptr_lib::shared_ptr<PolicyManager>& policyManager)
-: policyManager_(policyManager), face_(0)
+   const ptr_lib::shared_ptr<TpmBackEnd>& tpmBackEnd)
 {
-  isSecurityV1_ = false;
-  if (!policyManager_)
-    policyManager_.reset(new NoVerifyPolicyManager());
-
   pib_.reset(new Pib("", "", pibImpl));
   tpm_.reset(new Tpm("", "", tpmBackEnd));
 }
 
-KeyChain::KeyChain
-  (const ptr_lib::shared_ptr<IdentityManager>& identityManager,
-   const ptr_lib::shared_ptr<PolicyManager>& policyManager)
-: identityManager_(identityManager), policyManager_(policyManager),
-  face_(0)
-{
-  isSecurityV1_ = true;
-}
-
-KeyChain::KeyChain(const ptr_lib::shared_ptr<IdentityManager>& identityManager)
-: identityManager_(identityManager),
-  policyManager_(ptr_lib::make_shared<NoVerifyPolicyManager>()),
-  face_(0)
-{
-  isSecurityV1_ = true;
-}
-
 KeyChain::KeyChain()
-: face_(0)
 {
-  isSecurityV1_ = false;
-
-// Only check for v1 files if we have Unix support and SQLite3.
-#if NDN_IND_HAVE_UNISTD_H
-#ifdef NDN_IND_HAVE_SQLITE3
-  if (::access(BasicIdentityStorage::getDefaultDatabaseFilePath().c_str(), R_OK)
-        == 0 &&
-      ::access(PibSqlite3::getDefaultDatabaseFilePath().c_str(), R_OK) != 0) {
-    // The security v1 SQLite file still exists and the security v2 does not yet.
-    isSecurityV1_ = true;
-    identityManager_.reset(new IdentityManager());
-    policyManager_.reset(new NoVerifyPolicyManager());
-
-    return;
-  }
-#endif
-#endif
-
   construct("", "", true);
 }
 
@@ -217,10 +170,6 @@ KeyChain::construct(string pibLocator, string tpmLocator, bool allowReset)
   // this problem.
   tpm_ = createTpm(canonicalTpmLocator);
   pib_->setTpmLocator(canonicalTpmLocator);
-
-  // Provide a default NoVerifyPolicyManager, assuming the application will
-  // use a Validator.
-  policyManager_.reset(new NoVerifyPolicyManager());
 }
 
 ptr_lib::shared_ptr<PibIdentity>
@@ -498,178 +447,6 @@ KeyChain::importSafeBag
     (certificate.getPublicKey().buf(), certificate.getPublicKey().size(),
      keyName);
   key->addCertificate(certificate);
-}
-
-// Security v1 methods
-
-void
-KeyChain::signByIdentity(Data& data, const Name& identityName, WireFormat& wireFormat)
-{
-  if (!isSecurityV1_) {
-    SigningInfo signingInfo;
-    signingInfo.setSigningIdentity(identityName);
-    sign(data, signingInfo, wireFormat);
-    return;
-  }
-
-  Name signingCertificateName;
-
-  if (identityName.size() == 0) {
-    Name inferredIdentity = policyManager_->inferSigningIdentity(data.getName());
-    if (inferredIdentity.size() == 0)
-      signingCertificateName = identityManager_->getDefaultCertificateName();
-    else
-      signingCertificateName = identityManager_->getDefaultCertificateNameForIdentity(inferredIdentity);
-  }
-  else
-    signingCertificateName = identityManager_->getDefaultCertificateNameForIdentity(identityName);
-
-  if (signingCertificateName.size() == 0)
-    throw SecurityException("No qualified certificate name found!");
-
-  if (!policyManager_->checkSigningPolicy(data.getName(), signingCertificateName))
-    throw SecurityException("Signing Cert name does not comply with signing policy");
-
-  identityManager_->signByCertificate(data, signingCertificateName, wireFormat);
-}
-
-ptr_lib::shared_ptr<Signature>
-KeyChain::signByIdentity(const uint8_t* buffer, size_t bufferLength, const Name& identityName)
-{
-  if (!isSecurityV1_)
-    throw Error
-      ("signByIdentity(buffer, identityName) is not supported for security v2. Use sign with SigningInfo.");
-
-  Name signingCertificateName = identityManager_->getDefaultCertificateNameForIdentity(identityName);
-
-  if (signingCertificateName.size() == 0)
-    throw SecurityException("No qualified certificate name found!");
-
-  return identityManager_->signByCertificate(buffer, bufferLength, signingCertificateName);
-}
-
-void
-KeyChain::verifyData
-  (const ptr_lib::shared_ptr<Data>& data, const OnVerified& onVerified,
-   const OnDataValidationFailed& onValidationFailed, int stepCount)
-{
-  _LOG_TRACE("Enter Verify");
-
-  if (policyManager_->requireVerify(*data)) {
-    ptr_lib::shared_ptr<ValidationRequest> nextStep = policyManager_->checkVerificationPolicy
-      (data, stepCount, onVerified, onValidationFailed);
-    if (nextStep)
-      face_->expressInterest
-        (*nextStep->interest_,
-         bind(&KeyChain::onCertificateData, this, _1, _2, nextStep),
-         bind(&KeyChain::onCertificateInterestTimeout, this, _1,
-              nextStep->retry_, onValidationFailed, data, nextStep));
-  }
-  else if (policyManager_->skipVerifyAndTrust(*data)) {
-    try {
-      onVerified(data);
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("KeyChain::verifyData: Error in onVerified: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("KeyChain::verifyData: Error in onVerified.");
-    }
-  }
-  else {
-    try {
-      onValidationFailed
-        (data,
-         "The packet has no verify rule but skipVerifyAndTrust is false");
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("KeyChain::verifyData: Error in onValidationFailed: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("KeyChain::verifyData: Error in onValidationFailed.");
-    }
-  }
-}
-
-static void
-onDataValidationFailedWrapper
-  (const ptr_lib::shared_ptr<Data>& data, const string& reason,
-   const OnVerifyFailed& onVerifyFailed)
-{
-  onVerifyFailed(data);
-}
-
-void
-KeyChain::verifyData
-  (const ptr_lib::shared_ptr<Data>& data, const OnVerified& onVerified,
-   const OnVerifyFailed& onVerifyFailed, int stepCount)
-{
-  verifyData
-    (data, onVerified,
-     // Cast to disambiguate from the deprecated OnVerifyFailed.
-     (const OnDataValidationFailed)bind
-       (&onDataValidationFailedWrapper, _1, _2, onVerifyFailed), stepCount);
-}
-
-void
-KeyChain::verifyInterest
-  (const ptr_lib::shared_ptr<Interest>& interest,
-   const OnVerifiedInterest& onVerified,
-   const OnInterestValidationFailed& onValidationFailed, int stepCount,
-   WireFormat& wireFormat)
-{
-  _LOG_TRACE("Enter Verify");
-
-  if (policyManager_->requireVerify(*interest)) {
-    ptr_lib::shared_ptr<ValidationRequest> nextStep =
-      policyManager_->checkVerificationPolicy
-        (interest, stepCount, onVerified, onValidationFailed, wireFormat);
-    if (nextStep)
-      face_->expressInterest
-        (*nextStep->interest_,
-         bind(&KeyChain::onCertificateData, this, _1, _2, nextStep),
-         bind(&KeyChain::onCertificateInterestTimeoutForVerifyInterest, this,
-              _1, nextStep->retry_, onValidationFailed, interest, nextStep));
-  }
-  else if (policyManager_->skipVerifyAndTrust(*interest)) {
-    try {
-      onVerified(interest);
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("KeyChain::verifyInterest: Error in onVerified: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("KeyChain::verifyInterest: Error in onVerified.");
-    }
-  }
-  else {
-    try {
-      onValidationFailed
-        (interest,
-         "The packet has no verify rule but skipVerifyAndTrust is false");
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("KeyChain::verifyInterest: Error in onValidationFailed: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("KeyChain::verifyInterest: Error in onValidationFailed.");
-    }
-  }
-}
-
-static void
-onInterestValidationFailedWrapper
-  (const ptr_lib::shared_ptr<Interest>& interest, const string& reason,
-   const OnVerifyInterestFailed& onVerifyFailed)
-{
-  onVerifyFailed(interest);
-}
-
-void
-KeyChain::verifyInterest
-  (const ptr_lib::shared_ptr<Interest>& interest,
-   const OnVerifiedInterest& onVerified,
-   const OnVerifyInterestFailed& onVerifyFailed, int stepCount,
-   WireFormat& wireFormat)
-{
-  verifyInterest
-    (interest, onVerified,
-     // Cast to disambiguate from the deprecated OnVerifyInterestFailed.
-     (const OnInterestValidationFailed)bind
-       (&onInterestValidationFailedWrapper, _1, _2, onVerifyFailed),
-     stepCount, wireFormat);
 }
 
 #if NDN_IND_HAVE_LIBCRYPTO
@@ -1055,110 +832,6 @@ KeyChain::getDefaultKeyParams()
     defaultKeyParams_ = new RsaKeyParams();
 
   return *defaultKeyParams_;
-}
-
-// Private security v1 methods
-
-void
-KeyChain::onCertificateData(const ptr_lib::shared_ptr<const Interest> &interest, const ptr_lib::shared_ptr<Data> &data, ptr_lib::shared_ptr<ValidationRequest> nextStep)
-{
-  // Try to verify the certificate (data) according to the parameters in nextStep.
-  verifyData
-    (data, nextStep->onVerified_, nextStep->onValidationFailed_,
-     nextStep->stepCount_);
-}
-
-void
-KeyChain::onCertificateInterestTimeout
-  (const ptr_lib::shared_ptr<const Interest> &interest, int retry,
-   const OnDataValidationFailed& onValidationFailed,
-   const ptr_lib::shared_ptr<Data> &data,
-   ptr_lib::shared_ptr<ValidationRequest> nextStep)
-{
-  if (retry > 0)
-    // Issue the same expressInterest as in verifyData except decrement retry.
-    face_->expressInterest
-      (*interest,
-       bind(&KeyChain::onCertificateData, this, _1, _2, nextStep),
-       bind(&KeyChain::onCertificateInterestTimeout, this, _1, retry - 1,
-            onValidationFailed, data, nextStep));
-  else {
-    try {
-      onValidationFailed
-        (data,
-         "The retry count is zero after timeout for fetching " +
-         interest->getName().toUri());
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("KeyChain::onCertificateInterestTimeout: Error in onValidationFailed: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("KeyChain::onCertificateInterestTimeout: Error in onValidationFailed.");
-    }
-  }
-}
-
-void
-KeyChain::onCertificateInterestTimeoutForVerifyInterest
-  (const ptr_lib::shared_ptr<const Interest> &interest, int retry,
-   const OnInterestValidationFailed& onValidationFailed,
-   const ptr_lib::shared_ptr<Interest>& originalInterest,
-   ptr_lib::shared_ptr<ValidationRequest> nextStep)
-{
-  if (retry > 0)
-    // Issue the same expressInterest as in verifyInterest except decrement retry.
-    face_->expressInterest
-      (*interest,
-       bind(&KeyChain::onCertificateData, this, _1, _2, nextStep),
-       bind(&KeyChain::onCertificateInterestTimeoutForVerifyInterest, this,
-            _1, retry - 1, onValidationFailed, originalInterest, nextStep));
-  else {
-    try {
-      onValidationFailed
-        (originalInterest,
-         "The retry count is zero after timeout for fetching " +
-         interest->getName().toUri());
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("KeyChain::onCertificateInterestTimeoutForVerifyInterest: Error in onValidationFailed: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("KeyChain::onCertificateInterestTimeoutForVerifyInterest: Error in onValidationFailed.");
-    }
-  }
-}
-
-Name
-KeyChain::prepareDefaultCertificateName()
-{
-  ptr_lib::shared_ptr<IdentityCertificate> signingCertificate =
-    identityManager_->getDefaultCertificate();
-  if (!signingCertificate) {
-    setDefaultCertificate();
-    signingCertificate = identityManager_->getDefaultCertificate();
-  }
-
-  return signingCertificate->getName();
-}
-
-void
-KeyChain::setDefaultCertificate()
-{
-  if (!identityManager_->getDefaultCertificate()) {
-    Name defaultIdentity;
-    try {
-      defaultIdentity = identityManager_->getDefaultIdentity();
-    } catch (SecurityException&) {
-      // Create a default identity name.
-      uint8_t randomComponent[4];
-      ndn_Error error;
-      if ((error = CryptoLite::generateRandomBytes
-           (randomComponent, sizeof(randomComponent))))
-        throw runtime_error(ndn_getErrorString(error));
-      defaultIdentity = Name();
-      defaultIdentity.append("tmp-identity")
-        .append(Blob(randomComponent, sizeof(randomComponent)));
-    }
-
-    createIdentityAndCertificate(defaultIdentity);
-    identityManager_->setDefaultIdentity(defaultIdentity);
-  }
 }
 
 }

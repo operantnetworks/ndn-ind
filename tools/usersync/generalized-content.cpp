@@ -85,7 +85,7 @@ GeneralizedContent::publish
 
 void
 GeneralizedContent::fetch
-  (Face& face, const Name& prefix, KeyChain* validatorKeyChain,
+  (Face& face, const Name& prefix, const SegmentFetcher::VerifySegment& verifySegment,
    const OnComplete& onComplete, const OnError& onError,
    nanoseconds interestLifetime)
 {
@@ -93,7 +93,7 @@ GeneralizedContent::fetch
   //   shared_from_this() so the object remains allocated.
   ptr_lib::shared_ptr<GeneralizedContent> contentFetcher
     (new GeneralizedContent
-     (face, prefix, validatorKeyChain, onComplete, onError, interestLifetime));
+     (face, prefix, verifySegment, onComplete, onError, interestLifetime));
   contentFetcher->fetchMetaInfo();
 }
 
@@ -150,7 +150,7 @@ GeneralizedContent::onMetaInfoReceived
     baseInterest.getName().appendSegment(0);
     baseInterest.setInterestLifetime(interestLifetime_);
     SegmentFetcher::fetch
-      (face_, baseInterest, validatorKeyChain_,
+      (face_, baseInterest, verifySegment_,
        bind(&GeneralizedContent::onContentReceived, shared_from_this(), _1),
        bind(&GeneralizedContent::onSegmentFetcherError, shared_from_this(), _1, _2));
   }

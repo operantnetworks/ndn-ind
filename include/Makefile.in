@@ -390,9 +390,7 @@ ndn_cpp_cpp_headers = \
   $(wildcard ndn-ind/lite/util/*.*) \
   $(wildcard ndn-ind/security/*.*) \
   $(wildcard ndn-ind/security/certificate/*.*) \
-  $(wildcard ndn-ind/security/identity/*.*) \
   $(wildcard ndn-ind/security/pib/*.*) \
-  $(wildcard ndn-ind/security/policy/*.*) \
   $(wildcard ndn-ind/security/tpm/*.*) \
   $(wildcard ndn-ind/security/v2/*.*) \
   $(wildcard ndn-ind/security/v2/validator-config/*.*) \

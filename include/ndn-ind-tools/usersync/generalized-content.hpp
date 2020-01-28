@@ -88,11 +88,13 @@ public:
    * segments.
    * @param prefix The prefix of the Data packets before the _meta or segment
    * number components.
-   * @param validatorKeyChain When a Data packet is received this calls
-   * validatorKeyChain->verifyData(data). If validation fails then abort
-   * fetching and call onError with SEGMENT_VERIFICATION_FAILED. This does not
-   * make a copy of the KeyChain; the object must remain valid while fetching.
-   * If validatorKeyChain is null, this does not validate the data packet.
+   * @param verifySegment When a Data packet is received this calls
+   * verifySegment(data). If it returns false then abort fetching and call
+   * onError with SEGMENT_VERIFICATION_FAILED. If data validation is not
+   * required, use DontVerifySegment.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
    * @param onComplete When all segments are received, call
    * onComplete(metaInfo, content) where metaInfo is the decoded ContentMetaInfo
    * object and content is the concatenation of the content of all the segments.
@@ -112,7 +114,8 @@ public:
    */
   static void
   fetch
-    (ndn::Face& face, const ndn::Name& prefix, ndn::KeyChain* validatorKeyChain,
+    (ndn::Face& face, const ndn::Name& prefix,
+     const ndn::SegmentFetcher::VerifySegment& verifySegment,
      const OnComplete& onComplete, const OnError& onError,
      std::chrono::nanoseconds interestLifetime = std::chrono::seconds(4));
 
@@ -122,10 +125,11 @@ private:
    * for details. After creating the SegmentFetcher, call fetchMetaInfo.
    */
   GeneralizedContent
-    (ndn::Face& face, const ndn::Name& prefix, ndn::KeyChain* validatorKeyChain,
+    (ndn::Face& face, const ndn::Name& prefix, 
+     const ndn::SegmentFetcher::VerifySegment& verifySegment,
      const OnComplete& onComplete, const OnError& onError,
      std::chrono::nanoseconds interestLifetime)
-  : face_(face), prefix_(prefix), validatorKeyChain_(validatorKeyChain),
+  : face_(face), prefix_(prefix), verifySegment_(verifySegment),
     onComplete_(onComplete), onError_(onError),
     interestLifetime_(interestLifetime)
   {
@@ -151,7 +155,7 @@ private:
 
   ndn::Face& face_;
   ndn::Name prefix_;
-  ndn::KeyChain* validatorKeyChain_;
+  ndn::SegmentFetcher::VerifySegment verifySegment_;
   OnComplete onComplete_;
   OnError onError_;
   std::chrono::nanoseconds interestLifetime_;
