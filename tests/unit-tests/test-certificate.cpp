@@ -23,23 +23,10 @@
 #include "gtest/gtest.h"
 #include <ndn-ind/sha256-with-rsa-signature.hpp>
 #include <ndn-ind/security/v2/certificate-v2.hpp>
-#include "../../src/encoding/der/der-node.hpp"
 
 using namespace std;
 using namespace std::chrono;
 using namespace ndn;
-
-static system_clock::time_point
-fromIsoString(const string& dateString)
-{
-  return DerNode::DerGeneralizedTime::fromIsoString(dateString);
-}
-
-string
-toIsoString(system_clock::time_point time)
-{
-  return DerNode::DerGeneralizedTime::toIsoString(time);
-}
 
 static const uint8_t PUBLIC_KEY[] = {
 0x30, 0x81, 0x9d, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01,

@@ -534,25 +534,6 @@ public:
   std::chrono::system_clock::time_point
   toMillisecondsSince1970();
 
-  /**
-   * Convert to the ISO string representation of the time.
-   * @param time The time.
-   * @param includeFraction (optional) If true, include the six-digit fractions
-   * of a second. If false or omitted, round to the second and don't include the
-   * fraction.
-   * @return The ISO string.
-   */
-  static std::string
-  toIsoString(std::chrono::system_clock::time_point time, bool includeFraction = false);
-
-  /**
-   * Convert from the ISO string representation to the internal time format.
-   * @param isoString The ISO time formatted string.
-   * @return The time.
-   */
-  static std::chrono::system_clock::time_point
-  fromIsoString(const std::string& isoString);
-
 private:
   /**
    * Convert a UNIX timestamp to the internal string representation.

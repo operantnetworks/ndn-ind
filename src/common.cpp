@@ -23,8 +23,10 @@
 #include <cctype>
 #include <algorithm>
 #include <ndn-ind/common.hpp>
+#include "c/util/time.h"
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -102,6 +104,30 @@ equalsIgnoreCase(const string& s1, const string& s2)
 {
   return(s1.size() == s2.size() &&
          equal(s1.begin(), s1.end(), s2.begin(), charCompareCaseIgnore));
+}
+
+string
+toIsoString
+  (system_clock::time_point time, bool includeFraction)
+{
+  char isoString[25];
+  ndn_Error error;
+  if ((error = ndn_toIsoString
+       (ndn::toMillisecondsSince1970(time), includeFraction ? 1 : 0, isoString)))
+    throw runtime_error(ndn_getErrorString(error));
+
+  return isoString;
+}
+
+system_clock::time_point
+fromIsoString(const string& isoString)
+{
+  ndn_MillisecondsSince1970 milliseconds;
+  ndn_Error error;
+  if ((error = ndn_fromIsoString(isoString.c_str(), &milliseconds)))
+    throw runtime_error(ndn_getErrorString(error));
+
+  return fromMillisecondsSince1970(milliseconds);
 }
 
 }
