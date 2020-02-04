@@ -121,7 +121,7 @@ FullPSync2017::Impl::sendSyncInterest()
   syncInterest->refreshNonce();
 
   SegmentFetcher::fetch
-    (face_, *syncInterest, 0,
+    (face_, *syncInterest, SegmentFetcher::DontVerifySegment,
      bind(&FullPSync2017::Impl::onSyncData,
           static_pointer_cast<FullPSync2017::Impl>(shared_from_this()), _1, syncInterest),
      &FullPSync2017::Impl::onError);

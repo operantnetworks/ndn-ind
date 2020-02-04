@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 
     bool enabled = true;
     SegmentFetcher::fetch
-      (face, interest, 0,
+      (face, interest, SegmentFetcher::DontVerifySegment,
        bind(&processFaceStatus, _1, prefix, uri, &face, &enabled),
        bind(&onError, _1, _2, &enabled));
 
