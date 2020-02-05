@@ -52,7 +52,7 @@ The version of Boost provided by yum is too old, so we need to build it. In a te
     wget https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
     tar xvfz boost_1_71_0.tar.gz
     cd boost_1_71_0
-    ./bootstrap.sh --with-libraries=all
+    ./bootstrap.sh --with-toolset=clang --with-libraries=all
     ./b2
     sudo ./b2 install
 
@@ -64,7 +64,7 @@ Yum doesn't have Protobuf, so we need to build it. In a terminal, enter:
     git clone --recursive https://github.com/protocolbuffers/protobuf
     cd protobuf
     ./autogen.sh
-    ./configure
+    CC=clang CXX=clang++ ./configure
     make
     sudo make install
 
@@ -76,7 +76,7 @@ To build NDN-CXX and the patched version of NFD, in a terminal, enter:
     git clone https://github.com/named-data/ndn-cxx
     cd ndn-cxx
     git checkout 5149350bb437201e59b5d541568ce86e91993034
-    ./waf configure --boost-includes=/usr/local/include --boost-libs=/usr/local/lib
+    ./waf configure --check-cxx-compiler=clang++ --boost-includes=/usr/local/include --boost-libs=/usr/local/lib
     ./waf
     sudo ./waf install
 
@@ -84,7 +84,7 @@ To build NDN-CXX and the patched version of NFD, in a terminal, enter:
     git clone --recursive https://github.com/operantnetworks/nfd-ind
     cd nfd-ind
     git checkout patched
-    ./waf configure --boost-includes=/usr/local/include --boost-libs=/usr/local/lib
+    ./waf configure --check-cxx-compiler=clang++ --boost-includes=/usr/local/include --boost-libs=/usr/local/lib
     ./waf
     sudo ./waf install
     sudo cp /usr/local/etc/ndn/nfd.conf.sample /usr/local/etc/ndn/nfd.conf
@@ -96,7 +96,7 @@ To build NDN-IND, in a terminal, enter:
     cd ~
     git clone https://github.com/operantnetworks/ndn-ind
     cd ndn-ind
-    ./configure
+    CC=clang CXX=clang++ ./configure
     make
     sudo make install
 
