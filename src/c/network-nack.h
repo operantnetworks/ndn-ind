@@ -1,4 +1,16 @@
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: src/c/network-nack.h
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Use ndn-ind includes.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2016-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx nack.hpp https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/lp/nack.hpp
