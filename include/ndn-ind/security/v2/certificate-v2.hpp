@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/security/v2/certificate-v2.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Use std::chrono.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2017-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx security https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/security/v2/certificate.hpp
@@ -24,8 +36,8 @@
 #define NDN_CERTIFICATE_V2_HPP
 
 #include <stdexcept>
-#include <ndn-ind/security/validity-period.hpp>
-#include <ndn-ind/data.hpp>
+#include "../validity-period.hpp"
+#include "../../data.hpp"
 
 namespace ndn {
 

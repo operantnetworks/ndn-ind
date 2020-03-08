@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
-/*
+/**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: ndn-cxx/util/impl/steady-timer.hpp
+ * Original repository: https://github.com/named-data/ndn-cxx
+ *
+ * Summary of Changes: Conditional compile on NDN_IND_HAVE_BOOST_ASIO. Use base class MonotonicSteadyClock.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (c) 2013-2020 Regents of the University of California.
  *
  * This file is part of ndn-cxx library (NDN C++ library with eXperimental eXtensions).
