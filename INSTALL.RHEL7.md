@@ -100,15 +100,15 @@ To build NDN-IND, in a terminal, enter:
     make
     sudo make install
 
-### DNMP
+### sentinel-transport
 
-To build DNMP, in a terminal, enter:
+To build sentinel-transport, in a terminal, enter:
 
     cd ~
-    git clone https://github.com/jefft0/DNMP
-    cd DNMP
-    git checkout ndn-ind
+    git clone https://github.com/operantnetworks/sentinel-transport
+    cd sentinel-transport
     make
+    sudo make install
 
 ### ldconfig
 
@@ -118,24 +118,6 @@ needs to be run once to configure the system:
     sudo sh -c "echo /usr/local/lib64 >> /etc/ld.so.conf"
     sudo sh -c "echo /usr/local/lib >> /etc/ld.so.conf"
     sudo ldconfig
-
-## Test
-
-In one terminal, enter:
-
-    nfd-start
-
-In a second terminal, enter:
-
-    cd ~/DNMP
-    ./nod
-
-In a third terminal, enter:
-
-    cd ~/DNMP
-    ./genericCLI -p Pinger -c 10
-
-The last command should print 10 ping responses.
 
 ## Common problems
 
