@@ -49,9 +49,9 @@ To set up PKG_CONFIG_PATH, enter:
 The version of Boost provided by yum is too old, so we need to build it. In a terminal, enter:
 
     cd ~
-    wget https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.tar.gz
-    tar xvfz boost_1_73_0.tar.gz
-    cd boost_1_73_0
+    wget https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
+    tar xvfz boost_1_71_0.tar.gz
+    cd boost_1_71_0
     ./bootstrap.sh --with-toolset=clang --with-libraries=all
     ./b2
     sudo ./b2 install
