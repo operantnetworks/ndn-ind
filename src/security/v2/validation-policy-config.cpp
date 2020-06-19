@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include <stdexcept>
 #include "../../util/boost-info-parser.hpp"
-#include "../../encoding/base64.hpp"
+#include <ndn-ind/encoding/base64.hpp>
 #include <ndn-ind/security/validator-config-error.hpp>
 #include <ndn-ind/security/v2/validator.hpp>
 #include <ndn-ind/security/v2/validation-policy-config.hpp>

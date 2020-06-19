@@ -36,7 +36,7 @@
 
 #include <string>
 #include <vector>
-#include <ndn-ind/common.hpp>
+#include "../common.hpp"
 
 namespace ndn {
 

@@ -35,7 +35,7 @@
 #include <ndn-ind/security/validity-period.hpp>
 #include <ndn-ind/sha256-with-ecdsa-signature.hpp>
 #include <ndn-ind/sha256-with-rsa-signature.hpp>
-#include "../../encoding/base64.hpp"
+#include <ndn-ind/encoding/base64.hpp>
 #include <ndn-ind/security/v2/certificate-v2.hpp>
 #include <ndn-ind/key-locator.hpp>
 

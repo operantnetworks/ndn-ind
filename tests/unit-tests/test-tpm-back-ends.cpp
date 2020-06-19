@@ -47,7 +47,7 @@
 #include <ndn-ind/security/tpm/tpm-back-end-memory.hpp>
 #include <ndn-ind/security/tpm/tpm-back-end-file.hpp>
 #include <ndn-ind/security/tpm/tpm-back-end-osx.hpp>
-#include "../../src/encoding/base64.hpp"
+#include <ndn-ind/encoding/base64.hpp>
 
 using namespace std;
 using namespace ndn;

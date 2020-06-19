@@ -40,7 +40,7 @@
 #include <sstream>
 #include <fstream>
 #include <ndn-ind/util/logging.hpp>
-#include "../../src/encoding/base64.hpp"
+#include <ndn-ind/encoding/base64.hpp>
 #include <ndn-ind-tools/usersync/channel-discovery.hpp>
 
 using namespace std;

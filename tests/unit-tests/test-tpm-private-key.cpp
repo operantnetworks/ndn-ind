@@ -34,7 +34,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "../../src/encoding/base64.hpp"
+#include <ndn-ind/encoding/base64.hpp>
 #include <ndn-ind/lite/security/ec-public-key-lite.hpp>
 #include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
 #include <ndn-ind/security/certificate/public-key.hpp>
