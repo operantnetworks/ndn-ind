@@ -115,7 +115,7 @@ InterestFilter::makePattern(const string& regexFilter)
     return "^$";
 
   string pattern;
-  if (pattern[0] != '^')
+  if (regexFilter[0] != '^')
     pattern = '^' + regexFilter;
   else
     pattern = regexFilter;

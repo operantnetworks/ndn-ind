@@ -504,6 +504,9 @@ TEST_F(TestInterestMethods, InterestFilterMatching)
   ASSERT_EQ(true,  InterestFilter("/a", "<b><>*").doesMatch(Name("/a/b")));
   ASSERT_EQ(false, InterestFilter("/a", "<b><>+").doesMatch(Name("/a/b")));
   ASSERT_EQ(true,  InterestFilter("/a", "<b><>+").doesMatch(Name("/a/b/c")));
+
+  // This should behave the same as the filter "<b>" .
+  ASSERT_EQ(true,  InterestFilter("/a", "^<b>$").doesMatch(Name("/a/b")));
 }
 
 TEST_F(TestInterestMethods, SetApplicationParameters)
