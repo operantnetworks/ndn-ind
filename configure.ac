@@ -229,7 +229,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 
 # Require libcrypto.
 AC_CHECK_LIB([crypto], [EVP_EncryptInit], [],
-             [AC_MSG_FAILURE([can't find openssl crypto lib])])
+             [AC_MSG_FAILURE([can't find openssl crypto lib])], [-lpthread -ldl])
 
 # Conditionally use libsqlite3.  AX_LIB_SQLITE3 defines HAVE_SQLITE3 in confdefs.h .
 AX_LIB_SQLITE3()
