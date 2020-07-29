@@ -114,6 +114,25 @@ static const size_t ndn_DES_EDE3_KEY_LENGTH = 24;
  */
 static const size_t ndn_DES_BLOCK_LENGTH = 8;
 
+/**
+ * The size in bytes of a Poly1305 block (and of the ChaCha20-Poly1305 tag). We
+ * define this separately so that we don't have to include the openssl header
+ * everywhere.
+ */
+static const size_t ndn_POLY1305_BLOCK_LENGTH = 16;
+
+/**
+ * The key size in bytes for the ChaCha20 algorithm. We define this separately
+ * so that we don't have to include the openssl header everywhere.
+ */
+static const size_t ndn_CHACHA20_KEY_LENGTH = 32;
+
+/**
+ * The key size in bytes for the ChaCha20 nonce. We define this separately
+ * so that we don't have to include the openssl header everywhere.
+ */
+static const size_t ndn_CHACHA20_NONCE_LENGTH = 12;
+
 #ifdef __cplusplus
 }
 #endif
