@@ -45,7 +45,8 @@ typedef enum {
   ndn_EncryptAlgorithmType_AesEcb = 0,
   ndn_EncryptAlgorithmType_AesCbc = 1,
   ndn_EncryptAlgorithmType_RsaPkcs = 2,
-  ndn_EncryptAlgorithmType_RsaOaep = 3
+  ndn_EncryptAlgorithmType_RsaOaep = 3,
+  ndn_EncryptAlgorithmType_ChaCha20Poly1305 = 4
 } ndn_EncryptAlgorithmType;
 
 #ifdef __cplusplus

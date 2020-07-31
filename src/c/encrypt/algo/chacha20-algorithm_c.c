@@ -66,7 +66,6 @@ ndn_ChaCha20Algorithm_decryptPoly1305
     (unsigned char*)(encryptedData + encryptedDataLength - ndn_POLY1305_BLOCK_LENGTH));
   finalStatus = EVP_DecryptFinal
     (ctx, (unsigned char*)plainData + outLength1, &outLength2);
-  printf("Tag Verify %s\n", finalStatus > 0 ? "Successful!" : "Failed!");
 
   EVP_CIPHER_CTX_free(ctx);
   *plainDataLength = outLength1 + outLength2;
@@ -117,13 +116,6 @@ ndn_ChaCha20Algorithm_encryptPoly1305
 
   EVP_CIPHER_CTX_free(ctx);
   *encryptedDataLength = outLength1 + outLength2 + sizeof(tag);
-  printf("Debug: ndn_ChaCha20Algorithm_encryptPoly1305, encryptedDataLength %d:\n", (int)*encryptedDataLength);
-  for (int i = 0U; i < *encryptedDataLength; ++i) {
-    printf(",0x%02x", (unsigned int) encryptedData[i]);
-    if (i % 8 == 7)
-        printf("\n");
-  }
-  printf("\n");
 
   return NDN_ERROR_success;
 }

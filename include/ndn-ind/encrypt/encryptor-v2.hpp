@@ -81,14 +81,18 @@ public:
    * @param validator The validation policy to ensure correctness of the KEK.
    * @param keyChain The KeyChain used to sign Data packets.
    * @param face The Face that will be used to fetch the KEK and publish CK data.
+   * @param algorithmType (optional) The encryption algorithm type for this
+   * EncryptorV2. If omitted or ndn_EncryptAlgorithmType_AesCbc, use AES 256 in
+   * CBC mode. If ndn_EncryptAlgorithmType_ChaCha20Poly1305, use ChaCha20-Poly1305.
    */
   EncryptorV2
     (const Name& accessPrefix, const Name& ckPrefix,
      const SigningInfo& ckDataSigningInfo, const EncryptError::OnError& onError,
-     Validator* validator, KeyChain* keyChain, Face* face)
+     Validator* validator, KeyChain* keyChain, Face* face,
+     ndn_EncryptAlgorithmType algorithmType = ndn_EncryptAlgorithmType_AesCbc)
   : impl_(new Impl
           (accessPrefix, ckPrefix, ckDataSigningInfo, onError, validator, 
-           keyChain, face))
+           keyChain, face, algorithmType))
   {
     impl_->initialize();
   }
@@ -101,24 +105,61 @@ public:
    * EncryptedContent.
    * @param plainData The data to encrypt.
    * @param plainDataLength The length of plainData.
+   * @param associatedData (optional) A pointer to the associated data which is
+   * included in the calculation of the authentication tag, but is not
+   * encrypted. If associatedDataLength is 0, then this can be NULL. If the
+   * associatedData is omitted or if associatedDataLength is 0, then no
+   * associated data is used.
+   * @param associatedDataLength (optional) The length of associatedData.
    * @return The new EncryptedContent.
    */
   ptr_lib::shared_ptr<EncryptedContent>
-  encrypt(const uint8_t* plainData, size_t plainDataLength)
+  encrypt
+    (const uint8_t* plainData, size_t plainDataLength,
+     const uint8_t *associatedData = 0, size_t associatedDataLength = 0)
   {
-    return impl_->encrypt(plainData, plainDataLength);
+    return impl_->encrypt
+      (plainData, plainDataLength, associatedData, associatedDataLength);
   }
 
   /**
    * Encrypt the plainData using the existing Content Key (CK) and return a new
    * EncryptedContent.
    * @param plainData The data to encrypt.
+   * @param associatedData (optional) The associated data which is included in
+   * the calculation of the authentication tag, but is not encrypted. If
+   * associatedData.size() is 0, then this can be an isNull() Blob. If the
+   * associatedData is omitted or if its size() is 0, then no associated data is
+   * used.
    * @return The new EncryptedContent.
    */
   ptr_lib::shared_ptr<EncryptedContent>
-  encrypt(const Blob& plainData)
+  encrypt(const Blob& plainData, const Blob& associatedData = Blob())
   {
-    return encrypt(plainData.buf(), plainData.size());
+    return encrypt
+      (plainData.buf(), plainData.size(), associatedData.buf(),
+       associatedData.size());
+  }
+
+  /**
+   * Encrypt the Data packet content using the existing Content Key (CK) and
+   * replace the content with the wire encoding of the new EncryptedContent.
+   * When encrypting, use the encoding of the Data packet name as the
+   * "associated data".
+   * @param data The Data packet whose content is encrypted and replaced with a
+   * new EncryptedContent.
+   * @param wireFormat (optional) A WireFormat object used to encode the Data
+   * packet name and the EncryptedContent. If omitted, use
+   * WireFormat::getDefaultWireFormat().
+   * @return The new EncryptedContent (which replaced the Data packet content).
+   */
+  ptr_lib::shared_ptr<EncryptedContent>
+  encrypt(Data& data, WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
+  {
+    ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
+      (data.getContent(), data.getName().wireEncode(wireFormat));
+    data.setContent(encryptedContent->wireEncodeV2(wireFormat));
+    return encryptedContent;
   }
 
   /**
@@ -209,12 +250,8 @@ private:
     Impl
       (const Name& accessPrefix, const Name& ckPrefix,
        const SigningInfo& ckDataSigningInfo, const EncryptError::OnError& onError,
-       Validator* validator, KeyChain* keyChain, Face* face)
-    : accessPrefix_(accessPrefix), ckPrefix_(ckPrefix),
-      ckDataSigningInfo_(ckDataSigningInfo), isKekRetrievalInProgress_(false),
-      onError_(onError), keyChain_(keyChain), face_(face),
-      kekPendingInterestId_(0)
-    {}
+       Validator* validator, KeyChain* keyChain, Face* face,
+       ndn_EncryptAlgorithmType algorithmType);
 
     /**
      * Complete the work of the constructor. This is needed because we can't
@@ -227,7 +264,9 @@ private:
     shutdown();
 
     ptr_lib::shared_ptr<EncryptedContent>
-    encrypt(const uint8_t* plainData, size_t plainDataLength);
+    encrypt
+      (const uint8_t* plainData, size_t plainDataLength,
+       const uint8_t *associatedData, size_t associatedDataLength);
 
     /**
      * Create a new Content Key (CK) and publish the corresponding CK Data
@@ -276,7 +315,7 @@ private:
     Name accessPrefix_;
     Name ckPrefix_;
     Name ckName_;
-    uint8_t ckBits_[AES_KEY_SIZE];
+    std::vector<uint8_t> ckBits_;
     SigningInfo ckDataSigningInfo_;
 
     bool isKekRetrievalInProgress_;
@@ -290,6 +329,7 @@ private:
 
     KeyChain* keyChain_;
     Face* face_;
+    ndn_EncryptAlgorithmType algorithmType_;
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

@@ -103,6 +103,10 @@ encodeEncryptedContentV2Value(const void *context, struct ndn_TlvEncoder *encode
           &dummyEndOffset, encoder)))
       return error;
   }
+  if ((error = ndn_TlvEncoder_writeOptionalNonNegativeIntegerTlv
+       (encoder, ndn_Tlv_Encrypt_EncryptionAlgorithm,
+        encryptedContent->algorithmType)))
+    return error;
 
   return NDN_ERROR_success;
 }
@@ -125,6 +129,7 @@ ndn_decodeTlvEncryptedContentV2
   size_t endOffset;
   int gotExpectedType;
   size_t dummyBeginOffset, dummyEndOffset;
+  int algorithmType;
 
   if ((error = ndn_TlvDecoder_readNestedTlvsStart
        (decoder, ndn_Tlv_Encrypt_EncryptedContent, &endOffset)))
@@ -154,6 +159,11 @@ ndn_decodeTlvEncryptedContentV2
       return error;
     encryptedContent->keyLocator.type = ndn_KeyLocatorType_KEYNAME;
   }
+
+  if ((error = ndn_TlvDecoder_readOptionalNonNegativeIntegerTlv
+       (decoder, ndn_Tlv_Encrypt_EncryptionAlgorithm, endOffset, &algorithmType)))
+    return error;
+  encryptedContent->algorithmType = algorithmType;
 
   if ((error = ndn_TlvDecoder_finishNestedTlvs(decoder, endOffset)))
     return error;

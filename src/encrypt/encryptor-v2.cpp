@@ -38,6 +38,7 @@
 #include <ndn-ind/lite/util/crypto-lite.hpp>
 #include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
 #include <ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp>
+#include <ndn-ind/lite/encrypt/algo/chacha20-algorithm-lite.hpp>
 #include <ndn-ind/encrypt/encrypted-content.hpp>
 #include <ndn-ind/encrypt/encryptor-v2.hpp>
 
@@ -47,6 +48,24 @@ using namespace ndn::func_lib;
 INIT_LOGGER("ndn.EncryptorV2");
 
 namespace ndn {
+
+EncryptorV2::Impl::Impl
+  (const Name& accessPrefix, const Name& ckPrefix,
+   const SigningInfo& ckDataSigningInfo, const EncryptError::OnError& onError,
+   Validator* validator, KeyChain* keyChain, Face* face,
+   ndn_EncryptAlgorithmType algorithmType)
+: accessPrefix_(accessPrefix), ckPrefix_(ckPrefix),
+  ckDataSigningInfo_(ckDataSigningInfo), isKekRetrievalInProgress_(false),
+  onError_(onError), keyChain_(keyChain), face_(face),
+  algorithmType_(algorithmType), kekPendingInterestId_(0)
+{
+  if (algorithmType == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
+    ckBits_.resize(ndn_CHACHA20_KEY_LENGTH);
+  else if (algorithmType == ndn_EncryptAlgorithmType_AesCbc)
+    ckBits_.resize(AES_KEY_SIZE);
+  else
+    throw std::runtime_error("EncryptorV2: Unsupported encryption algorithm type");
+}
 
 void
 EncryptorV2::Impl::initialize()
@@ -85,7 +104,7 @@ EncryptorV2::Impl::initialize()
     void
     onRegisterFailed(const ptr_lib::shared_ptr<const Name>& prefix)
     {
-      _LOG_ERROR("Failed to register prefix: " << prefix);
+      _LOG_ERROR("Failed to register prefix: " << *prefix);
     }
 
     ptr_lib::shared_ptr<Impl> parent_;
@@ -110,30 +129,57 @@ EncryptorV2::Impl::shutdown()
 }
 
 ptr_lib::shared_ptr<EncryptedContent>
-EncryptorV2::Impl::encrypt(const uint8_t* plainData, size_t plainDataLength)
+EncryptorV2::Impl::encrypt
+  (const uint8_t* plainData, size_t plainDataLength,
+   const uint8_t *associatedData, size_t associatedDataLength)
 {
-  // Generate the initial vector.
-  uint8_t initialVector[AES_IV_SIZE];
   ndn_Error error;
-  if ((error = CryptoLite::generateRandomBytes
-       (initialVector, sizeof(initialVector))))
-    throw runtime_error(ndn_getErrorString(error));
-
-  // Add room for the padding.
-  ptr_lib::shared_ptr<vector<uint8_t> > encryptedData
-    (new vector<uint8_t>(plainDataLength + ndn_AES_BLOCK_LENGTH));
-  size_t encryptedDataLength;
-  if ((error = AesAlgorithmLite::encrypt256Cbc
-       (ckBits_, sizeof(ckBits_), initialVector, sizeof(initialVector),
-        plainData, plainDataLength, &encryptedData->front(), encryptedDataLength)))
-    throw runtime_error(string("AesAlgorithm: ") + ndn_getErrorString(error));
-  encryptedData->resize(encryptedDataLength);
-
+  ptr_lib::shared_ptr<vector<uint8_t> > encryptedData;
   ptr_lib::shared_ptr<EncryptedContent> content =
     ptr_lib::make_shared<EncryptedContent>();
-  content->setInitialVector(Blob(initialVector, sizeof(initialVector)));
+
+  if (algorithmType_ == ndn_EncryptAlgorithmType_ChaCha20Poly1305) {
+    // Generate the initial vector.
+    uint8_t initialVector[ndn_CHACHA20_NONCE_LENGTH];
+    if ((error = CryptoLite::generateRandomBytes
+         (initialVector, sizeof(initialVector))))
+      throw runtime_error(ndn_getErrorString(error));
+    content->setInitialVector(Blob(initialVector, sizeof(initialVector)));
+    content->setAlgorithmType(algorithmType_);
+
+    // Add room for the authentication tag.
+    encryptedData.reset
+      (new vector<uint8_t>(plainDataLength + ndn_POLY1305_BLOCK_LENGTH));
+    size_t encryptedDataLength;
+    if ((error = ChaCha20AlgorithmLite::encryptPoly1305
+         (&ckBits_[0], ckBits_.size(), initialVector, sizeof(initialVector),
+          plainData, plainDataLength, associatedData, associatedDataLength,
+          &encryptedData->front(), encryptedDataLength)))
+      throw runtime_error(string("ChaCha20Algorithm: ") + ndn_getErrorString(error));
+    encryptedData->resize(encryptedDataLength);
+  }
+  else {
+    uint8_t initialVector[AES_IV_SIZE];
+    if ((error = CryptoLite::generateRandomBytes
+         (initialVector, sizeof(initialVector))))
+      throw runtime_error(ndn_getErrorString(error));
+    content->setInitialVector(Blob(initialVector, sizeof(initialVector)));
+    // This is the default, so don't call setAlgorithmType();
+
+    // Add room for the padding.
+    encryptedData.reset
+      (new vector<uint8_t>(plainDataLength + ndn_POLY1305_BLOCK_LENGTH));
+    size_t encryptedDataLength;
+    if ((error = AesAlgorithmLite::encrypt256Cbc
+         (&ckBits_[0], ckBits_.size(), initialVector, sizeof(initialVector),
+          plainData, plainDataLength, &encryptedData->front(), encryptedDataLength)))
+      throw runtime_error(string("AesAlgorithm: ") + ndn_getErrorString(error));
+    encryptedData->resize(encryptedDataLength);
+  }
+
   content->setPayload(Blob(encryptedData, false));
   content->setKeyLocatorName(ckName_);
+  content->setAlgorithmType(algorithmType_);
 
   return content;
 }
@@ -151,7 +197,7 @@ EncryptorV2::Impl::regenerateCk()
 
   _LOG_TRACE("Generating new CK: " + ckName_.toUri());
   ndn_Error error;
-  if ((error = CryptoLite::generateRandomBytes(ckBits_, sizeof(ckBits_))))
+  if ((error = CryptoLite::generateRandomBytes(&ckBits_[0], ckBits_.size())))
     throw runtime_error(ndn_getErrorString(error));
 
   // One implication: If the CK is updated before the KEK is fetched, then
@@ -320,7 +366,7 @@ EncryptorV2::Impl::makeAndPublishCkData(const EncryptError::OnError& onError)
     size_t encryptedDataLength;
     ndn_Error error;
     if ((error = kek.encrypt
-         (ckBits_, sizeof(ckBits_), ndn_EncryptAlgorithmType_RsaOaep,
+         (&ckBits_[0], ckBits_.size(), ndn_EncryptAlgorithmType_RsaOaep,
           &encryptedData->front(), encryptedDataLength)))
       throw runtime_error("RsaAlgorithm: Error encrypting with public key");
     encryptedData->resize(encryptedDataLength);

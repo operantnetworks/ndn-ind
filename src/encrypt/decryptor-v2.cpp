@@ -35,6 +35,7 @@
 #include <sstream>
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp>
+#include <ndn-ind/lite/encrypt/algo/chacha20-algorithm-lite.hpp>
 #include <ndn-ind/encrypt/encryptor-v2.hpp>
 #include <ndn-ind/encrypt/decryptor-v2.hpp>
 
@@ -85,7 +86,7 @@ DecryptorV2::Impl::shutdown()
 void
 DecryptorV2::Impl::decrypt
   (const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent,
-   const DecryptSuccessCallback& onSuccess,
+   const Blob& associatedData, const DecryptSuccessCallback& onSuccess,
    const EncryptError::OnError& onError)
 {
   if (encryptedContent->getKeyLocator().getType() != ndn_KeyLocatorType_KEYNAME) {
@@ -115,14 +116,15 @@ DecryptorV2::Impl::decrypt
     contentKey = contentKeys_[ckName];
 
   if (contentKey->isRetrieved)
-    doDecrypt(*encryptedContent, contentKey->bits, onSuccess, onError);
+    doDecrypt
+      (*encryptedContent, contentKey->bits, associatedData, onSuccess, onError);
   else {
     _LOG_TRACE
       ("CK " << ckName <<
        " not yet available, so adding to the pending decrypt queue");
     contentKey->pendingDecrypts.push_back
       (ptr_lib::make_shared<ContentKey::PendingDecrypt>
-       (encryptedContent, onSuccess, onError));
+       (encryptedContent, associatedData, onSuccess, onError));
   }
 
   if (isNew)
@@ -417,8 +419,9 @@ DecryptorV2::Impl::decryptCkAndProcessPendingDecrypts
     ContentKey::PendingDecrypt& pendingDecrypt = *contentKey.pendingDecrypts[i];
     // TODO: If this calls onError, should we quit?
     doDecrypt
-      (*pendingDecrypt.encryptedContent, contentKey.bits,
-       pendingDecrypt.onSuccess, pendingDecrypt.onError);
+      (*pendingDecrypt.encryptedContent, contentKey.bits, 
+       pendingDecrypt.associatedData, pendingDecrypt.onSuccess,
+       pendingDecrypt.onError);
   }
 
   contentKey.pendingDecrypts.clear();
@@ -427,7 +430,7 @@ DecryptorV2::Impl::decryptCkAndProcessPendingDecrypts
 void
 DecryptorV2::Impl::doDecrypt
   (const EncryptedContent& content, const Blob& ckBits,
-   const DecryptSuccessCallback& onSuccess,
+   const Blob& associatedData, const DecryptSuccessCallback& onSuccess,
    const EncryptError::OnError& onError)
 {
   if (!content.hasInitialVector()) {
@@ -440,9 +443,22 @@ DecryptorV2::Impl::doDecrypt
   ptr_lib::shared_ptr<vector<uint8_t> > plainData
     (new vector<uint8_t>(content.getPayload().size()));
   size_t plainDataLength;
-  if ((error = AesAlgorithmLite::decrypt256Cbc
-       (ckBits, content.getInitialVector(), content.getPayload(),
-        &plainData->front(), plainDataLength))) {
+  if (content.getAlgorithmType() == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
+    error = ChaCha20AlgorithmLite::decryptPoly1305
+      (ckBits, content.getInitialVector(), content.getPayload(),
+       associatedData, &plainData->front(), plainDataLength);
+  else if (content.getAlgorithmType() == (ndn_EncryptAlgorithmType)-1 ||
+           content.getAlgorithmType() == ndn_EncryptAlgorithmType_AesCbc)
+    error = AesAlgorithmLite::decrypt256Cbc
+      (ckBits, content.getInitialVector(), content.getPayload(),
+       &plainData->front(), plainDataLength);
+  else {
+    onError(EncryptError::ErrorCode::DecryptionFailure,
+      "Unsupported encrypt Initial Vector length");
+    return;
+  }
+
+  if (error) {
     onError(EncryptError::ErrorCode::DecryptionFailure,
       "Decryption error in doDecrypt: " + string(ndn_getErrorString(error)));
     return;

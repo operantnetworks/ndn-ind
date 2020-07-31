@@ -104,7 +104,7 @@ AccessManagerV2::Impl::initialize(const Name& dataset)
     void
     onRegisterFailed(const ptr_lib::shared_ptr<const Name>& prefix)
     {
-      _LOG_ERROR("AccessManagerV2: Failed to register prefix: " << prefix);
+      _LOG_ERROR("AccessManagerV2: Failed to register prefix: " << *prefix);
     }
 
      ptr_lib::shared_ptr<Impl> parent_;
