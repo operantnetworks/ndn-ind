@@ -228,6 +228,36 @@ private:
     decryptAndImportKdk
       (const Data& kdkData, const EncryptError::OnError& onError);
 
+    /**
+     * Fetch the encrypted group content key by appending ckName with
+     * /ENCRYPTED-BY/<credential-identity>/KEY/<key-id> . When received, call
+     * decryptCkAndProcessPendingDecrypts().
+     * @param ckName The Name from the KeyLocator of the EncryptedContent.
+     * Assume this has GCK instead of CK.
+     * @param contentKey The ContentKey structure for storing the content key bits
+     * (passed to decryptCkAndProcessPendingDecrypts()).
+     * @param onError On failure, this calls onError(errorCode, message)
+     * where errorCode is from EncryptError::ErrorCode, and message is an error
+     * string.
+     * @param nTriesLeft If fetching times out, decrement nTriesLeft and try
+     * again until it is zero.
+     */
+    void
+    fetchGck
+      (const Name& ckName, const ptr_lib::shared_ptr<ContentKey>& contentKey,
+       const EncryptError::OnError& onError, int nTriesLeft);
+
+    /**
+     * Decrypt ckData to get the content key bits, store them in the contentKey
+     * structure, and call doDecrypt for each entry in pendingDecrypts.
+     * @param contentKey The ContentKey structure for storing the content key bits.
+     * @param ckData The retrieved Data packet with the encrypted content key.
+     * @param kdkKeyName This decrypts the ckData contents with the private key
+     * in the internalKeyChain_ with the name kdkKeyName. However, if kdkKeyName 
+     * is empty, assume that ckData is a group content key and decrypt using the
+     * private key in keyChain_ with the name credentialsKey_->getName() .
+     * @param onError
+     */
     void
     decryptCkAndProcessPendingDecrypts
       (ContentKey& contentKey, const Data& ckData, const Name& kdkKeyName,
