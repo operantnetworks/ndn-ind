@@ -35,6 +35,7 @@
 #include <sstream>
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp>
+#include <ndn-ind/lite/encrypt/algo/chacha20-algorithm-lite.hpp>
 #include <ndn-ind/encrypt/encryptor-v2.hpp>
 #include <ndn-ind/encrypt/decryptor-v2.hpp>
 
@@ -85,7 +86,7 @@ DecryptorV2::Impl::shutdown()
 void
 DecryptorV2::Impl::decrypt
   (const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent,
-   const DecryptSuccessCallback& onSuccess,
+   const Blob& associatedData, const DecryptSuccessCallback& onSuccess,
    const EncryptError::OnError& onError)
 {
   if (encryptedContent->getKeyLocator().getType() != ndn_KeyLocatorType_KEYNAME) {
@@ -115,18 +116,23 @@ DecryptorV2::Impl::decrypt
     contentKey = contentKeys_[ckName];
 
   if (contentKey->isRetrieved)
-    doDecrypt(*encryptedContent, contentKey->bits, onSuccess, onError);
+    doDecrypt
+      (*encryptedContent, contentKey->bits, associatedData, onSuccess, onError);
   else {
     _LOG_TRACE
       ("CK " << ckName <<
        " not yet available, so adding to the pending decrypt queue");
     contentKey->pendingDecrypts.push_back
       (ptr_lib::make_shared<ContentKey::PendingDecrypt>
-       (encryptedContent, onSuccess, onError));
+       (encryptedContent, associatedData, onSuccess, onError));
   }
 
-  if (isNew)
-    fetchCk(ckName, contentKey, onError, EncryptorV2::N_RETRIES);
+  if (isNew) {
+    if (ckName.size() >= 2 && ckName[-2].equals(EncryptorV2::getNAME_COMPONENT_GCK()))
+      fetchGck(ckName, contentKey, onError, EncryptorV2::N_RETRIES);
+    else
+      fetchCk(ckName, contentKey, onError, EncryptorV2::N_RETRIES);
+  }
 }
 
 void
@@ -378,6 +384,98 @@ DecryptorV2::Impl::decryptAndImportKdk
 }
 
 void
+DecryptorV2::Impl::fetchGck
+  (const Name& ckName, const ptr_lib::shared_ptr<ContentKey>& contentKey,
+   const EncryptError::OnError& onError, int nTriesLeft)
+{
+  // <whatever-prefix>/GCK/<ck-id>  /ENCRYPTED-BY /<credential-identity>/KEY/<key-id>
+  // \                           /                \                                 /
+  //  -----------  --------------                  ----------------  ---------------
+  //             \/                                                \/
+  //   from the encrypted data                             from configuration
+
+  Name encryptedGckName(ckName);
+  encryptedGckName
+    .append(EncryptorV2::getNAME_COMPONENT_ENCRYPTED_BY())
+    .append(credentialsKey_->getName());
+
+  _LOG_TRACE("DecryptorV2: Fetching GCK " << encryptedGckName);
+
+  // Prepare the callbacks.
+  class Callbacks {
+  public:
+    Callbacks
+      (const ptr_lib::shared_ptr<Impl>& parent, const Name& ckName,
+       const ptr_lib::shared_ptr<ContentKey>& contentKey,
+       const EncryptError::OnError& onError, int nTriesLeft)
+    : parent_(parent), ckName_(ckName), contentKey_(contentKey),
+      onError_(onError), nTriesLeft_(nTriesLeft)
+    {}
+
+    void
+    onData
+      (const ptr_lib::shared_ptr<const Interest>& ckInterest,
+       const ptr_lib::shared_ptr<Data>& ckData)
+    {
+      try {
+        contentKey_->pendingInterest = 0;
+
+        // Pass an empty kdkKeyName so that we decrypt with the credentialsKey_.
+        parent_->decryptCkAndProcessPendingDecrypts
+          (*contentKey_, *ckData, Name(), onError_);
+      } catch (const std::exception& ex) {
+        onError_(EncryptError::ErrorCode::General,
+          string("Error in DecryptorV2::fetchGck onData: ") + ex.what());
+      }
+    }
+
+    void
+    onTimeout(const ptr_lib::shared_ptr<const Interest>& interest)
+    {
+      contentKey_->pendingInterest = 0;
+      if (nTriesLeft_ > 1)
+        parent_->fetchGck(ckName_, contentKey_, onError_, nTriesLeft_ - 1);
+      else
+        onError_(EncryptError::ErrorCode::CkRetrievalTimeout,
+          "Retrieval of GCK [" + interest->getName().toUri() + "] timed out");
+    }
+
+    void
+    onNetworkNack
+      (const ptr_lib::shared_ptr<const Interest>& interest,
+       const ptr_lib::shared_ptr<NetworkNack>& networkNack)
+    {
+      contentKey_->pendingInterest = 0;
+      ostringstream message;
+      message << "Retrieval of GCK [" << interest->getName().toUri() <<
+        "] failed. Got NACK (" << networkNack->getReason() << ")";
+      onError_(EncryptError::ErrorCode::CkRetrievalFailure, message.str());
+    }
+
+    ptr_lib::shared_ptr<Impl> parent_;
+    Name ckName_;
+    ptr_lib::shared_ptr<ContentKey> contentKey_;
+    EncryptError::OnError onError_;
+    int nTriesLeft_;
+  };
+
+  try {
+    // We make a shared_ptr object since it needs to exist after we return, and
+    // pass shared_from_this() to keep a pointer to this Impl.
+    ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
+      (shared_from_this(), ckName, contentKey, onError, nTriesLeft);
+    contentKey->pendingInterest = face_->expressInterest
+      (Interest(ckName).setMustBeFresh(false).setCanBePrefix(true),
+       bind(&Callbacks::onData, callbacks, _1, _2),
+       bind(&Callbacks::onTimeout, callbacks, _1),
+       bind(&Callbacks::onNetworkNack, callbacks, _1, _2));
+  } catch (const std::exception& ex) {
+    onError(EncryptError::ErrorCode::General,
+            string("expressInterest error: ") + ex.what());
+  }
+}
+
+void
 DecryptorV2::Impl::decryptCkAndProcessPendingDecrypts
   (ContentKey& contentKey, const Data& ckData, const Name& kdkKeyName,
    const EncryptError::OnError& onError)
@@ -394,20 +492,41 @@ DecryptorV2::Impl::decryptCkAndProcessPendingDecrypts
   }
 
   Blob ckBits;
-  try {
-    ckBits = internalKeyChain_.getTpm().decrypt
-      (content.getPayload().buf(), content.getPayload().size(), kdkKeyName);
-  } catch (const std::exception& ex) {
-    // We don't expect this from the in-memory KeyChain.
-    onError(EncryptError::ErrorCode::DecryptionFailure,
-      string("Error decrypting the CK EncryptedContent ") + ex.what());
-    return;
-  }
+  if (kdkKeyName.size() == 0) {
+    // Assume this is a group content key encrypted directly with credentialsKey_.
+    try {
+      ckBits = keyChain_->getTpm().decrypt
+        (content.getPayload().buf(), content.getPayload().size(),
+         credentialsKey_->getName());
+    } catch (const std::exception& ex) {
+      onError(EncryptError::ErrorCode::DecryptionFailure,
+        string("Error decrypting the GCK: ") + ex.what());
+      return;
+    }
 
-  if (ckBits.isNull()) {
-    onError(EncryptError::ErrorCode::TpmKeyNotFound,
-      "Could not decrypt secret, " + kdkKeyName.toUri() + " not found in TPM");
-    return;
+    if (ckBits.isNull()) {
+      onError(EncryptError::ErrorCode::TpmKeyNotFound,
+        "Could not decrypt secret, " + credentialsKey_->getName().toUri() +
+        " not found in TPM");
+      return;
+    }
+  }
+  else {
+    try {
+      ckBits = internalKeyChain_.getTpm().decrypt
+        (content.getPayload().buf(), content.getPayload().size(), kdkKeyName);
+    } catch (const std::exception& ex) {
+      // We don't expect this from the in-memory KeyChain.
+      onError(EncryptError::ErrorCode::DecryptionFailure,
+        string("Error decrypting the CK EncryptedContent ") + ex.what());
+      return;
+    }
+
+    if (ckBits.isNull()) {
+      onError(EncryptError::ErrorCode::TpmKeyNotFound,
+        "Could not decrypt secret, " + kdkKeyName.toUri() + " not found in TPM");
+      return;
+    }
   }
 
   contentKey.bits = ckBits;
@@ -417,8 +536,9 @@ DecryptorV2::Impl::decryptCkAndProcessPendingDecrypts
     ContentKey::PendingDecrypt& pendingDecrypt = *contentKey.pendingDecrypts[i];
     // TODO: If this calls onError, should we quit?
     doDecrypt
-      (*pendingDecrypt.encryptedContent, contentKey.bits,
-       pendingDecrypt.onSuccess, pendingDecrypt.onError);
+      (*pendingDecrypt.encryptedContent, contentKey.bits, 
+       pendingDecrypt.associatedData, pendingDecrypt.onSuccess,
+       pendingDecrypt.onError);
   }
 
   contentKey.pendingDecrypts.clear();
@@ -427,7 +547,7 @@ DecryptorV2::Impl::decryptCkAndProcessPendingDecrypts
 void
 DecryptorV2::Impl::doDecrypt
   (const EncryptedContent& content, const Blob& ckBits,
-   const DecryptSuccessCallback& onSuccess,
+   const Blob& associatedData, const DecryptSuccessCallback& onSuccess,
    const EncryptError::OnError& onError)
 {
   if (!content.hasInitialVector()) {
@@ -440,9 +560,22 @@ DecryptorV2::Impl::doDecrypt
   ptr_lib::shared_ptr<vector<uint8_t> > plainData
     (new vector<uint8_t>(content.getPayload().size()));
   size_t plainDataLength;
-  if ((error = AesAlgorithmLite::decrypt256Cbc
-       (ckBits, content.getInitialVector(), content.getPayload(),
-        &plainData->front(), plainDataLength))) {
+  if (content.getAlgorithmType() == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
+    error = ChaCha20AlgorithmLite::decryptPoly1305
+      (ckBits, content.getInitialVector(), content.getPayload(),
+       associatedData, &plainData->front(), plainDataLength);
+  else if (content.getAlgorithmType() == (ndn_EncryptAlgorithmType)-1 ||
+           content.getAlgorithmType() == ndn_EncryptAlgorithmType_AesCbc)
+    error = AesAlgorithmLite::decrypt256Cbc
+      (ckBits, content.getInitialVector(), content.getPayload(),
+       &plainData->front(), plainDataLength);
+  else {
+    onError(EncryptError::ErrorCode::DecryptionFailure,
+      "Unsupported encrypt Initial Vector length");
+    return;
+  }
+
+  if (error) {
     onError(EncryptError::ErrorCode::DecryptionFailure,
       "Decryption error in doDecrypt: " + string(ndn_getErrorString(error)));
     return;

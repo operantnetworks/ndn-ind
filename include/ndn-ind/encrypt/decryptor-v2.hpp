@@ -66,6 +66,37 @@ public:
    * a KeyLocator with a KEYNAME and and initial vector. This does not copy
    * the EncryptedContent object. If you may change it later, then pass in a
    * copy of the object.
+   * @param associatedData The associated data which is included in the
+   * calculation of the authentication tag, but is not encrypted. If
+   * associatedData.size() is 0, then this can be an isNull() Blob. If
+   * associatedData.size() is 0, then no associated data is used.
+   * @param onSuccess On successful decryption, this calls
+   * onSuccess(plainData) where plainData is the decrypted Blob.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param onError On failure, this calls onError(errorCode, message)
+   * where errorCode is from EncryptError::ErrorCode, and message is an error
+   * string.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   */
+  void
+  decrypt
+    (const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent,
+     const Blob& associatedData, const DecryptSuccessCallback& onSuccess,
+     const EncryptError::OnError& onError)
+  {
+    impl_->decrypt(encryptedContent, associatedData, onSuccess, onError);
+  }
+
+  /**
+   * Asynchronously decrypt the encryptedContent.
+   * @param encryptedContent The EncryptedContent to decrypt, which must have
+   * a KeyLocator with a KEYNAME and and initial vector. This does not copy
+   * the EncryptedContent object. If you may change it later, then pass in a
+   * copy of the object.
    * @param onSuccess On successful decryption, this calls
    * onSuccess(plainData) where plainData is the decrypted Blob.
    * NOTE: The library will log any exceptions thrown by this callback, but for
@@ -84,7 +115,49 @@ public:
      const DecryptSuccessCallback& onSuccess,
      const EncryptError::OnError& onError)
   {
-    impl_->decrypt(encryptedContent, onSuccess, onError);
+    decrypt(encryptedContent, Blob(), onSuccess, onError);
+  }
+
+  /**
+   * Asynchronously decrypt the Data packet content by decoding it as an
+   * EncryotedContent. When encrypting, use the encoding of the Data packet name
+   * as the "associated data".
+   * @param data The Data packet whose content is decoded as an EncryptdContent
+   * and whose name encoding is used as the "associated data".
+   * @param onSuccess On successful decryption, this calls
+   * onSuccess(plainData) where plainData is the decrypted Blob.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param onError On failure, this calls onError(errorCode, message)
+   * where errorCode is from EncryptError::ErrorCode, and message is an error
+   * string.
+   * @param wireFormat (optional) A WireFormat object used to decode the Data
+   * content as an EncryptedContent, and to encode the Data packet name to use
+   * as the "associated data". If omitted, use WireFormat::getDefaultWireFormat().
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   */
+  void
+  decrypt
+    (const Data& data, const DecryptSuccessCallback& onSuccess,
+     const EncryptError::OnError& onError,
+     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
+  {
+    ptr_lib::shared_ptr<EncryptedContent> encryptedContent
+      (new EncryptedContent());
+    try {
+      encryptedContent->wireDecodeV2(data.getContent(), wireFormat);
+    } catch (const std::exception& ex) {
+      onError(EncryptError::ErrorCode::DecryptionFailure,
+        std::string("Error decoding the Data content as EncryptedContent: ") + ex.what());
+      return;
+    }
+
+    decrypt
+      (encryptedContent, data.getName().wireEncode(wireFormat), onSuccess,
+       onError);
   }
 
   class ContentKey {
@@ -93,13 +166,15 @@ public:
     public:
       PendingDecrypt
         (const ptr_lib::shared_ptr<EncryptedContent>& encryptedContentIn,
+         const Blob& associatedDataIn,
          const DecryptSuccessCallback& onSuccessIn,
          const EncryptError::OnError& onErrorIn)
-      : encryptedContent(encryptedContentIn), onSuccess(onSuccessIn),
-        onError(onErrorIn)
+      : encryptedContent(encryptedContentIn), associatedData(associatedDataIn),
+        onSuccess(onSuccessIn), onError(onErrorIn)
       {}
 
       ptr_lib::shared_ptr<EncryptedContent> encryptedContent;
+      Blob associatedData;
       DecryptSuccessCallback onSuccess;
       EncryptError::OnError onError;
     };
@@ -131,7 +206,7 @@ private:
   void
   decrypt
     (const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent,
-     const DecryptSuccessCallback& onSuccess,
+     const Blob& associatedData, const DecryptSuccessCallback& onSuccess,
      const EncryptError::OnError& onError);
 
   private:
@@ -153,6 +228,36 @@ private:
     decryptAndImportKdk
       (const Data& kdkData, const EncryptError::OnError& onError);
 
+    /**
+     * Fetch the encrypted group content key by appending ckName with
+     * /ENCRYPTED-BY/<credential-identity>/KEY/<key-id> . When received, call
+     * decryptCkAndProcessPendingDecrypts().
+     * @param ckName The Name from the KeyLocator of the EncryptedContent.
+     * Assume this has GCK instead of CK.
+     * @param contentKey The ContentKey structure for storing the content key bits
+     * (passed to decryptCkAndProcessPendingDecrypts()).
+     * @param onError On failure, this calls onError(errorCode, message)
+     * where errorCode is from EncryptError::ErrorCode, and message is an error
+     * string.
+     * @param nTriesLeft If fetching times out, decrement nTriesLeft and try
+     * again until it is zero.
+     */
+    void
+    fetchGck
+      (const Name& ckName, const ptr_lib::shared_ptr<ContentKey>& contentKey,
+       const EncryptError::OnError& onError, int nTriesLeft);
+
+    /**
+     * Decrypt ckData to get the content key bits, store them in the contentKey
+     * structure, and call doDecrypt for each entry in pendingDecrypts.
+     * @param contentKey The ContentKey structure for storing the content key bits.
+     * @param ckData The retrieved Data packet with the encrypted content key.
+     * @param kdkKeyName This decrypts the ckData contents with the private key
+     * in the internalKeyChain_ with the name kdkKeyName. However, if kdkKeyName 
+     * is empty, assume that ckData is a group content key and decrypt using the
+     * private key in keyChain_ with the name credentialsKey_->getName() .
+     * @param onError
+     */
     void
     decryptCkAndProcessPendingDecrypts
       (ContentKey& contentKey, const Data& ckData, const Name& kdkKeyName,
@@ -161,7 +266,7 @@ private:
     static void
     doDecrypt
       (const EncryptedContent& content, const Blob& ckBits,
-       const DecryptSuccessCallback& onSuccess,
+       const Blob& associatedData, const DecryptSuccessCallback& onSuccess,
        const EncryptError::OnError& onError);
 
     /**

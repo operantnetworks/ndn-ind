@@ -37,6 +37,7 @@
 
 #include "../security/key-chain.hpp"
 #include "../in-memory-storage/in-memory-storage-retaining.hpp"
+#include "../c/encrypt/algo/encrypt-params-types.h"
 
 // Give friend access to the tests.
 class TestAccessManagerV2_EnumerateDataFromInMemoryStorage_Test;
@@ -59,8 +60,12 @@ const std::chrono::nanoseconds DEFAULT_KDK_FRESHNESS_PERIOD =
 class AccessManagerV2 {
 public:
   /**
-   * Create an AccessManagerV2 to serve the NAC public key for other data
-   * producers to fetch, and to serve encrypted versions of the private keys
+   * Create an AccessManagerV2 to serve the KDK or GCK that is encrypted by each
+   * group member's public key.
+   *
+   * If groupContentKeyAlgorithmType is omitted: Create an AccessManagerV2 to
+   * serve the NAC public key for other data
+   * producers to fetch, and to serve encrypted versions of the KDK private keys
    * (as safe bags) for authorized consumers to fetch.
    *
    * KEK and KDK naming:
@@ -73,17 +78,33 @@ public:
    *               \/
    *      registered with NFD
    *
+   * If groupContentKeyAlgorithmType is specified, then create an AccessManagerV2
+   * to serve the symmetric group content key (GCK) which is encrypted by each
+   * group member's public key.
+   *
+   * [identity]/NAC/[dataset]/GCK/[key-id]   /ENCRYPTED-BY/[user]/KEY/[key-id]   (== GCK, encrypted group content key)
+   *
+   * \_____________  ___________/
+   *               \/
+   *      registered with NFD
+   *
    * @param identity The data owner's namespace identity. (This will be used to
-   * sign the KEK and KDK.)
+   * sign the KEK and KDK or GCK.)
    * @param dataset The name of dataset that this manager is controlling.
    * @param keyChain The KeyChain used to sign Data packets.
    * @param face The Face for calling registerPrefix that will be used to
    * publish the KEK and KDK Data packets.
+   * @param groupContentKeyAlgorithmType (optional) The symmetric encryption
+   * algorithm for which the group content key (GCK) is generated. (For example,
+   * ndn_EncryptAlgorithmType_ChaCha20Poly1305.) If omitted, do not use a GCK
+   * and instead use a KEK and KDK as decrypted above.
+   * @throws runtime_error if groupContentKeyAlgorithmType is unrecognized.
    */
   AccessManagerV2
     (const ptr_lib::shared_ptr<PibIdentity>& identity, const Name& dataset,
-     KeyChain* keyChain, Face* face)
-  : impl_(new Impl(identity, keyChain, face))
+     KeyChain* keyChain, Face* face, 
+     ndn_EncryptAlgorithmType groupContentKeyAlgorithmType = (ndn_EncryptAlgorithmType)-1)
+  : impl_(new Impl(identity, keyChain, face, groupContentKeyAlgorithmType))
   {
     impl_->initialize(dataset);
   }
@@ -96,12 +117,24 @@ public:
    * the policy.
    * @param memberCertificate The certificate that identifies the member to
    * authorize.
-   * @return The published KDK Data packet.
+   * @return The published KDK or GCK Data packet.
    */
   ptr_lib::shared_ptr<Data>
   addMember(const CertificateV2& memberCertificate)
   {
     return impl_->addMember(memberCertificate);
+  }
+
+  /**
+   * Generate a new random group content key. You must call addMember again for
+   * each member to create the GCK Data packet for the member (which allows you
+   * to omit a member's access to the new key if they no longer belong to the group).
+   * @throws runtime_error If the constructor was not call with a groupContentKeyAlgorithmType.
+   */
+  void
+  refreshGck()
+  {
+    impl_->refreshGck();
   }
 
   /**
@@ -129,8 +162,10 @@ private:
      */
     Impl
       (const ptr_lib::shared_ptr<PibIdentity>& identity, KeyChain* keyChain,
-       Face* face)
-      : identity_(identity), keyChain_(keyChain), face_(face)
+       Face* face, ndn_EncryptAlgorithmType groupContentKeyAlgorithmType)
+      : identity_(identity), keyChain_(keyChain), face_(face),
+        gckAlgorithmType_(groupContentKeyAlgorithmType),
+        kekRegisteredPrefixId_(0), kdkRegisteredPrefixId_(0)
       {}
 
     /**
@@ -138,13 +173,28 @@ private:
      * call shared_from_this() in the constructor.
      */
     void
-    initialize(const Name& dataset);
+    initialize(const Name& dataset)
+    {
+      if (gckAlgorithmType_ != (ndn_EncryptAlgorithmType)-1)
+        initializeForGck(dataset);
+      else
+        initializeForKdk(dataset);
+    }
 
     void
     shutdown();
 
+    void
+    refreshGck();
+
     ptr_lib::shared_ptr<Data>
-    addMember(const CertificateV2& memberCertificate);
+    addMember(const CertificateV2& memberCertificate)
+    {
+      if (gckAlgorithmType_ != (ndn_EncryptAlgorithmType)-1)
+        return addMemberForGck(memberCertificate);
+      else
+        return addMemberForKdk(memberCertificate);
+    }
 
     size_t
     size() { return storage_.size(); }
@@ -153,15 +203,42 @@ private:
     // Give friend access to the tests.
     friend class ::TestAccessManagerV2_EnumerateDataFromInMemoryStorage_Test;
 
+    void
+    initializeForGck(const Name& dataset);
+
+    void
+    initializeForKdk(const Name& dataset);
+
+    ptr_lib::shared_ptr<Data>
+    addMemberForGck(const CertificateV2& memberCertificate);
+
+    ptr_lib::shared_ptr<Data>
+    addMemberForKdk(const CertificateV2& memberCertificate);
+
+    /**
+     * Make a Data packet with a short freshness period whose name is
+     * <gckLatestPrefix_>/<version> and whose content is the encoded gckName_,
+     * then put it to the face.
+     * @param face The Face for sending the Data packet.
+     */
+    void
+    publishGckLatestData(Face& face);
+
     ptr_lib::shared_ptr<PibIdentity> identity_;
-    ptr_lib::shared_ptr<PibKey> nacKey_;
+    Name nacIdentityName_;
+    ptr_lib::shared_ptr<PibKey> nacKey_; // Not used if gckAlgorithmType_ is specified.
     KeyChain* keyChain_;
     Face* face_;
 
-    // storage_ is for the KEK and KDKs.
+    // storage_ is for the KEK and KDKs (or GCKs).
     InMemoryStorageRetaining storage_;
     uint64_t kekRegisteredPrefixId_;
     uint64_t kdkRegisteredPrefixId_;
+
+    ndn_EncryptAlgorithmType gckAlgorithmType_;
+    Name gckLatestPrefix_;
+    Name gckName_;
+    std::vector<uint8_t> gckBits_;
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

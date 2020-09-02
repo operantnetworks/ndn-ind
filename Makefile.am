@@ -162,6 +162,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/lite/encoding/tlv-0_3-wire-format-lite.hpp \
   include/ndn-ind/lite/encrypt/encrypted-content-lite.hpp \
   include/ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp \
+  include/ndn-ind/lite/encrypt/algo/chacha20-algorithm-lite.hpp \
   include/ndn-ind/lite/encrypt/algo/des-algorithm-lite.hpp \
   include/ndn-ind/lite/lp/congestion-mark-lite.hpp \
   include/ndn-ind/lite/lp/incoming-face-id-lite.hpp \
@@ -302,6 +303,7 @@ libndn_c_la_SOURCES = ${ndn_ind_c_headers} \
   src/c/encoding/tlv/tlv.h \
   src/c/encrypt/encrypted-content.h \
   src/c/encrypt/algo/aes-algorithm_c.c src/c/encrypt/algo/aes-algorithm.h \
+  src/c/encrypt/algo/chacha20-algorithm_c.c src/c/encrypt/algo/chacha20-algorithm.h \
   src/c/encrypt/algo/des-algorithm_c.c src/c/encrypt/algo/des-algorithm.h \
   src/c/lp/congestion-mark_c.c src/c/lp/congestion-mark.h \
   src/c/lp/incoming-face-id_c.c src/c/lp/incoming-face-id.h \
@@ -388,6 +390,7 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/lite/encoding/tlv-0_3-wire-format-lite.cpp \
   src/lite/encrypt/encrypted-content-lite.cpp \
   src/lite/encrypt/algo/aes-algorithm-lite.cpp \
+  src/lite/encrypt/algo/chacha20-algorithm-lite.cpp \
   src/lite/encrypt/algo/des-algorithm-lite.cpp \
   src/lite/lp/congestion-mark-lite.cpp \
   src/lite/lp/incoming-face-id-lite.cpp \

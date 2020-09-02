@@ -59,9 +59,13 @@ const std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD = std::chrono::hours(
  */
 class EncryptorV2 {
 public:
+  typedef func_lib::function<void
+    (const ptr_lib::shared_ptr<Data>& data,
+     const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent)> OnEncryptSuccess;
+
   /**
-   * Create an EncryptorV2 with the given parameters. This uses the face to
-   * register to receive Interests for the prefix {ckPrefix}/CK.
+   * Create an EncryptorV2 for encrypting using a group KEK and KDK. This uses
+   * the face to register to receive Interests for the prefix {ckPrefix}/CK.
    * @param accessPrefix The NAC prefix to fetch the Key Encryption Key (KEK)
    * (e.g., /access/prefix/NAC/data/subset). This copies the Name.
    * @param ckPrefix The prefix under which Content Keys (CK) will be generated.
@@ -81,16 +85,55 @@ public:
    * @param validator The validation policy to ensure correctness of the KEK.
    * @param keyChain The KeyChain used to sign Data packets.
    * @param face The Face that will be used to fetch the KEK and publish CK data.
+   * @param algorithmType (optional) The encryption algorithm type for this
+   * EncryptorV2. If omitted or ndn_EncryptAlgorithmType_AesCbc, use AES 256 in
+   * CBC mode. If ndn_EncryptAlgorithmType_ChaCha20Poly1305, use ChaCha20-Poly1305.
    */
   EncryptorV2
     (const Name& accessPrefix, const Name& ckPrefix,
      const SigningInfo& ckDataSigningInfo, const EncryptError::OnError& onError,
-     Validator* validator, KeyChain* keyChain, Face* face)
+     Validator* validator, KeyChain* keyChain, Face* face,
+     ndn_EncryptAlgorithmType algorithmType = ndn_EncryptAlgorithmType_AesCbc)
   : impl_(new Impl
           (accessPrefix, ckPrefix, ckDataSigningInfo, onError, validator, 
-           keyChain, face))
+           keyChain, face, algorithmType))
   {
-    impl_->initialize();
+    impl_->initializeCk();
+  }
+
+  /**
+   * Create an EncryptorV2 for encrypting using a group content key (GCK) which
+   * is provided by the access manager.
+   * @param accessPrefix The NAC prefix to fetch the group content key (GCK)
+   * (e.g., /access/prefix/NAC/data/subset). This copies the Name.
+   * @param onError On failure to create the CK data (failed to fetch the KEK,
+   * failed to encrypt with the KEK, etc.), this calls
+   * onError(errorCode, message) where errorCode is from the
+   * EncryptError::ErrorCode enum, and message is an error string. The encrypt
+   * method will continue trying to retrieve the KEK until success (with each
+   * attempt separated by RETRY_DELAY_KEK_RETRIEVAL) and onError may be
+   * called multiple times.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param credentialsKey The credentials key to be used to retrieve and
+   * decrypt the GCK.
+   * @param validator The validation policy to ensure correctness of the GCK.
+   * @param keyChain The KeyChain used to access the credentials key.
+   * @param face The Face that will be used to fetch the GCK.
+   * @param algorithmType (optional) The encryption algorithm type for this
+   * EncryptorV2. If omitted or ndn_EncryptAlgorithmType_AesCbc, use AES 256 in
+   * CBC mode. If ndn_EncryptAlgorithmType_ChaCha20Poly1305, use ChaCha20-Poly1305.
+   */
+  EncryptorV2
+    (const Name& accessPrefix, const EncryptError::OnError& onError,
+     PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
+     ndn_EncryptAlgorithmType algorithmType = ndn_EncryptAlgorithmType_AesCbc)
+  : impl_(new Impl
+          (accessPrefix, onError, credentialsKey, validator, keyChain, face,
+           algorithmType))
+  {
+    impl_->initializeGck();
   }
 
   void
@@ -101,32 +144,125 @@ public:
    * EncryptedContent.
    * @param plainData The data to encrypt.
    * @param plainDataLength The length of plainData.
-   * @return The new EncryptedContent.
+   * @param associatedData (optional) A pointer to the associated data which is
+   * included in the calculation of the authentication tag, but is not
+   * encrypted. If associatedDataLength is 0, then this can be NULL. If the
+   * associatedData is omitted or if associatedDataLength is 0, then no
+   * associated data is used.
+   * @param associatedDataLength (optional) The length of associatedData.
+   * @return The new EncryptedContent (whose encoding replaced the Data packet content).
+   * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
+   * and the first GCK has not been fetched. (When using a group content key,
+   * you should call the asynchronous encrypt method with the onSuccess callback.)
    */
   ptr_lib::shared_ptr<EncryptedContent>
-  encrypt(const uint8_t* plainData, size_t plainDataLength)
+  encrypt
+    (const uint8_t* plainData, size_t plainDataLength,
+     const uint8_t *associatedData = 0, size_t associatedDataLength = 0)
   {
-    return impl_->encrypt(plainData, plainDataLength);
+    return impl_->encrypt
+      (plainData, plainDataLength, associatedData, associatedDataLength);
   }
 
   /**
    * Encrypt the plainData using the existing Content Key (CK) and return a new
    * EncryptedContent.
    * @param plainData The data to encrypt.
-   * @return The new EncryptedContent.
+   * @param associatedData (optional) The associated data which is included in
+   * the calculation of the authentication tag, but is not encrypted. If
+   * associatedData.size() is 0, then this can be an isNull() Blob. If the
+   * associatedData is omitted or if its size() is 0, then no associated data is
+   * used.
+   * @return The new EncryptedContent (whose encoding replaced the Data packet content).
+   * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
+   * and the first GCK has not been fetched. (When using a group content key,
+   * you should call the asynchronous encrypt method with the onSuccess callback.)
    */
   ptr_lib::shared_ptr<EncryptedContent>
-  encrypt(const Blob& plainData)
+  encrypt(const Blob& plainData, const Blob& associatedData = Blob())
   {
-    return encrypt(plainData.buf(), plainData.size());
+    return encrypt
+      (plainData.buf(), plainData.size(), associatedData.buf(),
+       associatedData.size());
+  }
+
+  /**
+   * Encrypt the Data packet content using the existing Content Key (CK) and
+   * replace the content with the wire encoding of the new EncryptedContent.
+   * When encrypting, use the encoding of the Data packet name as the
+   * "associated data".
+   * @param data The Data packet whose content is encrypted and replaced with a
+   * new EncryptedContent.
+   * @param wireFormat (optional) A WireFormat object used to encode the Data
+   * packet name and the EncryptedContent. If omitted, use
+   * WireFormat::getDefaultWireFormat().
+   * @return The new EncryptedContent (whose encoding replaced the Data packet content).
+   * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
+   * and the first GCK has not been fetched. (When using a group content key,
+   * you should call the asynchronous encrypt method with the onSuccess callback.)
+   */
+  ptr_lib::shared_ptr<EncryptedContent>
+  encrypt(Data& data, WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
+  {
+    return impl_->encrypt(data, wireFormat);
+  }
+
+  /**
+   * Encrypt the Data packet content using the existing Content Key (CK) and
+   * replace the content with the wire encoding of the new EncryptedContent. If
+   * this EncryptorV2 is using a group content key (GCK) then this may fetch a
+   * new GCK before calling the onSuccess callback.
+   * When encrypting, use the encoding of the Data packet name as the
+   * "associated data".
+   * @param data The Data packet whose content is encrypted and replaced with a
+   * new EncryptedContent. (This is also passed to the onSuccess callback.)
+   * @param onSuccess On successful encryption, this calls
+   * onSuccess(data, encryptedContent) where data is the the modified Data object
+   * that was provided, and encryptedContent is the new EncryptedContent whose
+   * encoding replaced the Data packet content.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param onError (optional) On failure, this calls onError(errorCode, message)
+   * where errorCode is from EncryptError::ErrorCode, and message is an error
+   * string. If omitted, call the onError given to the constructor. (Even though
+   * the constructor has an onError, this is provided separately since this
+   * asynchronous method completes either by calling onSuccess or onError.)
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param wireFormat (optional) A WireFormat object used to encode the Data
+   * packet name and the EncryptedContent. If omitted, use
+   * WireFormat::getDefaultWireFormat().
+   */
+  void
+  encrypt
+    (const ptr_lib::shared_ptr<Data>& data, const OnEncryptSuccess& onSuccess,
+     const EncryptError::OnError& onError = EncryptError::OnError(),
+     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
+  {
+    impl_->encrypt(data, onSuccess, onError, wireFormat);
   }
 
   /**
    * Create a new Content Key (CK) and publish the corresponding CK Data packet.
    * This uses the onError given to the constructor to report errors.
+   * @throws runtime_error if this EncryptorV2 uses a group content key.
    */
   void
   regenerateCk() { impl_->regenerateCk(); }
+
+  /**
+   * Set the interval for sending an Interest to the access manager to get the
+   * name of the latest GCK (and to fetch it if it is new). If you don't call
+   * this, then use the default of 1 minute.
+   * @param checkForNewGckInterval The interval.
+   */
+  void
+  setcheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
+  {
+    impl_->setcheckForNewGckInterval(checkForNewGckInterval);
+  }
 
   /**
    * Get the number of packets stored in in-memory storage.
@@ -150,6 +286,12 @@ public:
   static const Name::Component&
   getNAME_COMPONENT_CK() { return getValues().NAME_COMPONENT_CK; }
 
+  static const Name::Component&
+  getNAME_COMPONENT_GCK() { return getValues().NAME_COMPONENT_GCK; }
+
+  static const Name::Component&
+  getNAME_COMPONENT_LATEST() { return getValues().NAME_COMPONENT_LATEST; }
+
   static const int AES_KEY_SIZE = 32;
   static const int AES_IV_SIZE = 16;
   static const int N_RETRIES = 3;
@@ -169,7 +311,9 @@ private:
       NAME_COMPONENT_NAC("NAC"),
       NAME_COMPONENT_KEK("KEK"),
       NAME_COMPONENT_KDK("KDK"),
-      NAME_COMPONENT_CK("CK")
+      NAME_COMPONENT_CK("CK"),
+      NAME_COMPONENT_GCK("GCK"),
+      NAME_COMPONENT_LATEST("_latest")
     {}
 
     Name::Component NAME_COMPONENT_ENCRYPTED_BY;
@@ -177,6 +321,8 @@ private:
     Name::Component NAME_COMPONENT_KEK;
     Name::Component NAME_COMPONENT_KDK;
     Name::Component NAME_COMPONENT_CK;
+    Name::Component NAME_COMPONENT_GCK;
+    Name::Component NAME_COMPONENT_LATEST;
   };
 
   /**
@@ -209,25 +355,54 @@ private:
     Impl
       (const Name& accessPrefix, const Name& ckPrefix,
        const SigningInfo& ckDataSigningInfo, const EncryptError::OnError& onError,
-       Validator* validator, KeyChain* keyChain, Face* face)
-    : accessPrefix_(accessPrefix), ckPrefix_(ckPrefix),
-      ckDataSigningInfo_(ckDataSigningInfo), isKekRetrievalInProgress_(false),
-      onError_(onError), keyChain_(keyChain), face_(face),
-      kekPendingInterestId_(0)
-    {}
+       Validator* validator, KeyChain* keyChain, Face* face,
+       ndn_EncryptAlgorithmType algorithmType);
+
+    Impl
+      (const Name& accessPrefix, const EncryptError::OnError& onError,
+       PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
+       ndn_EncryptAlgorithmType algorithmType);
 
     /**
-     * Complete the work of the constructor. This is needed because we can't
-     * call shared_from_this() in the constructor.
+     * Complete the work of the constructor for a (non-group) content key. This
+     * is needed because we can't call shared_from_this() in the constructor.
      */
     void
-    initialize();
+    initializeCk();
+
+    /**
+     * Complete the work of the constructor for a group content key. This is
+     * needed because we can't call shared_from_this() in the constructor.
+     */
+    void
+    initializeGck()
+    {
+      checkForNewGckInterval_ = std::chrono::minutes(1);
+    }
 
     void
     shutdown();
 
     ptr_lib::shared_ptr<EncryptedContent>
-    encrypt(const uint8_t* plainData, size_t plainDataLength);
+    encrypt
+      (const uint8_t* plainData, size_t plainDataLength,
+       const uint8_t *associatedData, size_t associatedDataLength);
+
+    ptr_lib::shared_ptr<EncryptedContent>
+    encrypt(Data& data, WireFormat& wireFormat)
+    {
+      Blob encodedName = data.getName().wireEncode(wireFormat);
+      ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
+        (data.getContent().buf(), data.getContent().size(), encodedName.buf(),
+         encodedName.size());
+      data.setContent(encryptedContent->wireEncodeV2(wireFormat));
+      return encryptedContent;
+    }
+
+    void
+    encrypt
+      (const ptr_lib::shared_ptr<Data>& data, const OnEncryptSuccess& onSuccess,
+       const EncryptError::OnError& onError, WireFormat& wireFormat);
 
     /**
      * Create a new Content Key (CK) and publish the corresponding CK Data
@@ -236,6 +411,12 @@ private:
     void
     regenerateCk();
 
+    void
+    setcheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
+    {
+      checkForNewGckInterval_ = checkForNewGckInterval;
+    }
+
     size_t
     size() { return storage_.size(); }
 
@@ -243,6 +424,21 @@ private:
     // Give friend access to the tests.
     friend class ::TestEncryptorV2_EncryptAndPublishCk_Test;
     friend class ::TestEncryptorV2_EnumerateDataFromInMemoryStorage_Test;
+
+    class PendingEncrypt {
+    public:
+      PendingEncrypt
+        (const ptr_lib::shared_ptr<Data>& dataIn, const OnEncryptSuccess& onSuccessIn,
+         const EncryptError::OnError& onErrorIn, WireFormat& wireFormatIn)
+      : data(dataIn), onSuccess(onSuccessIn), onError(onErrorIn),
+        wireFormat(wireFormatIn)
+      {}
+
+      ptr_lib::shared_ptr<Data> data;
+      OnEncryptSuccess onSuccess;
+      EncryptError::OnError onError;
+      WireFormat& wireFormat;
+    };
 
     void
     retryFetchingKek();
@@ -273,23 +469,77 @@ private:
     bool
     makeAndPublishCkData(const EncryptError::OnError& onError);
 
-    Name accessPrefix_;
-    Name ckPrefix_;
-    Name ckName_;
-    uint8_t ckBits_[AES_KEY_SIZE];
-    SigningInfo ckDataSigningInfo_;
+    /**
+     * Send an interest for the gckLatestPrefix_ to get the name of the latest
+     * GCK. If it doesn't match gckName_, then call fetchGck().
+     * @param onError On failure, this calls onError(errorCode, message)
+     * where errorCode is from EncryptError::ErrorCode, and message is an error
+     * string.
+     */
+    void
+    checkForNewGck(const EncryptError::OnError& onError);
 
-    bool isKekRetrievalInProgress_;
-    ptr_lib::shared_ptr<Data> kekData_;
+    /**
+     * Fetch the Data packet <gckName>/ENCRYPTED-BY/<credentials-key> and call
+     * decryptGck to decrypt it.
+     * @param gckName The name of the group content key formed from the
+     * access prefix, e.g. <access-prefix>/GCK/<gck-id> .
+     * @param onError On failure, this calls onError(errorCode, message)
+     * where errorCode is from EncryptError::ErrorCode, and message is an error
+     * string.
+     * @param nTriesLeft If fetching times out, decrement nTriesLeft and try
+     * again until it is zero.
+     */
+    void
+    fetchGck(
+      const Name& gckName, const EncryptError::OnError& onError, int nTriesLeft);
+
+    /**
+     * Decrypt the gckData fetched by fetchGck(), then copy it to ckBits_ and
+     * copy gckName to ckName_ . Then process pending encrypts.
+     * @param gckName The Name that fetchGck() used to fetch.
+     * @param gckData The GCK Data packet fetched by fetchGck().
+     * @param onError On failure, this calls onError(errorCode, message)
+     * where errorCode is from EncryptError::ErrorCode, and message is an error
+     * string.
+     */
+    void decryptGckAndProcessPendingDecrypts(
+      const Name& gckName, const Data& gckData,
+      const EncryptError::OnError& onError);
+
+    bool isUsingGck() { return gckLatestPrefix_.size() != 0; }
+
+    Name accessPrefix_;
+    // Generated CK name or fetched GCK name.
+    Name ckName_;
+    // Generated CK or fetched GCK bits.
+    std::vector<uint8_t> ckBits_;
     EncryptError::OnError onError_;
 
-    // Storage for encrypted CKs.
+    // For creating CK Data packets. Not used for GCK.
+    Name ckPrefix_;
+    bool isKekRetrievalInProgress_;
+    ptr_lib::shared_ptr<Data> kekData_;
+    SigningInfo ckDataSigningInfo_;
+
+    // Storage for encrypted CKs. Not used for GCK.
     InMemoryStorageRetaining storage_;
     uint64_t ckRegisteredPrefixId_;
     uint64_t kekPendingInterestId_;
 
+    // For fetching and decrypting the GCK. Not used for CK.
+    std::chrono::nanoseconds checkForNewGckInterval_;
+    std::chrono::system_clock::time_point nextCheckForNewGck_;
+    Name gckLatestPrefix_;
+    bool isGckRetrievalInProgress_;
+    uint64_t gckPendingInterestId_;
+    std::vector<ptr_lib::shared_ptr<PendingEncrypt> > pendingEncrypts_;
+    PibKey* credentialsKey_;
+
+    // Validator* validator_;
     KeyChain* keyChain_;
     Face* face_;
+    ndn_EncryptAlgorithmType algorithmType_;
   };
 
   ptr_lib::shared_ptr<Impl> impl_;
