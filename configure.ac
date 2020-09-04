@@ -227,11 +227,17 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
     AC_DEFINE_UNQUOTED([HAVE_GMTIME_SUPPORT], 0, [1 if have sys/time gmtime support including timegm.])
 ])
 
-# Require libcrypto version 1.1+.
-AC_SEARCH_LIBS([EVP_EncryptInit], [crypto crypto1_1],
-             [AC_DEFINE_UNQUOTED([HAVE_LIBCRYPTO], 1, [1 if have OpenSSL crypto lib version 1.1+.])],
-             [AC_MSG_FAILURE([can't find OpenSSL crypto lib version 1.1+.])],
-             [-lpthread -ldl])
+# Try libcrypto 1.1+. If not found, require libcrypto 1.0+.
+AC_SEARCH_LIBS([EVP_chacha20_poly1305], [crypto crypto1_1],
+  [AC_DEFINE_UNQUOTED([HAVE_LIBCRYPTO],     1, [1 if have OpenSSL crypto lib version 1.0+.])
+   AC_DEFINE_UNQUOTED([HAVE_LIBCRYPTO_1_1], 1, [1 if have OpenSSL crypto lib version 1.1+.])],
+   # libcrypto 1.1 not found. Try libcrypto 1.0.
+   [AC_SEARCH_LIBS([EVP_EncryptInit], [crypto],
+     [AC_DEFINE_UNQUOTED([HAVE_LIBCRYPTO],     1, [1 if have OpenSSL crypto lib version 1.0+.])
+      AC_DEFINE_UNQUOTED([HAVE_LIBCRYPTO_1_1], 0, [1 if have OpenSSL crypto lib version 1.1+.])],
+     [AC_MSG_FAILURE([can't find OpenSSL crypto lib version 1.0+.])],
+     [-lpthread -ldl])],
+  [-lpthread -ldl])
 
 # Conditionally use libsqlite3.  AX_LIB_SQLITE3 defines HAVE_SQLITE3 in confdefs.h .
 AX_LIB_SQLITE3()

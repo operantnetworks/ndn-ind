@@ -21,7 +21,7 @@
 #include "../../util/crypto.h"
 #include "chacha20-algorithm.h"
 
-#if NDN_IND_HAVE_LIBCRYPTO
+#if NDN_IND_HAVE_LIBCRYPTO_1_1
 
 #include <openssl/evp.h>
 
@@ -120,4 +120,28 @@ ndn_ChaCha20Algorithm_encryptPoly1305
   return NDN_ERROR_success;
 }
 
-#endif // NDN_IND_HAVE_LIBCRYPTO
+#else // NDN_IND_HAVE_LIBCRYPTO_1_1
+
+ndn_Error
+ndn_ChaCha20Algorithm_decryptPoly1305
+  (const uint8_t *key, size_t keyLength, const uint8_t *nonce,
+   size_t nonceLength, const uint8_t *encryptedData, size_t encryptedDataLength,
+   const uint8_t *associatedData, size_t associatedDataLength,
+   uint8_t *plainData, size_t *plainDataLength)
+{
+  // ./configure didn't find OpenSSL 1.1+.
+  return NDN_ERROR_Unsupported_algorithm_type;
+}
+
+ndn_Error
+ndn_ChaCha20Algorithm_encryptPoly1305
+  (const uint8_t *key, size_t keyLength, const uint8_t *nonce,
+   size_t nonceLength, const uint8_t *plainData, size_t plainDataLength,
+   const uint8_t *associatedData, size_t associatedDataLength,
+   uint8_t *encryptedData, size_t *encryptedDataLength)
+{
+  // ./configure didn't find OpenSSL 1.1+.
+  NDN_ERROR_Unsupported_algorithm_type;
+}
+
+#endif // NDN_IND_HAVE_LIBCRYPTO_1_1

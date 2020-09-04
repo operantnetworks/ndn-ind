@@ -48,8 +48,11 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* 1 if have OpenSSL crypto lib version 1.1+. */
+/* 1 if have OpenSSL crypto lib version 1.0+. */
 #undef HAVE_LIBCRYPTO
+
+/* 1 if have OpenSSL crypto lib version 1.1+. */
+#undef HAVE_LIBCRYPTO_1_1
 
 /* Define to 1 if you have the `log4cxx' library (-llog4cxx). */
 #undef HAVE_LIBLOG4CXX
