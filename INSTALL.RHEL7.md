@@ -100,16 +100,6 @@ To build NDN-IND, in a terminal, enter:
     make
     sudo make install
 
-### sentinel-transport
-
-To build sentinel-transport, in a terminal, enter:
-
-    cd ~
-    git clone https://github.com/operantnetworks/sentinel-transport
-    cd sentinel-transport
-    make
-    sudo make install
-
 ### ldconfig
 
 The usual library directories are not on the load path by default. The following
