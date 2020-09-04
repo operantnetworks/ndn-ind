@@ -1,4 +1,4 @@
-Interim changes since NDN-CPP v0.17 (2020-01-21)
+Interim changes since NDN-CPP v0.17 (2020-09-04)
 ------------------------------------------------
 
 Changes
@@ -10,6 +10,7 @@ Changes
   Change to use std::chrono. Remove unneeded CustomClock and system_clock wrapper.
   Renamed the ndn::time::steady_clock wrapper (only needed for macOS) to
   ndn::scheduler::MonotonicSteadyClock.
+* Add support for chacha20-Poly1305 in NAC. https://github.com/operantnetworks/ndn-ind/pull/7
 * In Interest, changed the MustBeFresh default value to false.
 * Added Tlv0_3WireFormat.
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .
@@ -20,6 +21,7 @@ Changes
 Bug fixes
 * In expressInterest, use the nonce in the Interest if provided.
 * In ThreadsafeFace, use a copy of registrationOptions when dispatching.
+* In InterestFilter::makePattern, check if regexFilter starts with '^'. https://github.com/operantnetworks/ndn-ind/pull/6
 
 NDN-CPP v0.17 (2019-10-04)
 --------------------------
