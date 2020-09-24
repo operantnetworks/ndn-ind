@@ -8,7 +8,7 @@
  * Original file: src/name.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add findParametersSha256Digest.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -578,6 +578,21 @@ Name::match(const Name& name) const
   }
 
   return true;
+}
+
+int
+Name::findParametersSha256Digest() const
+{
+  int result = -1;
+  for (size_t i = 0; i < components_.size(); ++i) {
+    if (components_[i].isParametersSha256Digest()) {
+      if (result != -1)
+        return -2;
+      result = i;
+    }
+  }
+
+  return result;
 }
 
 Blob
