@@ -8,7 +8,8 @@
  * Original file: src/encrypt/decryptor-v2.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Support ChaCha20-Ploy1305, GCK,
+ *   encrypted Interest.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -46,11 +47,37 @@ INIT_LOGGER("ndn.DecryptorV2");
 
 namespace ndn {
 
+void
+DecryptorV2::decrypt
+  (const Interest& interest, const DecryptSuccessCallback& onSuccess,
+   const EncryptError::OnError& onError, WireFormat& wireFormat)
+{
+  ptr_lib::shared_ptr<EncryptedContent> encryptedContent
+    (new EncryptedContent());
+  try {
+    encryptedContent->wireDecodeV2(interest.getApplicationParameters());
+  } catch (const std::exception& ex) {
+    onError(EncryptError::ErrorCode::DecryptionFailure,
+      std::string("Error decoding the Data content as EncryptedContent: ") + ex.what());
+    return;
+  }
+
+  int index = interest.getName().findParametersSha256Digest();
+  if (index < 0) {
+    onError(EncryptError::ErrorCode::DecryptionFailure,
+      std::string("Can't find the only ParametersSha256DigestComponent: ") +
+      interest.getName().toUri());
+    return;
+  }
+  Blob associatedData = interest.getName().getPrefix(index).wireEncode();
+  decrypt(encryptedContent, associatedData, onSuccess, onError);
+}
+
 DecryptorV2::Impl::Impl
   (PibKey* credentialsKey, Validator* validator, KeyChain* keyChain,
    Face* face)
 : credentialsKey_(credentialsKey),
-  // validator_(validator),
+  validator_(validator),
   face_(face),
   keyChain_(keyChain),
   internalKeyChain_("pib-memory:", "tpm-memory:")
@@ -166,47 +193,56 @@ DecryptorV2::Impl::fetchCk
       (const ptr_lib::shared_ptr<const Interest>& ckInterest,
        const ptr_lib::shared_ptr<Data>& ckData)
     {
-      try {
-        contentKey_->pendingInterest = 0;
-        // TODO: Verify that the key is legitimate.
-        Name kdkPrefix;
-        Name kdkIdentityName;
-        Name kdkKeyName;
-        if (!extractKdkInfoFromCkName
-            (ckData->getName(), ckInterest->getName(), onError_, kdkPrefix,
-             kdkIdentityName, kdkKeyName))
-          // The error has already been reported.
-          return;
+      contentKey_->pendingInterest = 0;
 
-        // Check if the KDK already exists.
-        ptr_lib::shared_ptr<PibIdentity> kdkIdentity;
-        try {
-          kdkIdentity = parent_->internalKeyChain_.getPib().getIdentity
-            (kdkIdentityName);
-        } catch (const Pib::Error& ex) {
-        }
-        if (kdkIdentity) {
-          ptr_lib::shared_ptr<PibKey> kdkKey;
-          try {
-            kdkKey = kdkIdentity->getKey(kdkKeyName);
-          } catch (const Pib::Error& ex) {
-          }
-          if (kdkKey) {
-            // The KDK was already fetched and imported.
-            _LOG_TRACE("KDK " << kdkKeyName <<
-              " already exists, so directly using it to decrypt the CK");
-            parent_->decryptCkAndProcessPendingDecrypts
-              (*contentKey_, *ckData, kdkKeyName, onError_);
-            return;
-          }
-        }
+      // Validate the Data signature.
+      parent_->validator_->validate
+        (*ckData,
+         [=](auto&) {
+           try {
+             Name kdkPrefix;
+             Name kdkIdentityName;
+             Name kdkKeyName;
+             if (!extractKdkInfoFromCkName
+                 (ckData->getName(), ckInterest->getName(), onError_, kdkPrefix,
+                  kdkIdentityName, kdkKeyName))
+               // The error has already been reported.
+               return;
 
-        parent_->fetchKdk
-          (contentKey_, kdkPrefix, ckData, onError_, EncryptorV2::N_RETRIES);
-      } catch (const std::exception& ex) {
-        onError_(EncryptError::ErrorCode::General,
-          string("Error in fetchCk onData: ") + ex.what());
-      }
+             // Check if the KDK already exists.
+             ptr_lib::shared_ptr<PibIdentity> kdkIdentity;
+             try {
+               kdkIdentity = parent_->internalKeyChain_.getPib().getIdentity
+                 (kdkIdentityName);
+             } catch (const Pib::Error& ex) {
+             }
+             if (kdkIdentity) {
+               ptr_lib::shared_ptr<PibKey> kdkKey;
+               try {
+                 kdkKey = kdkIdentity->getKey(kdkKeyName);
+               } catch (const Pib::Error& ex) {
+               }
+               if (kdkKey) {
+                 // The KDK was already fetched and imported.
+                 _LOG_TRACE("KDK " << kdkKeyName <<
+                   " already exists, so directly using it to decrypt the CK");
+                 parent_->decryptCkAndProcessPendingDecrypts
+                   (*contentKey_, *ckData, kdkKeyName, onError_);
+                 return;
+               }
+             }
+
+             parent_->fetchKdk
+               (contentKey_, kdkPrefix, ckData, onError_, EncryptorV2::N_RETRIES);
+           } catch (const std::exception& ex) {
+             onError_(EncryptError::ErrorCode::General,
+               string("Error in fetchCk onData: ") + ex.what());
+           }
+         },
+         [=](auto&, auto& error) {
+           onError_(EncryptError::ErrorCode::CkRetrievalFailure,
+             "Validate CK Data failure: " + error.toString());
+         });
     }
 
     void
@@ -292,16 +328,24 @@ DecryptorV2::Impl::fetchKdk
        const ptr_lib::shared_ptr<Data>& kdkData)
     {
       contentKey_->pendingInterest = 0;
-      // TODO: Verify that the key is legitimate.
 
-      bool isOk = parent_->decryptAndImportKdk(*kdkData, onError_);
-      if (!isOk)
-        return;
-      // This way of getting the kdkKeyName is a bit hacky.
-      Name kdkKeyName = kdkPrefix_.getPrefix(-2)
-        .append("KEY").append(kdkPrefix_.get(-1));
-      parent_->decryptCkAndProcessPendingDecrypts
-        (*contentKey_, *ckData_, kdkKeyName, onError_);
+      // Validate the Data signature.
+      parent_->validator_->validate
+        (*kdkData,
+         [=](auto&) {
+           bool isOk = parent_->decryptAndImportKdk(*kdkData, onError_);
+           if (!isOk)
+             return;
+           // This way of getting the kdkKeyName is a bit hacky.
+           Name kdkKeyName = kdkPrefix_.getPrefix(-2)
+             .append("KEY").append(kdkPrefix_.get(-1));
+           parent_->decryptCkAndProcessPendingDecrypts
+             (*contentKey_, *ckData_, kdkKeyName, onError_);
+        },
+        [=](auto&, auto& error) {
+          onError_(EncryptError::ErrorCode::CkRetrievalFailure,
+            "Validate KDK Data failure: " + error.toString());
+        });
     }
 
     void
@@ -417,16 +461,25 @@ DecryptorV2::Impl::fetchGck
       (const ptr_lib::shared_ptr<const Interest>& ckInterest,
        const ptr_lib::shared_ptr<Data>& ckData)
     {
-      try {
-        contentKey_->pendingInterest = 0;
+      // Validate the Data signature.
+      parent_->validator_->validate
+        (*ckData,
+        [=](auto&) {
+          try {
+            contentKey_->pendingInterest = 0;
 
-        // Pass an empty kdkKeyName so that we decrypt with the credentialsKey_.
-        parent_->decryptCkAndProcessPendingDecrypts
-          (*contentKey_, *ckData, Name(), onError_);
-      } catch (const std::exception& ex) {
-        onError_(EncryptError::ErrorCode::General,
-          string("Error in DecryptorV2::fetchGck onData: ") + ex.what());
-      }
+            // Pass an empty kdkKeyName so that we decrypt with the credentialsKey_.
+            parent_->decryptCkAndProcessPendingDecrypts
+              (*contentKey_, *ckData, Name(), onError_);
+          } catch (const std::exception& ex) {
+            onError_(EncryptError::ErrorCode::General,
+              string("Error in DecryptorV2::fetchGck onData: ") + ex.what());
+          }
+        },
+        [=](auto&, auto& error) {
+          onError_(EncryptError::ErrorCode::CkRetrievalFailure,
+            "Validate GCK Data failure: " + error.toString());
+        });
     }
 
     void
@@ -465,7 +518,7 @@ DecryptorV2::Impl::fetchGck
     ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
       (shared_from_this(), ckName, contentKey, onError, nTriesLeft);
     contentKey->pendingInterest = face_->expressInterest
-      (Interest(ckName).setMustBeFresh(false).setCanBePrefix(true),
+      (Interest(encryptedGckName).setMustBeFresh(false).setCanBePrefix(true),
        bind(&Callbacks::onData, callbacks, _1, _2),
        bind(&Callbacks::onTimeout, callbacks, _1),
        bind(&Callbacks::onNetworkNack, callbacks, _1, _2));
