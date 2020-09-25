@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ *   Support ChaCha20-Ploy1305, GCK, encrypted Interest.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -217,8 +218,8 @@ EncryptorV2::Impl::encrypt
 
 void
 EncryptorV2::Impl::encrypt
-  (const ptr_lib::shared_ptr<Data>& data, const OnEncryptSuccess& onSuccess,
-   const EncryptError::OnError& onErrorIn, WireFormat& wireFormat)
+  (const Blob& plainData, const Blob& associatedData,
+   const OnEncryptSuccess& onSuccess, const EncryptError::OnError& onErrorIn)
 {
   // If the given OnError is omitted, use the one given to the constructor.
   EncryptError::OnError onError = (onErrorIn ? onErrorIn : onError_);
@@ -232,7 +233,7 @@ EncryptorV2::Impl::encrypt
         ("The GCK is not yet available, so adding to the pending encrypt queue");
       pendingEncrypts_.push_back
         (ptr_lib::make_shared<PendingEncrypt>
-         (data, onSuccess, onError, wireFormat));
+         (plainData, associatedData, onSuccess, onError));
 
       if (!isGckRetrievalInProgress_) {
         nextCheckForNewGck_ =
@@ -255,9 +256,10 @@ EncryptorV2::Impl::encrypt
   }
 
   ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
-    (*data, wireFormat);
+    (plainData.buf(), plainData.size(), associatedData.buf(),
+     associatedData.size());
   try {
-    onSuccess(data, encryptedContent);
+    onSuccess(encryptedContent);
   } catch (const std::exception& ex) {
     _LOG_ERROR("Error in onSuccess: " << ex.what());
   } catch (...) {
@@ -705,9 +707,10 @@ EncryptorV2::Impl::decryptGckAndProcessPendingDecrypts(
     // TODO: If this calls onError, should we quit so that there is only one exit
     // from the asynchronous operation?
     ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
-      (*pendingEncrypt.data, pendingEncrypt.wireFormat);
+      (pendingEncrypt.plainData.buf(), pendingEncrypt.plainData.size(),
+       pendingEncrypt.associatedData.buf(), pendingEncrypt.associatedData.size());
     try {
-      pendingEncrypt.onSuccess(pendingEncrypt.data, encryptedContent);
+      pendingEncrypt.onSuccess(encryptedContent);
     } catch (const std::exception& ex) {
       _LOG_ERROR("Error in onSuccess: " << ex.what());
     } catch (...) {
