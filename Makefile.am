@@ -62,7 +62,7 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
   bin/unit-tests/test-validation-policy-config bin/unit-tests/test-validator-null \
   bin/unit-tests/test-validator
 
-noinst_PROGRAMS = bin/test-channel-discovery bin/test-chrono-chat \
+noinst_PROGRAMS = bin/test-access-manager bin/test-channel-discovery bin/test-chrono-chat \
   bin/test-echo-consumer bin/test-echo-consumer-lite \
   bin/test-encode-decode-benchmark bin/test-encode-decode-data \
   bin/test-encode-decode-fib-entry bin/test-encode-decode-interest \
@@ -70,8 +70,9 @@ noinst_PROGRAMS = bin/test-channel-discovery bin/test-chrono-chat \
   bin/test-generalized-content bin/test-get-async bin/test-get-async-threadsafe \
   bin/test-list-channels bin/test-list-faces bin/test-list-rib \
   bin/test-prefix-discovery \
-  bin/test-publish-async-nfd bin/test-publish-async-nfd-lite \
-  bin/test-register-route bin/test-sign-verify-data-hmac
+  bin/test-publish-async-nfd bin/test-publish-async-nfd-lite bin/test-register-route \
+  bin/test-secured-interest-responder bin/test-secured-interest-sender \
+  bin/test-sign-verify-data-hmac
 
 # Public C headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_c_headers in include/Makefile.am.
@@ -507,6 +508,9 @@ libndn_ind_tools_la_SOURCES = ${ndn_ind_tools_cpp_headers} ${ndn_ind_cpp_headers
   tools/usersync/content-meta-info.cpp \
   tools/usersync/generalized-content.cpp tools/usersync/prefix-discovery.cpp
 
+bin_test_access_manager_SOURCES = examples/test-access-manager.cpp
+bin_test_access_manager_LDADD = libndn-ind.la
+
 bin_test_channel_discovery_SOURCES = examples/test-channel-discovery.cpp
 bin_test_channel_discovery_LDADD = libndn-ind.la libndn-ind-tools.la
 
@@ -563,6 +567,12 @@ bin_test_publish_async_nfd_LDADD = libndn-ind.la
 
 bin_test_publish_async_nfd_lite_SOURCES = examples/test-publish-async-nfd-lite.cpp
 bin_test_publish_async_nfd_lite_LDADD = libndn-ind.la
+
+bin_test_secured_interest_responder_SOURCES = examples/test-secured-interest-responder.cpp
+bin_test_secured_interest_responder_LDADD = libndn-ind.la
+
+bin_test_secured_interest_sender_SOURCES = examples/test-secured-interest-sender.cpp
+bin_test_secured_interest_sender_LDADD = libndn-ind.la
 
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
 bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la

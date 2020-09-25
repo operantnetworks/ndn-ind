@@ -123,7 +123,8 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2$(EXEEXT) \
 	bin/unit-tests/test-validation-policy-config$(EXEEXT) \
 	bin/unit-tests/test-validator-null$(EXEEXT) \
 	bin/unit-tests/test-validator$(EXEEXT)
-noinst_PROGRAMS = bin/test-channel-discovery$(EXEEXT) \
+noinst_PROGRAMS = bin/test-access-manager$(EXEEXT) \
+	bin/test-channel-discovery$(EXEEXT) \
 	bin/test-chrono-chat$(EXEEXT) bin/test-echo-consumer$(EXEEXT) \
 	bin/test-echo-consumer-lite$(EXEEXT) \
 	bin/test-encode-decode-benchmark$(EXEEXT) \
@@ -140,6 +141,8 @@ noinst_PROGRAMS = bin/test-channel-discovery$(EXEEXT) \
 	bin/test-publish-async-nfd$(EXEEXT) \
 	bin/test-publish-async-nfd-lite$(EXEEXT) \
 	bin/test-register-route$(EXEEXT) \
+	bin/test-secured-interest-responder$(EXEEXT) \
+	bin/test-secured-interest-sender$(EXEEXT) \
 	bin/test-sign-verify-data-hmac$(EXEEXT)
 TESTS = $(check_PROGRAMS)
 subdir = .
@@ -417,6 +420,11 @@ am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
 	src/util/regex/ndn-regex-repeat-matcher.lo \
 	src/util/regex/ndn-regex-top-matcher.lo
 libndn_ind_la_OBJECTS = $(am_libndn_ind_la_OBJECTS)
+am_bin_test_access_manager_OBJECTS =  \
+	examples/test-access-manager.$(OBJEXT)
+bin_test_access_manager_OBJECTS =  \
+	$(am_bin_test_access_manager_OBJECTS)
+bin_test_access_manager_DEPENDENCIES = libndn-ind.la
 am_bin_test_channel_discovery_OBJECTS =  \
 	examples/test-channel-discovery.$(OBJEXT)
 bin_test_channel_discovery_OBJECTS =  \
@@ -516,6 +524,16 @@ am_bin_test_register_route_OBJECTS =  \
 bin_test_register_route_OBJECTS =  \
 	$(am_bin_test_register_route_OBJECTS)
 bin_test_register_route_DEPENDENCIES = libndn-ind.la
+am_bin_test_secured_interest_responder_OBJECTS =  \
+	examples/test-secured-interest-responder.$(OBJEXT)
+bin_test_secured_interest_responder_OBJECTS =  \
+	$(am_bin_test_secured_interest_responder_OBJECTS)
+bin_test_secured_interest_responder_DEPENDENCIES = libndn-ind.la
+am_bin_test_secured_interest_sender_OBJECTS =  \
+	examples/test-secured-interest-sender.$(OBJEXT)
+bin_test_secured_interest_sender_OBJECTS =  \
+	$(am_bin_test_secured_interest_sender_OBJECTS)
+bin_test_secured_interest_sender_DEPENDENCIES = libndn-ind.la
 am_bin_test_sign_verify_data_hmac_OBJECTS =  \
 	examples/test-sign-verify-data-hmac.$(OBJEXT)
 bin_test_sign_verify_data_hmac_OBJECTS =  \
@@ -753,6 +771,7 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	examples/$(DEPDIR)/face-status.pb.Po \
 	examples/$(DEPDIR)/fib-entry.pb.Po \
 	examples/$(DEPDIR)/rib-entry.pb.Po \
+	examples/$(DEPDIR)/test-access-manager.Po \
 	examples/$(DEPDIR)/test-channel-discovery.Po \
 	examples/$(DEPDIR)/test-chrono-chat.Po \
 	examples/$(DEPDIR)/test-echo-consumer-lite.Po \
@@ -773,6 +792,8 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	examples/$(DEPDIR)/test-publish-async-nfd-lite.Po \
 	examples/$(DEPDIR)/test-publish-async-nfd.Po \
 	examples/$(DEPDIR)/test-register-route.Po \
+	examples/$(DEPDIR)/test-secured-interest-responder.Po \
+	examples/$(DEPDIR)/test-secured-interest-sender.Po \
 	examples/$(DEPDIR)/test-sign-verify-data-hmac.Po \
 	src/$(DEPDIR)/common.Plo src/$(DEPDIR)/control-parameters.Plo \
 	src/$(DEPDIR)/control-response.Plo src/$(DEPDIR)/data.Plo \
@@ -1065,7 +1086,8 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
-	$(libndn_ind_la_SOURCES) $(bin_test_channel_discovery_SOURCES) \
+	$(libndn_ind_la_SOURCES) $(bin_test_access_manager_SOURCES) \
+	$(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
@@ -1084,6 +1106,8 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_test_publish_async_nfd_SOURCES) \
 	$(bin_test_publish_async_nfd_lite_SOURCES) \
 	$(bin_test_register_route_SOURCES) \
+	$(bin_test_secured_interest_responder_SOURCES) \
+	$(bin_test_secured_interest_sender_SOURCES) \
 	$(bin_test_sign_verify_data_hmac_SOURCES) \
 	$(bin_unit_tests_test_access_manager_v2_SOURCES) \
 	$(bin_unit_tests_test_certificate_SOURCES) \
@@ -1116,7 +1140,8 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_unit_tests_test_validator_SOURCES) \
 	$(bin_unit_tests_test_validator_null_SOURCES)
 DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
-	$(libndn_ind_la_SOURCES) $(bin_test_channel_discovery_SOURCES) \
+	$(libndn_ind_la_SOURCES) $(bin_test_access_manager_SOURCES) \
+	$(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
@@ -1135,6 +1160,8 @@ DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_test_publish_async_nfd_SOURCES) \
 	$(bin_test_publish_async_nfd_lite_SOURCES) \
 	$(bin_test_register_route_SOURCES) \
+	$(bin_test_secured_interest_responder_SOURCES) \
+	$(bin_test_secured_interest_sender_SOURCES) \
 	$(bin_test_sign_verify_data_hmac_SOURCES) \
 	$(bin_unit_tests_test_access_manager_v2_SOURCES) \
 	$(bin_unit_tests_test_certificate_SOURCES) \
@@ -2088,6 +2115,8 @@ libndn_ind_tools_la_SOURCES = ${ndn_ind_tools_cpp_headers} ${ndn_ind_cpp_headers
   tools/usersync/content-meta-info.cpp \
   tools/usersync/generalized-content.cpp tools/usersync/prefix-discovery.cpp
 
+bin_test_access_manager_SOURCES = examples/test-access-manager.cpp
+bin_test_access_manager_LDADD = libndn-ind.la
 bin_test_channel_discovery_SOURCES = examples/test-channel-discovery.cpp
 bin_test_channel_discovery_LDADD = libndn-ind.la libndn-ind-tools.la
 bin_test_chrono_chat_SOURCES = examples/chatbuf.pb.cc examples/test-chrono-chat.cpp
@@ -2126,6 +2155,10 @@ bin_test_publish_async_nfd_SOURCES = examples/test-publish-async-nfd.cpp
 bin_test_publish_async_nfd_LDADD = libndn-ind.la
 bin_test_publish_async_nfd_lite_SOURCES = examples/test-publish-async-nfd-lite.cpp
 bin_test_publish_async_nfd_lite_LDADD = libndn-ind.la
+bin_test_secured_interest_responder_SOURCES = examples/test-secured-interest-responder.cpp
+bin_test_secured_interest_responder_LDADD = libndn-ind.la
+bin_test_secured_interest_sender_SOURCES = examples/test-secured-interest-sender.cpp
+bin_test_secured_interest_sender_LDADD = libndn-ind.la
 bin_test_sign_verify_data_hmac_SOURCES = examples/test-sign-verify-data-hmac.cpp
 bin_test_sign_verify_data_hmac_LDADD = libndn-ind.la
 bin_test_register_route_SOURCES = \
@@ -3112,11 +3145,17 @@ examples/$(am__dirstamp):
 examples/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) examples/$(DEPDIR)
 	@: > examples/$(DEPDIR)/$(am__dirstamp)
-examples/test-channel-discovery.$(OBJEXT): examples/$(am__dirstamp) \
+examples/test-access-manager.$(OBJEXT): examples/$(am__dirstamp) \
 	examples/$(DEPDIR)/$(am__dirstamp)
 bin/$(am__dirstamp):
 	@$(MKDIR_P) bin
 	@: > bin/$(am__dirstamp)
+
+bin/test-access-manager$(EXEEXT): $(bin_test_access_manager_OBJECTS) $(bin_test_access_manager_DEPENDENCIES) $(EXTRA_bin_test_access_manager_DEPENDENCIES) bin/$(am__dirstamp)
+	@rm -f bin/test-access-manager$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_access_manager_OBJECTS) $(bin_test_access_manager_LDADD) $(LIBS)
+examples/test-channel-discovery.$(OBJEXT): examples/$(am__dirstamp) \
+	examples/$(DEPDIR)/$(am__dirstamp)
 
 bin/test-channel-discovery$(EXEEXT): $(bin_test_channel_discovery_OBJECTS) $(bin_test_channel_discovery_DEPENDENCIES) $(EXTRA_bin_test_channel_discovery_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/test-channel-discovery$(EXEEXT)
@@ -3249,6 +3288,18 @@ examples/test-register-route.$(OBJEXT): examples/$(am__dirstamp) \
 bin/test-register-route$(EXEEXT): $(bin_test_register_route_OBJECTS) $(bin_test_register_route_DEPENDENCIES) $(EXTRA_bin_test_register_route_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/test-register-route$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_register_route_OBJECTS) $(bin_test_register_route_LDADD) $(LIBS)
+examples/test-secured-interest-responder.$(OBJEXT):  \
+	examples/$(am__dirstamp) examples/$(DEPDIR)/$(am__dirstamp)
+
+bin/test-secured-interest-responder$(EXEEXT): $(bin_test_secured_interest_responder_OBJECTS) $(bin_test_secured_interest_responder_DEPENDENCIES) $(EXTRA_bin_test_secured_interest_responder_DEPENDENCIES) bin/$(am__dirstamp)
+	@rm -f bin/test-secured-interest-responder$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_secured_interest_responder_OBJECTS) $(bin_test_secured_interest_responder_LDADD) $(LIBS)
+examples/test-secured-interest-sender.$(OBJEXT):  \
+	examples/$(am__dirstamp) examples/$(DEPDIR)/$(am__dirstamp)
+
+bin/test-secured-interest-sender$(EXEEXT): $(bin_test_secured_interest_sender_OBJECTS) $(bin_test_secured_interest_sender_DEPENDENCIES) $(EXTRA_bin_test_secured_interest_sender_DEPENDENCIES) bin/$(am__dirstamp)
+	@rm -f bin/test-secured-interest-sender$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_secured_interest_sender_OBJECTS) $(bin_test_secured_interest_sender_LDADD) $(LIBS)
 examples/test-sign-verify-data-hmac.$(OBJEXT):  \
 	examples/$(am__dirstamp) examples/$(DEPDIR)/$(am__dirstamp)
 
@@ -3764,6 +3815,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/face-status.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/fib-entry.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/rib-entry.pb.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-access-manager.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-channel-discovery.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-chrono-chat.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-echo-consumer-lite.Po@am__quote@ # am--include-marker
@@ -3784,6 +3836,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-publish-async-nfd-lite.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-publish-async-nfd.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-register-route.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-secured-interest-responder.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-secured-interest-sender.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-sign-verify-data-hmac.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/common.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/control-parameters.Plo@am__quote@ # am--include-marker
@@ -6182,6 +6236,7 @@ distclean: distclean-recursive
 	-rm -f examples/$(DEPDIR)/face-status.pb.Po
 	-rm -f examples/$(DEPDIR)/fib-entry.pb.Po
 	-rm -f examples/$(DEPDIR)/rib-entry.pb.Po
+	-rm -f examples/$(DEPDIR)/test-access-manager.Po
 	-rm -f examples/$(DEPDIR)/test-channel-discovery.Po
 	-rm -f examples/$(DEPDIR)/test-chrono-chat.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer-lite.Po
@@ -6202,6 +6257,8 @@ distclean: distclean-recursive
 	-rm -f examples/$(DEPDIR)/test-publish-async-nfd-lite.Po
 	-rm -f examples/$(DEPDIR)/test-publish-async-nfd.Po
 	-rm -f examples/$(DEPDIR)/test-register-route.Po
+	-rm -f examples/$(DEPDIR)/test-secured-interest-responder.Po
+	-rm -f examples/$(DEPDIR)/test-secured-interest-sender.Po
 	-rm -f examples/$(DEPDIR)/test-sign-verify-data-hmac.Po
 	-rm -f src/$(DEPDIR)/common.Plo
 	-rm -f src/$(DEPDIR)/control-parameters.Plo
@@ -6554,6 +6611,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f examples/$(DEPDIR)/face-status.pb.Po
 	-rm -f examples/$(DEPDIR)/fib-entry.pb.Po
 	-rm -f examples/$(DEPDIR)/rib-entry.pb.Po
+	-rm -f examples/$(DEPDIR)/test-access-manager.Po
 	-rm -f examples/$(DEPDIR)/test-channel-discovery.Po
 	-rm -f examples/$(DEPDIR)/test-chrono-chat.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer-lite.Po
@@ -6574,6 +6632,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f examples/$(DEPDIR)/test-publish-async-nfd-lite.Po
 	-rm -f examples/$(DEPDIR)/test-publish-async-nfd.Po
 	-rm -f examples/$(DEPDIR)/test-register-route.Po
+	-rm -f examples/$(DEPDIR)/test-secured-interest-responder.Po
+	-rm -f examples/$(DEPDIR)/test-secured-interest-sender.Po
 	-rm -f examples/$(DEPDIR)/test-sign-verify-data-hmac.Po
 	-rm -f src/$(DEPDIR)/common.Plo
 	-rm -f src/$(DEPDIR)/control-parameters.Plo
