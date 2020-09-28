@@ -1,7 +1,7 @@
 # To build using autotools, see the Development section of the file INSTALL.
 
 AC_PREREQ([2.59])
-AC_INIT([ndn-ind], [0.17], [ndn-lib@lists.cs.ucla.edu], [ndn-ind], [https://github.com/operantnetworks/ndn-ind])
+AC_INIT([ndn-ind], [1.0], [ndn-lib@lists.cs.ucla.edu], [ndn-ind], [https://github.com/operantnetworks/ndn-ind])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define foreign])
 
 AC_CONFIG_MACRO_DIR([m4])
