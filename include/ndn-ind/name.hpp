@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/name.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Add findParametersSha256Digest.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -1432,6 +1432,15 @@ public:
    */
   bool
   isPrefixOf(const Name& name) const { return match(name); }
+
+  /**
+   * Find the index of the ParametersSha256Digest component in this name.
+   * @return The index of the only ParametersSha256Digest component, or -1 if
+   * the name doesn't have a ParametersSha256Digest components, or -2 if the name
+   * has multiple ParametersSha256Digest components.
+   */
+  int
+  findParametersSha256Digest() const;
 
   /**
    * Make a Blob value by decoding the escapedString between beginOffset and endOffset according to the NDN URI Scheme.

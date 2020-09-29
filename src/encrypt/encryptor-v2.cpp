@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ *   Support ChaCha20-Ploy1305, GCK, encrypted Interest.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -51,12 +52,37 @@ INIT_LOGGER("ndn.EncryptorV2");
 
 namespace ndn {
 
+void
+EncryptorV2::encrypt
+  (const ptr_lib::shared_ptr<Interest>& interest,
+   const OnEncryptInterestSuccess& onSuccess,
+   const EncryptError::OnError& onError, WireFormat& wireFormat)
+{
+  if (interest->getName().findParametersSha256Digest() != -1) {
+    onError(EncryptError::ErrorCode::EncryptionFailure,
+      std::string("The Interest name already has a ParametersSha256Digest component: ") +
+      interest->getName().toUri());
+    return;
+  }
+
+  encrypt
+    (interest->getApplicationParameters(),
+     interest->getName().wireEncode(wireFormat),
+     [=](const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent) {
+       interest->setApplicationParameters(encryptedContent->wireEncodeV2());
+       interest->appendParametersDigestToName();
+       onSuccess(interest, encryptedContent);
+     },
+     onError);
+}
+
 EncryptorV2::Impl::Impl
   (const Name& accessPrefix, const Name& ckPrefix,
    const SigningInfo& ckDataSigningInfo, const EncryptError::OnError& onError,
    Validator* validator, KeyChain* keyChain, Face* face,
    ndn_EncryptAlgorithmType algorithmType)
 : accessPrefix_(accessPrefix), ckPrefix_(ckPrefix),
+  validator_(validator),
   ckDataSigningInfo_(ckDataSigningInfo), isKekRetrievalInProgress_(false),
   onError_(onError), keyChain_(keyChain), face_(face),
   algorithmType_(algorithmType), kekPendingInterestId_(0),
@@ -75,7 +101,7 @@ EncryptorV2::Impl::Impl
    PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
    ndn_EncryptAlgorithmType algorithmType)
 : accessPrefix_(accessPrefix), onError_(onError), credentialsKey_(credentialsKey),
-  // validator_(validator),
+  validator_(validator),
   keyChain_(keyChain), face_(face), algorithmType_(algorithmType),
   isKekRetrievalInProgress_(false), ckRegisteredPrefixId_(0),
   kekPendingInterestId_(0), isGckRetrievalInProgress_(false),
@@ -217,8 +243,8 @@ EncryptorV2::Impl::encrypt
 
 void
 EncryptorV2::Impl::encrypt
-  (const ptr_lib::shared_ptr<Data>& data, const OnEncryptSuccess& onSuccess,
-   const EncryptError::OnError& onErrorIn, WireFormat& wireFormat)
+  (const Blob& plainData, const Blob& associatedData,
+   const OnEncryptSuccess& onSuccess, const EncryptError::OnError& onErrorIn)
 {
   // If the given OnError is omitted, use the one given to the constructor.
   EncryptError::OnError onError = (onErrorIn ? onErrorIn : onError_);
@@ -232,7 +258,7 @@ EncryptorV2::Impl::encrypt
         ("The GCK is not yet available, so adding to the pending encrypt queue");
       pendingEncrypts_.push_back
         (ptr_lib::make_shared<PendingEncrypt>
-         (data, onSuccess, onError, wireFormat));
+         (plainData, associatedData, onSuccess, onError));
 
       if (!isGckRetrievalInProgress_) {
         nextCheckForNewGck_ =
@@ -255,9 +281,10 @@ EncryptorV2::Impl::encrypt
   }
 
   ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
-    (*data, wireFormat);
+    (plainData.buf(), plainData.size(), associatedData.buf(),
+     associatedData.size());
   try {
-    onSuccess(data, encryptedContent);
+    onSuccess(encryptedContent);
   } catch (const std::exception& ex) {
     _LOG_ERROR("Error in onSuccess: " << ex.what());
   } catch (...) {
@@ -366,11 +393,20 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
        const ptr_lib::shared_ptr<Data>& kekData)
     {
       parent_->kekPendingInterestId_ = 0;
-      // TODO: Verify if the key is legitimate.
-      parent_->kekData_ = kekData;
-      if (parent_->makeAndPublishCkData(onError_))
-        onReady_();
-      // Otherwise, failure has already been reported.
+
+      // Validate the Data signature.
+      parent_->validator_->validate
+        (*kekData,
+         [=](auto&) {
+           parent_->kekData_ = kekData;
+           if (parent_->makeAndPublishCkData(onError_))
+             onReady_();
+           // Otherwise, failure has already been reported.
+         },
+         [=](auto&, auto& error) {
+           onError_(EncryptError::ErrorCode::CkRetrievalFailure,
+             "Validate KEK Data failure: " + error.toString());
+         });
     }
 
     void
@@ -497,23 +533,32 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
       (const ptr_lib::shared_ptr<const Interest>& ckInterest,
        const ptr_lib::shared_ptr<Data>& gckLatestData)
     {
-      // TODO: Validate the Data packet.
-      Name newGckName;
-      try {
-        newGckName.wireDecode(gckLatestData->getContent());
-      } catch (const std::exception& ex) {
-        onError_(EncryptError::ErrorCode::CkRetrievalFailure,
-          string("Error decoding GCK name in: ") + gckLatestData->getName().toUri());
-      }
+      // Validate the Data signature.
+      parent_->validator_->validate
+        (*gckLatestData,
+         [=](auto&) {
+           Name newGckName;
+           try {
+             newGckName.wireDecode(gckLatestData->getContent());
+           } catch (const std::exception& ex) {
+             onError_(EncryptError::ErrorCode::CkRetrievalFailure,
+               string("Error decoding GCK name in: ") + gckLatestData->getName().toUri());
+             return;
+           }
 
-      if (newGckName.equals(gckName_)) {
-        // The latest is the same name, so do nothing.
-        parent_->isGckRetrievalInProgress_ = false;
-        return;
-      }
+           if (newGckName.equals(gckName_)) {
+             // The latest is the same name, so do nothing.
+             parent_->isGckRetrievalInProgress_ = false;
+             return;
+           }
 
-      // Leave isGckRetrievalInProgress_ true.
-      parent_->fetchGck(newGckName, onError_, N_RETRIES);
+           // Leave isGckRetrievalInProgress_ true.
+           parent_->fetchGck(newGckName, onError_, N_RETRIES);
+         },
+         [=](auto&, auto& error) {
+           onError_(EncryptError::ErrorCode::CkRetrievalFailure,
+             "Validate GCK latest_ Data failure: " + error.toString());
+         });
     }
 
     void
@@ -705,9 +750,10 @@ EncryptorV2::Impl::decryptGckAndProcessPendingDecrypts(
     // TODO: If this calls onError, should we quit so that there is only one exit
     // from the asynchronous operation?
     ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
-      (*pendingEncrypt.data, pendingEncrypt.wireFormat);
+      (pendingEncrypt.plainData.buf(), pendingEncrypt.plainData.size(),
+       pendingEncrypt.associatedData.buf(), pendingEncrypt.associatedData.size());
     try {
-      pendingEncrypt.onSuccess(pendingEncrypt.data, encryptedContent);
+      pendingEncrypt.onSuccess(encryptedContent);
     } catch (const std::exception& ex) {
       _LOG_ERROR("Error in onSuccess: " << ex.what());
     } catch (...) {

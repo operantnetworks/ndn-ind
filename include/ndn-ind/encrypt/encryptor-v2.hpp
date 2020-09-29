@@ -8,7 +8,8 @@
  * Original file: include/ndn-cpp/encrypt/encryptor-v2.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ChaCha20-Ploy1305, GCK,
+ *   encrypted Interest.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -60,8 +61,15 @@ const std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD = std::chrono::hours(
 class EncryptorV2 {
 public:
   typedef func_lib::function<void
+    (const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent)> OnEncryptSuccess;
+
+  typedef func_lib::function<void
     (const ptr_lib::shared_ptr<Data>& data,
-     const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent)> OnEncryptSuccess;
+     const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent)> OnEncryptDataSuccess;
+
+  typedef func_lib::function<void
+    (const ptr_lib::shared_ptr<Interest>& interest,
+     const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent)> OnEncryptInterestSuccess;
 
   /**
    * Create an EncryptorV2 for encrypting using a group KEK and KDK. This uses
@@ -140,7 +148,7 @@ public:
   shutdown() { impl_->shutdown(); }
 
   /**
-   * Encrypt the plainData using the existing Content Key (CK) and return a new
+   * Encrypt the plainData using the existing content key and return a new
    * EncryptedContent.
    * @param plainData The data to encrypt.
    * @param plainDataLength The length of plainData.
@@ -165,7 +173,7 @@ public:
   }
 
   /**
-   * Encrypt the plainData using the existing Content Key (CK) and return a new
+   * Encrypt the plainData using the existing content key and return a new
    * EncryptedContent.
    * @param plainData The data to encrypt.
    * @param associatedData (optional) The associated data which is included in
@@ -187,28 +195,70 @@ public:
   }
 
   /**
-   * Encrypt the Data packet content using the existing Content Key (CK) and
-   * replace the content with the wire encoding of the new EncryptedContent.
-   * When encrypting, use the encoding of the Data packet name as the
-   * "associated data".
-   * @param data The Data packet whose content is encrypted and replaced with a
-   * new EncryptedContent.
-   * @param wireFormat (optional) A WireFormat object used to encode the Data
-   * packet name and the EncryptedContent. If omitted, use
-   * WireFormat::getDefaultWireFormat().
-   * @return The new EncryptedContent (whose encoding replaced the Data packet content).
-   * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
-   * and the first GCK has not been fetched. (When using a group content key,
-   * you should call the asynchronous encrypt method with the onSuccess callback.)
+   * Encrypt the plainData using the existing content key and call the onSuccess
+   * callback with a new EncryptedContent. If this EncryptorV2 is using a group
+   * content key (GCK) then this may fetch a new GCK before calling the
+   * onSuccess callback.
+   * @param plainData The data to encrypt.
+   * @param associatedData The associated data which is included in the
+   * calculation of the authentication tag, but is not encrypted. If
+   * associatedData.size() is 0, then this can be an isNull() Blob. If the
+   * associatedData size() is 0, then no associated data is used.
+   * @param onSuccess On successful encryption, this calls
+   * onSuccess(encryptedContent) where encryptedContent is the new 
+   * EncryptedContent.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param onError (optional) On failure, this calls onError(errorCode, message)
+   * where errorCode is from EncryptError::ErrorCode, and message is an error
+   * string. If omitted, call the onError given to the constructor. (Even though
+   * the constructor has an onError, this is provided separately since this
+   * asynchronous method completes either by calling onSuccess or onError.)
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
    */
-  ptr_lib::shared_ptr<EncryptedContent>
-  encrypt(Data& data, WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
+  void
+  encrypt
+    (const Blob& plainData, const Blob& associatedData,
+     const OnEncryptSuccess& onSuccess,
+     const EncryptError::OnError& onError = EncryptError::OnError())
   {
-    return impl_->encrypt(data, wireFormat);
+    return impl_->encrypt(plainData, associatedData, onSuccess, onError);
   }
 
   /**
-   * Encrypt the Data packet content using the existing Content Key (CK) and
+   * Encrypt the plainData (with no associated data) using the existing content
+   * key and call the onSuccess callback with a new EncryptedContent. If this
+   * EncryptorV2 is using a group content key (GCK) then this may fetch a new
+   * GCK before calling the onSuccess callback.
+   * @param plainData The data to encrypt.
+   * @param onSuccess On successful encryption, this calls
+   * onSuccess(encryptedContent) where encryptedContent is the new
+   * EncryptedContent.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param onError (optional) On failure, this calls onError(errorCode, message)
+   * where errorCode is from EncryptError::ErrorCode, and message is an error
+   * string. If omitted, call the onError given to the constructor. (Even though
+   * the constructor has an onError, this is provided separately since this
+   * asynchronous method completes either by calling onSuccess or onError.)
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   */
+  void
+  encrypt
+    (const Blob& plainData, const OnEncryptSuccess& onSuccess,
+     const EncryptError::OnError& onError = EncryptError::OnError())
+  {
+    return encrypt(plainData, Blob(), onSuccess, onError);
+  }
+
+  /**
+   * Encrypt the Data packet content using the existing content key and
    * replace the content with the wire encoding of the new EncryptedContent. If
    * this EncryptorV2 is using a group content key (GCK) then this may fetch a
    * new GCK before calling the onSuccess callback.
@@ -232,17 +282,57 @@ public:
    * better error handling the callback should catch and properly handle any
    * exceptions.
    * @param wireFormat (optional) A WireFormat object used to encode the Data
-   * packet name and the EncryptedContent. If omitted, use
-   * WireFormat::getDefaultWireFormat().
+   * packet name. If omitted, use WireFormat::getDefaultWireFormat().
    */
   void
   encrypt
-    (const ptr_lib::shared_ptr<Data>& data, const OnEncryptSuccess& onSuccess,
+    (const ptr_lib::shared_ptr<Data>& data, const OnEncryptDataSuccess& onSuccess,
      const EncryptError::OnError& onError = EncryptError::OnError(),
      WireFormat& wireFormat = *WireFormat::getDefaultWireFormat())
   {
-    impl_->encrypt(data, onSuccess, onError, wireFormat);
+    encrypt
+      (data->getContent(), data->getName().wireEncode(wireFormat),
+       [=](const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent) {
+         data->setContent(encryptedContent->wireEncodeV2());
+         onSuccess(data, encryptedContent);
+       },
+       onError);
   }
+
+  /**
+   * Encrypt the Interest ApplicationParameters using the existing content key
+   * and replace the ApplicationParameters with the wire encoding of the new
+   * EncryptedContent. If this EncryptorV2 is using a group content key (GCK)
+   * then this may fetch a new GCK before calling the onSuccess callback.
+   * When encrypting, use the encoding of the Interest name as the "associated
+   * data". This appends a ParametersSha256Digest component to the Interest name.
+   * @param interest The Interest whose ApplicationParameters is encrypted and
+   * replaced with a new EncryptedContent. (This is also passed to the onSuccess
+   * callback.)
+   * @param onSuccess On successful encryption, this calls
+   * onSuccess(interest, encryptedContent) where interest is the the modified
+   * Interest object that was provided, and encryptedContent is the new
+   * EncryptedContent whose encoding replaced the Interest ApplicationParameters.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param onError (optional) On failure, this calls onError(errorCode, message)
+   * where errorCode is from EncryptError::ErrorCode, and message is an error
+   * string. If omitted, call the onError given to the constructor. (Even though
+   * the constructor has an onError, this is provided separately since this
+   * asynchronous method completes either by calling onSuccess or onError.)
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param wireFormat (optional) A WireFormat object used to encode the
+   * Interest name. If omitted, use WireFormat::getDefaultWireFormat().
+   */
+  void
+  encrypt
+    (const ptr_lib::shared_ptr<Interest>& interest,
+     const OnEncryptInterestSuccess& onSuccess,
+     const EncryptError::OnError& onError = EncryptError::OnError(),
+     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat());
 
   /**
    * Create a new Content Key (CK) and publish the corresponding CK Data packet.
@@ -388,21 +478,11 @@ private:
       (const uint8_t* plainData, size_t plainDataLength,
        const uint8_t *associatedData, size_t associatedDataLength);
 
-    ptr_lib::shared_ptr<EncryptedContent>
-    encrypt(Data& data, WireFormat& wireFormat)
-    {
-      Blob encodedName = data.getName().wireEncode(wireFormat);
-      ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
-        (data.getContent().buf(), data.getContent().size(), encodedName.buf(),
-         encodedName.size());
-      data.setContent(encryptedContent->wireEncodeV2(wireFormat));
-      return encryptedContent;
-    }
-
     void
     encrypt
-      (const ptr_lib::shared_ptr<Data>& data, const OnEncryptSuccess& onSuccess,
-       const EncryptError::OnError& onError, WireFormat& wireFormat);
+      (const Blob& plainData, const Blob& associatedData,
+       const OnEncryptSuccess& onSuccess,
+       const EncryptError::OnError& onError);
 
     /**
      * Create a new Content Key (CK) and publish the corresponding CK Data
@@ -428,16 +508,17 @@ private:
     class PendingEncrypt {
     public:
       PendingEncrypt
-        (const ptr_lib::shared_ptr<Data>& dataIn, const OnEncryptSuccess& onSuccessIn,
-         const EncryptError::OnError& onErrorIn, WireFormat& wireFormatIn)
-      : data(dataIn), onSuccess(onSuccessIn), onError(onErrorIn),
-        wireFormat(wireFormatIn)
+        (const Blob& plainDataIn, const Blob& associatedDataIn,
+         const OnEncryptSuccess& onSuccessIn,
+         const EncryptError::OnError& onErrorIn)
+      : plainData(plainDataIn), associatedData(associatedDataIn),
+        onSuccess(onSuccessIn), onError(onErrorIn)
       {}
 
-      ptr_lib::shared_ptr<Data> data;
+      Blob plainData;
+      Blob associatedData;
       OnEncryptSuccess onSuccess;
       EncryptError::OnError onError;
-      WireFormat& wireFormat;
     };
 
     void
@@ -536,7 +617,7 @@ private:
     std::vector<ptr_lib::shared_ptr<PendingEncrypt> > pendingEncrypts_;
     PibKey* credentialsKey_;
 
-    // Validator* validator_;
+    Validator* validator_;
     KeyChain* keyChain_;
     Face* face_;
     ndn_EncryptAlgorithmType algorithmType_;

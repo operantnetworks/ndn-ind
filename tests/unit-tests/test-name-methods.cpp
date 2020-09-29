@@ -426,6 +426,14 @@ TEST_F(TestNameMethods, ParametersSha256Digest)
     ("/hello/params-sha256="
      "28BAD4B5275BD392DBB670C75CF0B66F13F7942B21E80F55C0E86B374753A548");
   ASSERT_EQ(name.get(0), name2.get(1));
+
+  // Check findParametersSha256Digest.
+  ASSERT_EQ(Name("/a/b").findParametersSha256Digest(), -1);
+  ASSERT_EQ(name2.findParametersSha256Digest(), 1)
+    << "ParametersSha256Digest not at expected index";
+  name2.appendParametersSha256Digest(digest, 32);
+  ASSERT_EQ(name2.findParametersSha256Digest(), -2)
+    << "Expected error for multiple ParametersSha256Digest";
 }
 
 TEST_F(TestNameMethods, TypedNameComponent)

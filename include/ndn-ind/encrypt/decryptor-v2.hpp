@@ -1,5 +1,18 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/encrypt/decryptor-v2.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Use std::chrono. Support ChaCha20-Ploy1305, GCK,
+ *   encrypted Interest.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2018-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From the NAC library https://github.com/named-data/name-based-access-control/blob/new/src/decryptor.hpp
@@ -120,7 +133,7 @@ public:
 
   /**
    * Asynchronously decrypt the Data packet content by decoding it as an
-   * EncryotedContent. When encrypting, use the encoding of the Data packet name
+   * EncryotedContent. When decrypting, use the encoding of the Data packet name
    * as the "associated data".
    * @param data The Data packet whose content is decoded as an EncryptdContent
    * and whose name encoding is used as the "associated data".
@@ -132,9 +145,9 @@ public:
    * @param onError On failure, this calls onError(errorCode, message)
    * where errorCode is from EncryptError::ErrorCode, and message is an error
    * string.
-   * @param wireFormat (optional) A WireFormat object used to decode the Data
-   * content as an EncryptedContent, and to encode the Data packet name to use
-   * as the "associated data". If omitted, use WireFormat::getDefaultWireFormat().
+   * @param wireFormat (optional) A WireFormat object used to encode the Data 
+   * packet name to use as the "associated data". If omitted, use
+   * WireFormat::getDefaultWireFormat().
    * NOTE: The library will log any exceptions thrown by this callback, but for
    * better error handling the callback should catch and properly handle any
    * exceptions.
@@ -148,7 +161,7 @@ public:
     ptr_lib::shared_ptr<EncryptedContent> encryptedContent
       (new EncryptedContent());
     try {
-      encryptedContent->wireDecodeV2(data.getContent(), wireFormat);
+      encryptedContent->wireDecodeV2(data.getContent());
     } catch (const std::exception& ex) {
       onError(EncryptError::ErrorCode::DecryptionFailure,
         std::string("Error decoding the Data content as EncryptedContent: ") + ex.what());
@@ -159,6 +172,35 @@ public:
       (encryptedContent, data.getName().wireEncode(wireFormat), onSuccess,
        onError);
   }
+
+  /**
+   * Asynchronously decrypt the Interest's ApplicationParameters by decoding it
+   * as an EncryotedContent. When decrypting, use the encoding of the 
+   * Interest name (up to the ParametersSha256Digest component) as the
+   * "associated data".
+   * @param interest The Interest whose ApplicationParameters is decoded as an
+   * EncryptdContent and whose name encoding (up to the ParametersSha256Digest
+   * component) is used as the "associated data".
+   * @param onSuccess On successful decryption, this calls
+   * onSuccess(plainData) where plainData is the decrypted Blob.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param onError On failure, this calls onError(errorCode, message)
+   * where errorCode is from EncryptError::ErrorCode, and message is an error
+   * string.
+   * @param wireFormat (optional) A WireFormat object used to encode the 
+   * Interest name to use as the "associated data". If omitted, use
+   * WireFormat::getDefaultWireFormat().
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   */
+  void
+  decrypt
+    (const Interest& interest, const DecryptSuccessCallback& onSuccess,
+     const EncryptError::OnError& onError,
+     WireFormat& wireFormat = *WireFormat::getDefaultWireFormat());
 
   class ContentKey {
   public:
@@ -301,7 +343,7 @@ private:
        Name& kdkIdentityName, Name& kdkKeyId);
 
     PibKey* credentialsKey_;
-    // Validator* validator_;
+    Validator* validator_;
     Face* face_;
     // The external keychain with access credentials.
     KeyChain* keyChain_;
