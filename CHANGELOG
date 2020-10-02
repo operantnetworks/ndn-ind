@@ -14,6 +14,7 @@ Changes
   Renamed the ndn::time::steady_clock wrapper (only needed for macOS) to
   ndn::scheduler::MonotonicSteadyClock.
 * Add support for chacha20-Poly1305 in NAC. https://github.com/operantnetworks/ndn-ind/pull/7
+* Add support for a group content key (GCK) and secured interest in NAC.
 * In Interest, changed the MustBeFresh default value to false.
 * Added Tlv0_3WireFormat.
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .
