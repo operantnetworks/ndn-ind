@@ -58,7 +58,7 @@ DecryptorV2::decrypt
     encryptedContent->wireDecodeV2(interest.getApplicationParameters());
   } catch (const std::exception& ex) {
     onError(EncryptError::ErrorCode::DecryptionFailure,
-      std::string("Error decoding the Data content as EncryptedContent: ") + ex.what());
+      std::string("Error decoding the Interest ApplicationParameters as EncryptedContent: ") + ex.what());
     return;
   }
 
