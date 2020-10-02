@@ -461,13 +461,13 @@ DecryptorV2::Impl::fetchGck
       (const ptr_lib::shared_ptr<const Interest>& ckInterest,
        const ptr_lib::shared_ptr<Data>& ckData)
     {
+      contentKey_->pendingInterest = 0;
+
       // Validate the Data signature.
       parent_->validator_->validate
         (*ckData,
         [=](auto&) {
           try {
-            contentKey_->pendingInterest = 0;
-
             // Pass an empty kdkKeyName so that we decrypt with the credentialsKey_.
             parent_->decryptCkAndProcessPendingDecrypts
               (*contentKey_, *ckData, Name(), onError_);
