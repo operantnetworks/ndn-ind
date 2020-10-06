@@ -125,7 +125,8 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2$(EXEEXT) \
 	bin/unit-tests/test-validator$(EXEEXT)
 noinst_PROGRAMS = bin/test-access-manager$(EXEEXT) \
 	bin/test-channel-discovery$(EXEEXT) \
-	bin/test-chrono-chat$(EXEEXT) bin/test-echo-consumer$(EXEEXT) \
+	bin/test-chrono-chat$(EXEEXT) bin/test-custom-tpm$(EXEEXT) \
+	bin/test-echo-consumer$(EXEEXT) \
 	bin/test-echo-consumer-lite$(EXEEXT) \
 	bin/test-encode-decode-benchmark$(EXEEXT) \
 	bin/test-encode-decode-data$(EXEEXT) \
@@ -435,6 +436,9 @@ am_bin_test_chrono_chat_OBJECTS = examples/chatbuf.pb.$(OBJEXT) \
 	examples/test-chrono-chat.$(OBJEXT)
 bin_test_chrono_chat_OBJECTS = $(am_bin_test_chrono_chat_OBJECTS)
 bin_test_chrono_chat_DEPENDENCIES = libndn-ind.la
+am_bin_test_custom_tpm_OBJECTS = examples/test-custom-tpm.$(OBJEXT)
+bin_test_custom_tpm_OBJECTS = $(am_bin_test_custom_tpm_OBJECTS)
+bin_test_custom_tpm_DEPENDENCIES = libndn-ind.la
 am_bin_test_echo_consumer_OBJECTS =  \
 	examples/test-echo-consumer.$(OBJEXT)
 bin_test_echo_consumer_OBJECTS = $(am_bin_test_echo_consumer_OBJECTS)
@@ -774,6 +778,7 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	examples/$(DEPDIR)/test-access-manager.Po \
 	examples/$(DEPDIR)/test-channel-discovery.Po \
 	examples/$(DEPDIR)/test-chrono-chat.Po \
+	examples/$(DEPDIR)/test-custom-tpm.Po \
 	examples/$(DEPDIR)/test-echo-consumer-lite.Po \
 	examples/$(DEPDIR)/test-echo-consumer.Po \
 	examples/$(DEPDIR)/test-encode-decode-benchmark.Po \
@@ -1088,7 +1093,7 @@ am__v_CXXLD_1 =
 SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(libndn_ind_la_SOURCES) $(bin_test_access_manager_SOURCES) \
 	$(bin_test_channel_discovery_SOURCES) \
-	$(bin_test_chrono_chat_SOURCES) \
+	$(bin_test_chrono_chat_SOURCES) $(bin_test_custom_tpm_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
 	$(bin_test_encode_decode_benchmark_SOURCES) \
@@ -1142,7 +1147,7 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(libndn_ind_la_SOURCES) $(bin_test_access_manager_SOURCES) \
 	$(bin_test_channel_discovery_SOURCES) \
-	$(bin_test_chrono_chat_SOURCES) \
+	$(bin_test_chrono_chat_SOURCES) $(bin_test_custom_tpm_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
 	$(bin_test_encode_decode_benchmark_SOURCES) \
@@ -2121,6 +2126,8 @@ bin_test_channel_discovery_SOURCES = examples/test-channel-discovery.cpp
 bin_test_channel_discovery_LDADD = libndn-ind.la libndn-ind-tools.la
 bin_test_chrono_chat_SOURCES = examples/chatbuf.pb.cc examples/test-chrono-chat.cpp
 bin_test_chrono_chat_LDADD = libndn-ind.la
+bin_test_custom_tpm_SOURCES = examples/test-custom-tpm.cpp
+bin_test_custom_tpm_LDADD = libndn-ind.la
 bin_test_echo_consumer_lite_SOURCES = examples/test-echo-consumer-lite.cpp
 bin_test_echo_consumer_lite_LDADD = libndn-ind.la
 bin_test_echo_consumer_SOURCES = examples/test-echo-consumer.cpp
@@ -3168,6 +3175,12 @@ examples/test-chrono-chat.$(OBJEXT): examples/$(am__dirstamp) \
 bin/test-chrono-chat$(EXEEXT): $(bin_test_chrono_chat_OBJECTS) $(bin_test_chrono_chat_DEPENDENCIES) $(EXTRA_bin_test_chrono_chat_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/test-chrono-chat$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_chrono_chat_OBJECTS) $(bin_test_chrono_chat_LDADD) $(LIBS)
+examples/test-custom-tpm.$(OBJEXT): examples/$(am__dirstamp) \
+	examples/$(DEPDIR)/$(am__dirstamp)
+
+bin/test-custom-tpm$(EXEEXT): $(bin_test_custom_tpm_OBJECTS) $(bin_test_custom_tpm_DEPENDENCIES) $(EXTRA_bin_test_custom_tpm_DEPENDENCIES) bin/$(am__dirstamp)
+	@rm -f bin/test-custom-tpm$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_custom_tpm_OBJECTS) $(bin_test_custom_tpm_LDADD) $(LIBS)
 examples/test-echo-consumer.$(OBJEXT): examples/$(am__dirstamp) \
 	examples/$(DEPDIR)/$(am__dirstamp)
 
@@ -3818,6 +3831,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-access-manager.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-channel-discovery.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-chrono-chat.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-custom-tpm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-echo-consumer-lite.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-echo-consumer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-encode-decode-benchmark.Po@am__quote@ # am--include-marker
@@ -6239,6 +6253,7 @@ distclean: distclean-recursive
 	-rm -f examples/$(DEPDIR)/test-access-manager.Po
 	-rm -f examples/$(DEPDIR)/test-channel-discovery.Po
 	-rm -f examples/$(DEPDIR)/test-chrono-chat.Po
+	-rm -f examples/$(DEPDIR)/test-custom-tpm.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer-lite.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer.Po
 	-rm -f examples/$(DEPDIR)/test-encode-decode-benchmark.Po
@@ -6614,6 +6629,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f examples/$(DEPDIR)/test-access-manager.Po
 	-rm -f examples/$(DEPDIR)/test-channel-discovery.Po
 	-rm -f examples/$(DEPDIR)/test-chrono-chat.Po
+	-rm -f examples/$(DEPDIR)/test-custom-tpm.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer-lite.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer.Po
 	-rm -f examples/$(DEPDIR)/test-encode-decode-benchmark.Po

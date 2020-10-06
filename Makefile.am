@@ -63,7 +63,7 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
   bin/unit-tests/test-validator
 
 noinst_PROGRAMS = bin/test-access-manager bin/test-channel-discovery bin/test-chrono-chat \
-  bin/test-echo-consumer bin/test-echo-consumer-lite \
+  bin/test-custom-tpm bin/test-echo-consumer bin/test-echo-consumer-lite \
   bin/test-encode-decode-benchmark bin/test-encode-decode-data \
   bin/test-encode-decode-fib-entry bin/test-encode-decode-interest \
   bin/test-full-psync-with-users bin/test-full-psync \
@@ -516,6 +516,9 @@ bin_test_channel_discovery_LDADD = libndn-ind.la libndn-ind-tools.la
 
 bin_test_chrono_chat_SOURCES = examples/chatbuf.pb.cc examples/test-chrono-chat.cpp
 bin_test_chrono_chat_LDADD = libndn-ind.la
+
+bin_test_custom_tpm_SOURCES = examples/test-custom-tpm.cpp
+bin_test_custom_tpm_LDADD = libndn-ind.la
 
 bin_test_echo_consumer_lite_SOURCES = examples/test-echo-consumer-lite.cpp
 bin_test_echo_consumer_lite_LDADD = libndn-ind.la
