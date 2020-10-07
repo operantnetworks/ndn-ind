@@ -349,9 +349,9 @@ public:
    * @param checkForNewGckInterval The interval.
    */
   void
-  setcheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
+  setCheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
   {
-    impl_->setcheckForNewGckInterval(checkForNewGckInterval);
+    impl_->setCheckForNewGckInterval(checkForNewGckInterval);
   }
 
   /**
@@ -492,7 +492,7 @@ private:
     regenerateCk();
 
     void
-    setcheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
+    setCheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
     {
       checkForNewGckInterval_ = checkForNewGckInterval;
     }
@@ -577,7 +577,7 @@ private:
 
     /**
      * Decrypt the gckData fetched by fetchGck(), then copy it to ckBits_ and
-     * copy gckName to ckName_ . Then process pending encrypts.
+     * copy gckName to ckName_ . Then process pending decrypts.
      * @param gckName The Name that fetchGck() used to fetch.
      * @param gckData The GCK Data packet fetched by fetchGck().
      * @param onError On failure, this calls onError(errorCode, message)

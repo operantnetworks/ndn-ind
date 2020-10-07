@@ -541,12 +541,13 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
            try {
              newGckName.wireDecode(gckLatestData->getContent());
            } catch (const std::exception& ex) {
+             parent_->isGckRetrievalInProgress_ = false;
              onError_(EncryptError::ErrorCode::CkRetrievalFailure,
                string("Error decoding GCK name in: ") + gckLatestData->getName().toUri());
              return;
            }
 
-           if (newGckName.equals(gckName_)) {
+           if (newGckName.equals(parent_->ckName_)) {
              // The latest is the same name, so do nothing.
              parent_->isGckRetrievalInProgress_ = false;
              return;
@@ -556,6 +557,7 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
            parent_->fetchGck(newGckName, onError_, N_RETRIES);
          },
          [=](auto&, auto& error) {
+           parent_->isGckRetrievalInProgress_ = false;
            onError_(EncryptError::ErrorCode::CkRetrievalFailure,
              "Validate GCK latest_ Data failure: " + error.toString());
          });
@@ -582,7 +584,6 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
     }
 
     ptr_lib::shared_ptr<Impl> parent_;
-    Name gckName_;
     EncryptError::OnError onError_;
   };
 
