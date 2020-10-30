@@ -127,7 +127,11 @@ public:
   Blob
   decrypt
     (const uint8_t* cipherText, size_t cipherTextLength,
+#if 0 // See https://github.com/operantnetworks/ndn-ind/issues/13
      ndn_EncryptAlgorithmType algorithmType = ndn_EncryptAlgorithmType_RsaOaep);
+#else
+     ndn_EncryptAlgorithmType algorithmType = ndn_EncryptAlgorithmType_RsaPkcs);
+#endif
 
   /**
    * Sign the data with this private key, returning a signature Blob.

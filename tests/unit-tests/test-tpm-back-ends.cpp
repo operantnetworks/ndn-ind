@@ -183,7 +183,11 @@ TEST_F(TestTpmBackEnds, RsaDecryption)
     uint8_t cipherText[1000];
     size_t cipherTextLength;
     publicKey.encrypt
+#if 0 // See https://github.com/operantnetworks/ndn-ind/issues/13
       (content, sizeof(content), ndn_EncryptAlgorithmType_RsaOaep, cipherText,
+#else
+      (content, sizeof(content), ndn_EncryptAlgorithmType_RsaPkcs, cipherText,
+#endif
        cipherTextLength);
 
     Blob plainText = key->decrypt(cipherText, cipherTextLength);

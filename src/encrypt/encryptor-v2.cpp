@@ -486,7 +486,11 @@ EncryptorV2::Impl::makeAndPublishCkData(const EncryptError::OnError& onError)
     size_t encryptedDataLength;
     ndn_Error error;
     if ((error = kek.encrypt
+#if 0 // See https://github.com/operantnetworks/ndn-ind/issues/13
          (&ckBits_[0], ckBits_.size(), ndn_EncryptAlgorithmType_RsaOaep,
+#else
+         (&ckBits_[0], ckBits_.size(), ndn_EncryptAlgorithmType_RsaPkcs,
+#endif
           &encryptedData->front(), encryptedDataLength)))
       throw runtime_error("RsaAlgorithm: Error encrypting with public key");
     encryptedData->resize(encryptedDataLength);

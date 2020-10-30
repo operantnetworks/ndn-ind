@@ -241,7 +241,11 @@ AccessManagerV2::Impl::addMemberForGck(const CertificateV2& memberCertificate)
   size_t encryptedDataLength;
   ndn_Error error;
   if ((error = memberKey.encrypt
+#if 0 // See https://github.com/operantnetworks/ndn-ind/issues/13
        (&gckBits_[0], gckBits_.size(), ndn_EncryptAlgorithmType_RsaOaep,
+#else
+       (&gckBits_[0], gckBits_.size(), ndn_EncryptAlgorithmType_RsaPkcs,
+#endif
         &encryptedData->front(), encryptedDataLength)))
     throw runtime_error("RsaAlgorithm: Error encrypting with public key");
   encryptedData->resize(encryptedDataLength);

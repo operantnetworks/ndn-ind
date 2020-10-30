@@ -282,6 +282,7 @@ TEST_F(TestTpmPrivateKey, DerivePublicKey)
   }
 }
 
+#if 0 // See https://github.com/operantnetworks/ndn-ind/issues/13
 TEST_F(TestTpmPrivateKey, RsaDecryption)
 {
   KeyTestData& dataSet = rsaKeyTestData;
@@ -310,6 +311,7 @@ PmTiSdeDQXZ94U5boDQ4Aw==\n";
 
   ASSERT_TRUE(decryptedText.equals(Blob(plainText, sizeof(plainText))));
 }
+#endif
 
 TEST_F(TestTpmPrivateKey, GenerateKey)
 {
