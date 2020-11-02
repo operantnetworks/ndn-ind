@@ -87,6 +87,7 @@ public:
 class TestDecryptorV2 : public ::testing::Test {
 };
 
+#if 0 // See https://github.com/operantnetworks/ndn-ind/issues/13
 TEST_F(TestDecryptorV2, DecryptValid)
 {
   DecryptorFixture fixture(Name("/first/user"));
@@ -130,6 +131,7 @@ TEST_F(TestDecryptorV2, DecryptValid)
   ASSERT_EQ(1, callbacks.nSuccesses_);
   ASSERT_EQ(0, callbacks.nFailures_);
 }
+#endif
 
 TEST_F(TestDecryptorV2, DecryptInvalid)
 {
