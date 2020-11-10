@@ -1,5 +1,5 @@
-NDN-IND v1.0 (2020-09-28)
--------------------------
+NDN-IND (2020-11-10)
+--------------------
 
 Changes
 * Forked from NDN-CPP commit 68d47319bb3bef21a9a0251209b684bc0440e053 . (This is
@@ -20,6 +20,7 @@ Changes
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .
 * In KeyChain, remove obsolete security v1 API. https://github.com/operantnetworks/ndn-ind/issues/1
 * Remove obsolete Name-based Access Control v1. (Keep v2.)
+* PIB and TPM: Change system() to mkdir() or create_directories(). https://github.com/operantnetworks/ndn-ind/pull/15
 * In examples and unit tests, use the default Face which doesn't require TCP.
 * Move the instructions for RHEL 7 to the wiki.
 
