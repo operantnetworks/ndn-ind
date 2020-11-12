@@ -40,7 +40,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
+#include <sys/stat.h>
 #include "../../util/sqlite3-statement.hpp"
+#ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
+#include <boost/filesystem.hpp>
+#endif
 #include <ndn-ind/security/pib/pib-sqlite3.hpp>
 
 using namespace std;
@@ -216,8 +220,19 @@ PibSqlite3::PibSqlite3
   else
     databaseDirectoryPath = getDefaultDatabaseDirectoryPath();
 
-  // TODO: Handle non-unix file systems which don't have "mkdir -p".
-  ::system(("mkdir -p \"" + databaseDirectoryPath + "\"").c_str());
+  // ::mkdir will work if the parent directory already exists, which is most cases.
+  int status = ::mkdir(databaseDirectoryPath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  if (status != 0 && status != EEXIST) {
+    // Can't create the directory with ::mkdir.
+#ifdef NDN_IND_HAVE_CXX17
+    // Try with create_directories.
+    boost::filesystem::create_directories(databaseDirectoryPath);
+#else
+    throw PibImpl::Error
+      (string("PibSqlite3: Error '") + strerror(errno) + "' in 'mkdir " + databaseDirectoryPath +
+       "' . Create the parent directory and try again.");
+#endif
+  }
 
   // Open the PIB.
   string databaseFilePath = databaseDirectoryPath + '/' + databaseFilename;

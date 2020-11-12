@@ -40,6 +40,9 @@
 #include <ndn-ind/lite/util/crypto-lite.hpp>
 #include <ndn-ind/security/tpm/tpm-private-key.hpp>
 #include <ndn-ind/security/tpm/tpm-key-handle-memory.hpp>
+#ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
+#include <boost/filesystem.hpp>
+#endif
 #include <ndn-ind/security/tpm/tpm-back-end-file.hpp>
 
 using namespace std;
@@ -71,8 +74,20 @@ TpmBackEndFile::TpmBackEndFile(const string& locationPath)
     keyStorePath_ = homeDir + "/.ndn/ndnsec-key-file";
   }
 
-  // TODO: Handle non-unix file systems which don't have "mkdir -p".
-  ::system(("mkdir -p \"" + keyStorePath_ + "\"").c_str());
+  // ::mkdir will work if the parent directory already exists, which is most cases.
+  int status = ::mkdir(keyStorePath_.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  // EEXIST means the directory already exists, so it's OK.
+  if (status != 0 && status != EEXIST) {
+    // Can't create the directory with ::mkdir.
+#ifdef NDN_IND_HAVE_CXX17
+    // Try with create_directories.
+    boost::filesystem::create_directories(keyStorePath_);
+#else
+    throw TpmBackEnd::Error
+      (string("TpmBackEndFile: Error '") + strerror(errno) + "' in 'mkdir " + keyStorePath_ +
+       "' . Create the parent directory and try again.");
+#endif
+  }
 }
 
 bool

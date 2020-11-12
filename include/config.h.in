@@ -15,6 +15,9 @@
 /* define if the Boost::Chrono library is available */
 #undef HAVE_BOOST_CHRONO
 
+/* define if the Boost::Filesystem library is available */
+#undef HAVE_BOOST_FILESYSTEM
+
 /* 1 if have the `boost::function' class. */
 #undef HAVE_BOOST_FUNCTION
 
