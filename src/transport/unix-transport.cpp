@@ -8,7 +8,7 @@
  * Original file: src/transport/unix-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -51,11 +51,12 @@ UnixTransport::ConnectionInfo::~ConnectionInfo()
 {
 }
 
-UnixTransport::UnixTransport()
+UnixTransport::UnixTransport(bool readRawPackets)
   : isConnected_(false), transport_(new struct ndn_UnixTransport),
     elementBuffer_(new DynamicUInt8Vector(1000))
 {
-  ndn_UnixTransport_initialize(transport_.get(), elementBuffer_.get());
+  ndn_UnixTransport_initialize
+    (transport_.get(), elementBuffer_.get(), readRawPackets);
 }
 
 bool

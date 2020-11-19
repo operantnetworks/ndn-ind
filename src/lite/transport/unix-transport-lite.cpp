@@ -8,7 +8,7 @@
  * Original file: src/lite/transport/unix-transport-lite.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -40,9 +40,9 @@
 
 namespace ndn {
 
-UnixTransportLite::UnixTransportLite(DynamicUInt8ArrayLite& buffer)
+UnixTransportLite::UnixTransportLite(DynamicUInt8ArrayLite& buffer, bool readRawPackets)
 {
-  ndn_UnixTransport_initialize(this, &buffer);
+  ndn_UnixTransport_initialize(this, &buffer, readRawPackets ? 1 : 0);
 }
 
 bool

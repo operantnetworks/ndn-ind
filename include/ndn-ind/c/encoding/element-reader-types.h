@@ -1,4 +1,16 @@
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-ind/c/encoding/element-reader-types.h
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Add readRawPackets.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2015-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -55,14 +67,16 @@ struct ndn_TlvStructureDecoder {
  * ndn_TlvStructureDecoder as needed to detect the end of a TLV element,
  * and calls (*elementListener->onReceivedElement)(element, elementLength) with the element.
  * This handles the case where a single call to onReceivedData may contain multiple elements.
+ * However, if readRawPackets is 1, then onReceivedElement for each received packet without processing.
  */
 struct ndn_ElementReader {
   struct ndn_ElementListener *elementListener;
-  struct ndn_TlvStructureDecoder tlvStructureDecoder;
-  int usePartialData;       /**< boolean */
-  int gotPartialDataError;  /**< boolean. Only meaningful if usePartialData. */
-  struct ndn_DynamicUInt8Array* partialData;
-  size_t partialDataLength;
+  int readRawPackets;       /**< boolean */
+  struct ndn_TlvStructureDecoder tlvStructureDecoder; /**< Only used if readRawPackets == 0. */
+  int usePartialData;       /**< boolean. Only used if readRawPackets == 0. */
+  int gotPartialDataError;  /**< boolean. Only meaningful if usePartialData. Only used if readRawPackets == 0. */
+  struct ndn_DynamicUInt8Array* partialData; /**< Only used if readRawPackets == 0. */
+  size_t partialDataLength;                  /**< Only used if readRawPackets == 0. */
 };
 
 #ifdef __cplusplus

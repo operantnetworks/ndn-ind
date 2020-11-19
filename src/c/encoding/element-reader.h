@@ -7,7 +7,7 @@
  * Original file: src/c/encoding/element-reader.h
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -53,12 +53,18 @@ extern "C" {
  * during the entire life of this ndn_ElementReader. If the buffer->realloc
  * function pointer is 0, its array must be large enough to save a full element,
  * perhaps MAX_NDN_PACKET_SIZE bytes.
+ * However, if readRawPackets is 1, then the buffer is not used.
+ * @param readRawPackets If 1, then call elementListener->onReceivedElement for
+ * each received packet as-is. If 0, then use the ndn_TlvStructureDecoder to
+ * ensure that elementListener->onReceivedElement is called once for a whole
+ * TLV packet.
  */
 static __inline void ndn_ElementReader_initialize
   (struct ndn_ElementReader *self, struct ndn_ElementListener *elementListener,
-   struct ndn_DynamicUInt8Array *buffer)
+   struct ndn_DynamicUInt8Array *buffer, int readRawPackets)
 {
   self->elementListener = elementListener;
+  self->readRawPackets = readRawPackets;
   ndn_TlvStructureDecoder_initialize(&self->tlvStructureDecoder);
   self->partialData = buffer;
   self->usePartialData = 0;

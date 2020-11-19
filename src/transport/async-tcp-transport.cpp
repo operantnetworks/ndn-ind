@@ -8,7 +8,7 @@
  * Original file: src/transport/async-tcp-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -59,8 +59,8 @@ namespace ndn {
 class AsyncTcpTransport::SocketTransport
   : public AsyncSocketTransport<boost::asio::ip::tcp> {
 public:
-  SocketTransport(boost::asio::io_service& ioService)
-  : AsyncSocketTransport(ioService)
+  SocketTransport(boost::asio::io_service& ioService, bool readRawPackets)
+  : AsyncSocketTransport(ioService, readRawPackets)
   {
   }
 };
@@ -69,8 +69,9 @@ AsyncTcpTransport::ConnectionInfo::~ConnectionInfo()
 {
 }
 
-AsyncTcpTransport::AsyncTcpTransport(boost::asio::io_service& ioService)
-: ioService_(ioService), socketTransport_(new SocketTransport(ioService)),
+AsyncTcpTransport::AsyncTcpTransport
+  (boost::asio::io_service& ioService, bool readRawPackets)
+: ioService_(ioService), socketTransport_(new SocketTransport(ioService, readRawPackets)),
   connectionInfo_("", 0)
 {
 }

@@ -1,4 +1,16 @@
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: src/c/encoding/element-reader.c
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Add readRawPackets.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2013-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -24,6 +36,19 @@
 ndn_Error ndn_ElementReader_onReceivedData
   (struct ndn_ElementReader *self, const uint8_t *data, size_t dataLength)
 {
+  if (self->readRawPackets) {
+    // Just call onReceivedElement.
+    if (dataLength > 0) {
+      if (!self->elementListener)
+        return NDN_ERROR_ElementReader_ElementListener_is_not_specified;
+
+      (*self->elementListener->onReceivedElement)
+        (self->elementListener, data, dataLength);
+    }
+
+    return NDN_ERROR_success;
+  }
+
   // Process multiple objects in the data.
   while(1) {
     ndn_Error error;

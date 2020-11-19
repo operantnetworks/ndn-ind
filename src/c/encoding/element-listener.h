@@ -7,7 +7,7 @@
  * Original file: src/c/encoding/element-listener.h
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -47,7 +47,9 @@ extern "C" {
  * @param onReceivedElement When an entire packet element is received, call
  * onReceivedElement(self, element, elementLength) where self is the pointer to
  * this ndn_ElementListener struct, and element is a pointer to the array of
- * length elementLength with the bytes of the element.
+ * length elementLength with the bytes of the element. The element buffer is
+ * only valid during the call to onReceivedElement. If you need the data in the
+ * buffer after onReceivedElement returns, then you must copy it.
  */
 static __inline void ndn_ElementListener_initialize
   (struct ndn_ElementListener *self, ndn_OnReceivedElement onReceivedElement)

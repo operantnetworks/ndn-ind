@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/lite/encoding/element-listener-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Remove unused transports.
+ * Summary of Changes: Remove unused transports. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -53,7 +53,9 @@ public:
    * @param onReceivedElement When an entire packet element is received, call
    * onReceivedElement(ElementListenerLite *self, uint8_t *element, size_t elementLength)
    * where self is the pointer to this object, and element is a pointer to the
-   * array of length elementLength with the bytes of the element. If you
+   * array of length elementLength with the bytes of the element. The element buffer is
+   * only valid during the call to onReceivedElement. If you need the data in the
+   * buffer after onReceivedElement returns, then you must copy it. If you
    * created a derived class, you can downcast self to a pointer to your derived
    * class in order to access its members.
    */

@@ -1,4 +1,16 @@
 /*
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: src/c/transport/tcp-transport.h
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Add readRawPackets.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2013-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -37,11 +49,17 @@ extern "C" {
  * The struct must remain valid during the entire life of this
  * ndn_SocketTransport. If the buffer->realloc function pointer is 0, its array
  * must be large enough to save a full element, perhaps MAX_NDN_PACKET_SIZE bytes.
+ * However, if readRawPackets is 1, then the buffer is not used.
+ * @param readRawPackets If 1, then call elementListener->onReceivedElement for
+ * each received packet as-is. If 0, then use the ndn_TlvStructureDecoder to
+ * ensure that elementListener->onReceivedElement is called once for a whole
+ * TLV packet.
  */
 static __inline void ndn_TcpTransport_initialize
-  (struct ndn_TcpTransport *self, struct ndn_DynamicUInt8Array *buffer)
+  (struct ndn_TcpTransport *self, struct ndn_DynamicUInt8Array *buffer,
+   int readRawPackets)
 {
-  ndn_SocketTransport_initialize(&self->base, buffer);
+  ndn_SocketTransport_initialize(&self->base, buffer, readRawPackets);
 }
 
 /**

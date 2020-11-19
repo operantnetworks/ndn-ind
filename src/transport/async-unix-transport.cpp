@@ -8,7 +8,7 @@
  * Original file: src/transport/async-unix-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -53,9 +53,10 @@ AsyncUnixTransport::ConnectionInfo::~ConnectionInfo()
 {
 }
 
-AsyncUnixTransport::AsyncUnixTransport(boost::asio::io_service& ioService)
+AsyncUnixTransport::AsyncUnixTransport
+  (boost::asio::io_service& ioService, bool readRawPackets)
 : socketTransport_(new AsyncSocketTransport<boost::asio::local::stream_protocol>
-                   (ioService))
+                   (ioService, readRawPackets))
 {
 }
 

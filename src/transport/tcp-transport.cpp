@@ -8,7 +8,7 @@
  * Original file: src/transport/tcp-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -51,11 +51,12 @@ TcpTransport::ConnectionInfo::~ConnectionInfo()
 {
 }
 
-TcpTransport::TcpTransport()
+TcpTransport::TcpTransport(bool readRawPackets)
   : isConnected_(false), transport_(new struct ndn_TcpTransport),
     elementBuffer_(new DynamicUInt8Vector(1000)), connectionInfo_("", 0)
 {
-  ndn_TcpTransport_initialize(transport_.get(), elementBuffer_.get());
+  ndn_TcpTransport_initialize
+    (transport_.get(), elementBuffer_.get(), readRawPackets ? 1 : 0);
 }
 
 bool

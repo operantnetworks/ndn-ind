@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: src/encoding/element-listener.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Add readRawPackets.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2013-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -39,8 +51,9 @@ public:
 
   /**
    * This is called when an entire element is received.  You must extend this class to override this method.
-   * @param element pointer to the element.  This buffer is only valid during this call.  If you need the data
-   * later, you must copy.
+   * @param element pointer to the element. The element buffer is
+   * only valid during the call to onReceivedElement. If you need the data in the
+   * buffer after onReceivedElement returns, then you must copy it.
    * @param elementLength length of element
    */
   virtual void

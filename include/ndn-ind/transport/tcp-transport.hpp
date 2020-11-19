@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-ind/transport/tcp-transport.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Add readRawPackets.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2013-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -76,7 +88,14 @@ public:
     unsigned short port_;
   };
 
-  TcpTransport();
+  /**
+   * Create a TcpTransport.
+   * @param readRawPackets (optional) If true, then call
+   * elementListener->onReceivedElement for each received packet as-is. If
+   * false or omitted, then use the ndn_TlvStructureDecoder to ensure that
+   * elementListener->onReceivedElement is called once for a whole TLV packet.
+   */
+  TcpTransport(bool readRawPackets = false);
 
   /**
    * Determine whether this transport connecting according to connectionInfo is
