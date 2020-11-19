@@ -8,7 +8,7 @@
  * Original file: src/encoding/element-listener.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets.
+ * Summary of Changes: Add readRawPackets. Put element-listener.hpp in API.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -34,7 +34,7 @@
 #ifndef NDN_ELEMENT_LISTENER_HPP
 #define NDN_ELEMENT_LISTENER_HPP
 
-#include "../c/encoding/element-listener.h"
+#include <ndn-ind/c/encoding/element-reader-types.h>
 
 namespace ndn {
 
@@ -44,10 +44,7 @@ namespace ndn {
  */
 class ElementListener : public ndn_ElementListener {
 public:
-  ElementListener()
-  {
-    ndn_ElementListener_initialize(this, staticOnReceivedElement);
-  }
+  ElementListener();
 
   /**
    * This is called when an entire element is received.  You must extend this class to override this method.

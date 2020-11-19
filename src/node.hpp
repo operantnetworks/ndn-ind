@@ -8,7 +8,7 @@
  * Original file: src/node.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Put element-listener.hpp in API.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -49,7 +49,6 @@
 #include "impl/interest-filter-table.hpp"
 #include "impl/pending-interest-table.hpp"
 #include "impl/registered-prefix-table.hpp"
-#include "encoding/element-listener.hpp"
 
 struct ndn_Interest;
 

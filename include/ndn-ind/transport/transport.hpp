@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-ind/transport/transport.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Put element-listener.hpp in API.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2013-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -24,10 +36,9 @@
 
 #include <vector>
 #include "../common.hpp"
+#include "../encoding/element-listener.hpp"
 
 namespace ndn {
-
-class ElementListener;
 
 /**
  * A Transport object is used by Face to send packets and to listen for incoming

@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: src/encoding/element-listener.cpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Put element-listener.hpp in API.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2013-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -19,9 +31,15 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-#include "element-listener.hpp"
+#include "../c/encoding/element-listener.h"
+#include <ndn-ind/encoding/element-listener.hpp>
 
 namespace ndn {
+
+ElementListener::ElementListener()
+{
+  ndn_ElementListener_initialize(this, staticOnReceivedElement);
+}
 
 void
 ElementListener::staticOnReceivedElement(struct ndn_ElementListener *self, const uint8_t *element, size_t elementLength)

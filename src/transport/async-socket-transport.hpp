@@ -8,7 +8,7 @@
  * Original file: src/transport/async-socket-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Put element-listener.hpp in API.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -40,7 +40,6 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <ndn-ind/transport/transport.hpp>
 #include "../c/encoding/element-reader.h"
-#include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"
 
 namespace ndn {
