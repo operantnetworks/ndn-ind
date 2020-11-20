@@ -64,6 +64,7 @@ check_PROGRAMS = bin/unit-tests/test-access-manager-v2 \
 
 noinst_PROGRAMS = bin/test-access-manager bin/test-channel-discovery bin/test-chrono-chat \
   bin/test-custom-tpm bin/test-echo-consumer bin/test-echo-consumer-lite \
+  bin/test-custom-tpm bin/test-echo-consumer-raw-tcp \
   bin/test-encode-decode-benchmark bin/test-encode-decode-data \
   bin/test-encode-decode-fib-entry bin/test-encode-decode-interest \
   bin/test-full-psync-with-users bin/test-full-psync \
@@ -522,6 +523,9 @@ bin_test_custom_tpm_LDADD = libndn-ind.la
 
 bin_test_echo_consumer_lite_SOURCES = examples/test-echo-consumer-lite.cpp
 bin_test_echo_consumer_lite_LDADD = libndn-ind.la
+
+bin_test_echo_consumer_raw_tcp_SOURCES = examples/test-echo-consumer-raw-tcp.cpp
+bin_test_echo_consumer_raw_tcp_LDADD = libndn-ind.la
 
 bin_test_echo_consumer_SOURCES = examples/test-echo-consumer.cpp
 bin_test_echo_consumer_LDADD = libndn-ind.la

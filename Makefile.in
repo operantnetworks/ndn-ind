@@ -128,6 +128,8 @@ noinst_PROGRAMS = bin/test-access-manager$(EXEEXT) \
 	bin/test-chrono-chat$(EXEEXT) bin/test-custom-tpm$(EXEEXT) \
 	bin/test-echo-consumer$(EXEEXT) \
 	bin/test-echo-consumer-lite$(EXEEXT) \
+	bin/test-custom-tpm$(EXEEXT) \
+	bin/test-echo-consumer-raw-tcp$(EXEEXT) \
 	bin/test-encode-decode-benchmark$(EXEEXT) \
 	bin/test-encode-decode-data$(EXEEXT) \
 	bin/test-encode-decode-fib-entry$(EXEEXT) \
@@ -449,6 +451,11 @@ am_bin_test_echo_consumer_lite_OBJECTS =  \
 bin_test_echo_consumer_lite_OBJECTS =  \
 	$(am_bin_test_echo_consumer_lite_OBJECTS)
 bin_test_echo_consumer_lite_DEPENDENCIES = libndn-ind.la
+am_bin_test_echo_consumer_raw_tcp_OBJECTS =  \
+	examples/test-echo-consumer-raw-tcp.$(OBJEXT)
+bin_test_echo_consumer_raw_tcp_OBJECTS =  \
+	$(am_bin_test_echo_consumer_raw_tcp_OBJECTS)
+bin_test_echo_consumer_raw_tcp_DEPENDENCIES = libndn-ind.la
 am_bin_test_encode_decode_benchmark_OBJECTS =  \
 	examples/test-encode-decode-benchmark.$(OBJEXT)
 bin_test_encode_decode_benchmark_OBJECTS =  \
@@ -781,6 +788,7 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	examples/$(DEPDIR)/test-chrono-chat.Po \
 	examples/$(DEPDIR)/test-custom-tpm.Po \
 	examples/$(DEPDIR)/test-echo-consumer-lite.Po \
+	examples/$(DEPDIR)/test-echo-consumer-raw-tcp.Po \
 	examples/$(DEPDIR)/test-echo-consumer.Po \
 	examples/$(DEPDIR)/test-encode-decode-benchmark.Po \
 	examples/$(DEPDIR)/test-encode-decode-data.Po \
@@ -1097,6 +1105,7 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) $(bin_test_custom_tpm_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
+	$(bin_test_echo_consumer_raw_tcp_SOURCES) \
 	$(bin_test_encode_decode_benchmark_SOURCES) \
 	$(bin_test_encode_decode_data_SOURCES) \
 	$(bin_test_encode_decode_fib_entry_SOURCES) \
@@ -1151,6 +1160,7 @@ DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) $(bin_test_custom_tpm_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
 	$(bin_test_echo_consumer_lite_SOURCES) \
+	$(bin_test_echo_consumer_raw_tcp_SOURCES) \
 	$(bin_test_encode_decode_benchmark_SOURCES) \
 	$(bin_test_encode_decode_data_SOURCES) \
 	$(bin_test_encode_decode_fib_entry_SOURCES) \
@@ -2132,6 +2142,8 @@ bin_test_custom_tpm_SOURCES = examples/test-custom-tpm.cpp
 bin_test_custom_tpm_LDADD = libndn-ind.la
 bin_test_echo_consumer_lite_SOURCES = examples/test-echo-consumer-lite.cpp
 bin_test_echo_consumer_lite_LDADD = libndn-ind.la
+bin_test_echo_consumer_raw_tcp_SOURCES = examples/test-echo-consumer-raw-tcp.cpp
+bin_test_echo_consumer_raw_tcp_LDADD = libndn-ind.la
 bin_test_echo_consumer_SOURCES = examples/test-echo-consumer.cpp
 bin_test_echo_consumer_LDADD = libndn-ind.la
 bin_test_encode_decode_benchmark_SOURCES = examples/test-encode-decode-benchmark.cpp
@@ -3195,6 +3207,12 @@ examples/test-echo-consumer-lite.$(OBJEXT): examples/$(am__dirstamp) \
 bin/test-echo-consumer-lite$(EXEEXT): $(bin_test_echo_consumer_lite_OBJECTS) $(bin_test_echo_consumer_lite_DEPENDENCIES) $(EXTRA_bin_test_echo_consumer_lite_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/test-echo-consumer-lite$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_echo_consumer_lite_OBJECTS) $(bin_test_echo_consumer_lite_LDADD) $(LIBS)
+examples/test-echo-consumer-raw-tcp.$(OBJEXT):  \
+	examples/$(am__dirstamp) examples/$(DEPDIR)/$(am__dirstamp)
+
+bin/test-echo-consumer-raw-tcp$(EXEEXT): $(bin_test_echo_consumer_raw_tcp_OBJECTS) $(bin_test_echo_consumer_raw_tcp_DEPENDENCIES) $(EXTRA_bin_test_echo_consumer_raw_tcp_DEPENDENCIES) bin/$(am__dirstamp)
+	@rm -f bin/test-echo-consumer-raw-tcp$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(bin_test_echo_consumer_raw_tcp_OBJECTS) $(bin_test_echo_consumer_raw_tcp_LDADD) $(LIBS)
 examples/test-encode-decode-benchmark.$(OBJEXT):  \
 	examples/$(am__dirstamp) examples/$(DEPDIR)/$(am__dirstamp)
 
@@ -3835,6 +3853,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-chrono-chat.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-custom-tpm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-echo-consumer-lite.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-echo-consumer-raw-tcp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-echo-consumer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-encode-decode-benchmark.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/test-encode-decode-data.Po@am__quote@ # am--include-marker
@@ -6257,6 +6276,7 @@ distclean: distclean-recursive
 	-rm -f examples/$(DEPDIR)/test-chrono-chat.Po
 	-rm -f examples/$(DEPDIR)/test-custom-tpm.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer-lite.Po
+	-rm -f examples/$(DEPDIR)/test-echo-consumer-raw-tcp.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer.Po
 	-rm -f examples/$(DEPDIR)/test-encode-decode-benchmark.Po
 	-rm -f examples/$(DEPDIR)/test-encode-decode-data.Po
@@ -6633,6 +6653,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f examples/$(DEPDIR)/test-chrono-chat.Po
 	-rm -f examples/$(DEPDIR)/test-custom-tpm.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer-lite.Po
+	-rm -f examples/$(DEPDIR)/test-echo-consumer-raw-tcp.Po
 	-rm -f examples/$(DEPDIR)/test-echo-consumer.Po
 	-rm -f examples/$(DEPDIR)/test-encode-decode-benchmark.Po
 	-rm -f examples/$(DEPDIR)/test-encode-decode-data.Po

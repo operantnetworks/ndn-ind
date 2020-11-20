@@ -8,7 +8,7 @@
  * Original file: src/transport/unix-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Put element-listener.hpp in API.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -39,7 +39,6 @@
 #include <stdlib.h>
 #include "../c/transport/unix-transport.h"
 #include "../c/encoding/element-reader.h"
-#include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"
 #include <ndn-ind/transport/unix-transport.hpp>
 
@@ -51,11 +50,12 @@ UnixTransport::ConnectionInfo::~ConnectionInfo()
 {
 }
 
-UnixTransport::UnixTransport()
+UnixTransport::UnixTransport(bool readRawPackets)
   : isConnected_(false), transport_(new struct ndn_UnixTransport),
     elementBuffer_(new DynamicUInt8Vector(1000))
 {
-  ndn_UnixTransport_initialize(transport_.get(), elementBuffer_.get());
+  ndn_UnixTransport_initialize
+    (transport_.get(), elementBuffer_.get(), readRawPackets);
 }
 
 bool

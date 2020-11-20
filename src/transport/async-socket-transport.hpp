@@ -8,7 +8,7 @@
  * Original file: src/transport/async-socket-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Put element-listener.hpp in API.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -40,7 +40,6 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <ndn-ind/transport/transport.hpp>
 #include "../c/encoding/element-reader.h"
-#include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"
 
 namespace ndn {
@@ -60,9 +59,13 @@ public:
    * ioService to create the connection and communicate asynchronously.
    * @param ioService The asio io_service. It is the responsibility of the
    * application to start and stop the service.
+   * @param readRawPackets If true, then call
+   * elementListener->onReceivedElement for each received packet as-is. If
+   * false, then use the ndn_TlvStructureDecoder to ensure that
+   * elementListener->onReceivedElement is called once for a whole TLV packet.
    */
-  AsyncSocketTransport(boost::asio::io_service& ioService)
-  : impl_(new Impl(ioService))
+  AsyncSocketTransport(boost::asio::io_service& ioService, bool readRawPackets)
+  : impl_(new Impl(ioService, readRawPackets))
   {
   }
 
@@ -121,11 +124,12 @@ private:
    */
   class Impl : public boost::enable_shared_from_this<Impl> {
   public:
-    Impl(boost::asio::io_service& ioService)
+    Impl(boost::asio::io_service& ioService, bool readRawPackets)
     : ioService_(ioService), socket_(new typename AsioProtocol::socket(ioService)),
       elementBuffer_(new DynamicUInt8Vector(1000)), isConnected_(false)
     {
-      ndn_ElementReader_initialize(&elementReader_, 0, elementBuffer_.get());
+      ndn_ElementReader_initialize
+        (&elementReader_, 0, elementBuffer_.get(), readRawPackets);
     }
 
     /**

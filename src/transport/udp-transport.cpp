@@ -8,7 +8,7 @@
  * Original file: src/transport/udp-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Put element-listener.hpp in API.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -39,7 +39,6 @@
 #include <stdlib.h>
 #include "../c/transport/udp-transport.h"
 #include "../c/encoding/element-reader.h"
-#include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"
 #include <ndn-ind/transport/udp-transport.hpp>
 
@@ -51,11 +50,12 @@ UdpTransport::ConnectionInfo::~ConnectionInfo()
 {
 }
 
-UdpTransport::UdpTransport()
+UdpTransport::UdpTransport(bool readRawPackets)
   : isConnected_(false), transport_(new struct ndn_UdpTransport),
     elementBuffer_(new DynamicUInt8Vector(1000))
 {
-  ndn_UdpTransport_initialize(transport_.get(), elementBuffer_.get());
+  ndn_UdpTransport_initialize
+    (transport_.get(), elementBuffer_.get(), readRawPackets ? 1 : 0);
 }
 
 bool

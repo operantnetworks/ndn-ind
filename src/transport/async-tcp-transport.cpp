@@ -8,7 +8,7 @@
  * Original file: src/transport/async-tcp-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Put element-listener.hpp in API.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -39,7 +39,6 @@
 #include <boost/bind.hpp>
 #include "../c/transport/tcp-transport.h"
 #include "../c/encoding/element-reader.h"
-#include "../encoding/element-listener.hpp"
 #include "../util/dynamic-uint8-vector.hpp"
 #include "async-socket-transport.hpp"
 #include <ndn-ind/transport/async-tcp-transport.hpp>
@@ -59,8 +58,8 @@ namespace ndn {
 class AsyncTcpTransport::SocketTransport
   : public AsyncSocketTransport<boost::asio::ip::tcp> {
 public:
-  SocketTransport(boost::asio::io_service& ioService)
-  : AsyncSocketTransport(ioService)
+  SocketTransport(boost::asio::io_service& ioService, bool readRawPackets)
+  : AsyncSocketTransport(ioService, readRawPackets)
   {
   }
 };
@@ -69,8 +68,9 @@ AsyncTcpTransport::ConnectionInfo::~ConnectionInfo()
 {
 }
 
-AsyncTcpTransport::AsyncTcpTransport(boost::asio::io_service& ioService)
-: ioService_(ioService), socketTransport_(new SocketTransport(ioService)),
+AsyncTcpTransport::AsyncTcpTransport
+  (boost::asio::io_service& ioService, bool readRawPackets)
+: ioService_(ioService), socketTransport_(new SocketTransport(ioService, readRawPackets)),
   connectionInfo_("", 0)
 {
 }

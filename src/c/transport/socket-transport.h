@@ -7,7 +7,7 @@
  * Original file: src/c/transport/socket-transport.h
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -58,12 +58,18 @@ typedef enum {
  * The struct must remain valid during the entire life of this
  * ndn_SocketTransport. If the buffer->realloc function pointer is 0, its array
  * must be large enough to save a full element, perhaps MAX_NDN_PACKET_SIZE bytes.
+ * However, if readRawPackets is 1, then the buffer is not used.
+ * @param readRawPackets If 1, then call elementListener->onReceivedElement for
+ * each received packet as-is. If 0, then use the ndn_TlvStructureDecoder to
+ * ensure that elementListener->onReceivedElement is called once for a whole
+ * TLV packet.
  */
 static __inline void ndn_SocketTransport_initialize
-  (struct ndn_SocketTransport *self, struct ndn_DynamicUInt8Array *buffer)
+  (struct ndn_SocketTransport *self, struct ndn_DynamicUInt8Array *buffer,
+   int readRawPackets)
 {
   self->socketDescriptor = -1;
-  ndn_ElementReader_initialize(&self->elementReader, 0, buffer);
+  ndn_ElementReader_initialize(&self->elementReader, 0, buffer, readRawPackets);
 }
 
 /**

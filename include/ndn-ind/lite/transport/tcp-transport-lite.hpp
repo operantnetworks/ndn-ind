@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-ind/lite/transport/tcp-transport-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Add readRawPackets.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2015-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -44,8 +56,13 @@ public:
    * during the entire life of this object. If the reallocFunction given to
    * buffer's constructor is 0, then its array must be large enough to save a
    * full element, perhaps MAX_NDN_PACKET_SIZE bytes.
+   * However, if readRawPackets is true, then the buffer is not used.
+   * @param readRawPackets (optional) If true, then call
+   * elementListener->onReceivedElement for each received packet as-is. If
+   * false or omitted, then use the ndn_TlvStructureDecoder to ensure that
+   * elementListener->onReceivedElement is called once for a whole TLV packet.
    */
-  TcpTransportLite(DynamicUInt8ArrayLite& buffer);
+  TcpTransportLite(DynamicUInt8ArrayLite& buffer, bool readRawPackets = false);
 
   /**
    * Determine whether this transport connecting to the host is

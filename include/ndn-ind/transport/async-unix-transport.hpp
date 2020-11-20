@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/transport/async-unix-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Add readRawPackets.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -90,8 +90,13 @@ public:
    * ioService to create the connection and communicate asynchronously.
    * @param ioService The asio io_service. It is the responsibility of the
    * application to start and stop the service.
+   * @param readRawPackets (optional) If true, then call
+   * elementListener->onReceivedElement for each received packet as-is. If
+   * false or omitted, then use the ndn_TlvStructureDecoder to ensure that
+   * elementListener->onReceivedElement is called once for a whole TLV packet.
    */
-  AsyncUnixTransport(boost::asio::io_service& ioService);
+  AsyncUnixTransport
+    (boost::asio::io_service& ioService, bool readRawPackets = false);
 
   /**
    * Determine whether this transport connecting according to connectionInfo is
