@@ -21,6 +21,9 @@
 #ifndef NDN_TRANSPORT_TYPES_H
 #define NDN_TRANSPORT_TYPES_H
 
+#if defined(_WIN32)
+#include <winsock2.h>
+#endif
 #include "../encoding/element-reader-types.h"
 
 #ifdef __cplusplus
@@ -28,7 +31,11 @@ extern "C" {
 #endif
 
 struct ndn_SocketTransport {
+#if defined(_WIN32)
+  SOCKET socketDescriptor; /**< INVALID_SOCKET if not connected */
+#else
   int socketDescriptor; /**< -1 if not connected */
+#endif
   struct ndn_ElementReader elementReader;
 };
 
