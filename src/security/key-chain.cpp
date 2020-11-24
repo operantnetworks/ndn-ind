@@ -621,7 +621,11 @@ KeyChain::parseAndCheckTpmLocator
 string
 KeyChain::getDefaultPibScheme()
 {
+#ifdef NDN_IND_HAVE_SQLITE3
   return NDN_PIB_SQLITE3_SCHEME;
+#else
+  return "";
+#endif
 }
 
 string
@@ -671,6 +675,9 @@ KeyChain::getDefaultPibLocator(ConfigFile& config)
     *defaultPibLocator_ = clientPib;
   else
      *defaultPibLocator_ = config.get("pib", getDefaultPibScheme() + ":");
+  if (*defaultPibLocator_ == ":")
+    // No default to check.
+    return *defaultPibLocator_;
 
   string pibScheme, pibLocation;
   parseAndCheckPibLocator(*defaultPibLocator_, pibScheme, pibLocation);
