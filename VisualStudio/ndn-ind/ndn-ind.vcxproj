@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{b8004bd7-1372-4b5d-bf63-07696760c53b}</ProjectGuid>
+    <RootNamespace>ndnind</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalIncludeDirectories>..\..\..\vcpkg\installed\x64-windows\include;..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\Users\remap\Documents\GitHub\vcpkg\installed\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\..\..\vcpkg\installed\x64-windows\include;..\..\include</AdditionalIncludeDirectories>
+      <CompileAsManaged>false</CompileAsManaged>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\Users\remap\Documents\GitHub\vcpkg\installed\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\contrib\apache\apr_base64.h" />
+    <ClInclude Include="..\..\contrib\murmur-hash\murmur-hash.h" />
+    <ClInclude Include="..\..\include\ndn-ind\ndn-ind-config.h" />
+    <ClInclude Include="..\..\src\c\control-parameters.h" />
+    <ClInclude Include="..\..\src\c\control-response.h" />
+    <ClInclude Include="..\..\src\c\data.h" />
+    <ClInclude Include="..\..\src\c\delegation-set.h" />
+    <ClInclude Include="..\..\src\c\encoding\element-listener.h" />
+    <ClInclude Include="..\..\src\c\encoding\element-reader.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv-0_2-wire-format.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv-0_3-wire-format.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-control-parameters.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-control-response.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-data.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-decoder.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-delegation-set.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-encoder.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-encrypted-content.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-interest.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-key-locator.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-lp-packet.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-name.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-signature-info.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-structure-decoder.h" />
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv.h" />
+    <ClInclude Include="..\..\src\c\encrypt\algo\aes-algorithm.h" />
+    <ClInclude Include="..\..\src\c\encrypt\algo\chacha20-algorithm.h" />
+    <ClInclude Include="..\..\src\c\encrypt\algo\des-algorithm.h" />
+    <ClInclude Include="..\..\src\c\encrypt\encrypted-content.h" />
+    <ClInclude Include="..\..\src\c\forwarding-flags-impl.h" />
+    <ClInclude Include="..\..\src\c\interest.h" />
+    <ClInclude Include="..\..\src\c\key-locator.h" />
+    <ClInclude Include="..\..\src\c\lp\congestion-mark.h" />
+    <ClInclude Include="..\..\src\c\lp\incoming-face-id.h" />
+    <ClInclude Include="..\..\src\c\lp\lp-packet.h" />
+    <ClInclude Include="..\..\src\c\name.h" />
+    <ClInclude Include="..\..\src\c\network-nack.h" />
+    <ClInclude Include="..\..\src\c\registration-options.h" />
+    <ClInclude Include="..\..\src\c\security\ec-private-key.h" />
+    <ClInclude Include="..\..\src\c\security\ec-public-key.h" />
+    <ClInclude Include="..\..\src\c\security\rsa-private-key.h" />
+    <ClInclude Include="..\..\src\c\security\rsa-public-key.h" />
+    <ClInclude Include="..\..\src\c\security\validity-period.h" />
+    <ClInclude Include="..\..\src\c\transport\socket-transport.h" />
+    <ClInclude Include="..\..\src\c\transport\tcp-transport.h" />
+    <ClInclude Include="..\..\src\c\transport\udp-transport.h" />
+    <ClInclude Include="..\..\src\c\util\blob.h" />
+    <ClInclude Include="..\..\src\c\util\crypto.h" />
+    <ClInclude Include="..\..\src\c\util\dynamic-uint8-array.h" />
+    <ClInclude Include="..\..\src\c\util\endian.h" />
+    <ClInclude Include="..\..\src\c\util\ndn_memory.h" />
+    <ClInclude Include="..\..\src\c\util\ndn_realloc.h" />
+    <ClInclude Include="..\..\src\c\util\time.h" />
+    <ClInclude Include="..\..\src\encoding\der\der-exception.hpp" />
+    <ClInclude Include="..\..\src\encoding\der\der-node-type.hpp" />
+    <ClInclude Include="..\..\src\encoding\der\der-node.hpp" />
+    <ClInclude Include="..\..\src\encoding\element-listener.hpp" />
+    <ClInclude Include="..\..\src\encoding\tlv-decoder.hpp" />
+    <ClInclude Include="..\..\src\encoding\tlv-encoder.hpp" />
+    <ClInclude Include="..\..\src\impl\delayed-call-table.hpp" />
+    <ClInclude Include="..\..\src\impl\interest-filter-table.hpp" />
+    <ClInclude Include="..\..\src\impl\pending-interest-table.hpp" />
+    <ClInclude Include="..\..\src\impl\registered-prefix-table.hpp" />
+    <ClInclude Include="..\..\src\lp\congestion-mark.hpp" />
+    <ClInclude Include="..\..\src\lp\incoming-face-id.hpp" />
+    <ClInclude Include="..\..\src\lp\lp-packet.hpp" />
+    <ClInclude Include="..\..\src\node.hpp" />
+    <ClInclude Include="..\..\src\security\pib\detail\pib-identity-impl.hpp" />
+    <ClInclude Include="..\..\src\security\pib\detail\pib-key-impl.hpp" />
+    <ClInclude Include="..\..\src\sync\detail\invertible-bloom-lookup-table.hpp" />
+    <ClInclude Include="..\..\src\sync\detail\psync-segment-publisher.hpp" />
+    <ClInclude Include="..\..\src\sync\detail\psync-state.hpp" />
+    <ClInclude Include="..\..\src\sync\detail\psync-user-prefixes.hpp" />
+    <ClInclude Include="..\..\src\sync\digest-tree.hpp" />
+    <ClInclude Include="..\..\src\util\boost-info-parser.hpp" />
+    <ClInclude Include="..\..\src\util\command-interest-generator.hpp" />
+    <ClInclude Include="..\..\src\util\config-file.hpp" />
+    <ClInclude Include="..\..\src\util\dynamic-uint8-vector.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-backref-manager.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-backref-matcher.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-component-matcher.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-component-set-matcher.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-matcher-base.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-pattern-list-matcher.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-pseudo-matcher.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-repeat-matcher.hpp" />
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-top-matcher.hpp" />
+    <ClInclude Include="..\..\src\util\sqlite3-statement.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\contrib\apache\apr_base64.c" />
+    <ClCompile Include="..\..\contrib\murmur-hash\murmur-hash.c" />
+    <ClCompile Include="..\..\src\common.cpp" />
+    <ClCompile Include="..\..\src\control-parameters.cpp" />
+    <ClCompile Include="..\..\src\control-response.cpp" />
+    <ClCompile Include="..\..\src\c\control-parameters_c.c" />
+    <ClCompile Include="..\..\src\c\encoding\element-reader.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv-0_2-wire-format_c.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv-0_3-wire-format_c.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-control-parameters.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-control-response.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-data.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-decoder.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-delegation-set.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-encoder.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-encrypted-content.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-interest.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-key-locator.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-lp-packet.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-name.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-signature-info.c" />
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-structure-decoder.c" />
+    <ClCompile Include="..\..\src\c\encrypt\algo\aes-algorithm_c.c" />
+    <ClCompile Include="..\..\src\c\encrypt\algo\chacha20-algorithm_c.c" />
+    <ClCompile Include="..\..\src\c\encrypt\algo\des-algorithm_c.c" />
+    <ClCompile Include="..\..\src\c\errors.c" />
+    <ClCompile Include="..\..\src\c\interest_c.c" />
+    <ClCompile Include="..\..\src\c\lp\congestion-mark_c.c" />
+    <ClCompile Include="..\..\src\c\lp\incoming-face-id_c.c" />
+    <ClCompile Include="..\..\src\c\name_c.c" />
+    <ClCompile Include="..\..\src\c\network-nack_c.c" />
+    <ClCompile Include="..\..\src\c\registration-options.c" />
+    <ClCompile Include="..\..\src\c\security\ec-private-key.c" />
+    <ClCompile Include="..\..\src\c\security\ec-public-key.c" />
+    <ClCompile Include="..\..\src\c\security\rsa-private-key.c" />
+    <ClCompile Include="..\..\src\c\security\rsa-public-key.c" />
+    <ClCompile Include="..\..\src\c\transport\socket-transport.c" />
+    <ClCompile Include="..\..\src\c\transport\tcp-transport_c.c" />
+    <ClCompile Include="..\..\src\c\util\blob_c.c" />
+    <ClCompile Include="..\..\src\c\util\crypto.c" />
+    <ClCompile Include="..\..\src\c\util\dynamic-uint8-array.c" />
+    <ClCompile Include="..\..\src\c\util\ndn_memory.c" />
+    <ClCompile Include="..\..\src\c\util\ndn_realloc.c" />
+    <ClCompile Include="..\..\src\c\util\time.c" />
+    <ClCompile Include="..\..\src\data.cpp" />
+    <ClCompile Include="..\..\src\delegation-set.cpp" />
+    <ClCompile Include="..\..\src\digest-sha256-signature.cpp" />
+    <ClCompile Include="..\..\src\encoding\base64.cpp" />
+    <ClCompile Include="..\..\src\encoding\der\der-exception.cpp" />
+    <ClCompile Include="..\..\src\encoding\der\der-node.cpp" />
+    <ClCompile Include="..\..\src\encoding\element-listener.cpp" />
+    <ClCompile Include="..\..\src\encoding\oid.cpp" />
+    <ClCompile Include="..\..\src\encoding\protobuf-tlv.cpp" />
+    <ClCompile Include="..\..\src\encoding\tlv-0_1-wire-format.cpp" />
+    <ClCompile Include="..\..\src\encoding\tlv-0_1_1-wire-format.cpp" />
+    <ClCompile Include="..\..\src\encoding\tlv-0_2-wire-format.cpp" />
+    <ClCompile Include="..\..\src\encoding\tlv-0_3-wire-format.cpp" />
+    <ClCompile Include="..\..\src\encoding\tlv-wire-format.cpp" />
+    <ClCompile Include="..\..\src\encoding\wire-format.cpp" />
+    <ClCompile Include="..\..\src\encrypt\access-manager-v2.cpp" />
+    <ClCompile Include="..\..\src\encrypt\decryptor-v2.cpp" />
+    <ClCompile Include="..\..\src\encrypt\encrypted-content.cpp" />
+    <ClCompile Include="..\..\src\encrypt\encryptor-v2.cpp" />
+    <ClCompile Include="..\..\src\exclude.cpp" />
+    <ClCompile Include="..\..\src\face.cpp" />
+    <ClCompile Include="..\..\src\generic-signature.cpp" />
+    <ClCompile Include="..\..\src\hmac-with-sha256-signature.cpp" />
+    <ClCompile Include="..\..\src\impl\delayed-call-table.cpp" />
+    <ClCompile Include="..\..\src\impl\interest-filter-table.cpp" />
+    <ClCompile Include="..\..\src\impl\pending-interest-table.cpp" />
+    <ClCompile Include="..\..\src\impl\registered-prefix-table.cpp" />
+    <ClCompile Include="..\..\src\in-memory-storage\in-memory-storage-retaining.cpp" />
+    <ClCompile Include="..\..\src\interest-filter.cpp" />
+    <ClCompile Include="..\..\src\interest.cpp" />
+    <ClCompile Include="..\..\src\key-locator.cpp" />
+    <ClCompile Include="..\..\src\link.cpp" />
+    <ClCompile Include="..\..\src\lite\control-parameters-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\control-response-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\data-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\delegation-set-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encoding\element-listener-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encoding\tlv-0_2-wire-format-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encoding\tlv-0_3-wire-format-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encrypt\algo\aes-algorithm-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encrypt\algo\chacha20-algorithm-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encrypt\algo\des-algorithm-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encrypt\encrypted-content-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\exclude-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\interest-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\key-locator-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\lp\congestion-mark-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\lp\incoming-face-id-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\lp\lp-packet-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\meta-info-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\name-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\network-nack-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\registration-options-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\security\ec-private-key-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\security\ec-public-key-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\security\rsa-private-key-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\security\rsa-public-key-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\security\validity-period-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\signature-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\transport\tcp-transport-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\transport\udp-transport-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\util\blob-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\util\crypto-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\util\dynamic-malloc-uint8-array-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\util\dynamic-uint8-array-lite.cpp" />
+    <ClCompile Include="..\..\src\lp\congestion-mark.cpp" />
+    <ClCompile Include="..\..\src\lp\incoming-face-id.cpp" />
+    <ClCompile Include="..\..\src\lp\lp-packet.cpp" />
+    <ClCompile Include="..\..\src\meta-info.cpp" />
+    <ClCompile Include="..\..\src\name.cpp" />
+    <ClCompile Include="..\..\src\network-nack.cpp" />
+    <ClCompile Include="..\..\src\node.cpp" />
+    <ClCompile Include="..\..\src\security\certificate\certificate-extension.cpp" />
+    <ClCompile Include="..\..\src\security\certificate\certificate-subject-description.cpp" />
+    <ClCompile Include="..\..\src\security\certificate\certificate.cpp" />
+    <ClCompile Include="..\..\src\security\certificate\public-key.cpp" />
+    <ClCompile Include="..\..\src\security\command-interest-preparer.cpp" />
+    <ClCompile Include="..\..\src\security\command-interest-signer.cpp" />
+    <ClCompile Include="..\..\src\security\key-chain.cpp" />
+    <ClCompile Include="..\..\src\security\key-params.cpp" />
+    <ClCompile Include="..\..\src\security\pib\detail\pib-identity-impl.cpp" />
+    <ClCompile Include="..\..\src\security\pib\detail\pib-key-impl.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib-certificate-container.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib-identity-container.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib-identity.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib-key-container.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib-key.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib-memory.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib-sqlite3.cpp" />
+    <ClCompile Include="..\..\src\security\pib\pib.cpp" />
+    <ClCompile Include="..\..\src\security\safe-bag.cpp" />
+    <ClCompile Include="..\..\src\security\security-exception.cpp" />
+    <ClCompile Include="..\..\src\security\signing-info.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end-file.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end-memory.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end-osx.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-key-handle-memory.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-key-handle-osx.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-key-handle.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm-private-key.cpp" />
+    <ClCompile Include="..\..\src\security\tpm\tpm.cpp" />
+    <ClCompile Include="..\..\src\security\v2\certificate-cache-v2.cpp" />
+    <ClCompile Include="..\..\src\security\v2\certificate-fetcher-from-network.cpp" />
+    <ClCompile Include="..\..\src\security\v2\certificate-fetcher-offline.cpp" />
+    <ClCompile Include="..\..\src\security\v2\certificate-fetcher.cpp" />
+    <ClCompile Include="..\..\src\security\v2\certificate-storage.cpp" />
+    <ClCompile Include="..\..\src\security\v2\certificate-v2.cpp" />
+    <ClCompile Include="..\..\src\security\v2\trust-anchor-container.cpp" />
+    <ClCompile Include="..\..\src\security\v2\trust-anchor-group.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-error.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-policy-accept-all.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-policy-command-interest.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-policy-config.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-policy-from-pib.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-policy-simple-hierarchy.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-policy.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validation-state.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-checker.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-filter.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-name-relation.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-rule.cpp" />
+    <ClCompile Include="..\..\src\security\v2\validator.cpp" />
+    <ClCompile Include="..\..\src\security\validator-null.cpp" />
+    <ClCompile Include="..\..\src\security\validity-period.cpp" />
+    <ClCompile Include="..\..\src\security\verification-helpers.cpp" />
+    <ClCompile Include="..\..\src\sha256-with-ecdsa-signature.cpp" />
+    <ClCompile Include="..\..\src\sha256-with-rsa-signature.cpp" />
+    <ClCompile Include="..\..\src\signature.cpp" />
+    <ClCompile Include="..\..\src\sync\chrono-sync2013.cpp" />
+    <ClCompile Include="..\..\src\sync\detail\invertible-bloom-lookup-table.cpp" />
+    <ClCompile Include="..\..\src\sync\detail\psync-segment-publisher.cpp" />
+    <ClCompile Include="..\..\src\sync\detail\psync-state.cpp" />
+    <ClCompile Include="..\..\src\sync\detail\psync-user-prefixes.cpp" />
+    <ClCompile Include="..\..\src\sync\digest-tree.cpp" />
+    <ClCompile Include="..\..\src\sync\full-psync2017-with-users.cpp" />
+    <ClCompile Include="..\..\src\sync\full-psync2017.cpp" />
+    <ClCompile Include="..\..\src\sync\psync-producer-base.cpp" />
+    <ClCompile Include="..\..\src\threadsafe-face.cpp" />
+    <ClCompile Include="..\..\src\transport\tcp-transport.cpp" />
+    <ClCompile Include="..\..\src\transport\transport.cpp" />
+    <ClCompile Include="..\..\src\transport\udp-transport.cpp" />
+    <ClCompile Include="..\..\src\util\boost-info-parser.cpp" />
+    <ClCompile Include="..\..\src\util\command-interest-generator.cpp" />
+    <ClCompile Include="..\..\src\util\config-file.cpp" />
+    <ClCompile Include="..\..\src\util\dynamic-uint8-vector.cpp" />
+    <ClCompile Include="..\..\src\util\exponential-re-express.cpp" />
+    <ClCompile Include="..\..\src\util\logging.cpp" />
+    <ClCompile Include="..\..\src\util\memory-content-cache.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-backref-manager.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-backref-matcher.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-component-matcher.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-component-set-matcher.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-matcher-base.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-pattern-list-matcher.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-pseudo-matcher.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-repeat-matcher.cpp" />
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-top-matcher.cpp" />
+    <ClCompile Include="..\..\src\util\segment-fetcher.cpp" />
+    <ClCompile Include="..\..\src\util\sqlite3-statement.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

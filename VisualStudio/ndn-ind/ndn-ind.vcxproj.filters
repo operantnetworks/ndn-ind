@@ -1,0 +1,1014 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\src">
+      <UniqueIdentifier>{6c42ab3c-b3bf-4cd6-afc8-de5c15522060}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c">
+      <UniqueIdentifier>{cc56df66-7170-436c-bf3a-cc498e09bc3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\encoding">
+      <UniqueIdentifier>{c615d1f8-4320-4a69-904f-2a361124ce54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\encrypt">
+      <UniqueIdentifier>{c1d0ddda-f5fb-4b87-836c-5a6854033497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\lp">
+      <UniqueIdentifier>{ccfba7bf-719e-46a6-b87f-7c1921a35178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\encoding\tlv">
+      <UniqueIdentifier>{68b7281e-6fd0-4e22-b11b-ba39da1e742e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\encrypt\algo">
+      <UniqueIdentifier>{fa6c7267-62dd-4b04-9de9-05a796234817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\security">
+      <UniqueIdentifier>{7ad190ae-3fba-4e11-a478-10dfd00fe250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\util">
+      <UniqueIdentifier>{63396249-66f5-4309-8dde-9187d9cb8b57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\contrib">
+      <UniqueIdentifier>{5bfb57ca-1974-40fa-8453-09e56656ba7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\contrib\apache">
+      <UniqueIdentifier>{161699a0-0465-4ea5-9846-a8ec4779dbde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\contrib\murmur-hash">
+      <UniqueIdentifier>{52059f3b-10dd-4544-8f4c-f9777d879f4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\encoding">
+      <UniqueIdentifier>{1adbd918-5c8c-4394-bffc-7bc739b0fc58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\encoding\der">
+      <UniqueIdentifier>{c68b954f-3839-48f3-9ed2-88697c7e0a7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\encrypt">
+      <UniqueIdentifier>{4548cf16-d179-442f-8980-88130c94c217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\impl">
+      <UniqueIdentifier>{cb8fdb0f-a4d0-4f47-a8f8-daea746383ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\in-memory-storage">
+      <UniqueIdentifier>{48c09630-2b36-415e-a1f5-194bb3833314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite">
+      <UniqueIdentifier>{926b3a96-7a5c-4ce5-abf8-b5ecd1961dad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite\encoding">
+      <UniqueIdentifier>{42e1c8b8-df3f-4e8c-a885-b73d90d1d03b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite\encrypt">
+      <UniqueIdentifier>{a0236eff-8602-475b-a3d5-0e5b82a5d9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite\lp">
+      <UniqueIdentifier>{08b1f613-c762-4fe3-a8f8-1efd543be195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite\encrypt\algo">
+      <UniqueIdentifier>{77c20b8b-0f35-4f0f-9b2b-6411704f4305}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite\security">
+      <UniqueIdentifier>{d78f8f50-9272-4b75-afaa-32a834ec6fc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite\util">
+      <UniqueIdentifier>{a917de6e-1f99-495b-9fb3-f99d18e6f441}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lp">
+      <UniqueIdentifier>{2ad9739c-122e-4fa7-bd13-b69f92bd7a8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\security">
+      <UniqueIdentifier>{36b92e43-d572-43d4-b60f-2c4439d8eb58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\security\certificate">
+      <UniqueIdentifier>{ac7cb166-d0e9-4e36-809a-4950852a35a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\security\pib">
+      <UniqueIdentifier>{dbbf0971-cfbf-49a1-bf8f-237036530469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\security\tpm">
+      <UniqueIdentifier>{2336e7ea-be73-43f2-9dd8-dc3fa3b2ab86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\security\v2">
+      <UniqueIdentifier>{8a700c65-8076-4597-af6c-ea7a5b40b1dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\security\pib\detail">
+      <UniqueIdentifier>{ab0a5b2f-e3eb-4bcf-a115-cc44008a41cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\security\v2\validator-config">
+      <UniqueIdentifier>{eced8c0c-082a-4963-857c-2b9b3b29d1f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\sync">
+      <UniqueIdentifier>{5475f154-30e2-4e82-ace6-453107db3b47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\sync\detail">
+      <UniqueIdentifier>{63b4eb08-25f1-4c0a-adbf-f40acc2f42c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\util">
+      <UniqueIdentifier>{1e22f8e0-f0e4-4e99-8f73-cd8d15ec9a0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\util\regex">
+      <UniqueIdentifier>{80d83e0b-7d56-4e02-8435-476e780bbd72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\c\transport">
+      <UniqueIdentifier>{4d4c9e33-f8f3-4fb3-88aa-d0f016573430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\transport">
+      <UniqueIdentifier>{cdf10735-994b-4e62-9d4c-c6be508eac5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\src\lite\transport">
+      <UniqueIdentifier>{ad5dbc89-5aeb-46b8-b476-40c0372f42a4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\c\control-parameters.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\control-response.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\data.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\delegation-set.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\forwarding-flags-impl.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\interest.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\key-locator.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\name.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\network-nack.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\registration-options.h">
+      <Filter>Source Files\src\c</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\element-listener.h">
+      <Filter>Source Files\src\c\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\element-reader.h">
+      <Filter>Source Files\src\c\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv-0_2-wire-format.h">
+      <Filter>Source Files\src\c\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv-0_3-wire-format.h">
+      <Filter>Source Files\src\c\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-control-parameters.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-control-response.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-data.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-decoder.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-delegation-set.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-encoder.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-encrypted-content.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-interest.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-key-locator.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-lp-packet.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-name.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-signature-info.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encoding\tlv\tlv-structure-decoder.h">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encrypt\encrypted-content.h">
+      <Filter>Source Files\src\c\encrypt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encrypt\algo\aes-algorithm.h">
+      <Filter>Source Files\src\c\encrypt\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encrypt\algo\chacha20-algorithm.h">
+      <Filter>Source Files\src\c\encrypt\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\encrypt\algo\des-algorithm.h">
+      <Filter>Source Files\src\c\encrypt\algo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\lp\congestion-mark.h">
+      <Filter>Source Files\src\c\lp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\lp\incoming-face-id.h">
+      <Filter>Source Files\src\c\lp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\lp\lp-packet.h">
+      <Filter>Source Files\src\c\lp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\util\blob.h">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\util\crypto.h">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\util\dynamic-uint8-array.h">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\util\endian.h">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\util\ndn_memory.h">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\util\ndn_realloc.h">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\util\time.h">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\security\ec-private-key.h">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\security\ec-public-key.h">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\security\rsa-private-key.h">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\security\rsa-public-key.h">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\security\validity-period.h">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\contrib\apache\apr_base64.h">
+      <Filter>Source Files\contrib\apache</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\contrib\murmur-hash\murmur-hash.h">
+      <Filter>Source Files\contrib\murmur-hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\encoding\element-listener.hpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\encoding\tlv-decoder.hpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\encoding\tlv-encoder.hpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\encoding\der\der-exception.hpp">
+      <Filter>Source Files\src\encoding\der</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\encoding\der\der-node.hpp">
+      <Filter>Source Files\src\encoding\der</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\encoding\der\der-node-type.hpp">
+      <Filter>Source Files\src\encoding\der</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\impl\delayed-call-table.hpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\impl\interest-filter-table.hpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\impl\pending-interest-table.hpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\impl\registered-prefix-table.hpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\node.hpp">
+      <Filter>Source Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\lp\congestion-mark.hpp">
+      <Filter>Source Files\src\lp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\lp\incoming-face-id.hpp">
+      <Filter>Source Files\src\lp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\lp\lp-packet.hpp">
+      <Filter>Source Files\src\lp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\security\pib\detail\pib-identity-impl.hpp">
+      <Filter>Source Files\src\security\pib\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\security\pib\detail\pib-key-impl.hpp">
+      <Filter>Source Files\src\security\pib\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sync\digest-tree.hpp">
+      <Filter>Source Files\src\sync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sync\detail\invertible-bloom-lookup-table.hpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sync\detail\psync-segment-publisher.hpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sync\detail\psync-state.hpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sync\detail\psync-user-prefixes.hpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\boost-info-parser.hpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\command-interest-generator.hpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\config-file.hpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\dynamic-uint8-vector.hpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\sqlite3-statement.hpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-backref-manager.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-backref-matcher.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-component-matcher.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-component-set-matcher.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-matcher-base.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-pattern-list-matcher.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-pseudo-matcher.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-repeat-matcher.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\regex\ndn-regex-top-matcher.hpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ndn-ind\ndn-ind-config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\transport\socket-transport.h">
+      <Filter>Source Files\src\c\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\transport\tcp-transport.h">
+      <Filter>Source Files\src\c\transport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\c\transport\udp-transport.h">
+      <Filter>Source Files\src\c\transport</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\c\control-parameters_c.c">
+      <Filter>Source Files\src\c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\errors.c">
+      <Filter>Source Files\src\c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\interest_c.c">
+      <Filter>Source Files\src\c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\name_c.c">
+      <Filter>Source Files\src\c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\network-nack_c.c">
+      <Filter>Source Files\src\c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\registration-options.c">
+      <Filter>Source Files\src\c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\element-reader.c">
+      <Filter>Source Files\src\c\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv-0_2-wire-format_c.c">
+      <Filter>Source Files\src\c\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv-0_3-wire-format_c.c">
+      <Filter>Source Files\src\c\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-control-parameters.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-control-response.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-data.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-decoder.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-delegation-set.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-encoder.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-encrypted-content.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-interest.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-key-locator.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-lp-packet.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-name.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-signature-info.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encoding\tlv\tlv-structure-decoder.c">
+      <Filter>Source Files\src\c\encoding\tlv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encrypt\algo\aes-algorithm_c.c">
+      <Filter>Source Files\src\c\encrypt\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encrypt\algo\chacha20-algorithm_c.c">
+      <Filter>Source Files\src\c\encrypt\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\encrypt\algo\des-algorithm_c.c">
+      <Filter>Source Files\src\c\encrypt\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\lp\congestion-mark_c.c">
+      <Filter>Source Files\src\c\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\lp\incoming-face-id_c.c">
+      <Filter>Source Files\src\c\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\util\blob_c.c">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\util\crypto.c">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\util\dynamic-uint8-array.c">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\util\ndn_memory.c">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\util\ndn_realloc.c">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\util\time.c">
+      <Filter>Source Files\src\c\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\security\ec-private-key.c">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\security\ec-public-key.c">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\security\rsa-private-key.c">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\security\rsa-public-key.c">
+      <Filter>Source Files\src\c\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\contrib\murmur-hash\murmur-hash.c">
+      <Filter>Source Files\contrib\murmur-hash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\contrib\apache\apr_base64.c">
+      <Filter>Source Files\contrib\apache</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\base64.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\element-listener.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\oid.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\protobuf-tlv.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\tlv-0_1_1-wire-format.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\tlv-0_1-wire-format.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\tlv-0_2-wire-format.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\tlv-0_3-wire-format.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\tlv-wire-format.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\wire-format.cpp">
+      <Filter>Source Files\src\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\der\der-exception.cpp">
+      <Filter>Source Files\src\encoding\der</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encoding\der\der-node.cpp">
+      <Filter>Source Files\src\encoding\der</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\impl\delayed-call-table.cpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\impl\interest-filter-table.cpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\impl\pending-interest-table.cpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\impl\registered-prefix-table.cpp">
+      <Filter>Source Files\src\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encrypt\access-manager-v2.cpp">
+      <Filter>Source Files\src\encrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encrypt\decryptor-v2.cpp">
+      <Filter>Source Files\src\encrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encrypt\encrypted-content.cpp">
+      <Filter>Source Files\src\encrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\encrypt\encryptor-v2.cpp">
+      <Filter>Source Files\src\encrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\common.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\control-parameters.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\control-response.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\data.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\delegation-set.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\digest-sha256-signature.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\exclude.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\face.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\generic-signature.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\hmac-with-sha256-signature.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\interest.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\interest-filter.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\key-locator.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\link.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\meta-info.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\name.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\network-nack.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\node.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sha256-with-ecdsa-signature.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sha256-with-rsa-signature.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\signature.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\threadsafe-face.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\in-memory-storage\in-memory-storage-retaining.cpp">
+      <Filter>Source Files\src\in-memory-storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\encoding\element-listener-lite.cpp">
+      <Filter>Source Files\src\lite\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\encoding\tlv-0_2-wire-format-lite.cpp">
+      <Filter>Source Files\src\lite\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\encoding\tlv-0_3-wire-format-lite.cpp">
+      <Filter>Source Files\src\lite\encoding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\encrypt\encrypted-content-lite.cpp">
+      <Filter>Source Files\src\lite\encrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\encrypt\algo\aes-algorithm-lite.cpp">
+      <Filter>Source Files\src\lite\encrypt\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\encrypt\algo\chacha20-algorithm-lite.cpp">
+      <Filter>Source Files\src\lite\encrypt\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\encrypt\algo\des-algorithm-lite.cpp">
+      <Filter>Source Files\src\lite\encrypt\algo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\lp\congestion-mark-lite.cpp">
+      <Filter>Source Files\src\lite\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\lp\incoming-face-id-lite.cpp">
+      <Filter>Source Files\src\lite\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\lp\lp-packet-lite.cpp">
+      <Filter>Source Files\src\lite\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\util\blob-lite.cpp">
+      <Filter>Source Files\src\lite\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\util\crypto-lite.cpp">
+      <Filter>Source Files\src\lite\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\util\dynamic-malloc-uint8-array-lite.cpp">
+      <Filter>Source Files\src\lite\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\util\dynamic-uint8-array-lite.cpp">
+      <Filter>Source Files\src\lite\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\security\ec-private-key-lite.cpp">
+      <Filter>Source Files\src\lite\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\security\ec-public-key-lite.cpp">
+      <Filter>Source Files\src\lite\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\security\rsa-private-key-lite.cpp">
+      <Filter>Source Files\src\lite\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\security\rsa-public-key-lite.cpp">
+      <Filter>Source Files\src\lite\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\security\validity-period-lite.cpp">
+      <Filter>Source Files\src\lite\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\control-parameters-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\control-response-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\data-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\delegation-set-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\exclude-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\interest-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\key-locator-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\meta-info-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\name-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\network-nack-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\registration-options-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\signature-lite.cpp">
+      <Filter>Source Files\src\lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lp\congestion-mark.cpp">
+      <Filter>Source Files\src\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lp\incoming-face-id.cpp">
+      <Filter>Source Files\src\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lp\lp-packet.cpp">
+      <Filter>Source Files\src\lp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\certificate\certificate.cpp">
+      <Filter>Source Files\src\security\certificate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\certificate\certificate-extension.cpp">
+      <Filter>Source Files\src\security\certificate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\certificate\certificate-subject-description.cpp">
+      <Filter>Source Files\src\security\certificate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\certificate\public-key.cpp">
+      <Filter>Source Files\src\security\certificate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib-certificate-container.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib-identity.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib-identity-container.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib-key.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib-key-container.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib-memory.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\pib-sqlite3.cpp">
+      <Filter>Source Files\src\security\pib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\detail\pib-identity-impl.cpp">
+      <Filter>Source Files\src\security\pib\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\pib\detail\pib-key-impl.cpp">
+      <Filter>Source Files\src\security\pib\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\certificate-cache-v2.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\certificate-fetcher.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\certificate-fetcher-from-network.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\certificate-fetcher-offline.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\certificate-storage.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\certificate-v2.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\trust-anchor-container.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\trust-anchor-group.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-error.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-policy.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-policy-accept-all.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-policy-command-interest.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-policy-config.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-policy-from-pib.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-policy-simple-hierarchy.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validation-state.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validator.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-checker.cpp">
+      <Filter>Source Files\src\security\v2\validator-config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-filter.cpp">
+      <Filter>Source Files\src\security\v2\validator-config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-name-relation.cpp">
+      <Filter>Source Files\src\security\v2\validator-config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\validator-config\config-rule.cpp">
+      <Filter>Source Files\src\security\v2\validator-config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end-file.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end-memory.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-back-end-osx.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-key-handle.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-key-handle-memory.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-key-handle-osx.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\tpm\tpm-private-key.cpp">
+      <Filter>Source Files\src\security\tpm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\chrono-sync2013.cpp">
+      <Filter>Source Files\src\sync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\digest-tree.cpp">
+      <Filter>Source Files\src\sync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\full-psync2017.cpp">
+      <Filter>Source Files\src\sync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\full-psync2017-with-users.cpp">
+      <Filter>Source Files\src\sync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\psync-producer-base.cpp">
+      <Filter>Source Files\src\sync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\detail\invertible-bloom-lookup-table.cpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\detail\psync-segment-publisher.cpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\detail\psync-state.cpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\detail\psync-user-prefixes.cpp">
+      <Filter>Source Files\src\sync\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\boost-info-parser.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\command-interest-generator.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\config-file.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\dynamic-uint8-vector.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\exponential-re-express.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\logging.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\memory-content-cache.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\segment-fetcher.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\sqlite3-statement.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-backref-manager.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-backref-matcher.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-component-matcher.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-component-set-matcher.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-matcher-base.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-pattern-list-matcher.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-pseudo-matcher.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-repeat-matcher.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\util\regex\ndn-regex-top-matcher.cpp">
+      <Filter>Source Files\src\util\regex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\command-interest-preparer.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\command-interest-signer.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\key-chain.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\key-params.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\safe-bag.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\security-exception.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\signing-info.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\validator-null.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\validity-period.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\verification-helpers.cpp">
+      <Filter>Source Files\src\security</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\transport\socket-transport.c">
+      <Filter>Source Files\src\c\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\c\transport\tcp-transport_c.c">
+      <Filter>Source Files\src\c\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\transport\tcp-transport.cpp">
+      <Filter>Source Files\src\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\transport\transport.cpp">
+      <Filter>Source Files\src\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\transport\udp-transport.cpp">
+      <Filter>Source Files\src\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\transport\tcp-transport-lite.cpp">
+      <Filter>Source Files\src\lite\transport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\lite\transport\udp-transport-lite.cpp">
+      <Filter>Source Files\src\lite\transport</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
