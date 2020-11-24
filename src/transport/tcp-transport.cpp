@@ -8,7 +8,7 @@
  * Original file: src/transport/tcp-transport.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Put element-listener.hpp in API.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Put element-listener.hpp in API. Support WinSock2.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -31,9 +31,9 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if we have Unix socket support.
+// Only compile if we have Unix or Windows socket support.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_IND_HAVE_UNISTD_H
+#if NDN_IND_HAVE_UNISTD_H || defined(_WIN32)
 
 #include <stdexcept>
 #include <stdlib.h>
