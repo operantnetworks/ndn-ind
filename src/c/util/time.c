@@ -39,6 +39,8 @@
 #endif
 #if defined(_WIN32)
 #include <Windows.h>
+// Windows doesn't have timegm, but _mkgmtime does the same thing.
+static time_t timegm(struct tm* t) { return _mkgmtime(t); }
 #endif
 #include <math.h>
 #include <string.h>
@@ -75,7 +77,7 @@ ndn_Error
 ndn_toIsoString
   (ndn_MillisecondsSince1970 milliseconds, int includeFraction, char *isoString)
 {
-#if NDN_IND_HAVE_GMTIME_SUPPORT
+#if NDN_IND_HAVE_GMTIME_SUPPORT || defined(_WIN32)
   double secondsSince1970;
   char fractionBuffer[10];
   const char *fraction;
@@ -115,7 +117,7 @@ ndn_toIsoString
 ndn_Error
 ndn_fromIsoString(const char* isoString, ndn_MillisecondsSince1970 *milliseconds)
 {
-#if NDN_IND_HAVE_GMTIME_SUPPORT
+#if NDN_IND_HAVE_GMTIME_SUPPORT || defined(_WIN32)
   // Initialize time zone, etc.
   time_t dummyTime = 0;
   struct tm tm1 = *gmtime(&dummyTime);

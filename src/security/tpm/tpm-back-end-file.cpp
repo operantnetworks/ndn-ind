@@ -43,6 +43,9 @@
 #ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
 #include <boost/filesystem.hpp>
 #endif
+#if defined(_WIN32)
+#include <direct.h>
+#endif
 #include <ndn-ind/security/tpm/tpm-back-end-file.hpp>
 
 using namespace std;
@@ -75,11 +78,15 @@ TpmBackEndFile::TpmBackEndFile(const string& locationPath)
   }
 
   // ::mkdir will work if the parent directory already exists, which is most cases.
+#if defined(_WIN32)
+  int status = ::_mkdir(keyStorePath_.c_str());
+#else
   int status = ::mkdir(keyStorePath_.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#endif
   // EEXIST means the directory already exists, so it's OK.
   if (status != 0 && status != EEXIST) {
     // Can't create the directory with ::mkdir.
-#ifdef NDN_IND_HAVE_CXX17
+#ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
     // Try with create_directories.
     boost::filesystem::create_directories(keyStorePath_);
 #else
