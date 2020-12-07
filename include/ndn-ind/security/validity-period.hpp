@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/validity-period.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -46,7 +46,7 @@ namespace ndn {
  * A ValidityPeriod is used in a Data packet's SignatureInfo and represents the
  * begin and end times of a certificate's validity period.
  */
-class ValidityPeriod {
+class ndn_ind_dll ValidityPeriod {
 public:
   /** Create a default ValidityPeriod where the period is not specified.
    */

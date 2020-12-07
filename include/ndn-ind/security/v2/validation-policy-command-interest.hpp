@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/v2/validation-policy-command-interest.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -49,7 +49,7 @@ namespace ndn {
  * Signed Interest validation and Data validation requests are delegated to an
  * inner policy.
  */
-class ValidationPolicyCommandInterest : public ValidationPolicy
+class ndn_ind_dll ValidationPolicyCommandInterest : public ValidationPolicy
 {
 public:
   class Options {

@@ -9,7 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use std::chrono. Support ChaCha20-Ploy1305, GCK,
- *   encrypted Interest.
+ *   encrypted Interest. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -50,7 +50,7 @@ namespace ndn {
  * "KDK", etc. see:
  * https://github.com/named-data/name-based-access-control/blob/new/docs/spec.rst
  */
-class DecryptorV2 {
+class ndn_ind_dll DecryptorV2 {
 public:
   typedef func_lib::function<void(const Blob& plainData)> DecryptSuccessCallback;
 

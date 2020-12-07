@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/transport/async-tcp-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Add readRawPackets.
+ * Summary of Changes: Use NDN_IND macros. Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -52,7 +52,7 @@ namespace ndn {
  * thread-safe, you must dispatch calls to send(), etc. to the io_service, as is
  * done by ThreadsafeFace. To use this, you do not need to call processEvents.
  */
-class AsyncTcpTransport : public Transport {
+class ndn_ind_dll AsyncTcpTransport : public Transport {
 public:
   /**
    * An AsyncTcpTransport::ConnectionInfo extends Transport::ConnectionInfo to

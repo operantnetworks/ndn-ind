@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/encrypt/access-manager-v2.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -57,7 +57,7 @@ const std::chrono::nanoseconds DEFAULT_KDK_FRESHNESS_PERIOD =
  * For the meaning of "KDK", etc. see:
  * https://github.com/named-data/name-based-access-control/blob/new/docs/spec.rst
  */
-class AccessManagerV2 {
+class ndn_ind_dll AccessManagerV2 {
 public:
   /**
    * Create an AccessManagerV2 to serve the KDK or GCK that is encrypted by each

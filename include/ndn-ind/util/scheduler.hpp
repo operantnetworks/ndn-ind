@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cxx
  *
  * Summary of Changes: Use ndn-ind includes and namespace. Use std::chrono and shared_ptr.
+ *   Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -70,7 +71,7 @@ using EventCallback = std::function<void()>;
  *  \warning Canceling an event after the scheduler has been destructed may trigger undefined
  *           behavior.
  */
-class EventId : public CancelHandle
+class ndn_ind_dll EventId : public CancelHandle
 {
 public:
   /** \brief Constructs an empty EventId
@@ -131,7 +132,7 @@ operator<<(std::ostream& os, const EventId& eventId);
  *  \warning Canceling an event after the scheduler has been destructed may trigger undefined
  *           behavior.
  */
-class ScopedEventId : public ScopedCancelHandle
+class ndn_ind_dll ScopedEventId : public ScopedCancelHandle
 {
 public:
   using ScopedCancelHandle::ScopedCancelHandle;
@@ -141,7 +142,7 @@ public:
 
 /** \brief Generic time-based scheduler
  */
-class Scheduler : boost::noncopyable
+class ndn_ind_dll Scheduler : boost::noncopyable
 {
 public:
   explicit

@@ -48,7 +48,7 @@ namespace ndn {
 typedef std::vector<CertificateSubjectDescription> SubjectDescriptionList;
 typedef std::vector<CertificateExtension> ExtensionList;
 
-class Certificate : public Data {
+class ndn_ind_dll Certificate : public Data {
 public:
   /**
    * The default constructor.

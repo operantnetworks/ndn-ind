@@ -33,7 +33,7 @@ class DerNode;
 /**
  * A CertificateSubjectDescription represents the SubjectDescription entry in a Certificate.
  */
-class CertificateSubjectDescription {
+class ndn_ind_dll CertificateSubjectDescription {
 public:
   /**
    * Create a new CertificateSubjectDescription.

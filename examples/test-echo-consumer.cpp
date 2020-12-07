@@ -33,12 +33,12 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <ndn-ind/face.hpp>
 #if NDN_IND_HAVE_UNISTD_H
 #include <unistd.h>
 #elif defined(_WIN32)
 #include "windows.h"
 #endif
-#include <ndn-ind/face.hpp>
 
 using namespace std;
 using namespace ndn;

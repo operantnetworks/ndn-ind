@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/lite/util/blob-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2015-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -34,7 +46,7 @@ namespace ndn {
  * to change the pointer, and so this does allow the copy constructor and
  * assignment to change the pointer.  Also remember that the pointer can be null.
  */
-class BlobLite : private ndn_Blob {
+class ndn_ind_dll BlobLite : private ndn_Blob {
 public:
   /**
    * Create a BlobLite where the buf and size are 0.

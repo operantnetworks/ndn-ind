@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/lite/encoding/element-listener-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Remove unused transports. Add readRawPackets.
+ * Summary of Changes: Remove unused transports. Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -46,7 +46,7 @@ typedef void (*OnReceivedElementLite)
  * You can use this class as is, or extend it to provide data that can be
  * accessed through the self pointer in onReceivedElement.
  */
-class ElementListenerLite : private ndn_ElementListener {
+class ndn_ind_dll ElementListenerLite : private ndn_ElementListener {
 public:
   /**
    * Create an ElementListenerLite to use the onReceivedElement function pointer.

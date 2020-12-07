@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/security/security-exception.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2013-2020 Regents of the University of California.
  * @author: Yingdi Yu <yingdi@cs.ucla.edu>
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
@@ -23,12 +35,13 @@
 #ifndef NDN_SECURITY_EXCEPTION_HPP
 #define NDN_SECURITY_EXCEPTION_HPP
 
+#include "../c/common.h"
 #include <exception>
 #include <string>
 
 namespace ndn {
 
-class SecurityException : public std::exception {
+class ndn_ind_dll SecurityException : public std::exception {
 public:
   SecurityException(const std::string& errorMessage) throw();
 
@@ -44,7 +57,7 @@ private:
   const std::string errorMessage_;
 };
 
-class UnrecognizedKeyFormatException : public SecurityException {
+class ndn_ind_dll UnrecognizedKeyFormatException : public SecurityException {
 public:
   UnrecognizedKeyFormatException(const std::string& errorMessage)
   : SecurityException(errorMessage)
@@ -52,7 +65,7 @@ public:
   }
 };
 
-class UnrecognizedDigestAlgorithmException : public SecurityException {
+class ndn_ind_dll UnrecognizedDigestAlgorithmException : public SecurityException {
 public:
   UnrecognizedDigestAlgorithmException(const std::string& errorMessage)
   : SecurityException(errorMessage)

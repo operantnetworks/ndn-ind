@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/encrypt/encrypted-content.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Remove unused methods.
+ * Summary of Changes: Remove unused methods. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -46,7 +46,7 @@ namespace ndn {
  * representing encrypted content.
  * @note This class is an experimental feature. The API may change.
  */
-class EncryptedContent {
+class ndn_ind_dll EncryptedContent {
 public:
   /**
    * Create an EncryptedContent where all the values are unspecified.

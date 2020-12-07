@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/v2/validation-policy-config.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -51,7 +51,7 @@ class BoostInfoTree;
  * terminal inner policy).
  * @see https://named-data.net/doc/ndn-cxx/current/tutorials/security-validator-config.html
  */
-class ValidationPolicyConfig : public ValidationPolicy {
+class ndn_ind_dll ValidationPolicyConfig : public ValidationPolicy {
 public:
   /**
    * Create a default ValidationPolicyConfig.

@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cxx
  *
  * Summary of Changes: Rename steady_clock to MonotonicSteadyClock. Remove other unused code.
+ *   Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -51,7 +52,7 @@ namespace scheduler {
  * On most systems, this is the same as std::chrono::stead_clock. But on macOS,
  * we need to override the behavior of now() so that it is monotonic.
  */
-class MonotonicSteadyClock
+class ndn_ind_dll MonotonicSteadyClock
 {
 public:
   using duration   = std::chrono::steady_clock::duration;

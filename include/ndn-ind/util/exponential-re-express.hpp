@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/util/exponential-re-express.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -43,7 +43,7 @@ namespace ndn {
  * again with double the interestLifetime. See
  * ExponentialReExpress.makeOnTimeout.
  */
-class ExponentialReExpress : public ptr_lib::enable_shared_from_this<ExponentialReExpress> {
+class ndn_ind_dll ExponentialReExpress : public ptr_lib::enable_shared_from_this<ExponentialReExpress> {
 public:
   /**
    * Return a function object to use in expressInterest for onTimeout which will

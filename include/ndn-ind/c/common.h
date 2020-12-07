@@ -7,7 +7,7 @@
  * Original file: include/ndn-cpp/c/common.h
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -36,6 +36,16 @@
 #include "../ndn-ind-config.h"
 #include <stdint.h>
 #include <stddef.h>
+
+#if defined(_WIN32)
+  #ifdef NDN_IND_EXPORTS
+    #define ndn_ind_dll __declspec(dllexport)
+  #else
+    #define ndn_ind_dll __declspec(dllimport)
+  #endif
+#else
+  #define ndn_ind_dll
+#endif
 
 #if NDN_IND_HAVE_ATTRIBUTE_DEPRECATED
   #define DEPRECATED_IN_NDN_IND __attribute__((deprecated))
@@ -66,7 +76,7 @@ typedef double ndn_MillisecondsSince1970;
  * @return The current time in milliseconds since 1/1/1970 UTC, including
  * fractions of a millisecond (according to timeval.tv_usec).
  */
-ndn_MillisecondsSince1970
+ndn_ind_dll ndn_MillisecondsSince1970
 ndn_getNowMilliseconds();
 
 /**

@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/lite/util/dynamic-malloc-uint8-array-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2017-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -35,7 +47,7 @@ namespace ndn {
  * If your lightweight platform doesn't support malloc then don't link to this
  * file, and use DynamicUInt8ArrayLite directly with a fixed-size array.
  */
-class DynamicMallocUInt8ArrayLite : public DynamicUInt8ArrayLite {
+class ndn_ind_dll DynamicMallocUInt8ArrayLite : public DynamicUInt8ArrayLite {
 public:
   /**
    * Create a DynamicMallocUInt8ArrayLite with a buffer of the initial length.

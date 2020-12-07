@@ -8,7 +8,7 @@
  * Original file: src/encoding/element-listener.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets. Put element-listener.hpp in API.
+ * Summary of Changes: Add readRawPackets. Put element-listener.hpp in API. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -42,7 +42,7 @@ namespace ndn {
  * An ElementListener extends an ndn_ElementListener struct to proved an abstract virtual onReceivedElement function which wraps
  * the onReceivedElement used by the ndn_ElementListener struct.  You must extend this class to override onReceivedElement.
  */
-class ElementListener : public ndn_ElementListener {
+class ndn_ind_dll ElementListener : public ndn_ElementListener {
 public:
   ElementListener();
 

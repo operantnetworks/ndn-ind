@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/tpm/tpm-back-end-osx.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -48,7 +48,7 @@ namespace ndn {
  * TpmBackEndOsx extends TpmBackEnd to implement a TPM back-end using the macOS
  * Keychain services.
  */
-class TpmBackEndOsx : public TpmBackEnd {
+class ndn_ind_dll TpmBackEndOsx : public TpmBackEnd {
 public:
   /**
    * A TpmBackEndOsx::Error extends TpmBackEnd::Error and represents a

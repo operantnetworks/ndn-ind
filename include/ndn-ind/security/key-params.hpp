@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/security/key-params.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2015-2020 Regents of the University of California.
  * @author: Yingdi Yu <yingdi@cs.ucla.edu>
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
@@ -33,7 +45,7 @@ namespace ndn {
  * KeyParams is a base class for key parameters. Its subclasses are used to
  * store parameters for key generation.
  */
-class KeyParams {
+class ndn_ind_dll KeyParams {
 public:
   virtual
   ~KeyParams()
@@ -77,7 +89,7 @@ private:
   Name::Component keyId_;
 };
 
-class RsaKeyParams : public KeyParams {
+class ndn_ind_dll RsaKeyParams : public KeyParams {
 public:
   RsaKeyParams
     (const Name::Component& keyId,
@@ -111,7 +123,7 @@ private:
   uint32_t size_;
 };
 
-class EcKeyParams : public KeyParams {
+class ndn_ind_dll EcKeyParams : public KeyParams {
 public:
   EcKeyParams
     (const Name::Component& keyId,
@@ -149,7 +161,7 @@ private:
 /**
  * @deprecated Use EcKeyParams
  */
-class EcdsaKeyParams : public EcKeyParams {
+class ndn_ind_dll EcdsaKeyParams : public EcKeyParams {
 public:
   EcdsaKeyParams
     (const Name::Component& keyId,
@@ -166,7 +178,7 @@ public:
   }
 };
 
-class AesKeyParams : public KeyParams {
+class ndn_ind_dll AesKeyParams : public KeyParams {
 public:
   AesKeyParams
     (const Name::Component& keyId,

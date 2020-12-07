@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/lite/security/ec-private-key-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2016-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -32,7 +44,7 @@ namespace ndn {
  * An EcPrivateKeyLite holds a decoded or generated EC private key for use in
  * crypto operations.
  */
-class EcPrivateKeyLite : public ndn_EcPrivateKey {
+class ndn_ind_dll EcPrivateKeyLite : public ndn_EcPrivateKey {
 public:
   /**
    * Create an EcPrivateKeyLite with a null value.

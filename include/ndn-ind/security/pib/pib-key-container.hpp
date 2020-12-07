@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/security/pib/pib-key-container.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2017-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx security https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/security/pib/key-container.hpp
@@ -39,7 +51,7 @@ class PibKeyImpl;
  * A PibKeyContainer is used to search/enumerate the keys of an identity.
  * (A PibKeyContainer object can only be created by PibIdentity.)
  */
-class PibKeyContainer {
+class ndn_ind_dll PibKeyContainer {
 public:
   /**
    * Get the number of keys in the container.

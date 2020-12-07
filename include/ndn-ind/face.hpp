@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/face.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -95,7 +95,7 @@ class KeyChain;
 /**
  * The Face class provides the main methods for NDN communication.
  */
-class Face {
+class ndn_ind_dll Face {
 public:
   /**
    * Create a new Face for communication with an NDN hub with the given Transport object and connectionInfo.

@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/in-memory-storage/in-memory-storage-retaining.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2018-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/ims/in-memory-storage-persistent.hpp
@@ -40,7 +52,7 @@ namespace ndn {
  * Note: In ndn-cxx, this class is called InMemoryStoragePersistent, but
  * "persistent" misleadingly sounds like persistent on-disk storage.
  */
-class InMemoryStorageRetaining {
+class ndn_ind_dll InMemoryStorageRetaining {
 public:
   /**
    * Insert a Data packet. If a Data packet with the same name, including the

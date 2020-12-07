@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/tpm/helper-osx.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -42,6 +42,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <Security/Security.h>
 #include <CoreServices/CoreServices.h>
+#include "../../c/common.h"
 
 namespace ndn {
 
@@ -55,7 +56,7 @@ namespace ndn {
  * http://www.cocoabuilder.com/archive/cocoa/130776-auto-cfrelease-and.html
  */
 template<class T>
-class CFReleaser
+class ndn_ind_dll CFReleaser
 {
 public:
   //////////////////////////////

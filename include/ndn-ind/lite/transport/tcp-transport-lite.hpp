@@ -8,7 +8,7 @@
  * Original file: include/ndn-ind/lite/transport/tcp-transport-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets.
+ * Summary of Changes: Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -45,7 +45,7 @@ namespace ndn {
  * A TcpTransportLite object is used to send packets and to listen for incoming
  * packets over a TCP socket. See connect() and processEvents() for more details.
  */
-class TcpTransportLite : private ndn_TcpTransport {
+class ndn_ind_dll TcpTransportLite : private ndn_TcpTransport {
 public:
   /**
    * Create a TcpTransport with default values for no connection yet and to use

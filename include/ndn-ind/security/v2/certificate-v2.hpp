@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/v2/certificate-v2.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -91,7 +91,7 @@ namespace ndn {
  *
  * @see https://github.com/named-data/ndn-cxx/blob/master/docs/specs/certificate-format.rst
  */
-class CertificateV2 : public Data {
+class ndn_ind_dll CertificateV2 : public Data {
 public:
   /**
    * A CertificateV2::Error extends runtime_error and represents errors for not

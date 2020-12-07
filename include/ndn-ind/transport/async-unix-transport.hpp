@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/transport/async-unix-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Add readRawPackets.
+ * Summary of Changes: Use NDN_IND macros. Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -54,7 +54,7 @@ template<class AsioProtocol> class AsyncSocketTransport;
  * io_service, as is done by ThreadsafeFace. To use this, you do not need to
  * call processEvents.
  */
-class AsyncUnixTransport : public Transport {
+class ndn_ind_dll AsyncUnixTransport : public Transport {
 public:
   /**
    * An AsyncUnixTransport::ConnectionInfo extends Transport::ConnectionInfo to

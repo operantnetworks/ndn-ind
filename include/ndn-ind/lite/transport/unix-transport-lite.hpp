@@ -8,7 +8,7 @@
  * Original file: include/ndn-ind/lite/transport/unix-transport-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets.
+ * Summary of Changes: Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -46,7 +46,7 @@ namespace ndn {
  * packets over a Unix socket. See connect() and processEvents() for more
  * details.
  */
-class UnixTransportLite : private ndn_UnixTransport {
+class ndn_ind_dll UnixTransportLite : private ndn_UnixTransport {
 public:
   /**
    * Create a UnixTransport with default values for no connection yet and to use

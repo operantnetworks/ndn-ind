@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/v2/certificate-storage.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -44,7 +44,7 @@ namespace ndn {
  * The CertificateStorage class stores trusted anchors and has a verified
  * certificate cache, and an unverified certificate cache.
  */
-class CertificateStorage {
+class ndn_ind_dll CertificateStorage {
 public:
   CertificateStorage()
   : verifiedCertificateCache_(std::chrono::hours(1)),

@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/registration-options.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2019-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -33,7 +45,7 @@ namespace ndn {
  * format of the registration command is changed.
  * (This class was renamed from ForwardingFlags, which is deprecated.)
  */
-class RegistrationOptions {
+class ndn_ind_dll RegistrationOptions {
 public:
   /**
    * Create a new RegistrationOptions with "childInherit" set and all other

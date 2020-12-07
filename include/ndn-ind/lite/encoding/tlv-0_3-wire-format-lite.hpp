@@ -3,6 +3,18 @@
  * Copyright (C) 2020 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/lite/encoding/tlv-0_3-wire-format-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -38,7 +50,7 @@ namespace ndn {
  * A Tlv0_3WireFormatLite implements implement encoding and decoding using
  * NDN-TLV version 0.3.
  */
-class Tlv0_3WireFormatLite {
+class ndn_ind_dll Tlv0_3WireFormatLite {
 public:
   /**
    * Encode name as NDN-TLV.

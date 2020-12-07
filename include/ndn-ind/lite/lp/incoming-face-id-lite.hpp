@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/lite/lp/incoming-face-id-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2016-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx fields.hpp https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/lp/fields.hpp
@@ -34,7 +46,7 @@ class LpPacketLite;
  * packet.
  * http://redmine.named-data.net/projects/nfd/wiki/NDNLPv2
  */
-class IncomingFaceIdLite : private ndn_IncomingFaceId {
+class ndn_ind_dll IncomingFaceIdLite : private ndn_IncomingFaceId {
 public:
   /**
    * Create a IncomingFaceIdLite where all the values are unspecified.

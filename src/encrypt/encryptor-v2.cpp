@@ -52,6 +52,10 @@ INIT_LOGGER("ndn.EncryptorV2");
 
 namespace ndn {
 
+ndn_ind_dll const std::chrono::nanoseconds RETRY_DELAY_AFTER_NACK = std::chrono::seconds(1);
+ndn_ind_dll const std::chrono::nanoseconds RETRY_DELAY_KEK_RETRIEVAL = std::chrono::minutes(1);
+ndn_ind_dll const std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD = std::chrono::hours(1);
+
 void
 EncryptorV2::encrypt
   (const ptr_lib::shared_ptr<Interest>& interest,

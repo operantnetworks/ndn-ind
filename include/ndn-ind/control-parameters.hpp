@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/control-parameters.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -49,7 +49,7 @@ namespace ndn {
  * ControlParameters which is used, for example, in the command interest to
  * register a prefix with a forwarder.
  */
-class ControlParameters {
+class ndn_ind_dll ControlParameters {
 public:
   ControlParameters()
   : hasName_(false), faceId_(-1), localControlFeature_(-1), origin_(-1), cost_(-1),
