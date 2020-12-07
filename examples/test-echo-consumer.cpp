@@ -33,7 +33,11 @@
 
 #include <cstdlib>
 #include <iostream>
+#if NDN_IND_HAVE_UNISTD_H
 #include <unistd.h>
+#elif defined(_WIN32)
+#include "windows.h"
+#endif
 #include <ndn-ind/face.hpp>
 
 using namespace std;
@@ -91,7 +95,11 @@ int main(int argc, char** argv)
     while (counter.callbackCount_ < 1) {
       face.processEvents();
       // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
+#if NDN_IND_HAVE_UNISTD_H
       usleep(10000);
+#elif defined(_WIN32)
+      Sleep(10);
+#endif
     }
   } catch (std::exception& e) {
     cout << "exception: " << e.what() << endl;
