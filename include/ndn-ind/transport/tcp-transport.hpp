@@ -8,7 +8,7 @@
  * Original file: include/ndn-ind/transport/tcp-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets.
+ * Summary of Changes: Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -48,7 +48,7 @@ class DynamicUInt8Vector;
  * TcpTransport extends the Transport interface to implement communication over
  * TCP.
  */
-class TcpTransport : public Transport {
+class ndn_ind_dll TcpTransport : public Transport {
 public:
   /**
    * A TcpTransport::ConnectionInfo extends Transport::ConnectionInfo to hold

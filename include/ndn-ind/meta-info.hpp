@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/meta-info.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -44,7 +44,7 @@ namespace ndn {
 /**
  * A MetaInfo holds the meta info which is signed inside the data packet.
  */
-class MetaInfo {
+class ndn_ind_dll MetaInfo {
 public:
   MetaInfo()
   : timestamp_(std::chrono::milliseconds(-1)), changeCount_(0)

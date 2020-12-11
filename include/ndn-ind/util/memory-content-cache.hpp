@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/util/memory-content-cache.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -47,7 +47,7 @@ namespace ndn {
  * @note This class is an experimental feature.  See the API docs for more detail at
  * http://named-data.net/doc/ndn-ccl-api/memory-content-cache.html .
  */
-class MemoryContentCache {
+class ndn_ind_dll MemoryContentCache {
 public:
   /**
    * Create a new MemoryContentCache to use the given Face.

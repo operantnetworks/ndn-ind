@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/sync/chrono-sync2013.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -56,7 +56,7 @@ class DigestTree;
  * See the API docs for more detail at
  * http://named-data.net/doc/ndn-ccl-api/chrono-sync2013.html .
  */
-class ChronoSync2013 {
+class ndn_ind_dll ChronoSync2013 {
 public:
   class SyncState;
   typedef func_lib::function<void

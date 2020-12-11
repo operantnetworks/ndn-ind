@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/v2/trust-anchor-group.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -40,7 +40,7 @@
 
 namespace ndn {
 
-class CertificateContainerInterface
+class ndn_ind_dll CertificateContainerInterface
 {
 public:
   virtual
@@ -66,7 +66,7 @@ public:
  * TrustAnchorGroup represents a group of trust anchors which implement the
  * CertificateContainerInterface.
  */
-class TrustAnchorGroup
+class ndn_ind_dll TrustAnchorGroup
 {
 public:
   /**
@@ -128,7 +128,7 @@ private:
  * The StaticTrustAnchorGroup class extends TrustAnchorGroup to implement a
  * static trust anchor group.
  */
-class StaticTrustAnchorGroup : public TrustAnchorGroup {
+class ndn_ind_dll StaticTrustAnchorGroup : public TrustAnchorGroup {
 public:
   StaticTrustAnchorGroup
     (CertificateContainerInterface& certificateContainer, const std::string& id)
@@ -156,7 +156,7 @@ public:
  * The DynamicTrustAnchorGroup class extends TrustAnchorGroup to implement a
  * dynamic trust anchor group.
  */
-class DynamicTrustAnchorGroup : public TrustAnchorGroup {
+class ndn_ind_dll DynamicTrustAnchorGroup : public TrustAnchorGroup {
 public:
   /**
    * Create a dynamic trust anchor group.

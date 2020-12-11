@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use NDN_IND macros. Add support functions for std::chrono. Remove ndnboost.
+ *   Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -99,7 +100,7 @@ namespace ndn {
  * @param arrayLength The number of bytes in array.
  * @param result The output stream to write to.
  */
-void
+ndn_ind_dll void
 toHex(const uint8_t* array, size_t arrayLength, std::ostringstream& result);
 
 /**
@@ -119,7 +120,7 @@ toHex(const std::vector<uint8_t>& array, std::ostringstream& result)
  * @param arrayLength The number of bytes in array.
  * @return The hex string.
  */
-std::string
+ndn_ind_dll std::string
 toHex(const uint8_t* array, size_t arrayLength);
 
 /**
@@ -137,7 +138,7 @@ toHex(const std::vector<uint8_t>& array)
  * Modify str in place to erase whitespace on the left and right.
  * @param str The string to modify.
  */
-void
+ndn_ind_dll void
 ndn_trim(std::string& str);
 
 /**
@@ -146,7 +147,7 @@ ndn_trim(std::string& str);
  * @param s2 The second string to compare.
  * @return True if the strings are equal, ignoring case.
  */
-bool
+ndn_ind_dll bool
 equalsIgnoreCase(const std::string& s1, const std::string& s2);
 
 /**
@@ -214,7 +215,7 @@ fromMilliseconds(double ms)
  * fraction.
  * @return The ISO string.
  */
-std::string
+ndn_ind_dll std::string
 toIsoString(std::chrono::system_clock::time_point time, bool includeFraction = false);
 
 /**
@@ -223,7 +224,7 @@ toIsoString(std::chrono::system_clock::time_point time, bool includeFraction = f
  * @return The time.
  * @throws runtime_error for error parsing the isoString.
  */
-std::chrono::system_clock::time_point
+ndn_ind_dll std::chrono::system_clock::time_point
 fromIsoString(const std::string& isoString);
 
 }

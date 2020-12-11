@@ -7,7 +7,7 @@
  * Original file: src/c/transport/socket-transport.h
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes. Add readRawPackets.
+ * Summary of Changes: Use ndn-ind includes. Add readRawPackets. Support WinSock2.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -68,7 +68,12 @@ static __inline void ndn_SocketTransport_initialize
   (struct ndn_SocketTransport *self, struct ndn_DynamicUInt8Array *buffer,
    int readRawPackets)
 {
+#if defined(_WIN32)
+  self->socketDescriptor = INVALID_SOCKET;
+#else
   self->socketDescriptor = -1;
+#endif
+
   ndn_ElementReader_initialize(&self->elementReader, 0, buffer, readRawPackets);
 }
 

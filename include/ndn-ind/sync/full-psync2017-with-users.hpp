@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/sync/full-psync2017-with-users.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -58,7 +58,7 @@ class PSyncUserPrefixes;
  * the class actually handles both producing and consuming, we omit "producer"
  * in the name to avoid confusion.)
  */
-class FullPSync2017WithUsers {
+class ndn_ind_dll FullPSync2017WithUsers {
 public:
   typedef func_lib::function<void
     (const ptr_lib::shared_ptr<std::vector<ptr_lib::shared_ptr<PSyncMissingDataInfo>>>& updates)> OnUpdate;

@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/util/signed-blob.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -43,7 +43,7 @@ namespace ndn {
 /**
  * A SignedBlob extends Blob to keep the offsets of a signed portion (e.g., the bytes of Data packet).
  */
-class SignedBlob : public Blob {
+class ndn_ind_dll SignedBlob : public Blob {
 public:
   /**
    * Create a new SignedBlob with a null pointer.

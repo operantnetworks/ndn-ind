@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/sync/psync-producer-base.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -46,7 +46,7 @@ class InvertibleBloomLookupTable;
  * PSyncProducerBase is a base class for PsyncPartialProducer::Impl and
  * FullPSync2017::Impl.
  */
-class PSyncProducerBase : public ptr_lib::enable_shared_from_this<PSyncProducerBase> {
+class ndn_ind_dll PSyncProducerBase : public ptr_lib::enable_shared_from_this<PSyncProducerBase> {
 protected:
   /**
    * Create a PSyncProducerBase.

@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/lite/util/dynamic-uint8-array-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Remove unused transports.
+ * Summary of Changes: Remove unused transports. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -44,7 +44,7 @@ namespace ndn {
  * the allocated array, and an optional realloc function which can changes its
  * size.
  */
-class DynamicUInt8ArrayLite : private ndn_DynamicUInt8Array {
+class ndn_ind_dll DynamicUInt8ArrayLite : private ndn_DynamicUInt8Array {
 public:
   /**
    * Create a DynamicUInt8ArrayLite with the given array buffer.

@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/v2/trust-anchor-container.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -59,7 +59,7 @@ namespace ndn {
  * be valid until the next invocation of `find` and may be invalidated
  * afterwards.
  */
-class TrustAnchorContainer {
+class ndn_ind_dll TrustAnchorContainer {
 public:
   class Error : public std::runtime_error
   {

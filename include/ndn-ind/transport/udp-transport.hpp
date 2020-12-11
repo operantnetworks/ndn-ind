@@ -8,7 +8,7 @@
  * Original file: include/ndn-ind/transport/udp-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets.
+ * Summary of Changes: Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -48,7 +48,7 @@ class DynamicUInt8Vector;
  * UdpTransport extends the Transport interface to implement communication over
  * UDP.
  */
-class UdpTransport : public Transport {
+class ndn_ind_dll UdpTransport : public Transport {
 public:
   /**
    * A UdpTransport::ConnectionInfo extends Transport::ConnectionInfo to hold

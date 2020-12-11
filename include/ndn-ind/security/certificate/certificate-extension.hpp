@@ -34,7 +34,7 @@ class DerNode;
 /**
  * A CertificateExtension represents the Extension entry in a certificate.
  */
-class CertificateExtension
+class ndn_ind_dll CertificateExtension
 {
 public:
   /**

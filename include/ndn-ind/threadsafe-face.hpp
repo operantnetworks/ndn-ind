@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/threadsafe-face.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -50,7 +50,7 @@ namespace ndn {
  * which you want the library to call communication callbacks such as onData and
  * onInterest. For usage, see the example test-get-async-threadsafe.cpp.
  */
-class ThreadsafeFace : public Face {
+class ndn_ind_dll ThreadsafeFace : public Face {
 public:
   /**
    * Create a new Face for communication with an NDN hub with the given

@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/v2/certificate-cache-v2.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -47,7 +47,7 @@ namespace ndn {
  * format CertificateV2. A certificate is removed no later than its NotAfter
  * time, or maxLifetime after it has been added to the cache.
  */
-class CertificateCacheV2 {
+class ndn_ind_dll CertificateCacheV2 {
 public:
   /**
    * Create a CertificateCacheV2.

@@ -8,7 +8,7 @@
  * Original file: include/ndn-ind/lite/transport/udp-transport-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets.
+ * Summary of Changes: Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -45,7 +45,7 @@ namespace ndn {
  * A UdpTransportLite object is used to send packets and to listen for incoming
  * packets over a UDP socket. See connect() and processEvents() for more details.
  */
-class UdpTransportLite : private ndn_UdpTransport {
+class ndn_ind_dll UdpTransportLite : private ndn_UdpTransport {
 public:
   /**
    * Create a UdpTransport with default values for no connection yet and to use

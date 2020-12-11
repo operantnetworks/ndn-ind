@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cxx
  *
  * Summary of Changes: Conditional compile on NDN_IND_HAVE_BOOST_ASIO. Added ScopedCancelHandle.
+ *   Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -38,6 +39,7 @@
 #ifndef NDN_DETAIL_CANCEL_HANDLE_HPP
 #define NDN_DETAIL_CANCEL_HANDLE_HPP
 
+#include "../../c/common.h"
 #include <functional>
 
 namespace ndn {
@@ -45,7 +47,7 @@ namespace scheduler {
 
 /** \brief Handle to cancel an operation.
  */
-class CancelHandle
+class ndn_ind_dll CancelHandle
 {
 public:
   CancelHandle() noexcept = default;
@@ -64,7 +66,7 @@ private:
 
 /** \brief Cancels an operation automatically upon destruction.
  */
-class ScopedCancelHandle
+class ndn_ind_dll ScopedCancelHandle
 {
 public:
   ScopedCancelHandle() noexcept = default;

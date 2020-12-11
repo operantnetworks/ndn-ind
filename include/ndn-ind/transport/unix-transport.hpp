@@ -8,7 +8,7 @@
  * Original file: include/ndn-ind/transport/unix-transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Add readRawPackets.
+ * Summary of Changes: Add readRawPackets. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -34,6 +34,10 @@
 #ifndef NDN_UNIX_TRANSPORT_HPP
 #define NDN_UNIX_TRANSPORT_HPP
 
+ // Only compile if we have Unix socket support.
+#include <ndn-ind/ndn-ind-config.h>
+#if NDN_IND_HAVE_UNISTD_H
+
 #include <string>
 #include "../common.hpp"
 #include "transport.hpp"
@@ -48,7 +52,7 @@ class DynamicUInt8Vector;
  * UnixTransport extends the Transport interface to implement communication over
  * a Unix socket.
  */
-class UnixTransport : public Transport {
+class ndn_ind_dll UnixTransport : public Transport {
 public:
   /**
    * A UnixTransport::ConnectionInfo extends Transport::ConnectionInfo to hold
@@ -155,5 +159,7 @@ private:
 };
 
 }
+
+#endif // NDN_IND_HAVE_UNISTD_H
 
 #endif

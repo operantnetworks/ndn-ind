@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/interest.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -52,7 +52,7 @@ class Data;
 /**
  * An Interest holds a Name and other fields for an interest.
  */
-class Interest {
+class ndn_ind_dll Interest {
 public:
   /**
    * Create a new Interest with the given name and interest lifetime and "none" for other values.

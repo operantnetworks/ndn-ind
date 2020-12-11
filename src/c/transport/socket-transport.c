@@ -7,7 +7,7 @@
  * Original file: src/c/transport/socket-transport.c
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Support WinSock2.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -30,12 +30,13 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
-// Only compile if we have Unix socket support.
+// Only compile if we have Unix or Windows socket support.
 #include <ndn-ind/ndn-ind-config.h>
-#if NDN_IND_HAVE_UNISTD_H
+#if NDN_IND_HAVE_UNISTD_H || defined(_WIN32)
 
 #include <stdio.h>
 #include <stdlib.h>
+#if NDN_IND_HAVE_UNISTD_H
 #include <unistd.h>
 #include <netdb.h>
 #include <sys/types.h>
@@ -44,6 +45,10 @@
 #include <sys/un.h>
 #include <arpa/inet.h>
 #include <poll.h>
+#endif
+#if defined(_WIN32)
+#include <ws2tcpip.h>
+#endif
 #include "../util/ndn_memory.h"
 #include "socket-transport.h"
 #include <errno.h>
@@ -53,15 +58,40 @@
 	(sizeof(*(su)) - sizeof((su)->sun_path) + strlen((su)->sun_path))
 #endif
 
+/**
+ * Check if sock is a valid socket. We need this utility function to handle
+ * Windows and non-Windows error codes.
+ * @param sock The socket descriptor to check.
+ * @return True if sock is valid.
+ */
+static int
+#if defined(_WIN32)
+isValidSocket(SOCKET sock) { return sock != INVALID_SOCKET; }
+#else
+isValidSocket(int sock) { return sock >= 0; }
+#endif
+
+#if defined(_WIN32)
+static int DidWSAStartup = 0;
+#endif
+
 ndn_Error ndn_SocketTransport_connect
   (struct ndn_SocketTransport *self, ndn_SocketType socketType, const char *host,
    unsigned short port, struct ndn_ElementListener *elementListener)
 {
+#if defined(_WIN32)
+  // See: https://docs.microsoft.com/en-us/windows/win32/winsock/complete-client-code
+  SOCKET socketDescriptor = INVALID_SOCKET;
+#else
   int socketDescriptor;
+#endif
 
   ndn_ElementReader_reset(&self->elementReader, elementListener);
 
   if (socketType == SOCKET_UNIX) {
+#if defined(_WIN32)
+    return NDN_ERROR_unrecognized_ndn_SocketTransport;
+#else
     struct sockaddr_un address;
     memset(&address, 0, sizeof(struct sockaddr_un));
 
@@ -75,6 +105,7 @@ ndn_Error ndn_SocketTransport_connect
       close(socketDescriptor);
       return NDN_ERROR_SocketTransport_cannot_connect_to_socket;
     }
+#endif
   }
   else {
     struct addrinfo hints;
@@ -82,10 +113,24 @@ ndn_Error ndn_SocketTransport_connect
     struct addrinfo *serverInfo;
     struct addrinfo *p;
 
-    if (self->socketDescriptor >= 0) {
+    if (isValidSocket(self->socketDescriptor)) {
+#if defined(_WIN32)
+      closesocket(self->socketDescriptor);
+      self->socketDescriptor = INVALID_SOCKET;
+#else
       close(self->socketDescriptor);
       self->socketDescriptor = -1;
+#endif
     }
+
+#if defined(_WIN32)
+    if (!DidWSAStartup){
+      WSADATA wsaData;
+      DidWSAStartup = 1;
+      if (WSAStartup(MAKEWORD(2, 0), &wsaData) != 0)
+        return NDN_ERROR_SocketTransport_cannot_connect_to_socket;
+    }
+#endif
 
     ndn_memset((uint8_t *)&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
@@ -103,11 +148,16 @@ ndn_Error ndn_SocketTransport_connect
 
     // loop through all the results and connect to the first we can
     for(p = serverInfo; p != NULL; p = p->ai_next) {
-      if ((socketDescriptor = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
+      socketDescriptor = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+      if (!isValidSocket(socketDescriptor))
         continue;
 
-      if (connect(socketDescriptor, p->ai_addr, p->ai_addrlen) == -1) {
+      if (!isValidSocket(connect(socketDescriptor, p->ai_addr, p->ai_addrlen))) {
+#if defined(_WIN32)
+        closesocket(socketDescriptor);
+#else
         close(socketDescriptor);
+#endif
         continue;
       }
 
@@ -128,7 +178,7 @@ ndn_Error ndn_SocketTransport_connect
 
 ndn_Error ndn_SocketTransport_send(struct ndn_SocketTransport *self, const uint8_t *data, size_t dataLength)
 {
-  if (self->socketDescriptor < 0)
+  if (!isValidSocket(self->socketDescriptor))
     return NDN_ERROR_SocketTransport_socket_is_not_open;
 
   int nBytes;
@@ -147,26 +197,42 @@ ndn_Error ndn_SocketTransport_send(struct ndn_SocketTransport *self, const uint8
 
 ndn_Error ndn_SocketTransport_receiveIsReady(struct ndn_SocketTransport *self, int *receiveIsReady)
 {
+  int pollResult;
+#if defined(_WIN32)
+  // See: https://github.com/microsoft/Windows-classic-samples/blob/master/Samples/Win7Samples/netds/winsock/wsapoll/poll.cpp
+  WSAPOLLFD pollInfo = { 0 };
+#else
+  struct pollfd pollInfo[1];
+#endif
+
   // Default to not ready.
   *receiveIsReady = 0;
 
-  if (self->socketDescriptor < 0)
+  if (!isValidSocket(self->socketDescriptor))
     // The socket is not open.  Just silently return.
     return NDN_ERROR_success;
 
-  struct pollfd pollInfo[1];
+#if defined(_WIN32)
+  pollInfo.fd = self->socketDescriptor;
+  pollInfo.events = POLLRDNORM;
+  pollResult = WSAPoll(&pollInfo, 1, 0);
+#else
   pollInfo[0].fd = self->socketDescriptor;
   pollInfo[0].events = POLLIN;
+  pollResult = poll(pollInfo, 1, 0);
+#endif
 
-  int pollResult = poll(pollInfo, 1, 0);
-
-  if (pollResult < 0)
+  if (!isValidSocket(pollResult))
     return NDN_ERROR_SocketTransport_error_in_poll;
   else if (pollResult == 0)
     // Timeout, so no data ready.
     return NDN_ERROR_success;
   else {
+#if defined(_WIN32)
+   if (pollInfo.revents & POLLRDNORM)
+#else
    if (pollInfo[0].revents & POLLIN)
+#endif
      *receiveIsReady = 1;
   }
 
@@ -176,7 +242,7 @@ ndn_Error ndn_SocketTransport_receiveIsReady(struct ndn_SocketTransport *self, i
 ndn_Error ndn_SocketTransport_receive
   (struct ndn_SocketTransport *self, uint8_t *buffer, size_t bufferLength, size_t *nBytesOut)
 {
-  if (self->socketDescriptor < 0)
+  if (!isValidSocket(self->socketDescriptor))
     return NDN_ERROR_SocketTransport_socket_is_not_open;
 
   int nBytes;
@@ -217,14 +283,19 @@ ndn_SocketTransport_processEvents
 
 ndn_Error ndn_SocketTransport_close(struct ndn_SocketTransport *self)
 {
-  if (self->socketDescriptor < 0)
+  if (!isValidSocket(self->socketDescriptor))
     // Already closed.  Do nothing.
     return NDN_ERROR_success;
 
+#if defined(_WIN32)
+  closesocket(self->socketDescriptor);
+  self->socketDescriptor = INVALID_SOCKET;
+#else
   if (close(self->socketDescriptor) != 0)
     return NDN_ERROR_SocketTransport_error_in_close;
 
   self->socketDescriptor = -1;
+#endif
 
   return NDN_ERROR_success;
 }

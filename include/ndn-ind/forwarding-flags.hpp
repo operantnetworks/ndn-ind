@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/forwarding-flags.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -41,7 +41,7 @@ namespace ndn {
 /**
  * @deprecated Use RegistrationOptions.
  */
-class ForwardingFlags : public RegistrationOptions {
+class ndn_ind_dll ForwardingFlags : public RegistrationOptions {
 public:
   /**
    * Create a new ForwardingFlags with "childInherit" set and all other flags cleared.

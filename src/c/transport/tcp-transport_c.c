@@ -7,7 +7,7 @@
  * Original file: src/c/transport/socket-transport_c.c
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Support WinSock2.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -81,5 +81,18 @@ ndn_TcpTransport_isLocal(const char *host, int *result)
   freeaddrinfo(serverInfo);
   return NDN_ERROR_success;
 }
+
+#else
+
+#if defined(_WIN32)
+#include "tcp-transport.h"
+ndn_Error
+ndn_TcpTransport_isLocal(const char* host, int* result)
+{
+  // Assume that NFD is not running on the Windows machine, so not local.
+  *result = 0;
+  return NDN_ERROR_success;
+}
+#endif
 
 #endif // NDN_IND_HAVE_UNISTD_H

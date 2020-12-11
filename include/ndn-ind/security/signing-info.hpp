@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/security/signing-info.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2017-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx security https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/security/signing-info.hpp
@@ -36,7 +48,7 @@ namespace ndn {
  * SigningInfo is invalid if the specified identity/key/certificate does not
  * exist, or the PibIdentity or PibKey instance is not valid.
  */
-class SigningInfo {
+class ndn_ind_dll SigningInfo {
 public:
   enum SignerType {
     /** No signer is specified. Use default settings or follow the trust schema. */

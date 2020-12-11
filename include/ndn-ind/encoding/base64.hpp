@@ -8,7 +8,7 @@
  * Original file: src/encoding/base64.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -48,7 +48,7 @@ namespace ndn {
  * writing to a file).  If omitted, do not add newlines.
  * @return The base64 string.
  */
-std::string
+ndn_ind_dll std::string
 toBase64(const uint8_t* array, size_t arrayLength, bool addNewlines = false);
 
 /**
@@ -70,7 +70,7 @@ toBase64(const std::vector<uint8_t>& array, bool addNewlines = false)
  * @param output Write the result to output starting at index 0, calling
  * output.resize() as needed.
  */
-void
+ndn_ind_dll void
 fromBase64(const std::string& input, std::vector<uint8_t>& output);
 
 

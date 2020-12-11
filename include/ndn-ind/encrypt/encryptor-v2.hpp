@@ -9,7 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use std::chrono. Support ChaCha20-Ploy1305, GCK,
- *   encrypted Interest.
+ *   encrypted Interest. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -49,16 +49,16 @@ class TestEncryptorV2_EnumerateDataFromInMemoryStorage_Test;
 
 namespace ndn {
 
-const std::chrono::nanoseconds RETRY_DELAY_AFTER_NACK = std::chrono::seconds(1);
-const std::chrono::nanoseconds RETRY_DELAY_KEK_RETRIEVAL = std::chrono::minutes(1);
-const std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD = std::chrono::hours(1);
+ndn_ind_dll extern const std::chrono::nanoseconds RETRY_DELAY_AFTER_NACK;
+ndn_ind_dll extern const std::chrono::nanoseconds RETRY_DELAY_KEK_RETRIEVAL;
+ndn_ind_dll extern const std::chrono::nanoseconds DEFAULT_CK_FRESHNESS_PERIOD;
 
 /**
  * EncryptorV2 encrypts the requested content for name-based access control (NAC)
  * using security v2. For the meaning of "KEK", etc. see:
  * https://github.com/named-data/name-based-access-control/blob/new/docs/spec.rst
  */
-class EncryptorV2 {
+class ndn_ind_dll EncryptorV2 {
 public:
   typedef func_lib::function<void
     (const ptr_lib::shared_ptr<EncryptedContent>& encryptedContent)> OnEncryptSuccess;

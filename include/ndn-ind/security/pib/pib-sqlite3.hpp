@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/pib/pib-sqlite3.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -54,7 +54,7 @@ namespace ndn {
  * in an SQLite3 database file. This provides more persistent storage than
  * PibMemory.
  */
-class PibSqlite3 : public PibImpl {
+class ndn_ind_dll PibSqlite3 : public PibImpl {
 public:
   /**
    * Create a new PibSqlite3 to work with an SQLite3 file. This assumes that the

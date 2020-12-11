@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/lite/meta-info-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2015-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -31,7 +43,7 @@ namespace ndn {
  * A MetaInfoLite holds a type and other info to represent the meta info of a
  * Data packet.
  */
-class MetaInfoLite : private ndn_MetaInfo {
+class ndn_ind_dll MetaInfoLite : private ndn_MetaInfo {
 public:
   /**
    * Create a MetaInfoLite with default field values.

@@ -32,7 +32,12 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
+#if defined(_WIN32)
+#include <windows.h>
+#include <codecvt>
+#else
 #include <dirent.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fstream>
@@ -138,6 +143,37 @@ DynamicTrustAnchorGroup::refresh()
   if (!isDirectory_)
     loadCertificate(path_, oldAnchorNames);
   else {
+#if defined(_WIN32)
+    // FindFirstFile requires the search wildcard.
+    string findPath = path_ + "/*";
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFile
+      (wstring(findPath.begin(), findPath.end()).c_str(), &findFileData);
+
+    if (hFind == INVALID_HANDLE_VALUE) {
+      _LOG_ERROR("DynamicTrustAnchorGroup::refresh: Error in FindFirstFile");
+      return;
+    }
+
+    wstring_convert<codecvt_utf8<wchar_t>, wchar_t> converter;
+    do {
+      if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        // Ignore directories.
+        continue;
+
+      // Convert WCHAR* to string.
+      string fileName = converter.to_bytes(findFileData.cFileName);
+      string filePath = path_ + '/' + fileName;
+      loadCertificate(filePath, oldAnchorNames);
+    } while (FindNextFile(hFind, &findFileData) != 0);
+
+    if (GetLastError() != ERROR_NO_MORE_FILES) {
+      _LOG_ERROR("DynamicTrustAnchorGroup::refresh: Error in FindNextFile");
+      return;
+    }
+
+    FindClose(hFind);
+#else
     DIR *directory = ::opendir(path_.c_str());
     if (directory != NULL) {
       struct dirent *entry;
@@ -152,6 +188,7 @@ DynamicTrustAnchorGroup::refresh()
 
       ::closedir(directory);
     }
+#endif
   }
 
   // Remove old certificates.

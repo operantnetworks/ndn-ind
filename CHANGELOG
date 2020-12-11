@@ -1,4 +1,4 @@
-NDN-IND (2020-11-19)
+NDN-IND (2020-12-08)
 --------------------
 
 Changes
@@ -24,6 +24,7 @@ Changes
 * In Transport, added readRawPackets to handle raw packets. https://github.com/operantnetworks/ndn-ind/pull/16
 * In examples and unit tests, use the default Face which doesn't require TCP.
 * Move the instructions for RHEL 7 to the wiki.
+* Add support for Visual Studio. https://github.com/operantnetworks/ndn-ind/pull/17
 
 Bug fixes
 * In expressInterest, use the nonce in the Interest if provided.

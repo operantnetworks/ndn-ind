@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/lite/network-nack-lite.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2016-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx nack.hpp https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/lp/nack.hpp
@@ -32,7 +44,7 @@ class LpPacketLite;
 /**
  * NetworkNackLite represents a network Nack packet and includes a Nack reason.
  */
-class NetworkNackLite : private ndn_NetworkNack {
+class ndn_ind_dll NetworkNackLite : private ndn_NetworkNack {
 public:
   /**
    * Create a NetworkNackLite where all the values are unspecified.

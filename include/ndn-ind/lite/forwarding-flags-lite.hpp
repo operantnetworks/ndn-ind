@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/lite/forwarding-flags-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -41,7 +41,7 @@ namespace ndn {
 /**
  * @deprecated Use RegistrationOptionsLite.
  */
-class ForwardingFlagsLite : public RegistrationOptionsLite {
+class ndn_ind_dll ForwardingFlagsLite : public RegistrationOptionsLite {
 public:
   /**
    * Create a ForwardingFlagsLite with "childInherit" set and all other flags

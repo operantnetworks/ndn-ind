@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/encoding/wire-format.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Remove unused methods.
+ * Summary of Changes: Remove unused methods. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -48,7 +48,7 @@ class Signature;
 class DelegationSet;
 class EncryptedContent;
 
-class WireFormat {
+class ndn_ind_dll WireFormat {
 public:
   /**
    * Encode name and return the encoding. Your derived class should override.

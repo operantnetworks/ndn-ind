@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cxx
  *
  * Summary of Changes: Conditional compile on NDN_IND_HAVE_BOOST_ASIO. Use base class MonotonicSteadyClock.
+ *   Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -45,7 +46,7 @@
 namespace ndn {
 namespace scheduler {
 
-class SteadyTimer : public boost::asio::basic_waitable_timer<MonotonicSteadyClock>
+class ndn_ind_dll SteadyTimer : public boost::asio::basic_waitable_timer<MonotonicSteadyClock>
 {
 public:
   using boost::asio::basic_waitable_timer<MonotonicSteadyClock>::basic_waitable_timer;

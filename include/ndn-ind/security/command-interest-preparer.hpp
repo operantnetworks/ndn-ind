@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/command-interest-preparer.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -48,7 +48,7 @@ namespace ndn {
  * documentation:
  * https://redmine.named-data.net/projects/ndn-cxx/wiki/CommandInterest
  */
-class CommandInterestPreparer {
+class ndn_ind_dll CommandInterestPreparer {
 public:
   /**
    * Create a CommandInterestPreparer and initialize the timestamp to now.

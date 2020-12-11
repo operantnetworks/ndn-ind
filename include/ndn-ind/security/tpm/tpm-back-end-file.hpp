@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/security/tpm/tpm-back-end-file.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2017-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx security https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/security/tpm/back-end-file.hpp
@@ -35,7 +47,7 @@ class TpmPrivateKey;
  * file with permission 0400, i.e., owner read-only.  The key is stored in
  * PKCS #1 format in base64 encoding.
  */
-class TpmBackEndFile : public TpmBackEnd {
+class ndn_ind_dll TpmBackEndFile : public TpmBackEnd {
 public:
   /**
    * A TpmBackEndFile::Error extends TpmBackEnd::Error and represents a

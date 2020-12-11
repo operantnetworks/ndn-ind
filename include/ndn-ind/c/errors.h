@@ -22,6 +22,8 @@
 #ifndef NDN_ERRORS_H
 #define NDN_ERRORS_H
 
+#include "common.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -95,7 +97,7 @@ typedef enum {
  * @param error the error code
  * @return the error string or "unrecognized ndn_Error code"
  */
-const char *
+ndn_ind_dll const char *
 ndn_getErrorString(int error);
 
 #ifdef __cplusplus

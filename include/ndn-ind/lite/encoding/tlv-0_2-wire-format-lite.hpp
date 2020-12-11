@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/lite/encoding/tlv-0_2-wire-format-lite.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Remove unused methods.
+ * Summary of Changes: Remove unused methods. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -43,7 +43,7 @@ namespace ndn {
  * NDN-TLV version 0.2. These methods call the ones for version version 0.3
  * except where the format is different for version 0.2.
  */
-class Tlv0_2WireFormatLite {
+class ndn_ind_dll Tlv0_2WireFormatLite {
 public:
   /**
    * Encode name as NDN-TLV.

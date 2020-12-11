@@ -10,6 +10,11 @@
 bin/*
 libs/*
 .libs/*
+VisualStudio/ndn-ind/.vs/*
+VisualStudio/ndn-ind/x64/*
+VisualStudio/example/.vs/*
+VisualStudio/example/x64/*
+*.user
 
 # Emacs temp files
 *~

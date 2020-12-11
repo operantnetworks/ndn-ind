@@ -7,7 +7,7 @@
  * Original file: include/ndn-cpp/c/common.h
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -36,6 +36,16 @@
 #include "../ndn-ind-config.h"
 #include <stdint.h>
 #include <stddef.h>
+
+#if defined(_WIN32)
+  #ifdef NDN_IND_EXPORTS
+    #define ndn_ind_dll __declspec(dllexport)
+  #else
+    #define ndn_ind_dll __declspec(dllimport)
+  #endif
+#else
+  #define ndn_ind_dll
+#endif
 
 #if NDN_IND_HAVE_ATTRIBUTE_DEPRECATED
   #define DEPRECATED_IN_NDN_IND __attribute__((deprecated))
@@ -66,7 +76,7 @@ typedef double ndn_MillisecondsSince1970;
  * @return The current time in milliseconds since 1/1/1970 UTC, including
  * fractions of a millisecond (according to timeval.tv_usec).
  */
-ndn_MillisecondsSince1970
+ndn_ind_dll ndn_MillisecondsSince1970
 ndn_getNowMilliseconds();
 
 /**
@@ -76,62 +86,62 @@ ndn_getNowMilliseconds();
  * applications should use the static inline API method
  * Face::getMaxNdnPacketSize() which is equivalent.
  */
-static const size_t MAX_NDN_PACKET_SIZE = 8800;
+enum { MAX_NDN_PACKET_SIZE = 8800 };
 
 /**
  * The size in bytes of a SHA-256 digest. We define this separately so that we
  * don't have to include the openssl header everywhere.
  */
-static const size_t ndn_SHA256_DIGEST_SIZE = 32;
+enum { ndn_SHA256_DIGEST_SIZE = 32 };
 
 /**
  * The block size in bytes for the AES algorithm. We define this separately
  * so that we don't have to include the openssl header everywhere.
  */
-static const size_t ndn_AES_BLOCK_LENGTH = 16;
+enum { ndn_AES_BLOCK_LENGTH = 16 };
 
 /**
  * The key size in bytes for the AES 128 algorithm. We define this separately
  * so that we don't have to include the openssl header everywhere.
  */
-static const size_t ndn_AES_128_KEY_LENGTH = 16;
+enum { ndn_AES_128_KEY_LENGTH = 16 };
 
 /**
  * The key size in bytes for the AES 256 algorithm. We define this separately
  * so that we don't have to include the openssl header everywhere.
  */
-static const size_t ndn_AES_256_KEY_LENGTH = 32;
+enum { ndn_AES_256_KEY_LENGTH = 32 };
 
 /**
  * The key size in bytes for the DES EDE3 algorithm. We define this separately
  * so that we don't have to include the openssl header everywhere.
  */
-static const size_t ndn_DES_EDE3_KEY_LENGTH = 24;
+enum { ndn_DES_EDE3_KEY_LENGTH = 24 };
 
 /**
  * The block size in bytes for the DES algorithm. We define this separately
  * so that we don't have to include the openssl header everywhere.
  */
-static const size_t ndn_DES_BLOCK_LENGTH = 8;
+enum { ndn_DES_BLOCK_LENGTH = 8 };
 
 /**
  * The size in bytes of a Poly1305 block (and of the ChaCha20-Poly1305 tag). We
  * define this separately so that we don't have to include the openssl header
  * everywhere.
  */
-static const size_t ndn_POLY1305_BLOCK_LENGTH = 16;
+enum { ndn_POLY1305_BLOCK_LENGTH = 16 };
 
 /**
  * The key size in bytes for the ChaCha20 algorithm. We define this separately
  * so that we don't have to include the openssl header everywhere.
  */
-static const size_t ndn_CHACHA20_KEY_LENGTH = 32;
+enum { ndn_CHACHA20_KEY_LENGTH = 32 };
 
 /**
  * The key size in bytes for the ChaCha20 nonce. We define this separately
  * so that we don't have to include the openssl header everywhere.
  */
-static const size_t ndn_CHACHA20_NONCE_LENGTH = 12;
+enum { ndn_CHACHA20_NONCE_LENGTH = 12 };
 
 #ifdef __cplusplus
 }

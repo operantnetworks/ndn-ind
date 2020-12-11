@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/exclude.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -42,7 +42,7 @@ namespace ndn {
 /**
  * An Exclude holds a vector of Exclude::Entry.
  */
-class Exclude {
+class ndn_ind_dll Exclude {
 public:
   /**
    * Create a new Exclude with no entries.

@@ -121,7 +121,7 @@ decodeValidityPeriod
   ndn_Error error;
   size_t endOffset;
   // Expect a 15-character ISO string like "20131018T184139".
-  const size_t isoStringMaxLength = 15;
+  enum { isoStringMaxLength = 15 };
   char isoString[isoStringMaxLength + 1];
   struct ndn_Blob isoStringBlob;
 

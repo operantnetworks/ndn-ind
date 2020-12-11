@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/tpm/tpm-key-handle-osx.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -48,7 +48,7 @@ namespace ndn {
  * TpmKeyHandleMemory extends TpmKeyHandle to implement a TPM key handle that
  * uses the macOS Keychain services.
  */
-class TpmKeyHandleOsx : public TpmKeyHandle
+class ndn_ind_dll TpmKeyHandleOsx : public TpmKeyHandle
 {
 public:
   TpmKeyHandleOsx(const KeyRefOsx& key);

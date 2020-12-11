@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use NDN_IND macros. Use std::chrono. Add findParametersSha256Digest.
+ *   Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -49,12 +50,12 @@ namespace ndn {
 /**
  * A Name holds an array of Name::Component and represents an NDN name.
  */
-class Name {
+class ndn_ind_dll Name {
 public:
   /**
    * A Name::Component holds a read-only name component value.
    */
-  class Component {
+  class ndn_ind_dll Component {
   public:
     /**
      * Create a new GENERIC Name::Component with a zero-length value.

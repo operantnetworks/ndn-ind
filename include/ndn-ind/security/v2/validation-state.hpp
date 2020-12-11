@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/security/v2/validation-state.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2017-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  * @author: From ndn-cxx security https://github.com/named-data/ndn-cxx/blob/master/ndn-cxx/security/v2/validation-state.hpp
@@ -77,7 +89,7 @@ typedef func_lib::function<void
  * A validation policy and/or key fetcher may add custom information associated
  * with the validation state using tags.
  */
-class ValidationState {
+class ndn_ind_dll ValidationState {
 public:
   ValidationState()
   : hasOutcome_(false)
@@ -214,7 +226,7 @@ private:
  * The DataValidationState class extends ValidationState to hold the validation
  * state for a Data packet.
  */
-class DataValidationState : public ValidationState {
+class ndn_ind_dll DataValidationState : public ValidationState {
 public:
   /**
    * Create a DataValidationState for the Data packet.
@@ -256,7 +268,7 @@ private:
  * The InterestValidationState class extends ValidationState to hold the
  * validation state for an Interest packet.
  */
-class InterestValidationState : public ValidationState {
+class ndn_ind_dll InterestValidationState : public ValidationState {
 public:
   /**
    * Create an InterestValidationState for the Data packet.

@@ -8,7 +8,7 @@
  * Original file: include/ndn-ind/transport/transport.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Put element-listener.hpp in API.
+ * Summary of Changes: Put element-listener.hpp in API. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -44,7 +44,7 @@ namespace ndn {
  * A Transport object is used by Face to send packets and to listen for incoming
  * packets. See connect() and processEvents() for more details.
  */
-class Transport {
+class ndn_ind_dll Transport {
 public:
   /**
    * A Transport::ConnectionInfo is a base class for connection information used

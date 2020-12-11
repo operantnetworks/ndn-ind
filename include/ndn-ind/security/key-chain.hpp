@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/security/key-chain.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Remove unused methods from security v1.
+ * Summary of Changes: Use NDN_IND macros. Remove unused methods from security v1. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -59,7 +59,7 @@ class ConfigFile;
  * @note This class is an experimental feature.  See the API docs for more detail at
  * http://named-data.net/doc/ndn-ccl-api/key-chain.html .
  */
-class KeyChain {
+class ndn_ind_dll KeyChain {
 public:
   /**
    * A KeyChain::Error extends runtime_error and represents an error in KeyChain

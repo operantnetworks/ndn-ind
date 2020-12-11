@@ -1,5 +1,17 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
+ * Copyright (C) 2020 Operant Networks, Incorporated.
+ * @author: Jeff Thompson <jefft0@gmail.com>
+ *
+ * This works is based substantially on previous work as listed below:
+ *
+ * Original file: include/ndn-cpp/digest-sha256-signature.hpp
+ * Original repository: https://github.com/named-data/ndn-cpp
+ *
+ * Summary of Changes: Support ndn_ind_dll.
+ *
+ * which was originally released under the LGPL license with the following rights:
+ *
  * Copyright (C) 2014-2020 Regents of the University of California.
  * @author: Jeff Thompson <jefft0@remap.ucla.edu>
  *
@@ -31,7 +43,7 @@ namespace ndn {
  * are only the SHA256 digest) and an empty SignatureInfo for a data packet or
  * signed interest.
  */
-class DigestSha256Signature : public Signature {
+class ndn_ind_dll DigestSha256Signature : public Signature {
 public:
   DigestSha256Signature()
   : changeCount_(0)

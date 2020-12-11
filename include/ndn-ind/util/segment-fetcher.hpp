@@ -9,6 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use std::chrono. Remove unused methods from security v1.
+ *   Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -95,7 +96,7 @@ namespace ndn {
  *
  *     SegmentFetcher.fetch(face, interest, 0, onComplete, onError);
  */
-class SegmentFetcher : public ptr_lib::enable_shared_from_this<SegmentFetcher> {
+class ndn_ind_dll SegmentFetcher : public ptr_lib::enable_shared_from_this<SegmentFetcher> {
 public:
   enum ErrorCode {
     INTEREST_TIMEOUT = 1,

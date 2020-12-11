@@ -8,7 +8,7 @@
  * Original file: include/ndn-cpp/util/blob.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros.
+ * Summary of Changes: Use NDN_IND macros. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -51,7 +51,7 @@ namespace ndn {
  * a pointer to it like Blob, but this does not enforce immutability because we can't declare
  * Blob as derived from const vector<uint8_t>.)
  */
-class Blob : public ptr_lib::shared_ptr<const std::vector<uint8_t> > {
+class ndn_ind_dll Blob : public ptr_lib::shared_ptr<const std::vector<uint8_t> > {
 public:
   /**
    * Create a new Blob with a null pointer.

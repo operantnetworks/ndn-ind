@@ -23,6 +23,10 @@ Following are the detailed steps for each platform to install the prerequisites.
 
 See the wiki page https://github.com/operantnetworks/ndn-ind/wiki/Install-NDN-dependencies-on-RHEL-7
 
+## Visual Studio
+
+To build on Windows with Visual Studio, see VisualStudio/Visual-Studio-README.md
+
 ## 10.9.5, OS X 10.10.2, OS X 10.11, macOS 10.12, macOS 10.13 and macOS 10.14
 Install Xcode. To install the command line tools, in a terminal enter:
 
