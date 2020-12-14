@@ -1,4 +1,4 @@
-NDN-IND (2020-12-08)
+NDN-IND (2020-12-14)
 --------------------
 
 Changes
@@ -25,6 +25,7 @@ Changes
 * In examples and unit tests, use the default Face which doesn't require TCP.
 * Move the instructions for RHEL 7 to the wiki.
 * Add support for Visual Studio. https://github.com/operantnetworks/ndn-ind/pull/17
+* In examples, add optional command-line arguments. https://github.com/operantnetworks/ndn-ind/pull/18
 
 Bug fixes
 * In expressInterest, use the nonce in the Interest if provided.

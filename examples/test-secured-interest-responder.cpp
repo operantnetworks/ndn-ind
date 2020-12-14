@@ -191,6 +191,7 @@ getResponderName(KeyChain& keyChain)
 
 // Set this false to exit the application.
 static bool isRunning = true;
+static bool keepResponding = false;
 
 static void
 onInterest
@@ -214,7 +215,8 @@ onInterest
             nacKeyChain->sign(*data);
             face->putData(*data);
             cout << "Sent response:    " << responseContent.toRawStr() << endl;
-            isRunning = false;
+            if (!keepResponding)
+              isRunning = false;
           });
      },
      [](auto errorCode, const std::string& message) {
@@ -223,9 +225,49 @@ onInterest
      });
 }
 
+static void
+usage()
+{
+  cerr << "Usage: test-secured-interest-responder [options]\n"
+       << "  -a access-group-name The access group name as printed by test-access-manager. If omitted, use\n"
+       << "                       <default-identity>/NAC/test-group where <default-identity> is the system default identity.\n"
+       << "  -n name-prefix       The name prefix for the message. If omitted, use /test-secured-interest\n"
+       << "                       This must match the prefix for test-secured-interest-sender.\n"
+       << "  -k                   Keep responding. If omitted, quit after one response\n"
+       << "  -?                   Print this help" << endl;
+}
+
 int
 main(int argc, char** argv)
 {
+  Name accessGroupName;
+  Name messagePrefix("/test-secured-interest");
+
+  for (int i = 1; i < argc; ++i) {
+    string arg = argv[i];
+    string value = (i + 1 < argc ? argv[i + 1] : "");
+
+    if (arg == "-?") {
+      usage();
+      return 0;
+    }
+    else if (arg == "-a") {
+      accessGroupName = Name(value);
+      ++i;
+    }
+    else if (arg == "-n") {
+      messagePrefix = Name(value);
+      ++i;
+    }
+    else if (arg == "-k")
+      keepResponding = true;
+    else {
+      cerr << "Unrecognized option: " << arg << endl;
+      usage();
+      return 1;
+    }
+  }
+
   try {
     // Silence the warning from Interest wire encode.
     Interest::setDefaultCanBePrefix(true);
@@ -243,18 +285,19 @@ main(int argc, char** argv)
     // In a production application, use a validator which has access to the
     // certificates of the access manager and the sender.
     auto validator = ptr_lib::make_shared<ValidatorNull>();
-    // Assume the access manager is the default identity on this computer, the
-    // same as in test-access-manager.
-    auto accessManagerName =
-      systemKeyChain.getPib().getIdentity(systemKeyChain.getDefaultIdentity())->getName();
-    Name accessPrefix = Name(accessManagerName).append(Name("NAC/test-group"));
+    if (accessGroupName.size() == 0) {
+      // Assume the access manager is the default identity on this computer.
+      auto accessManagerName =
+        systemKeyChain.getPib().getIdentity(systemKeyChain.getDefaultIdentity())->getName();
+      accessGroupName = Name(accessManagerName).append(Name("NAC/test-group"));
+    }
     // Create the DecryptorV2 to decrypt the secured Interest.
     auto decryptor = ptr_lib::make_shared<ndn::DecryptorV2>
       (nacKeyChain->getPib().getIdentity(responderName)->getDefaultKey().get(),
        validator.get(), nacKeyChain.get(), &face);
     // Create the EncryptorV2 to encrypt the reply Data packet.
     auto encryptor = ptr_lib::make_shared<EncryptorV2>
-      (accessPrefix,
+      (accessGroupName,
        [](auto errorCode, const std::string& message) {
          cout << "EncryptorV2 error: " << message << endl;
          isRunning = false;
@@ -262,7 +305,6 @@ main(int argc, char** argv)
        nacKeyChain->getPib().getIdentity(responderName)->getDefaultKey().get(),
        validator.get(), nacKeyChain.get(), &face, ndn_EncryptAlgorithmType_AesCbc);
 
-    Name messagePrefix("/test-secured-interest");
     face.registerPrefix(
       messagePrefix,
       [=](auto&, auto& interest, auto& interestFace, auto, auto&) {

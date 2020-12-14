@@ -34,6 +34,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <ndn-ind/face.hpp>
+#include <ndn-ind/transport/tcp-transport.hpp>
 #if NDN_IND_HAVE_UNISTD_H
 #include <unistd.h>
 #elif defined(_WIN32)
@@ -69,14 +70,65 @@ public:
   int callbackCount_;
 };
 
+static void
+usage()
+{
+  cerr << "Usage: test-echo-consumer [options]\n"
+       << "  -n name-prefix  If omitted, use /testecho\n"
+       << "  -h host         If omitted or \"\", the default Face connects to the local forwarder\n"
+       << "  -p port         If omitted, use 6363\n"
+       << "  -?              Print this help" << endl;
+}
+
 int main(int argc, char** argv)
 {
+  Name namePrefix("/testecho");
+  string host = "";
+  int port = 6363;
+
+  for (int i = 1; i < argc; ++i) {
+    string arg = argv[i];
+    string value = (i + 1 < argc ? argv[i + 1] : "");
+
+    if (arg == "-?") {
+      usage();
+      return 0;
+    }
+    else if (arg == "-n") {
+      namePrefix = Name(value);
+      ++i;
+    }
+    else if (arg == "-h") {
+      host = value;
+      ++i;
+    }
+    else if (arg == "-p") {
+      port = atoi(value.c_str());
+      if (port == 0) {
+        usage();
+        return 1;
+      }
+      ++i;
+    }
+    else {
+      cerr << "Unrecognized option: " << arg << endl;
+      usage();
+      return 1;
+    }
+  }
+
   try {
     // Silence the warning from Interest wire encode.
     Interest::setDefaultCanBePrefix(true);
 
-    // The default Face will connect using a Unix socket, or to "localhost".
-    Face face;
+    ptr_lib::shared_ptr<Face> face;
+    if (host == "")
+      // The default Face will connect using a Unix socket, or to "localhost".
+      face.reset(new Face());
+    else
+      face.reset(new Face
+        (ptr_lib::make_shared<TcpTransport>(), 
+         ptr_lib::make_shared<TcpTransport::ConnectionInfo>(host.c_str(), port)));
 
     // Counter holds data used by the callbacks.
     Counter counter;
@@ -85,15 +137,15 @@ int main(int argc, char** argv)
     cout << "Enter a word to echo:" << endl;
     cin >> word;
 
-    Name name("/testecho");
+    Name name(namePrefix);
     name.append(word);
     cout << "Express name " << name.toUri() << endl;
     // Use bind to pass the counter object to the callbacks.
-    face.expressInterest(name, bind(&Counter::onData, &counter, _1, _2), bind(&Counter::onTimeout, &counter, _1));
+    face->expressInterest(name, bind(&Counter::onData, &counter, _1, _2), bind(&Counter::onTimeout, &counter, _1));
 
     // The main event loop.
     while (counter.callbackCount_ < 1) {
-      face.processEvents();
+      face->processEvents();
       // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
 #if NDN_IND_HAVE_UNISTD_H
       usleep(10000);

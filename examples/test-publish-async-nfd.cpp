@@ -79,8 +79,41 @@ public:
   int responseCount_;
 };
 
+static void
+usage()
+{
+  cerr << "Usage: test-publish-async-nfd [options]\n"
+       << "  -n name-prefix  If omitted, use /testecho\n"
+       << "  -k              Keep responding. If omitted, quit after one response\n"
+       << "  -?              Print this help" << endl;
+}
+
 int main(int argc, char** argv)
 {
+  Name namePrefix("/testecho");
+  bool keepResponding = false;
+
+  for (int i = 1; i < argc; ++i) {
+    string arg = argv[i];
+    string value = (i + 1 < argc ? argv[i + 1] : "");
+
+    if (arg == "-?") {
+      usage();
+      return 0;
+    }
+    else if (arg == "-n") {
+      namePrefix = Name(value);
+      ++i;
+    }
+    else if (arg == "-k")
+      keepResponding = true;
+    else {
+      cerr << "Unrecognized option: " << arg << endl;
+      usage();
+      return 1;
+    }
+  }
+
   try {
     // The default Face will connect using a Unix socket, or to "localhost".
     Face face;
@@ -91,15 +124,15 @@ int main(int argc, char** argv)
 
     // Also use the default certificate name to sign data packets.
     Echo echo(keyChain, keyChain.getDefaultCertificateName());
-    Name prefix("/testecho");
-    cout << "Register prefix  " << prefix.toUri() << endl;
+    cout << "Register prefix " << namePrefix.toUri() << endl;
     // TODO: After we remove the registerPrefix with the deprecated OnInterest,
     // we can remove the explicit cast to OnInterestCallback (needed for boost).
-    face.registerPrefix(prefix, (const OnInterestCallback&)func_lib::ref(echo), func_lib::ref(echo));
+    face.registerPrefix(namePrefix, (const OnInterestCallback&)func_lib::ref(echo), func_lib::ref(echo));
 
     // The main event loop.
-    // Wait forever to receive one interest for the prefix.
-    while (echo.responseCount_ < 1) {
+    // Wait forever to receive an interest for the prefix.
+    // If !keepResponding, then quit after one response.
+    while (keepResponding || echo.responseCount_ < 1) {
       face.processEvents();
       // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
       usleep(10000);
