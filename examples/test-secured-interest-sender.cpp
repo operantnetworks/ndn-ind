@@ -37,6 +37,7 @@
 #include <ndn-ind/security/command-interest-preparer.hpp>
 #include <ndn-ind/encrypt/encryptor-v2.hpp>
 #include <ndn-ind/encrypt/decryptor-v2.hpp>
+#include <ndn-ind/transport/tcp-transport.hpp>
 
 using namespace std;
 using namespace std::chrono;
@@ -222,9 +223,63 @@ onData
      });
 }
 
+static void
+usage()
+{
+  cerr << "Usage: test-secured-interest-sender [options]\n"
+       << "  -a access-group-name The access group name as printed by test-access-manager. If omitted, use\n"
+       << "                       <default-identity>/NAC/test-group where <default-identity> is the system default identity.\n"
+       << "  -n name-prefix       The name prefix for the message. If omitted, use /test-secured-interest\n"
+       << "                       This must match the prefix for test-secured-interest-responder.\n"
+       << "  -h host              If omitted or \"\", the default Face connects to the local forwarder\n"
+       << "                       Both test-access-manager and test-secured-interest-responder must be reachable.\n"
+       << "  -p port              If omitted, use 6363\n"
+       << "  -?                   Print this help" << endl;
+}
+
 int
 main(int argc, char** argv)
 {
+  Name accessGroupName;
+  Name messagePrefix("/test-secured-interest");
+  string host = "";
+  int port = 6363;
+
+  for (int i = 1; i < argc; ++i) {
+    string arg = argv[i];
+    string value = (i + 1 < argc ? argv[i + 1] : "");
+
+    if (arg == "-?") {
+      usage();
+      return 0;
+    }
+    else if (arg == "-a") {
+      accessGroupName = Name(value);
+      ++i;
+    }
+    else if (arg == "-n") {
+      messagePrefix = Name(value);
+      ++i;
+    }
+    else if (arg == "-h") {
+      host = value;
+      ++i;
+    }
+    else if (arg == "-p") {
+      port = atoi(value.c_str());
+      if (port == 0) {
+        usage();
+        return 1;
+      }
+      ++i;
+    }
+    else {
+      cerr << "Unrecognized option: " << arg << endl;
+      usage();
+      return 1;
+    }
+  }
+
   try {
     // Silence the warning from Interest wire encode.
     Interest::setDefaultCanBePrefix(true);
@@ -232,10 +287,14 @@ main(int argc, char** argv)
     CommandInterestPreparer commandInterestPreparer;
 
     KeyChain systemKeyChain;
-    // The default Face will connect using a Unix socket, or to "localhost".
-    Face face;
-    face.setCommandSigningInfo
-      (systemKeyChain, systemKeyChain.getDefaultCertificateName());
+    ptr_lib::shared_ptr<Face> face;
+    if (host == "")
+      // The default Face will connect using a Unix socket, or to "localhost".
+      face.reset(new Face());
+    else
+      face.reset(new Face
+        (ptr_lib::make_shared<TcpTransport>(),
+         ptr_lib::make_shared<TcpTransport::ConnectionInfo>(host.c_str(), port)));
 
     // Create an in-memory key chain and get the encryptor identity.
     auto nacKeyChain = ptr_lib::make_shared<KeyChain>("pib-memory:", "tpm-memory:");
@@ -244,26 +303,26 @@ main(int argc, char** argv)
     // In a production application, use a validator which has access to the
     // certificates of the access manager and the responder.
     auto validator = ptr_lib::make_shared<ValidatorNull>();
-    // Assume the access manager is the default identity on this computer, the
-    // same as in test-access-manager.
-    auto accessManagerName =
-      systemKeyChain.getPib().getIdentity(systemKeyChain.getDefaultIdentity())->getName();
-    Name accessPrefix = Name(accessManagerName).append(Name("NAC/test-group"));
+    if (accessGroupName.size() == 0) {
+      // Assume the access manager is the default identity on this computer.
+      auto accessManagerName =
+        systemKeyChain.getPib().getIdentity(systemKeyChain.getDefaultIdentity())->getName();
+      accessGroupName = Name(accessManagerName).append(Name("NAC/test-group"));
+    }
     // Create the EncryptorV2 to encrypt the secured interest.
     auto encryptor = ptr_lib::make_shared<EncryptorV2>
-      (accessPrefix,
+      (accessGroupName,
        [](auto errorCode, const std::string& message) {
          cout << "EncryptorV2 error: " << message << endl;
          isRunning = false;
        },
        nacKeyChain->getPib().getIdentity(senderName)->getDefaultKey().get(),
-       validator.get(), nacKeyChain.get(), &face, ndn_EncryptAlgorithmType_AesCbc);
+       validator.get(), nacKeyChain.get(), face.get(), ndn_EncryptAlgorithmType_AesCbc);
     // Create the DecryptorV2 to decrypt the reply Data packet.
     auto decryptor = ptr_lib::make_shared<ndn::DecryptorV2>
       (nacKeyChain->getPib().getIdentity(senderName)->getDefaultKey().get(),
-       validator.get(), nacKeyChain.get(), &face);
+       validator.get(), nacKeyChain.get(), face.get());
 
-    Name messagePrefix("/test-secured-interest");
     auto interest = ptr_lib::make_shared<Interest>(messagePrefix);
     commandInterestPreparer.prepareCommandInterestName(*interest);
 
@@ -271,9 +330,9 @@ main(int argc, char** argv)
     interest->setApplicationParameters(Blob::fromRawStr(message));
     encryptor->encrypt
       (interest,
-       [=, &face](auto&, auto&) {
+       [=](auto&, auto&) {
          nacKeyChain->sign(*interest);         
-         face.expressInterest(
+         face->expressInterest(
            *interest,
            [=](auto&, auto& data) { onData(data, validator, decryptor); },
            [](auto& i) { 
@@ -285,7 +344,7 @@ main(int argc, char** argv)
 
     // The main event loop. Run until something sets isRunning false.
     while (isRunning) {
-      face.processEvents();
+      face->processEvents();
       // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
       usleep(10000);
     }

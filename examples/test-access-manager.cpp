@@ -151,17 +151,55 @@ getMemberCertificates(vector<ptr_lib::shared_ptr<CertificateV2>>& certificates)
   certificates.push_back(secondMemberCertificate);
 }
 
+static void
+usage()
+{
+  cerr << "Usage: test-access-manager [options]\n"
+       << "  -d dataset                 The dataset part of the access group name. If omitted, use /test-group\n"
+       << "  -i access-manager-identity The access manager identity name. This must be an identity on the system.\n"
+       << "                             If omitted, use the system default identity. The access group name is\n"
+       << "                             <access-manager-identity>/NAC/<dataset>\n"
+       << "  -?                         Print this help" << endl;
+}
+
 int
 main(int argc, char* argv[])
 {
-  // Use the default identity on this computer.
+  Name dataset("/test-group");
+  Name accessManagerIdentityName;
+
+  for (int i = 1; i < argc; ++i) {
+    string arg = argv[i];
+    string value = (i + 1 < argc ? argv[i + 1] : "");
+
+    if (arg == "-?") {
+      usage();
+      return 0;
+    }
+    else if (arg == "-d") {
+      dataset = Name(value);
+      ++i;
+    }
+    else if (arg == "-i") {
+      accessManagerIdentityName = Name(value);
+      ++i;
+    }
+    else {
+      cerr << "Unrecognized option: " << arg << endl;
+      usage();
+      return 1;
+    }
+  }
+
   KeyChain keyChain;
   Face face;
   face.setCommandSigningInfo(keyChain, keyChain.getDefaultCertificateName());
 
+  if (accessManagerIdentityName.size() == 0)
+    // Use the default identity on this computer.
+    accessManagerIdentityName = keyChain.getDefaultIdentity();
   ptr_lib::shared_ptr<PibIdentity> accessManagerIdentity =
-    keyChain.getPib().getIdentity(keyChain.getDefaultIdentity());
-  Name dataset("/test-group");
+    keyChain.getPib().getIdentity(accessManagerIdentityName);
   Name groupName = Name(accessManagerIdentity->getName())
     .append(EncryptorV2::getNAME_COMPONENT_NAC()).append(dataset);
   cout << "Access group name: " << groupName << endl;
