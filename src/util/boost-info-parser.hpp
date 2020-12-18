@@ -93,17 +93,16 @@ public:
   /**
    * Look up using the key and return string value of the first subtree.
    * @param key The key which may be a path separated with '/'.
-   * @return A pointer to the string value or 0 if not found.  Note that this
-   * pointer may no longer be valid after this BoostInfoTree is modified.
+   * @return A shared_ptr for the string value or null if not found.
    */
-  const std::string*
+  ptr_lib::shared_ptr<std::string>
   getFirstValue(const std::string& key) const
   {
     std::vector<const BoostInfoTree*> list = (*this)[key];
     if (list.size() >= 1)
-      return &list[0]->value_;
+      return ptr_lib::make_shared<std::string>(list[0]->value_);
     else
-      return 0;
+      return ptr_lib::shared_ptr<std::string>();
   }
 
   const std::string&

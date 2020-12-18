@@ -101,12 +101,12 @@ ptr_lib::shared_ptr<ConfigRule>
 ConfigRule::create(const BoostInfoTree& configSection)
 {
   // Get rule.id .
-  const string* ruleId = configSection.getFirstValue("id");
+  ptr_lib::shared_ptr<string> ruleId = configSection.getFirstValue("id");
   if (!ruleId)
     throw ValidatorConfigError("Expecting <rule.id>");
 
   // Get rule.for .
-  const string* usage = configSection.getFirstValue("for");
+  ptr_lib::shared_ptr<string> usage = configSection.getFirstValue("for");
   if (!usage)
     throw ValidatorConfigError("Expecting <rule.for> in rule: " + *ruleId);
 

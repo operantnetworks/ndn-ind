@@ -70,7 +70,7 @@ ptr_lib::shared_ptr<ConfigChecker>
 ConfigChecker::create(const BoostInfoTree& configSection)
 {
   // Get checker.type.
-  const string* checkerType = configSection.getFirstValue("type");
+  ptr_lib::shared_ptr<string> checkerType = configSection.getFirstValue("type");
   if (!checkerType)
     throw ValidatorConfigError("Expected <checker.type>");
 
@@ -108,7 +108,7 @@ ptr_lib::shared_ptr<ConfigChecker>
 ConfigChecker::createKeyLocatorChecker(const BoostInfoTree& configSection)
 {
   // Get checker.key-locator.type .
-  const string* keyLocatorType = configSection.getFirstValue("type");
+  ptr_lib::shared_ptr<string> keyLocatorType = configSection.getFirstValue("type");
   if (!keyLocatorType)
     throw ValidatorConfigError("Expected <checker.key-locator.type>");
 
@@ -122,11 +122,11 @@ ConfigChecker::createKeyLocatorChecker(const BoostInfoTree& configSection)
 ptr_lib::shared_ptr<ConfigChecker>
 ConfigChecker::createKeyLocatorNameChecker(const BoostInfoTree& configSection)
 {
-  const string* nameUri = configSection.getFirstValue("name");
+  ptr_lib::shared_ptr<string> nameUri = configSection.getFirstValue("name");
   if (nameUri) {
     Name name(*nameUri);
 
-    const string* relationValue = configSection.getFirstValue("relation");
+    ptr_lib::shared_ptr<string> relationValue = configSection.getFirstValue("relation");
     if (!relationValue)
       throw ValidatorConfigError("Expected <checker.key-locator.relation>");
 
@@ -135,7 +135,7 @@ ConfigChecker::createKeyLocatorNameChecker(const BoostInfoTree& configSection)
     return ptr_lib::make_shared<ConfigNameRelationChecker>(name, relation);
   }
 
-  const string* regexString = configSection.getFirstValue("regex");
+  ptr_lib::shared_ptr<string> regexString = configSection.getFirstValue("regex");
   if (regexString) {
     try {
       return ptr_lib::make_shared<ConfigRegexChecker>(*regexString);
@@ -151,31 +151,31 @@ ConfigChecker::createKeyLocatorNameChecker(const BoostInfoTree& configSection)
     const BoostInfoTree& hyperRelation = *hyperRelationList[0];
 
     // Get k-regex.
-    const string* keyRegex = hyperRelation.getFirstValue("k-regex");
+    ptr_lib::shared_ptr<string> keyRegex = hyperRelation.getFirstValue("k-regex");
     if (!keyRegex)
       throw ValidatorConfigError
         ("Expected <checker.key-locator.hyper-relation.k-regex>");
 
     // Get k-expand.
-    const string* keyExpansion = hyperRelation.getFirstValue("k-expand");
+    ptr_lib::shared_ptr<string> keyExpansion = hyperRelation.getFirstValue("k-expand");
     if (!keyExpansion)
       throw ValidatorConfigError
         ("Expected <checker.key-locator.hyper-relation.k-expand");
 
     // Get h-relation.
-    const string* hyperRelationString = hyperRelation.getFirstValue("h-relation");
+    ptr_lib::shared_ptr<string> hyperRelationString = hyperRelation.getFirstValue("h-relation");
     if (!hyperRelationString)
       throw ValidatorConfigError
         ("Expected <checker.key-locator.hyper-relation.h-relation>");
 
     // Get p-regex.
-    const string* packetNameRegex = hyperRelation.getFirstValue("p-regex");
+    ptr_lib::shared_ptr<string> packetNameRegex = hyperRelation.getFirstValue("p-regex");
     if (!packetNameRegex)
       throw ValidatorConfigError
         ("Expected <checker.key-locator.hyper-relation.p-regex>");
 
     // Get p-expand.
-    const string* packetNameExpansion = hyperRelation.getFirstValue("p-expand");
+    ptr_lib::shared_ptr<string> packetNameExpansion = hyperRelation.getFirstValue("p-expand");
     if (!packetNameExpansion)
       throw ValidatorConfigError
         ("Expected <checker.key-locator.hyper-relation.p-expand>");
