@@ -164,7 +164,7 @@ DigestTree::Node::recomputeDigest()
 void
 DigestTree::Node::int32ToLittleEndian(uint32_t value, uint8_t* result)
 {
-  for (size_t i = 0; i < 4; i++) {
+  for (size_t i = 0; i < 4; ++i) {
     result[i] = value % 256;
     value = value / 256;
   }

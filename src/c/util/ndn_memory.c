@@ -37,7 +37,7 @@ int ndn_memcmp(const uint8_t *buf1, const uint8_t *buf2, size_t len)
 {
   size_t i;
 
-  for (i = 0; i < len; i++) {
+  for (i = 0; i < len; ++i) {
     if (buf1[i] > buf2[i])
       return 1;
     else if (buf1[i] < buf2[i])
@@ -55,7 +55,7 @@ void ndn_memcpy(uint8_t *dest, const uint8_t *src, size_t len)
 {
   size_t i;
 
-  for (i = 0; i < len; i++)
+  for (i = 0; i < len; ++i)
     dest[i] = src[i];
 }
 #else
@@ -67,7 +67,7 @@ void ndn_memset(uint8_t *dest, int val, size_t len)
 {
   size_t i;
 
-  for (i = 0; i < len; i++)
+  for (i = 0; i < len; ++i)
     dest[i] = (uint8_t)val;
 }
 #else
