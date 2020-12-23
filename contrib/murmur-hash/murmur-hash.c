@@ -33,7 +33,7 @@ ndn_murmurHash3
   const uint32_t* blocks = (const uint32_t*)(dataToHash + nblocks * 4);
 
   int i;
-  for (i = -(int)nblocks; i < 0; i++) {
+  for (i = -(int)nblocks; i < 0; ++i) {
     // Note that this indexes backwards from the end of the array.
     uint32_t k2 = blocks[i];
 

@@ -73,7 +73,7 @@ string OID::toString() const
   ostringstream convert;
 
   vector<int>::const_iterator it = oid_.begin();
-  for(; it < oid_.end(); it++){
+  for(; it < oid_.end(); ++it){
     if(it != oid_.begin())
       convert << ".";
     convert << *it;
@@ -87,7 +87,7 @@ bool OID::equal(const OID& oid) const
   vector<int>::const_iterator i = oid_.begin();
   vector<int>::const_iterator j = oid.oid_.begin();
 
-  for (; i != oid_.end () && j != oid.oid_.end (); i++, j++) {
+  for (; i != oid_.end () && j != oid.oid_.end (); ++i, ++j) {
     if(*i != *j)
       return false;
   }

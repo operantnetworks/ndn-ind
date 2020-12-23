@@ -91,7 +91,7 @@ InvertibleBloomLookupTable::initialize(const Blob& encoding)
   if (3 * hashTable_.size() != values.size())
     throw runtime_error("The received Invertible Bloom Filter cannot be decoded");
 
-  for (size_t i = 0; i < hashTable_.size(); i++) {
+  for (size_t i = 0; i < hashTable_.size(); ++i) {
     HashTableEntry& entry = hashTable_.at(i);
     if (values[i * 3] != 0) {
       entry.count_ = values[i * 3];
@@ -148,7 +148,7 @@ InvertibleBloomLookupTable::difference
 
   ptr_lib::shared_ptr<InvertibleBloomLookupTable> result =
     ptr_lib::make_shared<InvertibleBloomLookupTable>(*this);
-  for (size_t i = 0; i < hashTable_.size(); i++) {
+  for (size_t i = 0; i < hashTable_.size(); ++i) {
     HashTableEntry& e1 = result->hashTable_.at(i);
     const HashTableEntry& e2 = other.hashTable_.at(i);
     e1.count_ -= e2.count_;
@@ -168,7 +168,7 @@ InvertibleBloomLookupTable::encode() const
 
   vector<uint8_t> table(tableSize);
 
-  for (size_t i = 0; i < nEntries; i++) {
+  for (size_t i = 0; i < nEntries; ++i) {
     const HashTableEntry& entry = hashTable_[i];
 
     // table[i*12],   table[i*12+1], table[i*12+2], table[i*12+3] --> hashTable[i].count_
@@ -204,7 +204,7 @@ InvertibleBloomLookupTable::equals(const InvertibleBloomLookupTable& other) cons
   if (iblt1HashTable.size() != iblt2HashTable.size())
     return false;
 
-  for (size_t i = 0; i < iblt1HashTable.size(); i++) {
+  for (size_t i = 0; i < iblt1HashTable.size(); ++i) {
     if (iblt1HashTable[i].count_ != iblt2HashTable[i].count_ ||
         iblt1HashTable[i].keySum_ != iblt2HashTable[i].keySum_ ||
         iblt1HashTable[i].keyCheck_ != iblt2HashTable[i].keyCheck_)
@@ -219,7 +219,7 @@ InvertibleBloomLookupTable::update(int plusOrMinus, uint32_t key)
 {
   size_t bucketsPerHash = hashTable_.size() / N_HASH;
 
-  for (size_t i = 0; i < N_HASH; i++) {
+  for (size_t i = 0; i < N_HASH; ++i) {
     size_t startEntry = i * bucketsPerHash;
     uint32_t h = CryptoLite::murmurHash3(i, key);
     HashTableEntry& entry = hashTable_.at(startEntry + (h % bucketsPerHash));

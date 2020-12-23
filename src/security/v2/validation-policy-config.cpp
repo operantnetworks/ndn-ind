@@ -186,13 +186,13 @@ void
 ValidationPolicyConfig::processConfigTrustAnchor
   (const BoostInfoTree& configSection, const string& inputName)
 {
-  const string* anchorType = configSection.getFirstValue("type");
+  ptr_lib::shared_ptr<string> anchorType = configSection.getFirstValue("type");
   if (!anchorType)
     throw ValidatorConfigError("Expected <trust-anchor.type>");
 
   if (equalsIgnoreCase(*anchorType, "file")) {
     // Get trust-anchor.file .
-    const string* fileName = configSection.getFirstValue("file-name");
+    ptr_lib::shared_ptr<string> fileName = configSection.getFirstValue("file-name");
     if (!fileName)
       throw ValidatorConfigError("Expected <trust-anchor.file-name>");
 
@@ -203,7 +203,7 @@ ValidationPolicyConfig::processConfigTrustAnchor
   }
   else if (equalsIgnoreCase(*anchorType, "base64")) {
     // Get trust-anchor.base64-string .
-    const string* base64String = configSection.getFirstValue("base64-string");
+    ptr_lib::shared_ptr<string> base64String = configSection.getFirstValue("base64-string");
     if (!base64String)
       throw ValidatorConfigError("Expected <trust-anchor.base64-string>");
 
@@ -221,7 +221,7 @@ ValidationPolicyConfig::processConfigTrustAnchor
   }
   else if (equalsIgnoreCase(*anchorType, "dir")) {
     // Get trust-anchor.dir .
-    const string* dirString = configSection.getFirstValue("dir");
+    ptr_lib::shared_ptr<string> dirString = configSection.getFirstValue("dir");
     if (!dirString)
       throw ValidatorConfigError("Expected <trust-anchor.dir>");
 
@@ -239,7 +239,7 @@ ValidationPolicyConfig::processConfigTrustAnchor
 nanoseconds
 ValidationPolicyConfig::getRefreshPeriod(const BoostInfoTree& configSection)
 {
-  const string* refreshString = configSection.getFirstValue("refresh");
+  ptr_lib::shared_ptr<string> refreshString = configSection.getFirstValue("refresh");
   if (!refreshString)
     // Return a large value (effectively no refresh).
     return milliseconds((int64_t)1e14);

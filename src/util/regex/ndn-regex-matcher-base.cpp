@@ -74,7 +74,7 @@ NdnRegexMatcherBase::match(const Name& name, size_t offset, size_t len)
   matchResult_.clear();
 
   if (recursiveMatch(0, name, offset, len)) {
-    for (size_t i = offset; i < offset + len; i++)
+    for (size_t i = offset; i < offset + len; ++i)
       matchResult_.push_back(name.get(i));
     result = true;
   }

@@ -232,7 +232,7 @@ Interest::toUri() const
 
   result << name_.get().toUri();
   string selectorsString(selectors.str());
-  if (selectorsString.size() > 0) {
+  if (selectorsString.size() > 1) {
     // Replace the first & with ?.
     result << "?";
     result.write(&selectorsString[1], selectorsString.size() - 1);

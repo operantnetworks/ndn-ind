@@ -67,7 +67,7 @@ ConfigFilter::match(bool isForInterest, const Name& packetName)
 ptr_lib::shared_ptr<ConfigFilter>
 ConfigFilter::create(const BoostInfoTree& configSection)
 {
-  const string* filterType = configSection.getFirstValue("type");
+  ptr_lib::shared_ptr<string> filterType = configSection.getFirstValue("type");
   if (!filterType)
     throw ValidatorConfigError("Expected <filter.type>");
 
@@ -80,13 +80,13 @@ ConfigFilter::create(const BoostInfoTree& configSection)
 ptr_lib::shared_ptr<ConfigFilter>
 ConfigFilter::createNameFilter(const BoostInfoTree& configSection)
 {
-  const string* nameUri = configSection.getFirstValue("name");
+  ptr_lib::shared_ptr<string> nameUri = configSection.getFirstValue("name");
   if (nameUri) {
     // Get the filter.name.
     Name name(*nameUri);
 
     // Get the filter.relation.
-    const string* relationValue = configSection.getFirstValue("relation");
+    ptr_lib::shared_ptr<string> relationValue = configSection.getFirstValue("relation");
     if (!relationValue)
       throw ValidatorConfigError("Expected <filter.relation>");
 
@@ -96,7 +96,7 @@ ConfigFilter::createNameFilter(const BoostInfoTree& configSection)
     return ptr_lib::make_shared<ConfigRelationNameFilter>(name, relation);
   }
 
-  const string* regexString = configSection.getFirstValue("regex");
+  ptr_lib::shared_ptr<string> regexString = configSection.getFirstValue("regex");
   if (regexString) {
     try {
       return ptr_lib::make_shared<ConfigRegexNameFilter>(*regexString);
