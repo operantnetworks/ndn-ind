@@ -73,7 +73,7 @@ noinst_PROGRAMS = bin/test-access-manager bin/test-channel-discovery bin/test-ch
   bin/test-prefix-discovery \
   bin/test-publish-async-nfd bin/test-publish-async-nfd-lite bin/test-register-route \
   bin/test-secured-interest-responder bin/test-secured-interest-sender \
-  bin/test-sign-verify-data-hmac
+  bin/test-sign-verify-data-hmac bin/cert-install
 
 # Public C headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_c_headers in include/Makefile.am.
@@ -588,6 +588,9 @@ bin_test_register_route_SOURCES = \
   examples/control-parameters.pb.cc examples/face-query-filter.pb.cc \
   examples/face-status.pb.cc examples/test-register-route.cpp
 bin_test_register_route_LDADD = libndn-ind.la
+
+bin_cert_install_SOURCES = examples/cert-install.cpp
+bin_cert_install_LDADD = libndn-ind.la
 
 # Unit tests
 

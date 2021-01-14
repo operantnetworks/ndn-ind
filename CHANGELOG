@@ -1,4 +1,4 @@
-NDN-IND (2020-12-14)
+NDN-IND (2021-01-14)
 --------------------
 
 Changes
@@ -26,6 +26,7 @@ Changes
 * Move the instructions for RHEL 7 to the wiki.
 * Add support for Visual Studio. https://github.com/operantnetworks/ndn-ind/pull/17
 * In examples, add optional command-line arguments. https://github.com/operantnetworks/ndn-ind/pull/18
+* In examples, add cert-install .
 
 Bug fixes
 * In expressInterest, use the nonce in the Interest if provided.

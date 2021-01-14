@@ -146,7 +146,8 @@ noinst_PROGRAMS = bin/test-access-manager$(EXEEXT) \
 	bin/test-register-route$(EXEEXT) \
 	bin/test-secured-interest-responder$(EXEEXT) \
 	bin/test-secured-interest-sender$(EXEEXT) \
-	bin/test-sign-verify-data-hmac$(EXEEXT)
+	bin/test-sign-verify-data-hmac$(EXEEXT) \
+	bin/cert-install$(EXEEXT)
 TESTS = $(check_PROGRAMS)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -424,6 +425,9 @@ am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
 	src/util/regex/ndn-regex-repeat-matcher.lo \
 	src/util/regex/ndn-regex-top-matcher.lo
 libndn_ind_la_OBJECTS = $(am_libndn_ind_la_OBJECTS)
+am_bin_cert_install_OBJECTS = examples/cert-install.$(OBJEXT)
+bin_cert_install_OBJECTS = $(am_bin_cert_install_OBJECTS)
+bin_cert_install_DEPENDENCIES = libndn-ind.la
 am_bin_test_access_manager_OBJECTS =  \
 	examples/test-access-manager.$(OBJEXT)
 bin_test_access_manager_OBJECTS =  \
@@ -776,6 +780,7 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo \
 	contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo \
 	contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo \
+	examples/$(DEPDIR)/cert-install.Po \
 	examples/$(DEPDIR)/channel-status.pb.Po \
 	examples/$(DEPDIR)/chatbuf.pb.Po \
 	examples/$(DEPDIR)/control-parameters.pb.Po \
@@ -1100,7 +1105,8 @@ am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
-	$(libndn_ind_la_SOURCES) $(bin_test_access_manager_SOURCES) \
+	$(libndn_ind_la_SOURCES) $(bin_cert_install_SOURCES) \
+	$(bin_test_access_manager_SOURCES) \
 	$(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) $(bin_test_custom_tpm_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
@@ -1155,7 +1161,8 @@ SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
 	$(bin_unit_tests_test_validator_SOURCES) \
 	$(bin_unit_tests_test_validator_null_SOURCES)
 DIST_SOURCES = $(libndn_c_la_SOURCES) $(libndn_ind_tools_la_SOURCES) \
-	$(libndn_ind_la_SOURCES) $(bin_test_access_manager_SOURCES) \
+	$(libndn_ind_la_SOURCES) $(bin_cert_install_SOURCES) \
+	$(bin_test_access_manager_SOURCES) \
 	$(bin_test_channel_discovery_SOURCES) \
 	$(bin_test_chrono_chat_SOURCES) $(bin_test_custom_tpm_SOURCES) \
 	$(bin_test_echo_consumer_SOURCES) \
@@ -2187,6 +2194,8 @@ bin_test_register_route_SOURCES = \
   examples/face-status.pb.cc examples/test-register-route.cpp
 
 bin_test_register_route_LDADD = libndn-ind.la
+bin_cert_install_SOURCES = examples/cert-install.cpp
+bin_cert_install_LDADD = libndn-ind.la
 
 # Unit tests
 bin_unit_tests_test_access_manager_v2_SOURCES = tests/unit-tests/test-access-manager-v2.cpp \
@@ -3166,11 +3175,17 @@ examples/$(am__dirstamp):
 examples/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) examples/$(DEPDIR)
 	@: > examples/$(DEPDIR)/$(am__dirstamp)
-examples/test-access-manager.$(OBJEXT): examples/$(am__dirstamp) \
+examples/cert-install.$(OBJEXT): examples/$(am__dirstamp) \
 	examples/$(DEPDIR)/$(am__dirstamp)
 bin/$(am__dirstamp):
 	@$(MKDIR_P) bin
 	@: > bin/$(am__dirstamp)
+
+bin/cert-install$(EXEEXT): $(bin_cert_install_OBJECTS) $(bin_cert_install_DEPENDENCIES) $(EXTRA_bin_cert_install_DEPENDENCIES) bin/$(am__dirstamp)
+	@rm -f bin/cert-install$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(bin_cert_install_OBJECTS) $(bin_cert_install_LDADD) $(LIBS)
+examples/test-access-manager.$(OBJEXT): examples/$(am__dirstamp) \
+	examples/$(DEPDIR)/$(am__dirstamp)
 
 bin/test-access-manager$(EXEEXT): $(bin_test_access_manager_OBJECTS) $(bin_test_access_manager_DEPENDENCIES) $(EXTRA_bin_test_access_manager_DEPENDENCIES) bin/$(am__dirstamp)
 	@rm -f bin/test-access-manager$(EXEEXT)
@@ -3841,6 +3856,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/cert-install.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/channel-status.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/chatbuf.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/control-parameters.pb.Po@am__quote@ # am--include-marker
@@ -6264,6 +6280,7 @@ distclean: distclean-recursive
 	-rm -f contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo
+	-rm -f examples/$(DEPDIR)/cert-install.Po
 	-rm -f examples/$(DEPDIR)/channel-status.pb.Po
 	-rm -f examples/$(DEPDIR)/chatbuf.pb.Po
 	-rm -f examples/$(DEPDIR)/control-parameters.pb.Po
@@ -6641,6 +6658,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f contrib/murmur-hash/$(DEPDIR)/murmur-hash.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/detail/$(DEPDIR)/cancel-handle.Plo
 	-rm -f contrib/ndn-cxx/ndn-cxx/util/$(DEPDIR)/scheduler.Plo
+	-rm -f examples/$(DEPDIR)/cert-install.Po
 	-rm -f examples/$(DEPDIR)/channel-status.pb.Po
 	-rm -f examples/$(DEPDIR)/chatbuf.pb.Po
 	-rm -f examples/$(DEPDIR)/control-parameters.pb.Po
