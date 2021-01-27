@@ -650,7 +650,7 @@ EncryptorV2::Impl::fetchGck(
         parent_->gckPendingInterestId_ = 0;
 
         // Leave isGckRetrievalInProgress_ true.
-        parent_->decryptGckAndProcessPendingDecrypts(gckName_, *ckData, onError_);
+        parent_->decryptGckAndProcessPendingEncrypts(gckName_, *ckData, onError_);
       } catch (const std::exception& ex) {
         onError_(EncryptError::ErrorCode::General,
           string("Error in EncryptorV2::fetchGck onData: ") + ex.what());
@@ -707,7 +707,7 @@ EncryptorV2::Impl::fetchGck(
 }
 
 void
-EncryptorV2::Impl::decryptGckAndProcessPendingDecrypts(
+EncryptorV2::Impl::decryptGckAndProcessPendingEncrypts(
   const Name& gckName, const Data& gckData, const EncryptError::OnError& onError)
 {
   // This is only called from fetchGck, so isGckRetrievalInProgress_ is true.

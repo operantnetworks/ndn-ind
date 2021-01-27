@@ -577,14 +577,14 @@ private:
 
     /**
      * Decrypt the gckData fetched by fetchGck(), then copy it to ckBits_ and
-     * copy gckName to ckName_ . Then process pending decrypts.
+     * copy gckName to ckName_ . Then process pending encrypts.
      * @param gckName The Name that fetchGck() used to fetch.
      * @param gckData The GCK Data packet fetched by fetchGck().
      * @param onError On failure, this calls onError(errorCode, message)
      * where errorCode is from EncryptError::ErrorCode, and message is an error
      * string.
      */
-    void decryptGckAndProcessPendingDecrypts(
+    void decryptGckAndProcessPendingEncrypts(
       const Name& gckName, const Data& gckData,
       const EncryptError::OnError& onError);
 
