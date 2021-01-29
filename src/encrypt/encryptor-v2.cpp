@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
@@ -85,16 +85,24 @@ EncryptorV2::Impl::Impl
    const SigningInfo& ckDataSigningInfo, const EncryptError::OnError& onError,
    Validator* validator, KeyChain* keyChain, Face* face,
    ndn_EncryptAlgorithmType algorithmType)
-: accessPrefix_(accessPrefix), ckPrefix_(ckPrefix),
-  validator_(validator),
-  ckDataSigningInfo_(ckDataSigningInfo), isKekRetrievalInProgress_(false),
-  onError_(onError), keyChain_(keyChain), face_(face),
-  algorithmType_(algorithmType), kekPendingInterestId_(0),
+: credentialsKey_(0), validator_(validator),
+  onError_(onError), keyChain_(keyChain), face_(face), algorithmType_(algorithmType)
+{
+  keyManagers_.push_back(ptr_lib::make_shared<KeyManager>
+    (this, accessPrefix, ckPrefix, ckDataSigningInfo));
+}
+
+EncryptorV2::Impl::KeyManager::KeyManager
+  (Impl* parent, const Name& accessPrefix, const Name& ckPrefix,
+   const SigningInfo& ckDataSigningInfo)
+: parent_(parent), accessPrefix_(accessPrefix), ckPrefix_(ckPrefix),
+  ckDataSigningInfo_(ckDataSigningInfo),
+  isKekRetrievalInProgress_(false), kekPendingInterestId_(0),
   isGckRetrievalInProgress_(false), gckPendingInterestId_(0)
 {
-  if (algorithmType == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
+  if (parent->algorithmType_ == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
     ckBits_.resize(ndn_CHACHA20_KEY_LENGTH);
-  else if (algorithmType == ndn_EncryptAlgorithmType_AesCbc)
+  else if (parent->algorithmType_ == ndn_EncryptAlgorithmType_AesCbc)
     ckBits_.resize(AES_KEY_SIZE);
   else
     throw std::runtime_error("EncryptorV2: Unsupported encryption algorithm type");
@@ -104,16 +112,21 @@ EncryptorV2::Impl::Impl
   (const Name& accessPrefix, const EncryptError::OnError& onError,
    PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
    ndn_EncryptAlgorithmType algorithmType)
-: accessPrefix_(accessPrefix), onError_(onError), credentialsKey_(credentialsKey),
-  validator_(validator),
-  keyChain_(keyChain), face_(face), algorithmType_(algorithmType),
+: onError_(onError), credentialsKey_(credentialsKey), validator_(validator),
+  keyChain_(keyChain), face_(face), algorithmType_(algorithmType)
+{
+  keyManagers_.push_back(ptr_lib::make_shared<KeyManager>(this, accessPrefix));
+}
+
+EncryptorV2::Impl::KeyManager::KeyManager(Impl* parent, const Name& accessPrefix)
+: parent_(parent), accessPrefix_(accessPrefix),
   isKekRetrievalInProgress_(false), ckRegisteredPrefixId_(0),
   kekPendingInterestId_(0), isGckRetrievalInProgress_(false),
   gckPendingInterestId_(0)
 {
-  if (algorithmType == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
+  if (parent->algorithmType_ == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
     ckBits_.resize(ndn_CHACHA20_KEY_LENGTH);
-  else if (algorithmType == ndn_EncryptAlgorithmType_AesCbc)
+  else if (parent->algorithmType_ == ndn_EncryptAlgorithmType_AesCbc)
     ckBits_.resize(AES_KEY_SIZE);
   else
     throw std::runtime_error("EncryptorV2: Unsupported encryption algorithm type");
@@ -124,14 +137,14 @@ EncryptorV2::Impl::Impl
 }
 
 void
-EncryptorV2::Impl::initializeCk()
+EncryptorV2::Impl::KeyManager::initializeCk()
 {
   regenerateCk();
 
   // Prepare the callbacks.
   class Callbacks {
   public:
-    Callbacks(const ptr_lib::shared_ptr<Impl>& parent)
+    Callbacks(const ptr_lib::shared_ptr<KeyManager>& parent)
     : parent_(parent)
     {}
 
@@ -163,27 +176,27 @@ EncryptorV2::Impl::initializeCk()
       _LOG_ERROR("Failed to register prefix: " << *prefix);
     }
 
-    ptr_lib::shared_ptr<Impl> parent_;
+    ptr_lib::shared_ptr<KeyManager> parent_;
   };
 
   // We make a shared_ptr object since it needs to exist after we return, and
   // pass shared_from_this() to keep a pointer to this Impl.
   ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
     (shared_from_this());
-  ckRegisteredPrefixId_ = face_->registerPrefix
+  ckRegisteredPrefixId_ = parent_->face_->registerPrefix
     (Name(ckPrefix_).append(getNAME_COMPONENT_CK()),
      bind(&Callbacks::onInterest, callbacks, _1, _2, _3, _4, _5),
      bind(&Callbacks::onRegisterFailed, callbacks, _1));
 }
 
 void
-EncryptorV2::Impl::shutdown()
+EncryptorV2::Impl::KeyManager::shutdown()
 {
-  face_->unsetInterestFilter(ckRegisteredPrefixId_);
+  parent_->face_->unsetInterestFilter(ckRegisteredPrefixId_);
   if (kekPendingInterestId_ > 0)
-    face_->removePendingInterest(kekPendingInterestId_);
+    parent_->face_->removePendingInterest(kekPendingInterestId_);
   if (gckPendingInterestId_ > 0)
-    face_->removePendingInterest(gckPendingInterestId_);
+    parent_->face_->removePendingInterest(gckPendingInterestId_);
 }
 
 ptr_lib::shared_ptr<EncryptedContent>
@@ -191,7 +204,16 @@ EncryptorV2::Impl::encrypt
   (const uint8_t* plainData, size_t plainDataLength,
    const uint8_t *associatedData, size_t associatedDataLength)
 {
-  if (isUsingGck() && ckName_.size() == 0)
+  return keyManagers_[0]->encrypt
+    (plainData, plainDataLength, associatedData, associatedDataLength);
+}
+
+ptr_lib::shared_ptr<EncryptedContent>
+EncryptorV2::Impl::KeyManager::encrypt
+  (const uint8_t* plainData, size_t plainDataLength,
+   const uint8_t *associatedData, size_t associatedDataLength)
+{
+  if (parent_->isUsingGck() && ckName_.size() == 0)
     throw runtime_error("EncryptorV2 has not fetched the first group content key (GCK)");
 
   ndn_Error error;
@@ -199,14 +221,14 @@ EncryptorV2::Impl::encrypt
   ptr_lib::shared_ptr<EncryptedContent> content =
     ptr_lib::make_shared<EncryptedContent>();
 
-  if (algorithmType_ == ndn_EncryptAlgorithmType_ChaCha20Poly1305) {
+  if (parent_->algorithmType_ == ndn_EncryptAlgorithmType_ChaCha20Poly1305) {
     // Generate the initial vector.
     uint8_t initialVector[ndn_CHACHA20_NONCE_LENGTH];
     if ((error = CryptoLite::generateRandomBytes
          (initialVector, sizeof(initialVector))))
       throw runtime_error(ndn_getErrorString(error));
     content->setInitialVector(Blob(initialVector, sizeof(initialVector)));
-    content->setAlgorithmType(algorithmType_);
+    content->setAlgorithmType(parent_->algorithmType_);
 
     // Add room for the authentication tag.
     encryptedData.reset
@@ -240,7 +262,7 @@ EncryptorV2::Impl::encrypt
 
   content->setPayload(Blob(encryptedData, false));
   content->setKeyLocatorName(ckName_);
-  content->setAlgorithmType(algorithmType_);
+  content->setAlgorithmType(parent_->algorithmType_);
 
   return content;
 }
@@ -248,25 +270,34 @@ EncryptorV2::Impl::encrypt
 void
 EncryptorV2::Impl::encrypt
   (const Blob& plainData, const Blob& associatedData,
+   const OnEncryptSuccess& onSuccess,
+   const EncryptError::OnError& onError)
+{
+  keyManagers_[0]->encrypt(plainData, associatedData, onSuccess, onError);
+}
+
+void
+EncryptorV2::Impl::KeyManager::encrypt
+  (const Blob& plainData, const Blob& associatedData,
    const OnEncryptSuccess& onSuccess, const EncryptError::OnError& onErrorIn)
 {
   // If the given OnError is omitted, use the one given to the constructor.
-  EncryptError::OnError onError = (onErrorIn ? onErrorIn : onError_);
+  EncryptError::OnError onError = (onErrorIn ? onErrorIn : parent_->onError_);
 
-  if (isUsingGck()) {
+  if (parent_->isUsingGck()) {
     auto now = system_clock::now();
 
     if (ckName_.size() == 0) {
       // We haven't fetched the first GCK.
       _LOG_TRACE
         ("The GCK is not yet available, so adding to the pending encrypt queue");
-      pendingEncrypts_.push_back
+      parent_->pendingEncrypts_.push_back
         (ptr_lib::make_shared<PendingEncrypt>
          (plainData, associatedData, onSuccess, onError));
 
       if (!isGckRetrievalInProgress_) {
         nextCheckForNewGck_ =
-          now + duration_cast<system_clock::duration>(checkForNewGckInterval_);
+          now + duration_cast<system_clock::duration>(parent_->checkForNewGckInterval_);
         // When the GCK is fetched, this will process the pending encrypts.
         checkForNewGck(onError);
       }
@@ -277,14 +308,14 @@ EncryptorV2::Impl::encrypt
     if (now > nextCheckForNewGck_) {
       // Need to check for a new GCK.
       nextCheckForNewGck_ =
-        now + duration_cast<system_clock::duration>(checkForNewGckInterval_);
+        now + duration_cast<system_clock::duration>(parent_->checkForNewGckInterval_);
       if (!isGckRetrievalInProgress_)
         checkForNewGck(onError);
       // Continue below to encrypt with the current key.
     }
   }
 
-  ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
+  ptr_lib::shared_ptr<EncryptedContent> encryptedContent = parent_->encrypt
     (plainData.buf(), plainData.size(), associatedData.buf(),
      associatedData.size());
   try {
@@ -297,9 +328,9 @@ EncryptorV2::Impl::encrypt
 }
 
 void
-EncryptorV2::Impl::regenerateCk()
+EncryptorV2::Impl::KeyManager::regenerateCk()
 {
-  if (isUsingGck())
+  if (parent_->isUsingGck())
     throw runtime_error("This EncryptorV2 uses a group content key. Cannot regenerateCk()");
 
   // TODO: Ensure that the CK Data packet for the old CK is published when the
@@ -320,11 +351,11 @@ EncryptorV2::Impl::regenerateCk()
   if (!kekData_)
     retryFetchingKek();
   else
-    makeAndPublishCkData(onError_);
+    makeAndPublishCkData(parent_->onError_);
 }
 
 void
-EncryptorV2::Impl::retryFetchingKek()
+EncryptorV2::Impl::KeyManager::retryFetchingKek()
 {
   if (isKekRetrievalInProgress_)
     return;
@@ -335,7 +366,7 @@ EncryptorV2::Impl::retryFetchingKek()
   // Prepare the callbacks.
   class Callbacks {
   public:
-    Callbacks(const ptr_lib::shared_ptr<Impl>& parent)
+    Callbacks(const ptr_lib::shared_ptr<KeyManager>& parent)
     : parent_(parent)
     {}
 
@@ -351,10 +382,10 @@ EncryptorV2::Impl::retryFetchingKek()
     {
       _LOG_TRACE("Failed to retrieve KEK: " + message);
       parent_->isKekRetrievalInProgress_ = false;
-      parent_->onError_(errorCode, message);
+      parent_->parent_->onError_(errorCode, message);
     }
 
-    ptr_lib::shared_ptr<Impl> parent_;
+    ptr_lib::shared_ptr<KeyManager> parent_;
   };
 
   // We make a shared_ptr object since it needs to exist after we return, and
@@ -368,7 +399,7 @@ EncryptorV2::Impl::retryFetchingKek()
 }
 
 void
-EncryptorV2::Impl::fetchKekAndPublishCkData
+EncryptorV2::Impl::KeyManager::fetchKekAndPublishCkData
   (const Face::Callback& onReady, const EncryptError::OnError& onError,
    int nTriesLeft)
 {
@@ -385,7 +416,7 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
   class Callbacks {
   public:
     Callbacks
-      (const ptr_lib::shared_ptr<Impl>& parent, const Face::Callback& onReady,
+      (const ptr_lib::shared_ptr<KeyManager>& parent, const Face::Callback& onReady,
        const EncryptError::OnError& onError, int nTriesLeft)
     : parent_(parent), onReady_(onReady), onError_(onError),
       nTriesLeft_(nTriesLeft)
@@ -399,7 +430,7 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
       parent_->kekPendingInterestId_ = 0;
 
       // Validate the Data signature.
-      parent_->validator_->validate
+      parent_->parent_->validator_->validate
         (*kekData,
          [=](auto&) {
            parent_->kekData_ = kekData;
@@ -423,9 +454,9 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
         onError_(EncryptError::ErrorCode::KekRetrievalTimeout,
           "Retrieval of KEK [" + interest->getName().toUri() + "] timed out");
         _LOG_TRACE("Scheduling retry after all timeouts");
-        parent_->face_->callLater
+        parent_->parent_->face_->callLater
           (RETRY_DELAY_KEK_RETRIEVAL,
-           bind(&EncryptorV2::Impl::retryFetchingKek, parent_));
+           bind(&EncryptorV2::Impl::KeyManager::retryFetchingKek, parent_));
       }
     }
 
@@ -436,9 +467,9 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
     {
       parent_->kekPendingInterestId_ = 0;
       if (nTriesLeft_ > 1) {
-        parent_->face_->callLater
+        parent_->parent_->face_->callLater
           (RETRY_DELAY_AFTER_NACK,
-           bind(&EncryptorV2::Impl::fetchKekAndPublishCkData, parent_,
+           bind(&EncryptorV2::Impl::KeyManager::fetchKekAndPublishCkData, parent_,
                 onReady_, onError_, nTriesLeft_ - 1));
       }
       else {
@@ -447,13 +478,13 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
           "] failed. Got NACK (" << networkNack->getReason() << ")";
         onError_(EncryptError::ErrorCode::KekRetrievalFailure, message.str());
         _LOG_TRACE("Scheduling retry from NACK");
-        parent_->face_->callLater
+        parent_->parent_->face_->callLater
           (RETRY_DELAY_KEK_RETRIEVAL,
-           bind(&EncryptorV2::Impl::retryFetchingKek, parent_));
+           bind(&EncryptorV2::Impl::KeyManager::retryFetchingKek, parent_));
       }
     }
 
-    ptr_lib::shared_ptr<Impl> parent_;
+    ptr_lib::shared_ptr<KeyManager> parent_;
     Face::Callback onReady_;
     EncryptError::OnError onError_;
     int nTriesLeft_;
@@ -464,7 +495,7 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
     // pass shared_from_this() to keep a pointer to this Impl.
     ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
       (shared_from_this(), onReady, onError, nTriesLeft);
-    kekPendingInterestId_ = face_->expressInterest
+    kekPendingInterestId_ = parent_->face_->expressInterest
       (Interest(Name(accessPrefix_).append(getNAME_COMPONENT_KEK()))
                .setMustBeFresh(true)
                .setCanBePrefix(true),
@@ -478,7 +509,8 @@ EncryptorV2::Impl::fetchKekAndPublishCkData
 }
 
 bool
-EncryptorV2::Impl::makeAndPublishCkData(const EncryptError::OnError& onError)
+EncryptorV2::Impl::KeyManager::makeAndPublishCkData(
+  const EncryptError::OnError& onError)
 {
   try {
     RsaPublicKeyLite kek;
@@ -507,7 +539,7 @@ EncryptorV2::Impl::makeAndPublishCkData(const EncryptError::OnError& onError)
     ckData.setContent(content.wireEncodeV2());
     // FreshnessPeriod can serve as a soft access control for revoking access.
     ckData.getMetaInfo().setFreshnessPeriod(DEFAULT_CK_FRESHNESS_PERIOD);
-    keyChain_->sign(ckData, ckDataSigningInfo_);
+    parent_->keyChain_->sign(ckData, ckDataSigningInfo_);
     storage_.insert(ckData);
 
     _LOG_TRACE("Publishing CK data: " << ckData.getName());
@@ -520,7 +552,7 @@ EncryptorV2::Impl::makeAndPublishCkData(const EncryptError::OnError& onError)
 }
 
 void
-EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
+EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onError)
 {
   if (isGckRetrievalInProgress_)
     // Already checking.
@@ -531,7 +563,7 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
   class Callbacks {
   public:
     Callbacks
-      (const ptr_lib::shared_ptr<Impl>& parent,
+      (const ptr_lib::shared_ptr<KeyManager>& parent,
        const EncryptError::OnError& onError)
     : parent_(parent), onError_(onError)
     {}
@@ -542,7 +574,7 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
        const ptr_lib::shared_ptr<Data>& gckLatestData)
     {
       // Validate the Data signature.
-      parent_->validator_->validate
+      parent_->parent_->validator_->validate
         (*gckLatestData,
          [=](auto&) {
            Name newGckName;
@@ -591,7 +623,7 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
       onError_(EncryptError::ErrorCode::CkRetrievalFailure, message.str());
     }
 
-    ptr_lib::shared_ptr<Impl> parent_;
+    ptr_lib::shared_ptr<KeyManager> parent_;
     EncryptError::OnError onError_;
   };
 
@@ -600,20 +632,20 @@ EncryptorV2::Impl::checkForNewGck(const EncryptError::OnError& onError)
     // pass shared_from_this() to keep a pointer to this Impl.
     ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
       (shared_from_this(), onError);
-    face_->expressInterest
+    parent_->face_->expressInterest
       (Interest(gckLatestPrefix_).setMustBeFresh(true).setCanBePrefix(true),
        bind(&Callbacks::onData, callbacks, _1, _2),
        bind(&Callbacks::onTimeout, callbacks, _1),
        bind(&Callbacks::onNetworkNack, callbacks, _1, _2));
   } catch (const std::exception& ex) {
     isGckRetrievalInProgress_ = false;
-    onError_(EncryptError::ErrorCode::General,
+    parent_->onError_(EncryptError::ErrorCode::General,
              string("expressInterest error: ") + ex.what());
   }
 }
 
 void
-EncryptorV2::Impl::fetchGck(
+EncryptorV2::Impl::KeyManager::fetchGck(
   const Name& gckName, const EncryptError::OnError& onError, int nTriesLeft)
 {
   // This is only called from checkForNewGck, so isGckRetrievalInProgress_ is true.
@@ -627,7 +659,7 @@ EncryptorV2::Impl::fetchGck(
   Name encryptedGckName(gckName);
   encryptedGckName
     .append(getNAME_COMPONENT_ENCRYPTED_BY())
-    .append(credentialsKey_->getName());
+    .append(parent_->credentialsKey_->getName());
 
   _LOG_TRACE("EncryptorV2: Fetching GCK " << encryptedGckName);
 
@@ -635,7 +667,7 @@ EncryptorV2::Impl::fetchGck(
   class Callbacks {
   public:
     Callbacks
-      (const ptr_lib::shared_ptr<Impl>& parent, const Name& gckName,
+      (const ptr_lib::shared_ptr<KeyManager>& parent, const Name& gckName,
        const EncryptError::OnError& onError, int nTriesLeft)
     : parent_(parent), gckName_(gckName), onError_(onError),
       nTriesLeft_(nTriesLeft)
@@ -683,7 +715,7 @@ EncryptorV2::Impl::fetchGck(
       onError_(EncryptError::ErrorCode::CkRetrievalFailure, message.str());
     }
 
-    ptr_lib::shared_ptr<Impl> parent_;
+    ptr_lib::shared_ptr<KeyManager> parent_;
     Name gckName_;
     EncryptError::OnError onError_;
     int nTriesLeft_;
@@ -694,20 +726,20 @@ EncryptorV2::Impl::fetchGck(
     // pass shared_from_this() to keep a pointer to this Impl.
     ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
       (shared_from_this(), gckName, onError, nTriesLeft);
-    gckPendingInterestId_ = face_->expressInterest
+    gckPendingInterestId_ = parent_->face_->expressInterest
       (Interest(encryptedGckName).setMustBeFresh(false).setCanBePrefix(true),
        bind(&Callbacks::onData, callbacks, _1, _2),
        bind(&Callbacks::onTimeout, callbacks, _1),
        bind(&Callbacks::onNetworkNack, callbacks, _1, _2));
   } catch (const std::exception& ex) {
     isGckRetrievalInProgress_ = false;
-    onError_(EncryptError::ErrorCode::General,
+    parent_->onError_(EncryptError::ErrorCode::General,
             string("expressInterest error: ") + ex.what());
   }
 }
 
 void
-EncryptorV2::Impl::decryptGckAndProcessPendingEncrypts(
+EncryptorV2::Impl::KeyManager::decryptGckAndProcessPendingEncrypts(
   const Name& gckName, const Data& gckData, const EncryptError::OnError& onError)
 {
   // This is only called from fetchGck, so isGckRetrievalInProgress_ is true.
@@ -726,9 +758,9 @@ EncryptorV2::Impl::decryptGckAndProcessPendingEncrypts(
 
   Blob decryptedCkBits;
   try {
-    decryptedCkBits = keyChain_->getTpm().decrypt
+    decryptedCkBits = parent_->keyChain_->getTpm().decrypt
       (content.getPayload().buf(), content.getPayload().size(),
-       credentialsKey_->getName());
+       parent_->credentialsKey_->getName());
   } catch (const std::exception& ex) {
     isGckRetrievalInProgress_ = false;
     onError(EncryptError::ErrorCode::DecryptionFailure,
@@ -738,7 +770,7 @@ EncryptorV2::Impl::decryptGckAndProcessPendingEncrypts(
   if (decryptedCkBits.isNull()) {
     isGckRetrievalInProgress_ = false;
     onError(EncryptError::ErrorCode::TpmKeyNotFound,
-      "Could not decrypt secret, " + credentialsKey_->getName().toUri() +
+      "Could not decrypt secret, " + parent_->credentialsKey_->getName().toUri() +
     " not found in TPM");
     return;
   }
@@ -753,12 +785,12 @@ EncryptorV2::Impl::decryptGckAndProcessPendingEncrypts(
   ndn_memcpy(&ckBits_[0], decryptedCkBits.buf(), ckBits_.size());
   isGckRetrievalInProgress_ = false;
 
-  for (size_t i = 0; i < pendingEncrypts_.size(); ++i) {
-    PendingEncrypt& pendingEncrypt = *pendingEncrypts_[i];
+  for (size_t i = 0; i < parent_->pendingEncrypts_.size(); ++i) {
+    PendingEncrypt& pendingEncrypt = *parent_->pendingEncrypts_[i];
 
     // TODO: If this calls onError, should we quit so that there is only one exit
     // from the asynchronous operation?
-    ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
+    ptr_lib::shared_ptr<EncryptedContent> encryptedContent = parent_->encrypt
       (pendingEncrypt.plainData.buf(), pendingEncrypt.plainData.size(),
        pendingEncrypt.associatedData.buf(), pendingEncrypt.associatedData.size());
     try {
@@ -770,7 +802,7 @@ EncryptorV2::Impl::decryptGckAndProcessPendingEncrypts(
     }
   }
 
-  pendingEncrypts_.clear();
+  parent_->pendingEncrypts_.clear();
 }
 
 EncryptorV2::Values* EncryptorV2::values_ = 0;

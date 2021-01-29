@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
@@ -158,7 +158,7 @@ public:
    * associatedData is omitted or if associatedDataLength is 0, then no
    * associated data is used.
    * @param associatedDataLength (optional) The length of associatedData.
-   * @return The new EncryptedContent (whose encoding replaced the Data packet content).
+   * @return The new EncryptedContent.
    * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
    * and the first GCK has not been fetched. (When using a group content key,
    * you should call the asynchronous encrypt method with the onSuccess callback.)
@@ -181,7 +181,7 @@ public:
    * associatedData.size() is 0, then this can be an isNull() Blob. If the
    * associatedData is omitted or if its size() is 0, then no associated data is
    * used.
-   * @return The new EncryptedContent (whose encoding replaced the Data packet content).
+   * @return The new EncryptedContent.
    * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
    * and the first GCK has not been fetched. (When using a group content key,
    * you should call the asynchronous encrypt method with the onSuccess callback.)
@@ -458,7 +458,11 @@ private:
      * is needed because we can't call shared_from_this() in the constructor.
      */
     void
-    initializeCk();
+    initializeCk()
+    {
+      // For non-GCK, there is only one KeyManager.
+      keyManagers_[0]->initializeCk();
+    }
 
     /**
      * Complete the work of the constructor for a group content key. This is
@@ -471,7 +475,11 @@ private:
     }
 
     void
-    shutdown();
+    shutdown()
+    {
+      for (int i = 0; i < keyManagers_.size(); ++i)
+        keyManagers_[i]->shutdown();
+    }
 
     ptr_lib::shared_ptr<EncryptedContent>
     encrypt
@@ -489,7 +497,11 @@ private:
      * packet. This uses the onError given to the constructor to report errors.
      */
     void
-    regenerateCk();
+    regenerateCk()
+    {
+      // For non-GCK, there is only one KeyManager.
+      keyManagers_[0]->regenerateCk();
+    }
 
     void
     setCheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
@@ -498,7 +510,15 @@ private:
     }
 
     size_t
-    size() { return storage_.size(); }
+    size()
+    {
+      if (isUsingGck())
+        throw std::runtime_error
+          ("This EncryptorV2 uses a group content key. Cannot get the number of published CK packets");
+
+      // For non-GCK, there is only one KeyManager.
+      return keyManagers_[0]->size();
+    }
 
   private:
     // Give friend access to the tests.
@@ -520,6 +540,65 @@ private:
       OnEncryptSuccess onSuccess;
       EncryptError::OnError onError;
     };
+
+    /**
+     * EncryptorV2::Impl::KeyManager keeps track of the key associated with a
+     * particular access prefix.
+     */
+    class KeyManager : public ptr_lib::enable_shared_from_this<KeyManager> {
+    public:
+      KeyManager
+        (Impl* parent, const Name& accessPrefix, const Name& ckPrefix,
+         const SigningInfo& ckDataSigningInfo);
+
+      KeyManager(Impl* parent, const Name& accessPrefix);
+
+      /**
+       * Complete the work of the constructor for a (non-group) content key. This
+       * is needed because we can't call shared_from_this() in the constructor.
+       */
+      void
+      initializeCk();
+
+      void
+      shutdown();
+
+      /**
+       * Encrypt the plainData using the existing content key for this KeyManager
+       * and return a new EncryptedContent.
+       * @param plainData The data to encrypt.
+       * @param plainDataLength The length of plainData.
+       * @param associatedData (optional) A pointer to the associated data which is
+       * included in the calculation of the authentication tag, but is not
+       * encrypted. If associatedDataLength is 0, then this can be NULL. If the
+       * associatedData is omitted or if associatedDataLength is 0, then no
+       * associated data is used.
+       * @param associatedDataLength (optional) The length of associatedData.
+       * @return The new EncryptedContent.
+       * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
+       * and the first GCK has not been fetched.
+       */
+      ptr_lib::shared_ptr<EncryptedContent>
+      encrypt
+        (const uint8_t* plainData, size_t plainDataLength,
+         const uint8_t *associatedData, size_t associatedDataLength);
+
+      void
+      encrypt
+        (const Blob& plainData, const Blob& associatedData,
+         const OnEncryptSuccess& onSuccess,
+         const EncryptError::OnError& onError);
+
+      void
+      regenerateCk();
+
+      size_t
+      size() { return storage_.size(); }
+
+    private:
+      // Give friend access to the tests.
+      friend class ::TestEncryptorV2_EncryptAndPublishCk_Test;
+      friend class ::TestEncryptorV2_EnumerateDataFromInMemoryStorage_Test;
 
     void
     retryFetchingKek();
@@ -588,39 +667,45 @@ private:
       const Name& gckName, const Data& gckData,
       const EncryptError::OnError& onError);
 
-    bool isUsingGck() { return gckLatestPrefix_.size() != 0; }
+      Impl* parent_;
+      Name accessPrefix_;
+      // Generated CK name or fetched GCK name.
+      Name ckName_;
+      // Generated CK or fetched GCK bits.
+      std::vector<uint8_t> ckBits_;
 
-    Name accessPrefix_;
-    // Generated CK name or fetched GCK name.
-    Name ckName_;
-    // Generated CK or fetched GCK bits.
-    std::vector<uint8_t> ckBits_;
-    EncryptError::OnError onError_;
+      // For creating CK Data packets. Not used for GCK.
+      Name ckPrefix_;
+      bool isKekRetrievalInProgress_;
+      ptr_lib::shared_ptr<Data> kekData_;
+      SigningInfo ckDataSigningInfo_;
 
-    // For creating CK Data packets. Not used for GCK.
-    Name ckPrefix_;
-    bool isKekRetrievalInProgress_;
-    ptr_lib::shared_ptr<Data> kekData_;
-    SigningInfo ckDataSigningInfo_;
+      // Storage for encrypted CKs. Not used for GCK.
+      InMemoryStorageRetaining storage_;
+      uint64_t ckRegisteredPrefixId_;
+      uint64_t kekPendingInterestId_;
 
-    // Storage for encrypted CKs. Not used for GCK.
-    InMemoryStorageRetaining storage_;
-    uint64_t ckRegisteredPrefixId_;
-    uint64_t kekPendingInterestId_;
+      // For fetching and decrypting the GCK. Not used for CK.
+      std::chrono::system_clock::time_point nextCheckForNewGck_;
+      bool isGckRetrievalInProgress_;
+      Name gckLatestPrefix_;
+      uint64_t gckPendingInterestId_;
+    };
+
+    bool
+    isUsingGck() { return !!credentialsKey_; }
 
     // For fetching and decrypting the GCK. Not used for CK.
     std::chrono::nanoseconds checkForNewGckInterval_;
-    std::chrono::system_clock::time_point nextCheckForNewGck_;
-    Name gckLatestPrefix_;
-    bool isGckRetrievalInProgress_;
-    uint64_t gckPendingInterestId_;
     std::vector<ptr_lib::shared_ptr<PendingEncrypt> > pendingEncrypts_;
     PibKey* credentialsKey_;
 
+    EncryptError::OnError onError_;
     Validator* validator_;
     KeyChain* keyChain_;
     Face* face_;
     ndn_EncryptAlgorithmType algorithmType_;
+    std::vector<ptr_lib::shared_ptr<KeyManager> > keyManagers_;
   };
 
   ptr_lib::shared_ptr<Impl> impl_;
