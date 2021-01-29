@@ -204,8 +204,12 @@ EncryptorV2::Impl::encrypt
   (const uint8_t* plainData, size_t plainDataLength,
    const uint8_t *associatedData, size_t associatedDataLength)
 {
-  return keyManagers_[0]->encrypt
+  ptr_lib::shared_ptr<EncryptedContent> encryptedContent = keyManagers_[0]->encrypt
     (plainData, plainDataLength, associatedData, associatedDataLength);
+  if (encryptedContent)
+    return encryptedContent;
+
+  throw runtime_error("EncryptorV2 has not fetched the first group content key (GCK)");
 }
 
 ptr_lib::shared_ptr<EncryptedContent>
@@ -214,7 +218,8 @@ EncryptorV2::Impl::KeyManager::encrypt
    const uint8_t *associatedData, size_t associatedDataLength)
 {
   if (parent_->isUsingGck() && ckName_.size() == 0)
-    throw runtime_error("EncryptorV2 has not fetched the first group content key (GCK)");
+    // The caller will check this and throw an exception if needed.
+    return ptr_lib::shared_ptr<EncryptedContent>();
 
   ndn_Error error;
   ptr_lib::shared_ptr<vector<uint8_t> > encryptedData;
@@ -271,38 +276,100 @@ void
 EncryptorV2::Impl::encrypt
   (const Blob& plainData, const Blob& associatedData,
    const OnEncryptSuccess& onSuccess,
-   const EncryptError::OnError& onError)
+   const EncryptError::OnError& onErrorIn)
 {
-  keyManagers_[0]->encrypt(plainData, associatedData, onSuccess, onError);
+  // If the given OnError is omitted, use the one given to the constructor.
+  EncryptError::OnError onError = (onErrorIn ? onErrorIn : onError_);
+
+  bool canEncrypt = keyManagers_[0]->isKeyReady();
+  if (canEncrypt) {
+    ptr_lib::shared_ptr<EncryptedContent> encryptedContent;
+    try {
+      // If a key was made ready, then processPendingEncrypts() should already have
+      // been called, but check anyway.
+      processPendingEncrypts();
+
+      encryptedContent = encrypt
+        (plainData.buf(), plainData.size(), associatedData.buf(),
+         associatedData.size());
+    } catch (const std::exception& ex) {
+      onError(EncryptError::ErrorCode::EncryptionFailure,
+        string("Error in encrypt: ") + ex.what());
+    }
+
+    if (encryptedContent) {
+      try {
+        onSuccess(encryptedContent);
+      } catch (const std::exception& ex) {
+        _LOG_ERROR("Error in onSuccess: " << ex.what());
+      } catch (...) {
+        _LOG_ERROR("Error in onSuccess.");
+      }
+    }
+    else
+      // isKeyReady returned true, but encrypt returned null, meaning not really ready.
+      // We don't expect this to happen.
+      onError(EncryptError::ErrorCode::EncryptionFailure,
+        "EncryptorV2: A content key is ready, but unable to encrypt");
+  }
+  else {
+    // There isn't a ready content key. Save in pendingEncrypts_ until ready.
+    _LOG_TRACE
+      ("The GCK is not yet available, so adding to the pending encrypt queue");
+    pendingEncrypts_.push_back
+      (ptr_lib::make_shared<PendingEncrypt>
+       (plainData, associatedData, onSuccess, onError));
+  }
 }
 
 void
-EncryptorV2::Impl::KeyManager::encrypt
-  (const Blob& plainData, const Blob& associatedData,
-   const OnEncryptSuccess& onSuccess, const EncryptError::OnError& onErrorIn)
+EncryptorV2::Impl::processPendingEncrypts()
 {
-  // If the given OnError is omitted, use the one given to the constructor.
-  EncryptError::OnError onError = (onErrorIn ? onErrorIn : parent_->onError_);
+  if (pendingEncrypts_.size() == 0)
+    return;
 
+  for (size_t i = 0; i < pendingEncrypts_.size(); ++i) {
+    PendingEncrypt& pendingEncrypt = *pendingEncrypts_[i];
+
+    // TODO: If this calls onError, should we quit so that there is only one exit
+    // from the asynchronous operation?
+    ptr_lib::shared_ptr<EncryptedContent> encryptedContent = encrypt
+      (pendingEncrypt.plainData.buf(), pendingEncrypt.plainData.size(),
+       pendingEncrypt.associatedData.buf(), pendingEncrypt.associatedData.size());
+    if (encryptedContent) {
+      try {
+        pendingEncrypt.onSuccess(encryptedContent);
+      } catch (const std::exception& ex) {
+        _LOG_ERROR("Error in onSuccess: " << ex.what());
+      } catch (...) {
+        _LOG_ERROR("Error in onSuccess.");
+      }
+    }
+    else
+      // This should only be called when a key is ready, but encrypt returned
+      // null, meaning not really ready. We don't expect this to happen.
+      _LOG_ERROR("EncryptorV2: A content key is ready, but unable to do pending encrypt");
+  }
+
+  pendingEncrypts_.clear();
+}
+
+bool
+EncryptorV2::Impl::KeyManager::isKeyReady()
+{
   if (parent_->isUsingGck()) {
     auto now = system_clock::now();
 
     if (ckName_.size() == 0) {
-      // We haven't fetched the first GCK.
-      _LOG_TRACE
-        ("The GCK is not yet available, so adding to the pending encrypt queue");
-      parent_->pendingEncrypts_.push_back
-        (ptr_lib::make_shared<PendingEncrypt>
-         (plainData, associatedData, onSuccess, onError));
-
       if (!isGckRetrievalInProgress_) {
         nextCheckForNewGck_ =
           now + duration_cast<system_clock::duration>(parent_->checkForNewGckInterval_);
         // When the GCK is fetched, this will process the pending encrypts.
-        checkForNewGck(onError);
+        checkForNewGck();
       }
 
-      return;
+      // The caller will update pendingEncrypts_ and wait for a ready key.
+      return false;
     }
 
     if (now > nextCheckForNewGck_) {
@@ -310,21 +377,12 @@ EncryptorV2::Impl::KeyManager::encrypt
       nextCheckForNewGck_ =
         now + duration_cast<system_clock::duration>(parent_->checkForNewGckInterval_);
       if (!isGckRetrievalInProgress_)
-        checkForNewGck(onError);
+        checkForNewGck();
       // Continue below to encrypt with the current key.
     }
   }
 
-  ptr_lib::shared_ptr<EncryptedContent> encryptedContent = parent_->encrypt
-    (plainData.buf(), plainData.size(), associatedData.buf(),
-     associatedData.size());
-  try {
-    onSuccess(encryptedContent);
-  } catch (const std::exception& ex) {
-    _LOG_ERROR("Error in onSuccess: " << ex.what());
-  } catch (...) {
-    _LOG_ERROR("Error in onSuccess.");
-  }
+  return true;
 }
 
 void
@@ -552,7 +610,7 @@ EncryptorV2::Impl::KeyManager::makeAndPublishCkData(
 }
 
 void
-EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onError)
+EncryptorV2::Impl::KeyManager::checkForNewGck()
 {
   if (isGckRetrievalInProgress_)
     // Already checking.
@@ -562,10 +620,8 @@ EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onErr
   // Prepare the callbacks.
   class Callbacks {
   public:
-    Callbacks
-      (const ptr_lib::shared_ptr<KeyManager>& parent,
-       const EncryptError::OnError& onError)
-    : parent_(parent), onError_(onError)
+    Callbacks(const ptr_lib::shared_ptr<KeyManager>& parent)
+    : parent_(parent)
     {}
 
     void
@@ -582,8 +638,7 @@ EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onErr
              newGckName.wireDecode(gckLatestData->getContent());
            } catch (const std::exception& ex) {
              parent_->isGckRetrievalInProgress_ = false;
-             onError_(EncryptError::ErrorCode::CkRetrievalFailure,
-               string("Error decoding GCK name in: ") + gckLatestData->getName().toUri());
+             _LOG_ERROR("Error decoding GCK name in: " << gckLatestData->getName().toUri());
              return;
            }
 
@@ -594,12 +649,11 @@ EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onErr
            }
 
            // Leave isGckRetrievalInProgress_ true.
-           parent_->fetchGck(newGckName, onError_, N_RETRIES);
+           parent_->fetchGck(newGckName, N_RETRIES);
          },
          [=](auto&, auto& error) {
            parent_->isGckRetrievalInProgress_ = false;
-           onError_(EncryptError::ErrorCode::CkRetrievalFailure,
-             "Validate GCK latest_ Data failure: " + error.toString());
+           _LOG_ERROR("Validate GCK latest_ Data failure: " << error.toString());
          });
     }
 
@@ -607,8 +661,7 @@ EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onErr
     onTimeout(const ptr_lib::shared_ptr<const Interest>& interest)
     {
       parent_->isGckRetrievalInProgress_ = false;
-      onError_(EncryptError::ErrorCode::CkRetrievalFailure,
-        "Timeout for GCK _latest packet: " + interest->getName().toUri());
+      _LOG_ERROR("Timeout for GCK _latest packet: " << interest->getName().toUri());
     }
 
     void
@@ -618,20 +671,18 @@ EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onErr
     {
       parent_->isGckRetrievalInProgress_ = false;
       ostringstream message;
-      message << "Network nack for GCK _latest packet: " << interest->getName().toUri() <<
-        ". Got NACK (" << networkNack->getReason() << ")";
-      onError_(EncryptError::ErrorCode::CkRetrievalFailure, message.str());
+      _LOG_ERROR("Network nack for GCK _latest packet: " << interest->getName().toUri() <<
+        ". Got NACK (" << networkNack->getReason() << ")");
     }
 
     ptr_lib::shared_ptr<KeyManager> parent_;
-    EncryptError::OnError onError_;
   };
 
   try {
     // We make a shared_ptr object since it needs to exist after we return, and
     // pass shared_from_this() to keep a pointer to this Impl.
     ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
-      (shared_from_this(), onError);
+      (shared_from_this());
     parent_->face_->expressInterest
       (Interest(gckLatestPrefix_).setMustBeFresh(true).setCanBePrefix(true),
        bind(&Callbacks::onData, callbacks, _1, _2),
@@ -639,14 +690,12 @@ EncryptorV2::Impl::KeyManager::checkForNewGck(const EncryptError::OnError& onErr
        bind(&Callbacks::onNetworkNack, callbacks, _1, _2));
   } catch (const std::exception& ex) {
     isGckRetrievalInProgress_ = false;
-    parent_->onError_(EncryptError::ErrorCode::General,
-             string("expressInterest error: ") + ex.what());
+    _LOG_ERROR("expressInterest error: " << ex.what());
   }
 }
 
 void
-EncryptorV2::Impl::KeyManager::fetchGck(
-  const Name& gckName, const EncryptError::OnError& onError, int nTriesLeft)
+EncryptorV2::Impl::KeyManager::fetchGck(const Name& gckName, int nTriesLeft)
 {
   // This is only called from checkForNewGck, so isGckRetrievalInProgress_ is true.
 
@@ -668,9 +717,8 @@ EncryptorV2::Impl::KeyManager::fetchGck(
   public:
     Callbacks
       (const ptr_lib::shared_ptr<KeyManager>& parent, const Name& gckName,
-       const EncryptError::OnError& onError, int nTriesLeft)
-    : parent_(parent), gckName_(gckName), onError_(onError),
-      nTriesLeft_(nTriesLeft)
+       int nTriesLeft)
+    : parent_(parent), gckName_(gckName), nTriesLeft_(nTriesLeft)
     {}
 
     void
@@ -682,10 +730,9 @@ EncryptorV2::Impl::KeyManager::fetchGck(
         parent_->gckPendingInterestId_ = 0;
 
         // Leave isGckRetrievalInProgress_ true.
-        parent_->decryptGckAndProcessPendingEncrypts(gckName_, *ckData, onError_);
+        parent_->decryptGckAndProcessPendingEncrypts(gckName_, *ckData);
       } catch (const std::exception& ex) {
-        onError_(EncryptError::ErrorCode::General,
-          string("Error in EncryptorV2::fetchGck onData: ") + ex.what());
+        _LOG_ERROR("Error in EncryptorV2::fetchGck onData: " << ex.what());
       }
     }
 
@@ -694,11 +741,10 @@ EncryptorV2::Impl::KeyManager::fetchGck(
     {
       parent_->gckPendingInterestId_ = 0;
       if (nTriesLeft_ > 1)
-        parent_->fetchGck(gckName_, onError_, nTriesLeft_ - 1);
+        parent_->fetchGck(gckName_, nTriesLeft_ - 1);
       else {
         parent_->isGckRetrievalInProgress_ = false;
-        onError_(EncryptError::ErrorCode::CkRetrievalTimeout,
-          "Retrieval of GCK [" + interest->getName().toUri() + "] timed out");
+        _LOG_ERROR("Retrieval of GCK [" << interest->getName().toUri() << "] timed out");
       }
     }
 
@@ -710,14 +756,12 @@ EncryptorV2::Impl::KeyManager::fetchGck(
       parent_->gckPendingInterestId_ = 0;
       parent_->isGckRetrievalInProgress_ = false;
       ostringstream message;
-      message << "Retrieval of GCK [" << interest->getName().toUri() <<
-        "] failed. Got NACK (" << networkNack->getReason() << ")";
-      onError_(EncryptError::ErrorCode::CkRetrievalFailure, message.str());
+      _LOG_ERROR("Retrieval of GCK [" << interest->getName().toUri() <<
+        "] failed. Got NACK (" << networkNack->getReason() << ")");
     }
 
     ptr_lib::shared_ptr<KeyManager> parent_;
     Name gckName_;
-    EncryptError::OnError onError_;
     int nTriesLeft_;
   };
 
@@ -725,7 +769,7 @@ EncryptorV2::Impl::KeyManager::fetchGck(
     // We make a shared_ptr object since it needs to exist after we return, and
     // pass shared_from_this() to keep a pointer to this Impl.
     ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
-      (shared_from_this(), gckName, onError, nTriesLeft);
+      (shared_from_this(), gckName, nTriesLeft);
     gckPendingInterestId_ = parent_->face_->expressInterest
       (Interest(encryptedGckName).setMustBeFresh(false).setCanBePrefix(true),
        bind(&Callbacks::onData, callbacks, _1, _2),
@@ -733,14 +777,13 @@ EncryptorV2::Impl::KeyManager::fetchGck(
        bind(&Callbacks::onNetworkNack, callbacks, _1, _2));
   } catch (const std::exception& ex) {
     isGckRetrievalInProgress_ = false;
-    parent_->onError_(EncryptError::ErrorCode::General,
-            string("expressInterest error: ") + ex.what());
+    _LOG_ERROR("expressInterest error: " << ex.what());
   }
 }
 
 void
 EncryptorV2::Impl::KeyManager::decryptGckAndProcessPendingEncrypts(
-  const Name& gckName, const Data& gckData, const EncryptError::OnError& onError)
+  const Name& gckName, const Data& gckData)
 {
   // This is only called from fetchGck, so isGckRetrievalInProgress_ is true.
 
@@ -751,8 +794,7 @@ EncryptorV2::Impl::KeyManager::decryptGckAndProcessPendingEncrypts(
     content.wireDecodeV2(gckData.getContent());
   } catch (const std::exception& ex) {
     isGckRetrievalInProgress_ = false;
-    onError(EncryptError::ErrorCode::InvalidEncryptedFormat,
-      string("Error decrypting EncryptedContent: ") + ex.what());
+    _LOG_ERROR("Error decrypting EncryptedContent: " << ex.what());
     return;
   }
 
@@ -763,46 +805,31 @@ EncryptorV2::Impl::KeyManager::decryptGckAndProcessPendingEncrypts(
        parent_->credentialsKey_->getName());
   } catch (const std::exception& ex) {
     isGckRetrievalInProgress_ = false;
-    onError(EncryptError::ErrorCode::DecryptionFailure,
-      string("Error decrypting the GCK: ") + ex.what());
+    _LOG_ERROR("Error decrypting the GCK: " << ex.what());
     return;
   }
   if (decryptedCkBits.isNull()) {
     isGckRetrievalInProgress_ = false;
-    onError(EncryptError::ErrorCode::TpmKeyNotFound,
-      "Could not decrypt secret, " + parent_->credentialsKey_->getName().toUri() +
-    " not found in TPM");
+    _LOG_ERROR("Could not decrypt secret, " << 
+      parent_->credentialsKey_->getName().toUri() << " not found in TPM");
     return;
   }
 
   if (decryptedCkBits.size() != ckBits_.size()) {
     isGckRetrievalInProgress_ = false;
-    onError(EncryptError::ErrorCode::DecryptionFailure,
-      "The decrypted group content key is not the correct size for the encryption algorithm");
+    _LOG_ERROR("The decrypted group content key is not the correct size for the encryption algorithm");
     return;
   }
   ckName_ = gckName;
   ndn_memcpy(&ckBits_[0], decryptedCkBits.buf(), ckBits_.size());
   isGckRetrievalInProgress_ = false;
-
-  for (size_t i = 0; i < parent_->pendingEncrypts_.size(); ++i) {
-    PendingEncrypt& pendingEncrypt = *parent_->pendingEncrypts_[i];
-
-    // TODO: If this calls onError, should we quit so that there is only one exit
-    // from the asynchronous operation?
-    ptr_lib::shared_ptr<EncryptedContent> encryptedContent = parent_->encrypt
-      (pendingEncrypt.plainData.buf(), pendingEncrypt.plainData.size(),
-       pendingEncrypt.associatedData.buf(), pendingEncrypt.associatedData.size());
-    try {
-      pendingEncrypt.onSuccess(encryptedContent);
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("Error in onSuccess: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("Error in onSuccess.");
-    }
+  try {
+    // We now have a key, so we can process pending encrypts if needed.
+    parent_->processPendingEncrypts();
+  } catch (const std::exception& ex) {
+    _LOG_ERROR("Error encrypting pending data: " << ex.what());
+    return;
   }
-
-  parent_->pendingEncrypts_.clear();
 }
 
 EncryptorV2::Values* EncryptorV2::values_ = 0;

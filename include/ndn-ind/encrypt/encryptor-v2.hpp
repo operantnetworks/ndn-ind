@@ -574,20 +574,23 @@ private:
        * associatedData is omitted or if associatedDataLength is 0, then no
        * associated data is used.
        * @param associatedDataLength (optional) The length of associatedData.
-       * @return The new EncryptedContent.
-       * @throws runtime_error if this EncryptorV2 is using a group content key (GCK)
-       * and the first GCK has not been fetched.
+       * @return The new EncryptedContent or null if using a group content key (GCK)
+       * and the first GCK has not been fetched. The caller should check for null
+       * and throw an exception if encryption cannot be performed.
        */
       ptr_lib::shared_ptr<EncryptedContent>
       encrypt
         (const uint8_t* plainData, size_t plainDataLength,
          const uint8_t *associatedData, size_t associatedDataLength);
 
-      void
-      encrypt
-        (const Blob& plainData, const Blob& associatedData,
-         const OnEncryptSuccess& onSuccess,
-         const EncryptError::OnError& onError);
+      /**
+       * Check if the content key is ready for calling encrypt. This may send an
+       * Interest to check if there is a new GCK.
+       * @return True if the key is ready. If false, then the caller should
+       * save in pendingEncrypts_ until a key is ready.
+       */
+      bool
+      isKeyReady();
 
       void
       regenerateCk();
@@ -632,40 +635,29 @@ private:
     /**
      * Send an interest for the gckLatestPrefix_ to get the name of the latest
      * GCK. If it doesn't match gckName_, then call fetchGck().
-     * @param onError On failure, this calls onError(errorCode, message)
-     * where errorCode is from EncryptError::ErrorCode, and message is an error
-     * string.
      */
     void
-    checkForNewGck(const EncryptError::OnError& onError);
+    checkForNewGck();
 
     /**
      * Fetch the Data packet <gckName>/ENCRYPTED-BY/<credentials-key> and call
      * decryptGck to decrypt it.
      * @param gckName The name of the group content key formed from the
      * access prefix, e.g. <access-prefix>/GCK/<gck-id> .
-     * @param onError On failure, this calls onError(errorCode, message)
-     * where errorCode is from EncryptError::ErrorCode, and message is an error
-     * string.
      * @param nTriesLeft If fetching times out, decrement nTriesLeft and try
      * again until it is zero.
      */
     void
-    fetchGck(
-      const Name& gckName, const EncryptError::OnError& onError, int nTriesLeft);
+    fetchGck(const Name& gckName, int nTriesLeft);
 
     /**
      * Decrypt the gckData fetched by fetchGck(), then copy it to ckBits_ and
      * copy gckName to ckName_ . Then process pending encrypts.
      * @param gckName The Name that fetchGck() used to fetch.
      * @param gckData The GCK Data packet fetched by fetchGck().
-     * @param onError On failure, this calls onError(errorCode, message)
-     * where errorCode is from EncryptError::ErrorCode, and message is an error
-     * string.
      */
     void decryptGckAndProcessPendingEncrypts(
-      const Name& gckName, const Data& gckData,
-      const EncryptError::OnError& onError);
+      const Name& gckName, const Data& gckData);
 
       Impl* parent_;
       Name accessPrefix_;
@@ -694,6 +686,13 @@ private:
 
     bool
     isUsingGck() { return !!credentialsKey_; }
+
+    /**
+     * For each entry in pendingEncrypts_, call encrypt. If there are no
+     * pending encrypts, then this does nothing and returns quickly.
+     */
+    void
+    processPendingEncrypts();
 
     // For fetching and decrypting the GCK. Not used for CK.
     std::chrono::nanoseconds checkForNewGckInterval_;
