@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
@@ -8,7 +8,7 @@
  * Original file: examples/test-echo-consumer.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Add command-line args, elapsed time.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -42,6 +42,7 @@
 #endif
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 using namespace ndn::func_lib;
 
@@ -52,19 +53,36 @@ public:
     callbackCount_ = 0;
   }
 
-  void onData(const ptr_lib::shared_ptr<const Interest>& interest, const ptr_lib::shared_ptr<Data>& data)
+  void onData
+    (const ptr_lib::shared_ptr<const Interest>& interest,
+     const ptr_lib::shared_ptr<Data>& data, system_clock::time_point startTime)
   {
     ++callbackCount_;
-    cout << "Got data packet with name " << data->getName().toUri() << endl;
-    for (size_t i = 0; i < data->getContent().size(); ++i)
-      cout << (*data->getContent())[i];
-    cout << endl;
+    int elapsedMs = duration_cast<milliseconds>(system_clock::now() - startTime).count();
+    cout << "Got data packet in " << elapsedMs << " ms with name " << data->getName().toUri() << endl;
+    cout << data->getContent() << endl;
   }
 
-  void onTimeout(const ptr_lib::shared_ptr<const Interest>& interest)
+  void onTimeout
+    (const ptr_lib::shared_ptr<const Interest>& interest,
+     system_clock::time_point startTime)
   {
     ++callbackCount_;
-    cout << "Time out for interest " << interest->getName().toUri() << endl;
+    int elapsedMs = duration_cast<milliseconds>(system_clock::now() - startTime).count();
+    cout << "Got timeout in " << elapsedMs << " ms for interest " <<
+      interest->getName().toUri() << endl;
+  }
+
+  void
+  onNetworkNack
+    (const ptr_lib::shared_ptr<const Interest>& interest,
+     const ptr_lib::shared_ptr<NetworkNack>& networkNack,
+     system_clock::time_point startTime)
+  {
+    ++callbackCount_;
+    int elapsedMs = duration_cast<milliseconds>(system_clock::now() - startTime).count();
+    cout << "Got network nack (" << networkNack->getReason() << ") in " <<
+      elapsedMs << " ms for interest " << interest->getName().toUri() << endl;
   }
 
   int callbackCount_;
@@ -140,8 +158,12 @@ int main(int argc, char** argv)
     Name name(namePrefix);
     name.append(word);
     cout << "Express name " << name.toUri() << endl;
+    auto startTime = system_clock::now();
     // Use bind to pass the counter object to the callbacks.
-    face->expressInterest(name, bind(&Counter::onData, &counter, _1, _2), bind(&Counter::onTimeout, &counter, _1));
+    face->expressInterest
+      (name, bind(&Counter::onData, &counter, _1, _2, startTime),
+       bind(&Counter::onTimeout, &counter, _1, startTime),
+       bind(&Counter::onNetworkNack, &counter, _1, _2, startTime));
 
     // The main event loop.
     while (counter.callbackCount_ < 1) {
