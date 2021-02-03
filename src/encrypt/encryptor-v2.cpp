@@ -98,7 +98,8 @@ EncryptorV2::Impl::KeyManager::KeyManager
 : parent_(parent), accessPrefix_(accessPrefix), ckPrefix_(ckPrefix),
   ckDataSigningInfo_(ckDataSigningInfo),
   isKekRetrievalInProgress_(false), kekPendingInterestId_(0),
-  isGckRetrievalInProgress_(false), gckPendingInterestId_(0)
+  isGckRetrievalInProgress_(false), gckPendingInterestId_(0),
+  accessManagerIsResponding_(false)
 {
   if (parent->algorithmType_ == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
     ckBits_.resize(ndn_CHACHA20_KEY_LENGTH);
@@ -109,20 +110,21 @@ EncryptorV2::Impl::KeyManager::KeyManager
 }
 
 EncryptorV2::Impl::Impl
-  (const Name& accessPrefix, const EncryptError::OnError& onError,
+  (const Name* accessPrefixes, size_t nAccessPrefixes, const EncryptError::OnError& onError,
    PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
    ndn_EncryptAlgorithmType algorithmType)
 : onError_(onError), credentialsKey_(credentialsKey), validator_(validator),
   keyChain_(keyChain), face_(face), algorithmType_(algorithmType)
 {
-  keyManagers_.push_back(ptr_lib::make_shared<KeyManager>(this, accessPrefix));
+  for (size_t i = 0; i < nAccessPrefixes; ++i)
+    keyManagers_.push_back(ptr_lib::make_shared<KeyManager>(this, accessPrefixes[i]));
 }
 
 EncryptorV2::Impl::KeyManager::KeyManager(Impl* parent, const Name& accessPrefix)
 : parent_(parent), accessPrefix_(accessPrefix),
   isKekRetrievalInProgress_(false), ckRegisteredPrefixId_(0),
   kekPendingInterestId_(0), isGckRetrievalInProgress_(false),
-  gckPendingInterestId_(0)
+  gckPendingInterestId_(0), accessManagerIsResponding_(false)
 {
   if (parent->algorithmType_ == ndn_EncryptAlgorithmType_ChaCha20Poly1305)
     ckBits_.resize(ndn_CHACHA20_KEY_LENGTH);
@@ -204,10 +206,13 @@ EncryptorV2::Impl::encrypt
   (const uint8_t* plainData, size_t plainDataLength,
    const uint8_t *associatedData, size_t associatedDataLength)
 {
-  ptr_lib::shared_ptr<EncryptedContent> encryptedContent = keyManagers_[0]->encrypt
-    (plainData, plainDataLength, associatedData, associatedDataLength);
-  if (encryptedContent)
-    return encryptedContent;
+  // Use the first key manager in the prioritized list which has a ready key.
+  for (size_t i = 0; i < keyManagers_.size(); ++i) {
+    ptr_lib::shared_ptr<EncryptedContent> encryptedContent = keyManagers_[i]->encrypt
+      (plainData, plainDataLength, associatedData, associatedDataLength);
+    if (encryptedContent)
+      return encryptedContent;
+  }
 
   throw runtime_error("EncryptorV2 has not fetched the first group content key (GCK)");
 }
@@ -281,7 +286,14 @@ EncryptorV2::Impl::encrypt
   // If the given OnError is omitted, use the one given to the constructor.
   EncryptError::OnError onError = (onErrorIn ? onErrorIn : onError_);
 
-  bool canEncrypt = keyManagers_[0]->isKeyReady();
+  bool canEncrypt = false;
+  for (size_t i = 0; i < keyManagers_.size(); ++i) {
+    if (keyManagers_[i]->isKeyReady())
+      canEncrypt = true;
+    // Even if we set canEncrypt true, continue to call isKeyReady for all
+    // key managers so that they can check for a new GCK.
+  }
+
   if (canEncrypt) {
     ptr_lib::shared_ptr<EncryptedContent> encryptedContent;
     try {
@@ -361,6 +373,7 @@ EncryptorV2::Impl::KeyManager::isKeyReady()
     auto now = system_clock::now();
 
     if (ckName_.size() == 0) {
+      // We have not yet fetched a GCK.
       if (!isGckRetrievalInProgress_) {
         nextCheckForNewGck_ =
           now + duration_cast<system_clock::duration>(parent_->checkForNewGckInterval_);
@@ -378,8 +391,16 @@ EncryptorV2::Impl::KeyManager::isKeyReady()
         now + duration_cast<system_clock::duration>(parent_->checkForNewGckInterval_);
       if (!isGckRetrievalInProgress_)
         checkForNewGck();
-      // Continue below to encrypt with the current key.
     }
+
+    if (parent_->keyManagers_.size() > 1)
+      // There are multiple access managers with possibility of failover, so
+      // only say the GCK is ready if the access manager is responding.
+      return accessManagerIsResponding_;
+    else
+      // There is only one access manager, so use an existing GCK even if we
+      // are unable to fetch a new GCK.
+      return true;
   }
 
   return true;
@@ -629,6 +650,8 @@ EncryptorV2::Impl::KeyManager::checkForNewGck()
       (const ptr_lib::shared_ptr<const Interest>& ckInterest,
        const ptr_lib::shared_ptr<Data>& gckLatestData)
     {
+      parent_->accessManagerIsResponding_ = true;
+
       // Validate the Data signature.
       parent_->parent_->validator_->validate
         (*gckLatestData,
@@ -637,8 +660,50 @@ EncryptorV2::Impl::KeyManager::checkForNewGck()
            try {
              newGckName.wireDecode(gckLatestData->getContent());
            } catch (const std::exception& ex) {
+             // Don't use the waiting next GCK.
+             parent_->nextGckBits_ = Blob();
              parent_->isGckRetrievalInProgress_ = false;
              _LOG_ERROR("Error decoding GCK name in: " << gckLatestData->getName().toUri());
+             return;
+           }
+
+           if (!parent_->nextGckBits_.isNull()) {
+             // There is a next GCK waiting to see if the access manager is still responding.
+             if (newGckName.equals(parent_->nextGckName_)) {
+               // The access manager is responding and still using the same GCK name.
+               auto now = system_clock::now();
+
+               if (now - parent_->nextGckReceiptTime_ > parent_->parent_->checkForNewGckInterval_) {
+                 // Enough time has passed for others to fetch it, so use the new GCK and
+                 // process pending encrypts, as done in decryptGckAndProcessPendingEncrypts.
+                 _LOG_DEBUG("EncryptorV2: The next GCK is ready " << parent_->nextGckName_.toUri());
+                 parent_->ckName_ = parent_->nextGckName_;
+                 ndn_memcpy(&parent_->ckBits_[0], parent_->nextGckBits_.buf(), parent_->ckBits_.size());
+                 parent_->nextGckBits_ = Blob();
+                 parent_->isGckRetrievalInProgress_ = false;
+                 try {
+                   // We now have a key, so we can process pending encrypts if needed.
+                   parent_->parent_->processPendingEncrypts();
+                 } catch (const std::exception& ex) {
+                   _LOG_ERROR("Error encrypting pending data: " << ex.what());
+                   return;
+                 }
+               }
+               else {
+                 // Not enough time has passed for others to fetch, so wait and try again.
+                 _LOG_DEBUG("EncryptorV2: Still waiting to start using the next GCK " <<
+                            parent_->nextGckName_.toUri());
+                 parent_->isGckRetrievalInProgress_ = false;
+               }
+             }
+             else {
+               // We don't expect this, but the access manager just changed the name
+               // of the GCK, so we have to start over and fetch it.
+               parent_->nextGckBits_ = Blob();
+               // Leave isGckRetrievalInProgress_ true.
+               parent_->fetchGck(newGckName, N_RETRIES);
+             }
+
              return;
            }
 
@@ -652,6 +717,8 @@ EncryptorV2::Impl::KeyManager::checkForNewGck()
            parent_->fetchGck(newGckName, N_RETRIES);
          },
          [=](auto&, auto& error) {
+           // Don't use the waiting next GCK.
+           parent_->nextGckBits_ = Blob();
            parent_->isGckRetrievalInProgress_ = false;
            _LOG_ERROR("Validate GCK latest_ Data failure: " << error.toString());
          });
@@ -660,6 +727,9 @@ EncryptorV2::Impl::KeyManager::checkForNewGck()
     void
     onTimeout(const ptr_lib::shared_ptr<const Interest>& interest)
     {
+      parent_->accessManagerIsResponding_ = false;
+      // Don't use the waiting next GCK.
+      parent_->nextGckBits_ = Blob();
       parent_->isGckRetrievalInProgress_ = false;
       _LOG_ERROR("Timeout for GCK _latest packet: " << interest->getName().toUri());
     }
@@ -669,6 +739,9 @@ EncryptorV2::Impl::KeyManager::checkForNewGck()
       (const ptr_lib::shared_ptr<const Interest>& interest,
        const ptr_lib::shared_ptr<NetworkNack>& networkNack)
     {
+      parent_->accessManagerIsResponding_ = false;
+      // Don't use the waiting next GCK.
+      parent_->nextGckBits_ = Blob();
       parent_->isGckRetrievalInProgress_ = false;
       ostringstream message;
       _LOG_ERROR("Network nack for GCK _latest packet: " << interest->getName().toUri() <<
@@ -726,6 +799,7 @@ EncryptorV2::Impl::KeyManager::fetchGck(const Name& gckName, int nTriesLeft)
       (const ptr_lib::shared_ptr<const Interest>& ckInterest,
        const ptr_lib::shared_ptr<Data>& ckData)
     {
+      parent_->accessManagerIsResponding_ = true;
       try {
         parent_->gckPendingInterestId_ = 0;
 
@@ -743,6 +817,7 @@ EncryptorV2::Impl::KeyManager::fetchGck(const Name& gckName, int nTriesLeft)
       if (nTriesLeft_ > 1)
         parent_->fetchGck(gckName_, nTriesLeft_ - 1);
       else {
+        parent_->accessManagerIsResponding_ = false;
         parent_->isGckRetrievalInProgress_ = false;
         _LOG_ERROR("Retrieval of GCK [" << interest->getName().toUri() << "] timed out");
       }
@@ -754,6 +829,7 @@ EncryptorV2::Impl::KeyManager::fetchGck(const Name& gckName, int nTriesLeft)
        const ptr_lib::shared_ptr<NetworkNack>& networkNack)
     {
       parent_->gckPendingInterestId_ = 0;
+      parent_->accessManagerIsResponding_ = false;
       parent_->isGckRetrievalInProgress_ = false;
       ostringstream message;
       _LOG_ERROR("Retrieval of GCK [" << interest->getName().toUri() <<
@@ -820,9 +896,26 @@ EncryptorV2::Impl::KeyManager::decryptGckAndProcessPendingEncrypts(
     _LOG_ERROR("The decrypted group content key is not the correct size for the encryption algorithm");
     return;
   }
+
+  // Only check for multiple access managers if ckName_.size() != 0, meaning
+  // that we have fetched a GCK at least once.
+  if (ckName_.size() != 0 && parent_->keyManagers_.size() > 1) {
+    // There are multiple access managers with possibility of failover, so we
+    // first wait for checkForNewGck to check if this access manager is still
+    // responding before starting to use this next GCK, to make sure others have
+    // fetched it.
+    nextGckReceiptTime_ = system_clock::now();
+    nextGckName_ = gckName;
+    nextGckBits_ = decryptedCkBits;
+    isGckRetrievalInProgress_ = false;
+    _LOG_DEBUG("EncryptorV2: Waiting to start using the next GCK " << gckName.toUri());
+    return;
+  }
+
   ckName_ = gckName;
   ndn_memcpy(&ckBits_[0], decryptedCkBits.buf(), ckBits_.size());
   isGckRetrievalInProgress_ = false;
+  _LOG_DEBUG("EncryptorV2: The GCK is ready " << gckName.toUri());
   try {
     // We now have a key, so we can process pending encrypts if needed.
     parent_->processPendingEncrypts();

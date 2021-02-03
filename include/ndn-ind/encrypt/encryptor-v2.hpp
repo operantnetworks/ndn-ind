@@ -138,8 +138,49 @@ public:
      PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
      ndn_EncryptAlgorithmType algorithmType = ndn_EncryptAlgorithmType_AesCbc)
   : impl_(new Impl
-          (accessPrefix, onError, credentialsKey, validator, keyChain, face,
+          (&accessPrefix, 1, onError, credentialsKey, validator, keyChain, face,
            algorithmType))
+  {
+    impl_->initializeGck();
+  }
+
+  /**
+   * Create an EncryptorV2 for encrypting using a group content key (GCK) which
+   * is provided by one of the access managers in a prioritized list.
+   * @param accessPrefixes A pointer to a prioritized array where each element
+   * is the NAC prefix of an access manager for fetching the group content key
+   * (GCK) (e.g., /access/prefix/NAC/data/subset). This will repeatedly try to
+   * fetch the GCK from all access managers and encrypt will GCK that was
+   * successfully fetched from the first (highest-priority) access manager in
+   * the list. This copies the Names.
+   * @param nAccessPrefixes The number of elements in the accessPrefixes array.
+   * @param onError On failure to create the CK data (failed to fetch the KEK,
+   * failed to encrypt with the KEK, etc.), this calls
+   * onError(errorCode, message) where errorCode is from the
+   * EncryptError::ErrorCode enum, and message is an error string. The encrypt
+   * method will continue trying to retrieve the KEK until success (with each
+   * attempt separated by RETRY_DELAY_KEK_RETRIEVAL) and onError may be
+   * called multiple times.
+   * NOTE: The library will log any exceptions thrown by this callback, but for
+   * better error handling the callback should catch and properly handle any
+   * exceptions.
+   * @param credentialsKey The credentials key to be used to retrieve and
+   * decrypt the GCK.
+   * @param validator The validation policy to ensure correctness of the GCK.
+   * @param keyChain The KeyChain used to access the credentials key.
+   * @param face The Face that will be used to fetch the GCK.
+   * @param algorithmType (optional) The encryption algorithm type for this
+   * EncryptorV2. If omitted or ndn_EncryptAlgorithmType_AesCbc, use AES 256 in
+   * CBC mode. If ndn_EncryptAlgorithmType_ChaCha20Poly1305, use ChaCha20-Poly1305.
+   */
+  EncryptorV2
+    (const Name* accessPrefixes, size_t nAccessPrefixes,
+     const EncryptError::OnError& onError, PibKey* credentialsKey,
+     Validator* validator, KeyChain* keyChain, Face* face,
+     ndn_EncryptAlgorithmType algorithmType = ndn_EncryptAlgorithmType_AesCbc)
+  : impl_(new Impl
+          (accessPrefixes, nAccessPrefixes, onError, credentialsKey, validator,
+           keyChain, face, algorithmType))
   {
     impl_->initializeGck();
   }
@@ -449,7 +490,7 @@ private:
        ndn_EncryptAlgorithmType algorithmType);
 
     Impl
-      (const Name& accessPrefix, const EncryptError::OnError& onError,
+      (const Name* accessPrefixes, size_t nAccessPrefixes, const EncryptError::OnError& onError,
        PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
        ndn_EncryptAlgorithmType algorithmType);
 
@@ -682,6 +723,11 @@ private:
       bool isGckRetrievalInProgress_;
       Name gckLatestPrefix_;
       uint64_t gckPendingInterestId_;
+      bool accessManagerIsResponding_;
+      // The next GCK to use after enough time to be sure others have fetched it.
+      std::chrono::system_clock::time_point nextGckReceiptTime_;
+      Name nextGckName_;
+      Blob nextGckBits_;
     };
 
     bool
