@@ -9,7 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use NDN_IND macros. Use std::chrono.
- *   Support ChaCha20-Ploy1305, GCK, encrypted Interest.
+ *   Support ChaCha20-Ploy1305, GCK, encrypted Interest, multiple access managers.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -366,6 +366,21 @@ EncryptorV2::Impl::processPendingEncrypts()
   pendingEncrypts_.clear();
 }
 
+Blob
+EncryptorV2::Impl::getContentKey(const Name& keyName)
+{
+  // Call isKeyReady of each key manager to let it fetch if needed.
+  for (size_t i = 0; i < keyManagers_.size(); ++i)
+    keyManagers_[i]->isKeyReady();
+
+  auto key = contentKeys_.find(keyName);
+  if (key == contentKeys_.end())
+    // Not found.
+    return Blob();
+  else
+    return key->second;
+}
+
 bool
 EncryptorV2::Impl::KeyManager::isKeyReady()
 {
@@ -424,6 +439,8 @@ EncryptorV2::Impl::KeyManager::regenerateCk()
   ndn_Error error;
   if ((error = CryptoLite::generateRandomBytes(&ckBits_[0], ckBits_.size())))
     throw runtime_error(ndn_getErrorString(error));
+  // Also store for historical retrieval.
+  parent_->contentKeys_[ckName_] = Blob(ckBits_);
 
   // One implication: If the CK is updated before the KEK is fetched, then
   // the KDK for the old CK will not be published.
@@ -679,6 +696,8 @@ EncryptorV2::Impl::KeyManager::checkForNewGck()
                  _LOG_DEBUG("EncryptorV2: The next GCK is ready " << parent_->nextGckName_.toUri());
                  parent_->ckName_ = parent_->nextGckName_;
                  ndn_memcpy(&parent_->ckBits_[0], parent_->nextGckBits_.buf(), parent_->ckBits_.size());
+                 // Also store for historical retrieval.
+                 parent_->parent_->contentKeys_[parent_->ckName_] = Blob(parent_->nextGckBits_);
                  parent_->nextGckBits_ = Blob();
                  parent_->isGckRetrievalInProgress_ = false;
                  try {
@@ -914,6 +933,8 @@ EncryptorV2::Impl::KeyManager::decryptGckAndProcessPendingEncrypts(
 
   ckName_ = gckName;
   ndn_memcpy(&ckBits_[0], decryptedCkBits.buf(), ckBits_.size());
+  // Also store for historical retrieval.
+  parent_->contentKeys_[ckName_] = Blob(decryptedCkBits);
   isGckRetrievalInProgress_ = false;
   _LOG_DEBUG("EncryptorV2: The GCK is ready " << gckName.toUri());
   try {

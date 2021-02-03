@@ -331,7 +331,7 @@ main(int argc, char** argv)
     // Create the DecryptorV2 to decrypt the reply Data packet.
     auto decryptor = ptr_lib::make_shared<ndn::DecryptorV2>
       (nacKeyChain->getPib().getIdentity(senderName)->getDefaultKey().get(),
-       validator.get(), nacKeyChain.get(), face.get());
+       validator.get(), nacKeyChain.get(), face.get(), encryptor.get());
 
     auto interest = ptr_lib::make_shared<Interest>(messagePrefix);
     commandInterestPreparer.prepareCommandInterestName(*interest);

@@ -1,4 +1,4 @@
-NDN-IND (2021-01-14)
+NDN-IND (2021-02-03)
 --------------------
 
 Changes
@@ -13,8 +13,10 @@ Changes
   Change to use std::chrono. Remove unneeded CustomClock and system_clock wrapper.
   Renamed the ndn::time::steady_clock wrapper (only needed for macOS) to
   ndn::scheduler::MonotonicSteadyClock.
+* Changed the default wire format to TLV v0.3.
 * Add support for chacha20-Poly1305 in NAC. https://github.com/operantnetworks/ndn-ind/pull/7
 * Add support for a group content key (GCK) and secured interest in NAC.
+* Support multiple access managers in NAC. https://github.com/operantnetworks/ndn-ind/pull/25
 * In Interest, changed the MustBeFresh default value to false.
 * Added Tlv0_3WireFormat.
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .

@@ -313,7 +313,7 @@ main(int argc, char** argv)
     // Create the DecryptorV2 to decrypt the secured Interest.
     auto decryptor = ptr_lib::make_shared<ndn::DecryptorV2>
       (nacKeyChain->getPib().getIdentity(responderName)->getDefaultKey().get(),
-       validator.get(), nacKeyChain.get(), &face);
+       validator.get(), nacKeyChain.get(), &face, encryptor.get());
 
     face.registerPrefix(
       messagePrefix,

@@ -9,7 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use std::chrono. Support ChaCha20-Ploy1305, GCK,
- *   encrypted Interest. Support ndn_ind_dll.
+ *   encrypted Interest, multiple access managers. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -402,6 +402,15 @@ public:
   size_t
   size() { return impl_->size(); }
 
+  /**
+   * Get the content key for the key name. If this EncryptorV2 is using a group
+   * content key (GCK), this may also initiate a check for new keys.
+   * @param keyName The name of the generated CK or fetched GCK.
+   * @return The key for the name, or an isNull() Blob if not found.
+   */
+  Blob
+  getContentKey(const Name& keyName) { return impl_->getContentKey(keyName); }
+
   static const Name::Component&
   getNAME_COMPONENT_ENCRYPTED_BY() { return getValues().NAME_COMPONENT_ENCRYPTED_BY; }
 
@@ -561,6 +570,9 @@ private:
       return keyManagers_[0]->size();
     }
 
+    Blob
+    getContentKey(const Name& keyName);
+
   private:
     // Give friend access to the tests.
     friend class ::TestEncryptorV2_EncryptAndPublishCk_Test;
@@ -694,6 +706,7 @@ private:
     /**
      * Decrypt the gckData fetched by fetchGck(), then copy it to ckBits_ and
      * copy gckName to ckName_ . Then process pending encrypts.
+     * Also store the name and key in parent_->contentKeys_.
      * @param gckName The Name that fetchGck() used to fetch.
      * @param gckData The GCK Data packet fetched by fetchGck().
      */
@@ -751,6 +764,9 @@ private:
     Face* face_;
     ndn_EncryptAlgorithmType algorithmType_;
     std::vector<ptr_lib::shared_ptr<KeyManager> > keyManagers_;
+    // A historical record mapping the generated CK name or fetched GCK name to
+    // the content key.
+    std::map<Name, Blob> contentKeys_;
   };
 
   ptr_lib::shared_ptr<Impl> impl_;

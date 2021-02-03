@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
@@ -9,7 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use std::chrono. Support ChaCha20-Ploy1305, GCK,
- *   encrypted Interest. Support ndn_ind_dll.
+ *   encrypted Interest, multiple access managers. Support ndn_ind_dll.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -38,6 +38,7 @@
 
 #include "../security/key-chain.hpp"
 #include "../security/v2/validator.hpp"
+#include "encryptor-v2.hpp"
 #include "encrypted-content.hpp"
 #include "encrypt-error.hpp"
 
@@ -62,11 +63,13 @@ public:
    * and CK.
    * @param keyChain The KeyChain that will be used to decrypt the KDK.
    * @param face The Face that will be used to fetch the CK and KDK.
+   * @param contentKeyCache An EncyptorV2 for calling getContentKey() to first
+   * check if it has already fetched the content key. If null, don't check.
    */
   DecryptorV2
     (PibKey* credentialsKey, Validator* validator, KeyChain* keyChain,
-     Face* face)
-  : impl_(new Impl(credentialsKey, validator, keyChain, face))
+     Face* face, EncryptorV2* contentKeyCache = 0)
+  : impl_(new Impl(credentialsKey, validator, keyChain, face, contentKeyCache))
   {
   }
 
@@ -240,7 +243,7 @@ private:
   public:
     Impl
       (PibKey* credentialsKey, Validator* validator, KeyChain* keyChain,
-       Face* face);
+       Face* face, EncryptorV2* contentKeyCache);
 
     void
     shutdown();
@@ -345,6 +348,7 @@ private:
     PibKey* credentialsKey_;
     Validator* validator_;
     Face* face_;
+    EncryptorV2* contentKeyCache_;
     // The external keychain with access credentials.
     KeyChain* keyChain_;
     // The internal in-memory keychain for temporarily storing KDKs.
