@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@
 #include <ndn-ind/encrypt/decryptor-v2.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 /**
@@ -229,8 +230,11 @@ static void
 usage()
 {
   cerr << "Usage: test-secured-interest-responder [options]\n"
-       << "  -a access-group-name The access group name as printed by test-access-manager. If omitted, use\n"
+       << "  -a access-group-name The access group name as printed by test-access-manager. You can specify\n"
+       << "                       this multiple times in order of priority of access managers. If omitted, use\n"
        << "                       <default-identity>/NAC/test-group where <default-identity> is the system default identity.\n"
+       << "  -c check-GCK-seconds The repeat interval in seconds to check if the access manager has a new GCK.\n"
+       << "                       If omitted, use 60 seconds.\n"
        << "  -n name-prefix       The name prefix for the message. If omitted, use /test-secured-interest\n"
        << "                       This must match the prefix for test-secured-interest-sender.\n"
        << "  -k                   Keep responding. If omitted, quit after one response\n"
@@ -240,7 +244,8 @@ usage()
 int
 main(int argc, char** argv)
 {
-  Name accessGroupName;
+  vector<Name> accessGroupNames;
+  seconds checkGckInterval(60);
   Name messagePrefix("/test-secured-interest");
 
   for (int i = 1; i < argc; ++i) {
@@ -252,7 +257,11 @@ main(int argc, char** argv)
       return 0;
     }
     else if (arg == "-a") {
-      accessGroupName = Name(value);
+      accessGroupNames.push_back(Name(value));
+      ++i;
+    }
+    else if (arg == "-c") {
+      checkGckInterval = seconds(atoi(value.c_str()));
       ++i;
     }
     else if (arg == "-n") {
@@ -285,25 +294,26 @@ main(int argc, char** argv)
     // In a production application, use a validator which has access to the
     // certificates of the access manager and the sender.
     auto validator = ptr_lib::make_shared<ValidatorNull>();
-    if (accessGroupName.size() == 0) {
+    if (accessGroupNames.size() == 0) {
       // Assume the access manager is the default identity on this computer.
       auto accessManagerName =
         systemKeyChain.getPib().getIdentity(systemKeyChain.getDefaultIdentity())->getName();
-      accessGroupName = Name(accessManagerName).append(Name("NAC/test-group"));
+      accessGroupNames.push_back(Name(accessManagerName).append(Name("NAC/test-group")));
     }
-    // Create the DecryptorV2 to decrypt the secured Interest.
-    auto decryptor = ptr_lib::make_shared<ndn::DecryptorV2>
-      (nacKeyChain->getPib().getIdentity(responderName)->getDefaultKey().get(),
-       validator.get(), nacKeyChain.get(), &face);
     // Create the EncryptorV2 to encrypt the reply Data packet.
     auto encryptor = ptr_lib::make_shared<EncryptorV2>
-      (accessGroupName,
+      (&accessGroupNames.front(), accessGroupNames.size(),
        [](auto errorCode, const std::string& message) {
          cout << "EncryptorV2 error: " << message << endl;
          isRunning = false;
        },
        nacKeyChain->getPib().getIdentity(responderName)->getDefaultKey().get(),
        validator.get(), nacKeyChain.get(), &face, ndn_EncryptAlgorithmType_AesCbc);
+    encryptor->setCheckForNewGckInterval(checkGckInterval);
+    // Create the DecryptorV2 to decrypt the secured Interest.
+    auto decryptor = ptr_lib::make_shared<ndn::DecryptorV2>
+      (nacKeyChain->getPib().getIdentity(responderName)->getDefaultKey().get(),
+       validator.get(), nacKeyChain.get(), &face);
 
     face.registerPrefix(
       messagePrefix,

@@ -36,6 +36,7 @@
 #include <ndn-ind/encrypt/encryptor-v2.hpp>
 
 using namespace std;
+using namespace std::chrono;
 using namespace ndn;
 
 /**
@@ -159,6 +160,8 @@ usage()
        << "  -i access-manager-identity The access manager identity name. This must be an identity on the system.\n"
        << "                             If omitted, use the system default identity. The access group name is\n"
        << "                             <access-manager-identity>/NAC/<dataset>\n"
+       << "  -r refresh-seconds         The repeat interval in seconds to refresh the GCK. If 0 or omitted,\n"
+       << "                             then only make the GCK once.\n"
        << "  -?                         Print this help" << endl;
 }
 
@@ -167,6 +170,7 @@ main(int argc, char* argv[])
 {
   Name dataset("/test-group");
   Name accessManagerIdentityName;
+  seconds refreshPeriod(0);
 
   for (int i = 1; i < argc; ++i) {
     string arg = argv[i];
@@ -182,6 +186,10 @@ main(int argc, char* argv[])
     }
     else if (arg == "-i") {
       accessManagerIdentityName = Name(value);
+      ++i;
+    }
+    else if (arg == "-r") {
+      refreshPeriod = seconds(atoi(value.c_str()));
       ++i;
     }
     else {
@@ -211,6 +219,7 @@ main(int argc, char* argv[])
   // Add access for the members in test-secured-interest-encryptor and -decryptor.
   vector<ptr_lib::shared_ptr<CertificateV2>> certificates;
   getMemberCertificates(certificates);
+  auto refreshGckTime = system_clock::now();
   for (size_t i = 0; i < certificates.size(); ++i) {
     accessManager.addMember(*certificates[i]);
     cout << "Ready to serve the GCK for member: " << certificates[i]->getIdentity() << endl;
@@ -218,6 +227,19 @@ main(int argc, char* argv[])
 
   // The main event loop. Run until the user hits ctrl-C.
   while (true) {
+    if (refreshPeriod > seconds(0)) {
+      // Check if we need to refresh the GCK.
+      auto now = system_clock::now();
+      if (now - refreshGckTime > refreshPeriod) {
+        //
+        refreshGckTime = now;
+        accessManager.refreshGck();
+        // Re-add the members.
+        for (size_t i = 0; i < certificates.size(); ++i)
+          accessManager.addMember(*certificates[i]);
+      }
+    }
+
     face.processEvents();
     // We need to sleep for a few milliseconds so we don't use 100% of the CPU.
     usleep(10000);
