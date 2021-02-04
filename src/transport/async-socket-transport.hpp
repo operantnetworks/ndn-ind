@@ -128,6 +128,7 @@ private:
     : ioService_(ioService), socket_(new typename AsioProtocol::socket(ioService)),
       elementBuffer_(new DynamicUInt8Vector(1000)), isConnected_(false)
     {
+      ndn_memset((uint8_t *)&receiveBuffer_, 0, sizeof(receiveBuffer_));
       ndn_ElementReader_initialize
         (&elementReader_, 0, elementBuffer_.get(), readRawPackets);
     }
