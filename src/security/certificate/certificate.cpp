@@ -205,7 +205,7 @@ Certificate::printCertificate(ostream& os) const
 
   os << "Subject Description:" << endl;
   vector<CertificateSubjectDescription>::const_iterator it = subjectDescriptionList_.begin();
-  for(; it < subjectDescriptionList_.end(); it++)
+  for(; it < subjectDescriptionList_.end(); ++it)
     os << "  " << it->getOidString() << ": " << it->getValue() << endl;
 
   os << "Public key bits:" << endl;
