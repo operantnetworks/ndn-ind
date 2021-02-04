@@ -43,7 +43,7 @@ public:
   ~NdnRegexPatternListMatcher();
 
 protected:
-  virtual void
+  void
   compile();
 
 private:

@@ -53,7 +53,7 @@ public:
   fromName(const Name& name, bool hasAnchor=false);
 
 protected:
-  virtual void
+  void
   compile();
 
 private:

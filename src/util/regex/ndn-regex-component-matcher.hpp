@@ -56,7 +56,7 @@ protected:
   /**
    * Compile the regular expression to generate more matchers when necessary.
    */
-  virtual void
+  void
   compile();
 
 private:

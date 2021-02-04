@@ -130,13 +130,6 @@ public:
   const std::string&
   getExpr() const { return expr_; }
 
-protected:
-  /**
-   * Compile the regular expression to generate more matchers when necessary.
-   */
-  virtual void
-  compile() = 0;
-
 private:
   bool
   recursiveMatch(size_t matcherNo, const Name& name, size_t offset, size_t len);
