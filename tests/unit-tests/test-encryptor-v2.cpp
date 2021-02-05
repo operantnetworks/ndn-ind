@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
@@ -107,8 +107,8 @@ public:
 
 TEST_F(TestEncryptorV2, EncryptAndPublishCk)
 {
-  fixture_->encryptor_->impl_->kekData_.reset();
-  ASSERT_EQ(false, fixture_->encryptor_->impl_->isKekRetrievalInProgress_);
+  fixture_->encryptor_->impl_->keyManagers_[0]->kekData_.reset();
+  ASSERT_EQ(false, fixture_->encryptor_->impl_->keyManagers_[0]->isKekRetrievalInProgress_);
   fixture_->encryptor_->regenerateCk();
   // Unlike the ndn-group-encrypt unit tests, we don't check
   // isKekRetrievalInProgress_ true because we use a synchronous face which
@@ -149,7 +149,7 @@ TEST_F(TestEncryptorV2, EncryptAndPublishCk)
   Name extractedKek = ckName.getSubName(6);
   ASSERT_TRUE(extractedKek.equals(kekData->getName()));
 
-  ASSERT_EQ(false, fixture_->encryptor_->impl_->isKekRetrievalInProgress_);
+  ASSERT_EQ(false, fixture_->encryptor_->impl_->keyManagers_[0]->isKekRetrievalInProgress_);
 }
 
 TEST_F(TestEncryptorV2, KekRetrievalFailure)
@@ -210,8 +210,8 @@ TEST_F(TestEncryptorV2, EnumerateDataFromInMemoryStorage)
   ASSERT_EQ(3, fixture_->encryptor_->size());
   int nCk = 0;
   for (map<Name, ptr_lib::shared_ptr<Data> >::iterator i =
-        fixture_->encryptor_->impl_->storage_.cache_.begin();
-       i != fixture_->encryptor_->impl_->storage_.cache_.end(); ++i) {
+        fixture_->encryptor_->impl_->keyManagers_[0]->storage_.cache_.begin();
+       i != fixture_->encryptor_->impl_->keyManagers_[0]->storage_.cache_.end(); ++i) {
     if (i->second->getName().getPrefix(4).equals(Name("/some/ck/prefix/CK")))
       ++nCk;
   }

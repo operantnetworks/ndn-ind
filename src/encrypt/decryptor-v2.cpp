@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
@@ -9,7 +9,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use ndn-ind includes. Support ChaCha20-Ploy1305, GCK,
- *   encrypted Interest.
+ *   encrypted Interest, multiple access managers.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -37,7 +37,6 @@
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind/lite/encrypt/algo/aes-algorithm-lite.hpp>
 #include <ndn-ind/lite/encrypt/algo/chacha20-algorithm-lite.hpp>
-#include <ndn-ind/encrypt/encryptor-v2.hpp>
 #include <ndn-ind/encrypt/decryptor-v2.hpp>
 
 using namespace std;
@@ -75,10 +74,10 @@ DecryptorV2::decrypt
 
 DecryptorV2::Impl::Impl
   (PibKey* credentialsKey, Validator* validator, KeyChain* keyChain,
-   Face* face)
+   Face* face, EncryptorV2* contentKeyCache)
 : credentialsKey_(credentialsKey),
   validator_(validator),
-  face_(face),
+  face_(face), contentKeyCache_(contentKeyCache),
   keyChain_(keyChain),
   internalKeyChain_("pib-memory:", "tpm-memory:")
 {
@@ -133,6 +132,19 @@ DecryptorV2::Impl::decrypt
   }
 
   Name ckName = encryptedContent->getKeyLocatorName();
+
+  if (contentKeyCache_) {
+    // First check if the EncryptorV2 has already fetched the key. This also lets
+    // it check send a request to its access managers to check for new keys.
+    Blob cachedContentKey = contentKeyCache_->getContentKey(ckName);
+    if (!cachedContentKey.isNull()) {
+      // We have the key. No need to fetch it.
+      doDecrypt
+        (*encryptedContent, cachedContentKey, associatedData, onSuccess, onError);
+      return;
+    }
+  }
+
   ptr_lib::shared_ptr<ContentKey> contentKey;
   bool isNew = (contentKeys_.find(ckName) == contentKeys_.end());
   if (isNew) {
