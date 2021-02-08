@@ -47,10 +47,10 @@ namespace ndn {
 
 NdnRegexTopMatcher::NdnRegexTopMatcher(const string& expr, const string& expand)
 : NdnRegexMatcherBase(expr, NDN_REGEX_EXPR_TOP), expand_(expand),
+  primaryBackrefManager_(ptr_lib::make_shared<NdnRegexBackrefManager>()),
+  secondaryBackrefManager_(ptr_lib::make_shared<NdnRegexBackrefManager>()),
   isSecondaryUsed_(false)
 {
-  primaryBackrefManager_ = ptr_lib::make_shared<NdnRegexBackrefManager>();
-  secondaryBackrefManager_ = ptr_lib::make_shared<NdnRegexBackrefManager>();
   compile();
 }
 

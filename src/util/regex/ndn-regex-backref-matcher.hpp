@@ -44,7 +44,7 @@ public:
   lateCompile() { compile(); }
 
 protected:
-  virtual void
+  void
   compile();
 };
 

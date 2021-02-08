@@ -37,7 +37,7 @@ public:
   virtual
   ~NdnRegexPseudoMatcher();
 
-  virtual void
+  void
   compile();
 
   void
