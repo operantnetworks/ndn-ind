@@ -397,7 +397,6 @@ ndn_cpp_cpp_headers = \
   $(wildcard ndn-ind/security/v2/*.*) \
   $(wildcard ndn-ind/security/v2/validator-config/*.*) \
   $(wildcard ndn-ind/sync/*.*) \
-  $(wildcard ndn-ind/tools/usersync/*.*) \
   $(wildcard ndn-ind/transport/*.*) \
   $(wildcard ndn-ind/util/*.*) \
   $(wildcard ndn-ind/util/impl/*.*)

@@ -61,11 +61,30 @@ public:
    */
   ElementListenerLite(OnReceivedElementLite onReceivedElement);
 
+  /**
+   * Downcast the reference to the ndn_ElementListener struct to an
+   * ElementListenerLite.
+   * @param encryptedContent A reference to the ndn_ElementListener struct.
+   * @return The same reference as ElementListenerLite.
+   */
+  static ElementListenerLite&
+  downCast(ndn_ElementListener& encryptedContent)
+  {
+    return *(ElementListenerLite*)&encryptedContent;
+  }
+
+  static const ElementListenerLite&
+  downCast(const ndn_ElementListener& encryptedContent)
+  {
+    return *(ElementListenerLite*)&encryptedContent;
+  }
+
 private:
   // Declare friends who can downcast to the private base.
   friend class TcpTransportLite;
   friend class UdpTransportLite;
   friend class UnixTransportLite;
+  friend class ElementReaderLite;
 };
 
 }

@@ -164,6 +164,7 @@ private:
   friend class UnixTransportLite;
   friend class Tlv0_2WireFormatLite;
   friend class Tlv0_3WireFormatLite;
+  friend class ElementReaderLite;
 };
 
 }

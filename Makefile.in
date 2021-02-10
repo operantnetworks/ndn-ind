@@ -327,6 +327,7 @@ am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
 	src/lite/registration-options-lite.lo \
 	src/lite/signature-lite.lo \
 	src/lite/encoding/element-listener-lite.lo \
+	src/lite/encoding/element-reader-lite.lo \
 	src/lite/encoding/tlv-0_2-wire-format-lite.lo \
 	src/lite/encoding/tlv-0_3-wire-format-lite.lo \
 	src/lite/encrypt/encrypted-content-lite.lo \
@@ -899,6 +900,7 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	src/lite/$(DEPDIR)/registration-options-lite.Plo \
 	src/lite/$(DEPDIR)/signature-lite.Plo \
 	src/lite/encoding/$(DEPDIR)/element-listener-lite.Plo \
+	src/lite/encoding/$(DEPDIR)/element-reader-lite.Plo \
 	src/lite/encoding/$(DEPDIR)/tlv-0_2-wire-format-lite.Plo \
 	src/lite/encoding/$(DEPDIR)/tlv-0_3-wire-format-lite.Plo \
 	src/lite/encrypt/$(DEPDIR)/encrypted-content-lite.Plo \
@@ -1785,6 +1787,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/lite/registration-options-lite.hpp \
   include/ndn-ind/lite/signature-lite.hpp \
   include/ndn-ind/lite/encoding/element-listener-lite.hpp \
+  include/ndn-ind/lite/encoding/element-reader-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_1_1-wire-format-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_3-wire-format-lite.hpp \
@@ -2017,6 +2020,7 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/lite/registration-options-lite.cpp \
   src/lite/signature-lite.cpp \
   src/lite/encoding/element-listener-lite.cpp \
+  src/lite/encoding/element-reader-lite.cpp \
   src/lite/encoding/tlv-0_2-wire-format-lite.cpp \
   src/lite/encoding/tlv-0_3-wire-format-lite.cpp \
   src/lite/encrypt/encrypted-content-lite.cpp \
@@ -2767,6 +2771,9 @@ src/lite/encoding/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/lite/encoding/$(DEPDIR)
 	@: > src/lite/encoding/$(DEPDIR)/$(am__dirstamp)
 src/lite/encoding/element-listener-lite.lo:  \
+	src/lite/encoding/$(am__dirstamp) \
+	src/lite/encoding/$(DEPDIR)/$(am__dirstamp)
+src/lite/encoding/element-reader-lite.lo:  \
 	src/lite/encoding/$(am__dirstamp) \
 	src/lite/encoding/$(DEPDIR)/$(am__dirstamp)
 src/lite/encoding/tlv-0_2-wire-format-lite.lo:  \
@@ -3985,6 +3992,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/lite/$(DEPDIR)/registration-options-lite.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/lite/$(DEPDIR)/signature-lite.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/lite/encoding/$(DEPDIR)/element-listener-lite.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/lite/encoding/$(DEPDIR)/element-reader-lite.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/lite/encoding/$(DEPDIR)/tlv-0_2-wire-format-lite.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/lite/encoding/$(DEPDIR)/tlv-0_3-wire-format-lite.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/lite/encrypt/$(DEPDIR)/encrypted-content-lite.Plo@am__quote@ # am--include-marker
@@ -6409,6 +6417,7 @@ distclean: distclean-recursive
 	-rm -f src/lite/$(DEPDIR)/registration-options-lite.Plo
 	-rm -f src/lite/$(DEPDIR)/signature-lite.Plo
 	-rm -f src/lite/encoding/$(DEPDIR)/element-listener-lite.Plo
+	-rm -f src/lite/encoding/$(DEPDIR)/element-reader-lite.Plo
 	-rm -f src/lite/encoding/$(DEPDIR)/tlv-0_2-wire-format-lite.Plo
 	-rm -f src/lite/encoding/$(DEPDIR)/tlv-0_3-wire-format-lite.Plo
 	-rm -f src/lite/encrypt/$(DEPDIR)/encrypted-content-lite.Plo
@@ -6787,6 +6796,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f src/lite/$(DEPDIR)/registration-options-lite.Plo
 	-rm -f src/lite/$(DEPDIR)/signature-lite.Plo
 	-rm -f src/lite/encoding/$(DEPDIR)/element-listener-lite.Plo
+	-rm -f src/lite/encoding/$(DEPDIR)/element-reader-lite.Plo
 	-rm -f src/lite/encoding/$(DEPDIR)/tlv-0_2-wire-format-lite.Plo
 	-rm -f src/lite/encoding/$(DEPDIR)/tlv-0_3-wire-format-lite.Plo
 	-rm -f src/lite/encrypt/$(DEPDIR)/encrypted-content-lite.Plo

@@ -159,6 +159,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/lite/registration-options-lite.hpp \
   include/ndn-ind/lite/signature-lite.hpp \
   include/ndn-ind/lite/encoding/element-listener-lite.hpp \
+  include/ndn-ind/lite/encoding/element-reader-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_1_1-wire-format-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_3-wire-format-lite.hpp \
@@ -388,6 +389,7 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/lite/registration-options-lite.cpp \
   src/lite/signature-lite.cpp \
   src/lite/encoding/element-listener-lite.cpp \
+  src/lite/encoding/element-reader-lite.cpp \
   src/lite/encoding/tlv-0_2-wire-format-lite.cpp \
   src/lite/encoding/tlv-0_3-wire-format-lite.cpp \
   src/lite/encrypt/encrypted-content-lite.cpp \
