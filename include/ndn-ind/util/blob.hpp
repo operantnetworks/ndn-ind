@@ -117,6 +117,8 @@ public:
   {
   }
 
+  Blob& operator=(const Blob& blob) = default;
+
   /**
    * Create a new Blob to point to an existing byte array. IMPORTANT: If copy is
    * false, after calling this constructor, if you keep a pointer to the array
