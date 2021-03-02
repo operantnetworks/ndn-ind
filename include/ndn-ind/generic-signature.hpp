@@ -50,8 +50,8 @@ public:
    * Create a new GenericSignature with default values.
    */
   GenericSignature()
-  : changeCount_(0),
-    typeCode_(-1)
+  : typeCode_(-1),
+    changeCount_(0)
   {
   }
 
