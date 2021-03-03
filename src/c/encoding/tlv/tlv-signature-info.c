@@ -105,11 +105,18 @@ encodeSignatureWithKeyLocatorAndValidityPeriodValue
 static ndn_Error
 encodeDigestSha256Value(const void *context, struct ndn_TlvEncoder *encoder)
 {
+  struct ndn_Signature *signature = (struct ndn_Signature *)context;
   ndn_Error error;
 
   if ((error = ndn_TlvEncoder_writeNonNegativeIntegerTlv
        (encoder, ndn_Tlv_SignatureType, ndn_Tlv_SignatureType_DigestSha256)))
     return error;
+  if (ndn_ValidityPeriod_hasPeriod(&signature->validityPeriod)) {
+    if ((error = ndn_TlvEncoder_writeNestedTlv
+         (encoder, ndn_Tlv_ValidityPeriod_ValidityPeriod,
+          encodeValidityPeriodValue, &signature->validityPeriod, 0)))
+      return error;
+  }
 
   return NDN_ERROR_success;
 }
@@ -240,8 +247,17 @@ ndn_decodeTlvSignatureInfo
         return error;
     }
   }
-  else if (signatureType == ndn_Tlv_SignatureType_DigestSha256)
+  else if (signatureType == ndn_Tlv_SignatureType_DigestSha256) {
     signatureInfo->type = ndn_SignatureType_DigestSha256Signature;
+    if ((error = ndn_TlvDecoder_peekType
+         (decoder, ndn_Tlv_ValidityPeriod_ValidityPeriod, endOffset,
+          &gotExpectedType)))
+      return error;
+    if (gotExpectedType) {
+      if ((error = decodeValidityPeriod(&signatureInfo->validityPeriod, decoder)))
+        return error;
+    }
+  }
   else {
     signatureInfo->type = ndn_SignatureType_Generic;
     signatureInfo->genericTypeCode = signatureType;

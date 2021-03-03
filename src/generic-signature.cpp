@@ -84,6 +84,12 @@ GenericSignature::set(const SignatureLite& signatureLite)
 uint64_t
 GenericSignature::getChangeCount() const
 {
+  bool changed = validityPeriod_.checkChanged();
+  if (changed)
+    // A child object has changed, so update the change count.
+    // This method can be called on a const object, but we want to be able to update the changeCount_.
+    ++const_cast<GenericSignature*>(this)->changeCount_;
+
   return changeCount_;
 }
 
