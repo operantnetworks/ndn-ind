@@ -65,6 +65,7 @@ DigestSha256Signature::get(SignatureLite& signatureLite) const
 
   signatureLite.setType(ndn_SignatureType_DigestSha256Signature);
   signatureLite.setSignature(signature_);
+  validityPeriod_.get().get(signatureLite.getValidityPeriod());
 }
 
 void
@@ -75,11 +76,18 @@ DigestSha256Signature::set(const SignatureLite& signatureLite)
     throw runtime_error("signatureLite is not the expected type DigestSha256Signature");
 
   setSignature(Blob(signatureLite.getSignature()));
+  validityPeriod_.get().set(signatureLite.getValidityPeriod());
 }
 
 uint64_t
 DigestSha256Signature::getChangeCount() const
 {
+  bool changed = validityPeriod_.checkChanged();
+  if (changed)
+    // A child object has changed, so update the change count.
+    // This method can be called on a const object, but we want to be able to update the changeCount_.
+    ++const_cast<DigestSha256Signature*>(this)->changeCount_;
+
   return changeCount_;
 }
 
