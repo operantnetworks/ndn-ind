@@ -36,6 +36,8 @@
 #include <stdexcept>
 #include <ndn-ind/sha256-with-ecdsa-signature.hpp>
 #include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/generic-signature.hpp>
 #include <ndn-ind/security/validity-period.hpp>
 
 using namespace std;
@@ -55,6 +57,8 @@ bool
 ValidityPeriod::canGetFromSignature(const Signature* signature)
 {
   return dynamic_cast<const Sha256WithRsaSignature *>(signature) ||
+         dynamic_cast<const DigestSha256Signature *>(signature) ||
+         dynamic_cast<const GenericSignature *>(signature) ||
          dynamic_cast<const Sha256WithEcdsaSignature *>(signature);
 }
 
@@ -70,6 +74,18 @@ ValidityPeriod::getFromSignature(Signature* signature)
   {
     Sha256WithEcdsaSignature *castSignature =
       dynamic_cast<Sha256WithEcdsaSignature *>(signature);
+    if (castSignature)
+      return castSignature->getValidityPeriod();
+  }
+  {
+    DigestSha256Signature *castSignature =
+      dynamic_cast<DigestSha256Signature *>(signature);
+    if (castSignature)
+      return castSignature->getValidityPeriod();
+  }
+  {
+    GenericSignature *castSignature =
+      dynamic_cast<GenericSignature *>(signature);
     if (castSignature)
       return castSignature->getValidityPeriod();
   }

@@ -35,6 +35,8 @@
 #define NDN_DIGEST_SHA256_SIGNATURE_HPP
 
 #include "signature.hpp"
+#include "security/validity-period.hpp"
+#include "util/change-counter.hpp"
 
 namespace ndn {
 
@@ -83,11 +85,36 @@ public:
   getSignature() const;
 
   /**
+   * Get the validity period.
+   * @return The validity period.
+   */
+  const ValidityPeriod&
+  getValidityPeriod() const { return validityPeriod_.get(); }
+
+  /**
+   * Get the validity period.
+   * @return The validity period.
+   */
+  ValidityPeriod&
+  getValidityPeriod() { return validityPeriod_.get(); }
+
+  /**
    * Set the signature bytes to the given value.
    * @param signature A Blob with the signature bytes.
    */
   virtual void
   setSignature(const Blob& signature);
+
+  /**
+   * Set the validity period to a copy of the given ValidityPeriod.
+   * @param validityPeriod The ValidityPeriod which is copied.
+   */
+  void
+  setValidityPeriod(const ValidityPeriod& validityPeriod)
+  {
+    validityPeriod_.set(validityPeriod);
+    ++changeCount_;
+  }
 
   /**
    * Clear all the fields.
@@ -96,6 +123,7 @@ public:
   clear()
   {
     signature_.reset();
+    validityPeriod_.get().clear();
     ++changeCount_;
   }
 
@@ -108,6 +136,7 @@ public:
 
 private:
   Blob signature_;
+  ChangeCounter<ValidityPeriod> validityPeriod_;
   uint64_t changeCount_;
 };
 

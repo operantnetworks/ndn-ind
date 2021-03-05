@@ -35,6 +35,8 @@
 #define NDN_GENERIC_SIGNATURE_HPP
 
 #include "signature.hpp"
+#include "security/validity-period.hpp"
+#include "util/change-counter.hpp"
 
 namespace ndn {
 
@@ -90,6 +92,20 @@ public:
   getSignatureInfoEncoding() const { return signatureInfoEncoding_; }
 
   /**
+   * Get the validity period.
+   * @return The validity period.
+   */
+  const ValidityPeriod&
+  getValidityPeriod() const { return validityPeriod_.get(); }
+
+  /**
+   * Get the validity period.
+   * @return The validity period.
+   */
+  ValidityPeriod&
+  getValidityPeriod() { return validityPeriod_.get(); }
+
+  /**
    * Set the bytes of the entire signature info encoding (including the type
    * code).
    * @param signatureInfoEncoding A Blob with the encoding bytes.
@@ -121,6 +137,17 @@ public:
   setSignature(const Blob& signature);
 
   /**
+   * Set the validity period to a copy of the given ValidityPeriod.
+   * @param validityPeriod The ValidityPeriod which is copied.
+   */
+  void
+  setValidityPeriod(const ValidityPeriod& validityPeriod)
+  {
+    validityPeriod_.set(validityPeriod);
+    ++changeCount_;
+  }
+
+  /**
    * Get the type code of the signature type. When wire decode calls
    * setSignatureInfoEncoding, it sets the type code. Note that the type code
    * is ignored during wire encode, which simply uses getSignatureInfoEncoding()
@@ -138,6 +165,7 @@ public:
   {
     signature_.reset();
     signatureInfoEncoding_.reset();
+    validityPeriod_.get().clear();
     typeCode_ = -1;
     ++changeCount_;
   }
@@ -152,6 +180,7 @@ public:
 private:
   Blob signature_;
   Blob signatureInfoEncoding_;
+  ChangeCounter<ValidityPeriod> validityPeriod_;
   int typeCode_;
   uint64_t changeCount_;
 };
