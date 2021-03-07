@@ -404,6 +404,7 @@ ndn_cpp_cpp_headers = \
 
 # Public ndn-ind-tools C++ headers.
 ndn_cpp_tools_cpp_headers = \
+  $(wildcard ndn-ind-tools/micro-forwarder/*.*) \
   $(wildcard ndn-ind-tools/usersync/*.*)
 
 nobase_include_HEADERS = $(ndn_cpp_c_headers) $(ndn_cpp_cpp_headers) \

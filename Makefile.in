@@ -252,6 +252,8 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 libndn_ind_tools_la_DEPENDENCIES = libndn-ind.la
 am_libndn_ind_tools_la_OBJECTS = $(am__objects_1) $(am__objects_1) \
+	tools/micro-forwarder/micro-forwarder.lo \
+	tools/micro-forwarder/micro-forwarder-transport.lo \
 	tools/usersync/content-meta-info.pb.lo \
 	tools/usersync/channel-discovery.lo \
 	tools/usersync/content-meta-info.lo \
@@ -1064,6 +1066,8 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator-validator-fixture.Po \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-identity-management-fixture.Po \
 	tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-test-validator-null.Po \
+	tools/micro-forwarder/$(DEPDIR)/micro-forwarder-transport.Plo \
+	tools/micro-forwarder/$(DEPDIR)/micro-forwarder.Plo \
 	tools/usersync/$(DEPDIR)/channel-discovery.Plo \
 	tools/usersync/$(DEPDIR)/content-meta-info.Plo \
 	tools/usersync/$(DEPDIR)/content-meta-info.pb.Plo \
@@ -1895,6 +1899,8 @@ ndn_ind_cpp_headers = \
 # Public ndn-ind-tools C++ headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_tools_cpp_headers in include/Makefile.am.
 ndn_ind_tools_cpp_headers = \
+  include/ndn-ind-tools/micro-forwarder/micro-forwarder.hpp \
+  include/ndn-ind-tools/micro-forwarder/micro-forwarder-transport.hpp \
   include/ndn-ind-tools/usersync/channel-discovery.hpp \
   include/ndn-ind-tools/usersync/content-meta-info.hpp \
   include/ndn-ind-tools/usersync/generalized-content.hpp \
@@ -2138,6 +2144,8 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
 
 # The ndn-ind-tools library.
 libndn_ind_tools_la_SOURCES = ${ndn_ind_tools_cpp_headers} ${ndn_ind_cpp_headers} \
+  tools/micro-forwarder/micro-forwarder.cpp \
+  tools/micro-forwarder/micro-forwarder-transport.cpp \
   tools/usersync/content-meta-info.pb.cc \
   tools/usersync/channel-discovery.cpp \
   tools/usersync/content-meta-info.cpp \
@@ -2585,6 +2593,18 @@ src/c/util/time.lo: src/c/util/$(am__dirstamp) \
 
 libndn-c.la: $(libndn_c_la_OBJECTS) $(libndn_c_la_DEPENDENCIES) $(EXTRA_libndn_c_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) -rpath $(libdir) $(libndn_c_la_OBJECTS) $(libndn_c_la_LIBADD) $(LIBS)
+tools/micro-forwarder/$(am__dirstamp):
+	@$(MKDIR_P) tools/micro-forwarder
+	@: > tools/micro-forwarder/$(am__dirstamp)
+tools/micro-forwarder/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) tools/micro-forwarder/$(DEPDIR)
+	@: > tools/micro-forwarder/$(DEPDIR)/$(am__dirstamp)
+tools/micro-forwarder/micro-forwarder.lo:  \
+	tools/micro-forwarder/$(am__dirstamp) \
+	tools/micro-forwarder/$(DEPDIR)/$(am__dirstamp)
+tools/micro-forwarder/micro-forwarder-transport.lo:  \
+	tools/micro-forwarder/$(am__dirstamp) \
+	tools/micro-forwarder/$(DEPDIR)/$(am__dirstamp)
 tools/usersync/$(am__dirstamp):
 	@$(MKDIR_P) tools/usersync
 	@: > tools/usersync/$(am__dirstamp)
@@ -3823,6 +3843,8 @@ mostlyclean-compile:
 	-rm -f src/util/regex/*.$(OBJEXT)
 	-rm -f src/util/regex/*.lo
 	-rm -f tests/unit-tests/*.$(OBJEXT)
+	-rm -f tools/micro-forwarder/*.$(OBJEXT)
+	-rm -f tools/micro-forwarder/*.lo
 	-rm -f tools/usersync/*.$(OBJEXT)
 	-rm -f tools/usersync/*.lo
 
@@ -4156,6 +4178,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator-validator-fixture.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-identity-management-fixture.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-test-validator-null.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tools/micro-forwarder/$(DEPDIR)/micro-forwarder-transport.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@tools/micro-forwarder/$(DEPDIR)/micro-forwarder.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tools/usersync/$(DEPDIR)/channel-discovery.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tools/usersync/$(DEPDIR)/content-meta-info.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tools/usersync/$(DEPDIR)/content-meta-info.pb.Plo@am__quote@ # am--include-marker
@@ -5420,6 +5444,7 @@ clean-libtool:
 	-rm -rf src/transport/.libs src/transport/_libs
 	-rm -rf src/util/.libs src/util/_libs
 	-rm -rf src/util/regex/.libs src/util/regex/_libs
+	-rm -rf tools/micro-forwarder/.libs tools/micro-forwarder/_libs
 	-rm -rf tools/usersync/.libs tools/usersync/_libs
 
 distclean-libtool:
@@ -6241,6 +6266,8 @@ distclean-generic:
 	-rm -f src/util/regex/$(am__dirstamp)
 	-rm -f tests/unit-tests/$(DEPDIR)/$(am__dirstamp)
 	-rm -f tests/unit-tests/$(am__dirstamp)
+	-rm -f tools/micro-forwarder/$(DEPDIR)/$(am__dirstamp)
+	-rm -f tools/micro-forwarder/$(am__dirstamp)
 	-rm -f tools/usersync/$(DEPDIR)/$(am__dirstamp)
 	-rm -f tools/usersync/$(am__dirstamp)
 
@@ -6581,6 +6608,8 @@ distclean: distclean-recursive
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator-validator-fixture.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-identity-management-fixture.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-test-validator-null.Po
+	-rm -f tools/micro-forwarder/$(DEPDIR)/micro-forwarder-transport.Plo
+	-rm -f tools/micro-forwarder/$(DEPDIR)/micro-forwarder.Plo
 	-rm -f tools/usersync/$(DEPDIR)/channel-discovery.Plo
 	-rm -f tools/usersync/$(DEPDIR)/content-meta-info.Plo
 	-rm -f tools/usersync/$(DEPDIR)/content-meta-info.pb.Plo
@@ -6960,6 +6989,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator-validator-fixture.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-identity-management-fixture.Po
 	-rm -f tests/unit-tests/$(DEPDIR)/bin_unit_tests_test_validator_null-test-validator-null.Po
+	-rm -f tools/micro-forwarder/$(DEPDIR)/micro-forwarder-transport.Plo
+	-rm -f tools/micro-forwarder/$(DEPDIR)/micro-forwarder.Plo
 	-rm -f tools/usersync/$(DEPDIR)/channel-discovery.Plo
 	-rm -f tools/usersync/$(DEPDIR)/content-meta-info.Plo
 	-rm -f tools/usersync/$(DEPDIR)/content-meta-info.pb.Plo
