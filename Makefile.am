@@ -159,6 +159,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/lite/registration-options-lite.hpp \
   include/ndn-ind/lite/signature-lite.hpp \
   include/ndn-ind/lite/encoding/element-listener-lite.hpp \
+  include/ndn-ind/lite/encoding/element-reader-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_1_1-wire-format-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_2-wire-format-lite.hpp \
   include/ndn-ind/lite/encoding/tlv-0_3-wire-format-lite.hpp \
@@ -265,6 +266,8 @@ ndn_ind_cpp_headers = \
 # Public ndn-ind-tools C++ headers.
 # NOTE: If a new directory is added, then add it to ndn_ind_tools_cpp_headers in include/Makefile.am.
 ndn_ind_tools_cpp_headers = \
+  include/ndn-ind-tools/micro-forwarder/micro-forwarder.hpp \
+  include/ndn-ind-tools/micro-forwarder/micro-forwarder-transport.hpp \
   include/ndn-ind-tools/usersync/channel-discovery.hpp \
   include/ndn-ind-tools/usersync/content-meta-info.hpp \
   include/ndn-ind-tools/usersync/generalized-content.hpp \
@@ -388,6 +391,7 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/lite/registration-options-lite.cpp \
   src/lite/signature-lite.cpp \
   src/lite/encoding/element-listener-lite.cpp \
+  src/lite/encoding/element-reader-lite.cpp \
   src/lite/encoding/tlv-0_2-wire-format-lite.cpp \
   src/lite/encoding/tlv-0_3-wire-format-lite.cpp \
   src/lite/encrypt/encrypted-content-lite.cpp \
@@ -504,6 +508,8 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
 
 # The ndn-ind-tools library.
 libndn_ind_tools_la_SOURCES = ${ndn_ind_tools_cpp_headers} ${ndn_ind_cpp_headers} \
+  tools/micro-forwarder/micro-forwarder.cpp \
+  tools/micro-forwarder/micro-forwarder-transport.cpp \
   tools/usersync/content-meta-info.pb.cc \
   tools/usersync/channel-discovery.cpp \
   tools/usersync/content-meta-info.cpp \

@@ -329,6 +329,7 @@
     <ClCompile Include="..\..\src\lite\data-lite.cpp" />
     <ClCompile Include="..\..\src\lite\delegation-set-lite.cpp" />
     <ClCompile Include="..\..\src\lite\encoding\element-listener-lite.cpp" />
+    <ClCompile Include="..\..\src\lite\encoding\element-reader-lite.cpp" />
     <ClCompile Include="..\..\src\lite\encoding\tlv-0_2-wire-format-lite.cpp" />
     <ClCompile Include="..\..\src\lite\encoding\tlv-0_3-wire-format-lite.cpp" />
     <ClCompile Include="..\..\src\lite\encrypt\algo\aes-algorithm-lite.cpp" />
@@ -456,6 +457,8 @@
     <ClCompile Include="..\..\src\util\regex\ndn-regex-top-matcher.cpp" />
     <ClCompile Include="..\..\src\util\segment-fetcher.cpp" />
     <ClCompile Include="..\..\src\util\sqlite3-statement.cpp" />
+    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder-transport.cpp" />
+    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

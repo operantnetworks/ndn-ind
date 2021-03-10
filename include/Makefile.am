@@ -38,13 +38,13 @@ ndn_cpp_cpp_headers = \
   $(wildcard ndn-ind/security/v2/*.*) \
   $(wildcard ndn-ind/security/v2/validator-config/*.*) \
   $(wildcard ndn-ind/sync/*.*) \
-  $(wildcard ndn-ind/tools/usersync/*.*) \
   $(wildcard ndn-ind/transport/*.*) \
   $(wildcard ndn-ind/util/*.*) \
   $(wildcard ndn-ind/util/impl/*.*)
 
 # Public ndn-ind-tools C++ headers.
 ndn_cpp_tools_cpp_headers = \
+  $(wildcard ndn-ind-tools/micro-forwarder/*.*) \
   $(wildcard ndn-ind-tools/usersync/*.*)
 
 nobase_include_HEADERS = $(ndn_cpp_c_headers) $(ndn_cpp_cpp_headers) \

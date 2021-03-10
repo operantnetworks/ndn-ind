@@ -1,4 +1,4 @@
-NDN-IND (2021-02-03)
+NDN-IND (2021-03-07)
 --------------------
 
 Changes
@@ -24,6 +24,7 @@ Changes
 * Remove obsolete Name-based Access Control v1. (Keep v2.)
 * PIB and TPM: Change system() to mkdir() or create_directories(). https://github.com/operantnetworks/ndn-ind/pull/15
 * In Transport, added readRawPackets to handle raw packets. https://github.com/operantnetworks/ndn-ind/pull/16
+* In tools, added MicroForwarder.
 * In examples and unit tests, use the default Face which doesn't require TCP.
 * Move the instructions for RHEL 7 to the wiki.
 * Add support for Visual Studio. https://github.com/operantnetworks/ndn-ind/pull/17
