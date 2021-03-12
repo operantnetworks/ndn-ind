@@ -185,6 +185,14 @@ MicroForwarder::onReceivedElement
       _LOG_DEBUG("Received Interest with Nack on face " << face->getFaceId() <<
         ": " << interest->getName());
 
+      if (networkNack->getReason() == ndn_NetworkNackReason_DUPLICATE) {
+        // Drom the Nack for duplicate nonce so we don't consume the PIT entry,
+        // but wait for the Data packet from the first successful interest.
+        _LOG_DEBUG("Dropped Interest with Nack for duplicate nonce on face " << face->getFaceId() <<
+          ": " << interest->getName());
+        return;
+      }
+
       // Send the packet to the face for each matching PIT entry.
       // Note that this is similar to returning a Data packet.
       for (int i = 0; i < PIT_.size(); ++i) {
