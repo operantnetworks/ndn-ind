@@ -186,7 +186,7 @@ MicroForwarder::onReceivedElement
         ": " << interest->getName());
 
       if (networkNack->getReason() == ndn_NetworkNackReason_DUPLICATE) {
-        // Drom the Nack for duplicate nonce so we don't consume the PIT entry,
+        // Drop the Nack for duplicate nonce so we don't consume the PIT entry,
         // but wait for the Data packet from the first successful interest.
         _LOG_DEBUG("Dropped Interest with Nack for duplicate nonce on face " << face->getFaceId() <<
           ": " << interest->getName());
@@ -252,21 +252,26 @@ MicroForwarder::onReceivedElement
       timeoutEndTime = now + seconds(4);
     system_clock::time_point entryEndTime = 
       now + duration_cast<system_clock::duration>(minPitEntryLifetime_);
+    bool isDuplicateInterest = false;
     for (int i = 0; i < PIT_.size(); ++i) {
       PitEntry& entry = *PIT_[i];
       // TODO: Check interest equality of appropriate selectors.
-      if (entry.getInFace() == face &&
-          entry.getInterest()->getName().equals(interest->getName())) {
-        // Duplicate PIT entry.
-        // Update the interest timeout.
-        if (timeoutEndTime > entry.getTimeoutEndTime())
-          entry.setTimeoutEndTime(timeoutEndTime);
-        // Also update the PIT entry timeout.
-        entry.setEntryEndTime(entryEndTime);
+      if (entry.getInterest()->getName().equals(interest->getName())) {
+        // Duplicate interest. If it's a new face, then we'll create a PIT entry,
+        // but won't forward.
+        isDuplicateInterest = true;
 
-        _LOG_DEBUG("Duplicate Interest on face " << face->getFaceId() << ": "
-          << interest->getName());
-        return;
+        if (entry.getInFace() == face) {
+          // Update the interest timeout.
+          if (timeoutEndTime > entry.getTimeoutEndTime())
+            entry.setTimeoutEndTime(timeoutEndTime);
+          // Also update the PIT entry timeout.
+          entry.setEntryEndTime(entryEndTime);
+
+          _LOG_DEBUG("Duplicate Interest on same face " << face->getFaceId() << ": "
+            << interest->getName());
+          return;
+        }
       }
     }
 
@@ -275,6 +280,10 @@ MicroForwarder::onReceivedElement
       (interest, face, timeoutEndTime, entryEndTime);
     PIT_.push_back(pitEntry);
     _LOG_DEBUG("Added PIT entry for Interest: " << interest->getName());
+
+    if (isDuplicateInterest)
+      // Don't forward a duplicate interest.
+      return;
 
     if (broadcastNamePrefix.match(interest->getName())) {
       // Special case: broadcast to all faces.
