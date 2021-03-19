@@ -174,6 +174,18 @@ public:
   static Name
   getKeyLocatorName(const Data& data, ValidationState& state)
   {
+    const CertificateV2* certificate = dynamic_cast<const CertificateV2*>(&data);
+    if (certificate) {
+      // Special case: Use the CertificateV2 methods which may have special processing.
+      if (!certificate->hasIssuerName()) {
+        state.fail(ValidationError
+          (ValidationError::INVALID_KEY_LOCATOR, "The certificate issuer name is missing"));
+        return Name();
+      }
+
+      return certificate->getIssuerName();
+    }
+
     return getKeyLocatorNameFromSignature(*data.getSignature(), state);
   }
 

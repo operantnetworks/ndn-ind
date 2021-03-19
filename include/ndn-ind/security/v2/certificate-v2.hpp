@@ -8,7 +8,8 @@
  * Original file: include/ndn-cpp/security/v2/certificate-v2.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll. Add
+ * getSignedEncoding and getSignatureValue.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -37,6 +38,7 @@
 
 #include <stdexcept>
 #include "../validity-period.hpp"
+#include "../../key-locator.hpp"
 #include "../../data.hpp"
 
 namespace ndn {
@@ -191,6 +193,55 @@ public:
    */
   bool
   isValid() const { return getValidityPeriod().isValid(); }
+
+  /**
+   * Check if this certificate has an issuer name in the signature's key locator.
+   * @return True if this has an issue name.
+   */
+  bool
+  hasIssuerName() const
+  {
+    return KeyLocator::canGetFromSignature(getSignature()) &&
+      KeyLocator::getFromSignature(getSignature()).getType() == ndn_KeyLocatorType_KEYNAME;
+  }
+
+  /**
+   * Get the issuer name from the signature's key locator. You should first call
+   * hasIssuerName() to check if it exists.
+   * @return The issuer name.
+   */
+  const Name&
+  getIssuerName() const
+  {
+    return KeyLocator::getFromSignature(getSignature()).getKeyName();
+  }
+
+  /**
+   * Get the SignedBlob of the encoding with the offsets for the signed portion.
+   * @param wireFormat (optional) A WireFormat object used to encode the Data
+   * packet. If omitted, use WireFormat getDefaultWireFormat().
+   * @return The SignedBlob of the encoding, or an isNull() Blob if can't encode.
+   */
+  SignedBlob
+  getSignedEncoding(WireFormat& wireFormat = *WireFormat::getDefaultWireFormat()) const
+  {
+    SignedBlob signedEncoding;
+    try {
+      // This will use a cached encoding if available.
+      signedEncoding = wireEncode(wireFormat);
+    } catch (const std::exception&) {
+      // The signedEncoding isNull().
+    }
+
+    return signedEncoding;
+  }
+
+  /**
+   * Get the signature value.
+   * @return A Blob with the bytes of the signature value..
+   */
+  const Blob&
+  getSignatureValue() const { return getSignature()->getSignature(); }
 
   // TODO: getExtension
 

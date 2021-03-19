@@ -133,7 +133,8 @@ public:
    * Verify the Data packet using the public key. This does not check the
    * type of public key or digest algorithm against the type of SignatureInfo in
    * the Data packet such as Sha256WithRsaSignature.
-   * @param data The Data packet to verify.
+   * @param data The Data packet to verify. If this is a CertificateV2, then
+   * call getSignedEncoding() and getSignatureValue().
    * @param publicKey The object containing the public key.
    * @param digestAlgorithm (optional) The digest algorithm. If omitted, use SHA256.
    * @param wireFormat (optional) A WireFormat object used to encode the Data
@@ -155,7 +156,8 @@ public:
    * a decoding exception. If you want to get a decoding exception then use
    * the PublicKey constructor to decode and call verifyDataSignature with the
    * PublicKey object.
-   * @param data The Data packet to verify.
+   * @param data The Data packet to verify. If this is a CertificateV2, then
+   * call getSignedEncoding() and getSignatureValue().
    * @param publicKeyDer The DER-encoded public key.
    * @param digestAlgorithm (optional) The digest algorithm. If omitted, use SHA256.
    * @param wireFormat (optional) A WireFormat object used to encode the Data
@@ -174,7 +176,8 @@ public:
    * Verify the Data packet using the public key in the certificate. This does
    * not check the type of public key or digest algorithm against the type of
    * SignatureInfo in the Data packet such as Sha256WithRsaSignature.
-   * @param data The Data packet to verify.
+   * @param data The Data packet to verify. If this is a CertificateV2, then
+   * call getSignedEncoding() and getSignatureValue().
    * @param certificate The certificate containing the public key.
    * @param digestAlgorithm (optional) The digest algorithm. If omitted, use SHA256.
    * @param wireFormat (optional) A WireFormat object used to encode the Data
