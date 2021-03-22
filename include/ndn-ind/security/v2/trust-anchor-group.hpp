@@ -1,14 +1,13 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  *
  * This works is based substantially on previous work as listed below:
  *
  * Original file: include/ndn-cpp/security/v2/trust-anchor-group.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll. Check anchor cert validity.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -138,7 +137,8 @@ public:
 
   /**
    * Load the static anchor certificate. If a certificate with the name is
-   * already added, do nothing.
+   * already added or if the current time does not fall within the certificate's
+   * validity period, do nothing.
    * @param certificate The certificate to add, which is copied.
    */
   void
@@ -198,7 +198,8 @@ public:
      bool isDirectory = false);
 
   /**
-   * Request a certificate refresh.
+   * Request a certificate refresh. If the current time does not fall within the
+   * certificate's validity period, don't load it.
    */
   virtual void
   refresh();

@@ -1,14 +1,13 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  *
  * This works is based substantially on previous work as listed below:
  *
  * Original file: src/security/v2/trust-anchor-group.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Check anchor cert validity.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -95,6 +94,10 @@ StaticTrustAnchorGroup::add(const CertificateV2& certificate)
 {
   if (anchorNames_.count(certificate.getName()) != 0)
     return;
+  if (!certificate.isValid()) {
+    _LOG_INFO("Static trust anchor is out of validity. Not loaded. " << certificate.getName().toUri());
+    return;
+  }
 
   // This copies the certificate name.
   anchorNames_.insert(certificate.getName());
@@ -205,6 +208,11 @@ DynamicTrustAnchorGroup::loadCertificate
 {
   ptr_lib::shared_ptr<CertificateV2> certificate = readCertificate(file);
   if (certificate) {
+    if (!certificate->isValid()) {
+      _LOG_INFO("Dynamic trust anchor is out of validity. Not loaded. " << certificate->getName().toUri());
+      return;
+    }
+
     if (anchorNames_.count(certificate->getName()) == 0) {
       anchorNames_.insert(certificate->getName());
       certificates_.add(*certificate);
