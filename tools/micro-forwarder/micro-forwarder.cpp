@@ -182,39 +182,10 @@ MicroForwarder::onReceivedElement
         // We got a Nack but not for an Interest, so drop the packet.
         return;
 
-      _LOG_DEBUG("Received Interest with Nack on face " << face->getFaceId() <<
-        ": " << interest->getName());
-
-      if (networkNack->getReason() == ndn_NetworkNackReason_DUPLICATE) {
-        // Drop the Nack for duplicate nonce so we don't consume the PIT entry,
-        // but wait for the Data packet from the first successful interest.
-        _LOG_DEBUG("Dropped Interest with Nack for duplicate nonce on face " << face->getFaceId() <<
-          ": " << interest->getName());
-        return;
-      }
-
-      // Send the packet to the face for each matching PIT entry.
-      // Note that this is similar to returning a Data packet.
-      for (int i = 0; i < PIT_.size(); ++i) {
-        PitEntry& entry = *PIT_[i];
-        // Use exact name match.
-        // TODO: Should we match on prefix? Or should we match the exact nonce?
-        if (entry.getInFace() && entry.getInterest()->getName().equals(interest->getName())) {
-          _LOG_DEBUG("Forwarded Interest with Nack to face " << entry.getInFace()->getFaceId()
-            << ": " << interest->getName());
-          // Forward the full element including any LP header.
-          entry.getInFace()->send(element, elementLength);
-
-          // The PIT entry is consumed, so set clear the inFace_ which prevents
-          // using it to return another Data packet, but we keep the PIT entry to
-          // check for a duplicate nonce. It will be deleted after entryEndTime.
-          // (If a fresh Interest arrives with the same name, a new PIT entry will
-          // be created.)
-          entry.clearInFace();
-        }
-      }
-
-      // We have processed the network Nack packet.
+      // All prefixes have multicast strategy by default, so drop the Nack so
+      // that it doesn't consume the PIT entry.
+      _LOG_DEBUG("Dropped Interest with Nack on face " << face->getFaceId() <<
+        ", reason code " << networkNack->getReason() << ": " << interest->getName());
       return;
     }
   }
