@@ -1,14 +1,14 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  *
  * This works is based substantially on previous work as listed below:
  *
  * Original file: src/encoding/der/der-node.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Add DerSet,
+ *   DerUtcTime, DerExplicit and DerIa5String.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -51,6 +51,19 @@ class DerNode {
 public:
   virtual size_t
   getSize();
+
+  /**
+   * Get the number of bytes of the encoded header (not the size field in the
+   * header).
+   * @return The header size.
+   */
+  size_t
+  getHeaderSize()
+  {
+    // Call getSize() which may update the header.
+    getSize();
+    return header_.size();
+  }
 
   /**
    * Get the raw data encoding for this node.
@@ -98,11 +111,11 @@ public:
   getPayload() { return Blob(&payload_[0], payloadPosition_); }
 
   /**
-   * If this object is a DerSequence, get the children of this node. Otherwise,
-   * throw an exception.
-   * (DerSequence overrides to implement this method.)
+   * If this object is a DerSequence or DerSet, get the children of this node.
+   * Otherwise, throw an exception.
+   * (DerSequence and DerSet override to implement this method.)
    * @return The children as an array of shared_ptr<DerNode>.
-   * @throws DerDecodingException if this object is not a DerSequence.
+   * @throws DerDecodingException if this object is not a DerSequence or DerSet.
    */
   virtual const std::vector<ptr_lib::shared_ptr<DerNode> >&
   getChildren();
@@ -122,8 +135,13 @@ public:
   class DerNull;
   class DerOid;
   class DerSequence;
+  class DerSet;
+  class DerUtf8String;
   class DerPrintableString;
+  class DerIa5String;
+  class DerUtcTime;
   class DerGeneralizedTime;
+  class DerExplicit;
 
   /**
    * Check that index is in bounds for the children list, cast children[index]
@@ -218,6 +236,8 @@ public:
   void
   addChild(const ptr_lib::shared_ptr<DerNode>& node, bool notifyParent = false)
   {
+    if (isExplicitNode(nodeType_) && nodeList_.size() >= 1)
+      throw std::runtime_error("An explicit node can have only one child");
     node->parent_ = this;
     nodeList_.push_back(node);
 
@@ -237,10 +257,18 @@ public:
   virtual Blob
   encode();
 
+  /**
+   * Check if the node type is for an explicit node.
+   * @param nodeType The node type byte
+   * @return True if for explicit.
+   */
+  static bool
+  isExplicitNode(int nodeType) { return (nodeType & 0xe0) == 0xa0; }
+
 protected:
   /**
    * Create a DerStructure with the given nodeType. This is a protected
-   * constructor. To create an object, use DerSequence.
+   * constructor. To create an object, use DerSequence or DerSet.
    * @param nodeType The DER node type.
    */
   DerStructure(DerNodeType nodeType)
@@ -497,6 +525,36 @@ public:
   }
 };
 
+class DerNode::DerSet : public DerStructure {
+public:
+  /**
+   * Create a DerSet.
+   */
+  DerSet()
+  : DerStructure(DerNodeType_Set)
+  {
+  }
+};
+
+/**
+ * A DerUtf8String extends DerByteString to handle a a printable string. No
+ * escaping or other modification is done to the string.
+ * @param inputData An input buffer containing the string to encode.
+ * @param inputDataLength The length of inputData.
+ */
+class DerNode::DerUtf8String : public DerByteString {
+public:
+  DerUtf8String(const uint8_t* inputData, size_t inputDataLength)
+  : DerByteString(inputData, inputDataLength, DerNodeType_Utf8String)
+  {
+  }
+
+  DerUtf8String()
+  : DerByteString(0, 0, DerNodeType_Utf8String)
+  {
+  }
+};
+
 /**
  * A DerPrintableString extends DerByteString to handle a a printable string. No
  * escaping or other modification is done to the string.
@@ -514,6 +572,63 @@ public:
   : DerByteString(0, 0, DerNodeType_PrintableString)
   {
   }
+};
+
+/**
+ * A DerIa5String extends DerByteString to handle an IA5 string.
+ * @param inputData An input buffer containing the string to encode.
+ * @param inputDataLength The length of inputData.
+ */
+class DerNode::DerIa5String : public DerByteString {
+public:
+  DerIa5String(const uint8_t* inputData, size_t inputDataLength)
+  : DerByteString(inputData, inputDataLength, DerNodeType_Ia5String)
+  {
+  }
+
+  DerIa5String()
+  : DerByteString(0, 0, DerNodeType_Ia5String)
+  {
+  }
+};
+
+/**
+ * A DerUtcTime extends DerNode to represent a date and time in UTC format.
+ */
+class DerNode::DerUtcTime : public DerNode {
+public:
+  /**
+   * Create a DerUtcTime with the given time.
+   * @param time The time.
+   */
+  DerUtcTime(std::chrono::system_clock::time_point time)
+  : DerNode(DerNodeType_UtcTime)
+  {
+    std::string derTime = toUtcTimeString(time);
+    payloadAppend((const uint8_t*)&derTime[0], derTime.size());
+    encodeHeader(payloadPosition_);
+  }
+
+  DerUtcTime()
+  : DerNode(DerNodeType_UtcTime)
+  {
+  }
+
+  /**
+   * Interpret the result of toVal() as a time string and return the time.
+   * @return The time.
+   */
+  std::chrono::system_clock::time_point
+  toTimePoint();
+
+private:
+  /**
+   * Convert a UNIX timestamp to the internal string representation.
+   * @param time The time.
+   * @return The string representation.
+   */
+  static std::string
+  toUtcTimeString(std::chrono::system_clock::time_point time);
 };
 
 /**
@@ -554,6 +669,26 @@ private:
    */
   static std::string
   toDerTimeString(std::chrono::system_clock::time_point time);
+};
+
+/**
+ * A DerExplicit is a structure with a specific tag and holds one child.
+ */
+class DerNode::DerExplicit : public DerStructure {
+public:
+  /**
+   * Create a DerExplicit with the given tag.
+   * @param tag The tag which must be less than or equal to 0x1f.
+   * @throws DerDecodingException if the tag is not less than or equal to 0x1f.
+   */
+  DerExplicit(int tag);
+
+  /**
+   * Get the tag part of the node type.
+   * @return The tag.
+   */
+  int
+  getTag() { return nodeType_ & 0x1f; }
 };
 
 }
