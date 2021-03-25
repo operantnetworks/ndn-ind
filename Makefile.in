@@ -362,6 +362,7 @@ am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
 	src/security/certificate/certificate-subject-description.lo \
 	src/security/certificate/certificate.lo \
 	src/security/certificate/public-key.lo \
+	src/security/certificate/x509-certificate-info.lo \
 	src/security/pib/pib-certificate-container.lo \
 	src/security/pib/pib-identity.lo \
 	src/security/pib/pib-identity-container.lo \
@@ -941,6 +942,7 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	src/security/certificate/$(DEPDIR)/certificate-subject-description.Plo \
 	src/security/certificate/$(DEPDIR)/certificate.Plo \
 	src/security/certificate/$(DEPDIR)/public-key.Plo \
+	src/security/certificate/$(DEPDIR)/x509-certificate-info.Plo \
 	src/security/pib/$(DEPDIR)/pib-certificate-container.Plo \
 	src/security/pib/$(DEPDIR)/pib-identity-container.Plo \
 	src/security/pib/$(DEPDIR)/pib-identity.Plo \
@@ -1832,6 +1834,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/certificate/certificate-subject-description.hpp \
   include/ndn-ind/security/certificate/certificate.hpp \
   include/ndn-ind/security/certificate/public-key.hpp \
+  include/ndn-ind/security/certificate/x509-certificate-info.hpp \
   include/ndn-ind/security/pib/pib-certificate-container.hpp \
   include/ndn-ind/security/pib/pib-identity.hpp \
   include/ndn-ind/security/pib/pib-identity-container.hpp \
@@ -2065,6 +2068,7 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/security/certificate/certificate-subject-description.cpp \
   src/security/certificate/certificate.cpp \
   src/security/certificate/public-key.cpp \
+  src/security/certificate/x509-certificate-info.cpp \
   src/security/pib/pib-certificate-container.cpp \
   src/security/pib/pib-identity.cpp \
   src/security/pib/pib-identity-container.cpp \
@@ -2945,6 +2949,9 @@ src/security/certificate/certificate.lo:  \
 	src/security/certificate/$(am__dirstamp) \
 	src/security/certificate/$(DEPDIR)/$(am__dirstamp)
 src/security/certificate/public-key.lo:  \
+	src/security/certificate/$(am__dirstamp) \
+	src/security/certificate/$(DEPDIR)/$(am__dirstamp)
+src/security/certificate/x509-certificate-info.lo:  \
 	src/security/certificate/$(am__dirstamp) \
 	src/security/certificate/$(DEPDIR)/$(am__dirstamp)
 src/security/pib/$(am__dirstamp):
@@ -4053,6 +4060,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/certificate/$(DEPDIR)/certificate-subject-description.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/certificate/$(DEPDIR)/certificate.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/certificate/$(DEPDIR)/public-key.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/security/certificate/$(DEPDIR)/x509-certificate-info.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/pib/$(DEPDIR)/pib-certificate-container.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/pib/$(DEPDIR)/pib-identity-container.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/pib/$(DEPDIR)/pib-identity.Plo@am__quote@ # am--include-marker
@@ -6483,6 +6491,7 @@ distclean: distclean-recursive
 	-rm -f src/security/certificate/$(DEPDIR)/certificate-subject-description.Plo
 	-rm -f src/security/certificate/$(DEPDIR)/certificate.Plo
 	-rm -f src/security/certificate/$(DEPDIR)/public-key.Plo
+	-rm -f src/security/certificate/$(DEPDIR)/x509-certificate-info.Plo
 	-rm -f src/security/pib/$(DEPDIR)/pib-certificate-container.Plo
 	-rm -f src/security/pib/$(DEPDIR)/pib-identity-container.Plo
 	-rm -f src/security/pib/$(DEPDIR)/pib-identity.Plo
@@ -6864,6 +6873,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f src/security/certificate/$(DEPDIR)/certificate-subject-description.Plo
 	-rm -f src/security/certificate/$(DEPDIR)/certificate.Plo
 	-rm -f src/security/certificate/$(DEPDIR)/public-key.Plo
+	-rm -f src/security/certificate/$(DEPDIR)/x509-certificate-info.Plo
 	-rm -f src/security/pib/$(DEPDIR)/pib-certificate-container.Plo
 	-rm -f src/security/pib/$(DEPDIR)/pib-identity-container.Plo
 	-rm -f src/security/pib/$(DEPDIR)/pib-identity.Plo

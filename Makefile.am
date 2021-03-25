@@ -200,6 +200,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/certificate/certificate-subject-description.hpp \
   include/ndn-ind/security/certificate/certificate.hpp \
   include/ndn-ind/security/certificate/public-key.hpp \
+  include/ndn-ind/security/certificate/x509-certificate-info.hpp \
   include/ndn-ind/security/pib/pib-certificate-container.hpp \
   include/ndn-ind/security/pib/pib-identity.hpp \
   include/ndn-ind/security/pib/pib-identity-container.hpp \
@@ -430,6 +431,7 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/security/certificate/certificate-subject-description.cpp \
   src/security/certificate/certificate.cpp \
   src/security/certificate/public-key.cpp \
+  src/security/certificate/x509-certificate-info.cpp \
   src/security/pib/pib-certificate-container.cpp \
   src/security/pib/pib-identity.cpp \
   src/security/pib/pib-identity-container.cpp \
