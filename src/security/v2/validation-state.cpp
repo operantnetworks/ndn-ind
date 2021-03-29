@@ -1,7 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
  * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
  *
@@ -85,10 +84,15 @@ ValidationState::verifyCertificateChain
 DataValidationState::DataValidationState
   (const Data& data, const DataValidationSuccessCallback& successCallback,
    const DataValidationFailureCallback& failureCallback)
-: data_(data),
-  successCallback_(successCallback),
+: successCallback_(successCallback),
   failureCallback_(failureCallback)
 {
+  // Make a copy.
+  if (dynamic_cast<const CertificateV2*>(&data))
+    data_ = ptr_lib::make_shared<CertificateV2>(data);
+  else
+    data_ = ptr_lib::make_shared<Data>(data);
+
   if (!successCallback_)
     throw runtime_error("The successCallback is null");
   if (!failureCallback_)
@@ -99,10 +103,10 @@ void
 DataValidationState::verifyOriginalPacket
   (const CertificateV2& trustedCertificate)
 {
-  if (VerificationHelpers::verifyDataSignature(data_, trustedCertificate)) {
-    _LOG_TRACE("OK signature for data `" << data_.getName() << "`");
+  if (VerificationHelpers::verifyDataSignature(*data_, trustedCertificate)) {
+    _LOG_TRACE("OK signature for data `" << data_->getName() << "`");
     try {
-      successCallback_(data_);
+      successCallback_(*data_);
     } catch (const std::exception& ex) {
       _LOG_ERROR("DataValidationState::fail: Error in successCallback: " << ex.what());
     } catch (...) {
@@ -112,16 +116,16 @@ DataValidationState::verifyOriginalPacket
   }
   else
     fail(ValidationError(ValidationError::INVALID_SIGNATURE,
-      "Invalid signature of data `" + data_.getName().toUri() + "`"));
+      "Invalid signature of data `" + data_->getName().toUri() + "`"));
 }
 
 void
 DataValidationState::bypassValidation()
 {
-  _LOG_TRACE("Signature verification bypassed for data `" << data_.getName()
+  _LOG_TRACE("Signature verification bypassed for data `" << data_->getName()
              << "`");
   try {
-    successCallback_(data_);
+    successCallback_(*data_);
   } catch (const std::exception& ex) {
     _LOG_ERROR("DataValidationState::fail: Error in successCallback: " << ex.what());
   } catch (...) {
@@ -135,7 +139,7 @@ DataValidationState::fail(const ValidationError& error)
 {
   _LOG_TRACE(error);
   try {
-    failureCallback_(data_, error);
+    failureCallback_(*data_, error);
   } catch (const std::exception& ex) {
     _LOG_ERROR("DataValidationState::fail: Error in failureCallback: " << ex.what());
   } catch (...) {

@@ -73,12 +73,23 @@ TrustAnchorGroup::readCertificate(const string& filePath)
   if (!certificateFile.good())
     return ptr_lib::shared_ptr<CertificateV2>();
 
-  stringstream encodedData;
-  encodedData << certificateFile.rdbuf();
+  stringstream encodedDataStream;
+  encodedDataStream << certificateFile.rdbuf();
+  string encodedData = encodedDataStream.str();
+
+  // Strip possible X.509 header and footer.
+  string s = "-----BEGIN CERTIFICATE-----";
+  int i = encodedData.find(s);
+  if (i != string::npos)
+    encodedData.replace(i, s.size(), "");
+  s = "-----END CERTIFICATE-----";
+  i = encodedData.find(s);
+  if (i != string::npos)
+    encodedData.replace(i, s.size(), "");
 
   // Use a vector in a shared_ptr so we can make it a Blob without copying.
   ptr_lib::shared_ptr<vector<uint8_t> > decodedData(new vector<uint8_t>());
-  fromBase64(encodedData.str(), *decodedData);
+  fromBase64(encodedData, *decodedData);
 
   ptr_lib::shared_ptr<CertificateV2> result(new CertificateV2());
   try {

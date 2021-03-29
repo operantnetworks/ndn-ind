@@ -1,7 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
  * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
  *
@@ -250,7 +249,7 @@ public:
    * @return The original Data packet.
    */
   const Data&
-  getOriginalData() const { return data_; }
+  getOriginalData() const { return *data_; }
 
 private:
   virtual void
@@ -259,7 +258,7 @@ private:
   virtual void
   bypassValidation();
 
-  Data data_;
+  ptr_lib::shared_ptr<Data> data_;
   DataValidationSuccessCallback successCallback_;
   DataValidationFailureCallback failureCallback_;
 };

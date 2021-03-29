@@ -1,14 +1,13 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
  * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
  *
  * Original file: src/security/v2/certificate-v2.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use NDN_IND macros. Use std::chrono.
+ * Summary of Changes: Use NDN_IND macros. Use std::chrono. Decode X.509.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -35,11 +34,15 @@
 #include <ndn-ind/security/validity-period.hpp>
 #include <ndn-ind/sha256-with-ecdsa-signature.hpp>
 #include <ndn-ind/sha256-with-rsa-signature.hpp>
+#include <ndn-ind/digest-sha256-signature.hpp>
+#include <ndn-ind/lite/util/crypto-lite.hpp>
+#include "../../encoding/der/der-node-type.hpp"
 #include <ndn-ind/encoding/base64.hpp>
 #include <ndn-ind/security/v2/certificate-v2.hpp>
 #include <ndn-ind/key-locator.hpp>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace ndn {
 
@@ -52,6 +55,9 @@ CertificateV2::CertificateV2(const Data& data)
 // Use the copy constructor.  It clones the signature object.
 : Data(data)
 {
+  const CertificateV2 *certificate = dynamic_cast<const CertificateV2*>(&data);
+  if (certificate)
+    x509Info_ = certificate->x509Info_;
   checkFormat();
 }
 
@@ -75,6 +81,9 @@ CertificateV2::checkFormat()
 const Blob&
 CertificateV2::getPublicKey() const
 {
+  if (x509Info_)
+    return x509Info_->getPublicKey();
+
   if (getContent().size() == 0)
     throw Error("The public key is not set (the Data content is empty)");
 
@@ -84,6 +93,9 @@ CertificateV2::getPublicKey() const
 ValidityPeriod&
 CertificateV2::getValidityPeriod()
 {
+  if (x509Info_)
+    return const_cast<ValidityPeriod&>(x509Info_->getValidityPeriod());
+
   if (!ValidityPeriod::canGetFromSignature(getSignature()))
     throw invalid_argument("The SignatureInfo does not have a ValidityPeriod");
 
@@ -142,15 +154,50 @@ CertificateV2::printCertificate(ostream& output) const
 }
 
 void
-CertificateV2::wireDecode(const Blob& input, WireFormat& wireFormat)
+CertificateV2::wireDecode(const Blob& inputIn, WireFormat& wireFormat)
 {
+  Blob input(inputIn);
+  if (input.size() >= 1 && input.buf()[0] == DerNodeType_Sequence) {
+    // Replace the input with a Data packet that encapsulates the X.509 certificate.
+    X509CertificateInfo x509Info(input);
+    Data data(x509Info.getSubjectName());
+    data.setContent(input);
+    data.getMetaInfo().setType(ndn_ContentType_KEY);
+    data.getMetaInfo().setFreshnessPeriod(hours(1));
+
+    // Set a DigestSha256 signature.
+    data.setSignature(DigestSha256Signature());
+    // Encode once to get the signed portion.
+    SignedBlob encoding = data.wireEncode(wireFormat);
+    // Compute the SHA-256 here so that we don't depend on KeyChain.
+    uint8_t digest[ndn_SHA256_DIGEST_SIZE];
+    CryptoLite::digestSha256(encoding.signedBuf(), encoding.signedSize(), digest);
+    data.getSignature()->setSignature(Blob(digest, sizeof(digest)));
+
+    input = data.wireEncode(wireFormat);
+    // Proceed below to re-decode from the encapsulated content.
+  }
+
   Data::wireDecode(input, wireFormat);
   checkFormat();
+
+  if (dynamic_cast<DigestSha256Signature*>(getSignature())) {
+    // The signature is DigestSha256. Try to decode the content as an X.509 certificate.
+    try {
+      x509Info_ = ptr_lib::make_shared<X509CertificateInfo>(getContent());
+    } catch (const std::exception& ex) {
+      // The content doesn't seem to be an X.509 certificate. Ignore.
+    }
+  }
 }
 
 bool
 CertificateV2::isValidName(const Name& certificateName)
 {
+  if (X509CertificateInfo::isEncapsulatedX509(certificateName))
+    // This is an X.509 name from an encapsulated certificate, so don't check it.
+    return true;
+
   // /<NameSpace>/KEY/[KeyId]/[IssuerId]/[Version]
   return (certificateName.size() >= MIN_CERT_NAME_LENGTH &&
           certificateName.get(KEY_COMPONENT_OFFSET) == getKEY_COMPONENT());
