@@ -58,6 +58,15 @@ CertificateV2::CertificateV2(const Data& data)
   const CertificateV2 *certificate = dynamic_cast<const CertificateV2*>(&data);
   if (certificate)
     x509Info_ = certificate->x509Info_;
+  else if (dynamic_cast<DigestSha256Signature*>(getSignature())) {
+    // The signature is DigestSha256. Try to decode the content as an X.509 certificate.
+    try {
+      x509Info_ = ptr_lib::make_shared<X509CertificateInfo>(getContent());
+    } catch (const std::exception& ex) {
+      // The content doesn't seem to be an X.509 certificate. Ignore.
+    }
+  }
+
   checkFormat();
 }
 
@@ -179,7 +188,6 @@ CertificateV2::wireDecode(const Blob& inputIn, WireFormat& wireFormat)
   }
 
   Data::wireDecode(input, wireFormat);
-  checkFormat();
 
   if (dynamic_cast<DigestSha256Signature*>(getSignature())) {
     // The signature is DigestSha256. Try to decode the content as an X.509 certificate.
@@ -189,6 +197,8 @@ CertificateV2::wireDecode(const Blob& inputIn, WireFormat& wireFormat)
       // The content doesn't seem to be an X.509 certificate. Ignore.
     }
   }
+
+  checkFormat();
 }
 
 bool

@@ -1,14 +1,13 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
  * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
  *
  * Original file: src/security/pib/pib-sqlite3.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Use CertificateV2.getPublicKey().
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -500,10 +499,10 @@ void
 PibSqlite3::addCertificate(const CertificateV2& certificate)
 {
   // Ensure the key exists.
-  const Blob& content = certificate.getContent();
+  const Blob& publicKey = certificate.getPublicKey();
   addKey
     (certificate.getIdentity(), certificate.getKeyName(),
-     content.buf(), content.size());
+     publicKey.buf(), publicKey.size());
 
   if (!hasCertificate(certificate.getName())) {
     Sqlite3Statement statement(database_,
