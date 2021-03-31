@@ -1,7 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
  * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
  *
@@ -202,6 +201,11 @@ ConfigNameRelationChecker::checkNames
    const ptr_lib::shared_ptr<ValidationState>& state)
 {
   // packetName is not used in this check.
+
+  if (relation_ == ConfigNameRelation::Relation::IS_PREFIX_OF &&
+      name_.size() == 0)
+    // An empty name is a prefix of every name, so skip other tests.
+    return true;
 
   Name identity = PibKey::extractIdentityFromKeyName(keyLocatorName);
   bool result = ConfigNameRelation::checkNameRelation(relation_, name_, identity);

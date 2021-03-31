@@ -1,14 +1,14 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  *
  * This works is based substantially on previous work as listed below:
  *
  * Original file: src/encoding/der/der-node.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono.
+ * Summary of Changes: Use std::chrono. Add DerSet, DerUtcTime, DerExplicit and
+ *   DerIa5String.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -84,10 +84,20 @@ DerNode::parse(const uint8_t* inputBuf, size_t inputBufLength, size_t startIdx)
     newNode.reset(new DerOid());
   else if (nodeType == DerNodeType_Sequence)
     newNode.reset(new DerSequence());
+  else if (nodeType == DerNodeType_Set)
+    newNode.reset(new DerSet());
+  else if (nodeType == DerNodeType_Utf8String)
+    newNode.reset(new DerUtf8String());
   else if (nodeType == DerNodeType_PrintableString)
     newNode.reset(new DerPrintableString());
+  else if (nodeType == DerNodeType_Ia5String)
+    newNode.reset(new DerIa5String());
+  else if (nodeType == DerNodeType_UtcTime)
+    newNode.reset(new DerUtcTime());
   else if (nodeType == DerNodeType_GeneralizedTime)
     newNode.reset(new DerGeneralizedTime());
+  else if (DerStructure::isExplicitNode(nodeType))
+    newNode.reset(new DerExplicit(nodeType & 0x1f));
   else
     throw DerDecodingException("Unimplemented DER type");
 
@@ -104,7 +114,7 @@ DerNode::toVal()
 const std::vector<ptr_lib::shared_ptr<DerNode> >&
 DerNode::getChildren()
 {
-  throw DerDecodingException("getChildren: This DerNode is not DerSequence");
+  throw DerDecodingException("getChildren: This DerNode is not DerSequence or DerSet");
 }
 
 DerNode::DerSequence&
@@ -440,6 +450,28 @@ DerNode::DerOid::decode128(size_t offset, size_t& skip)
 }
 
 system_clock::time_point
+DerNode::DerUtcTime::toTimePoint()
+{
+  string payloadString((const char*)&payload_[0], payloadPosition_);
+  int year2Digits = stoi(payloadString.substr(0, 2));
+  string yearPrefix = (year2Digits >= 50 ? "19" : "20");
+  // The payload time has Z at the end. Convert to ISO time with 'T' in the middle.
+  return fromIsoString
+    (yearPrefix + payloadString.substr(0, 6) + 'T' + payloadString.substr(6, 6));
+}
+
+string
+DerNode::DerUtcTime::toUtcTimeString(system_clock::time_point time)
+{
+  string pTimeStr = toIsoString(time, false);
+  // The ISO string has the 'T' in the middle. Convert to UTC with 'Z' at the end.
+  // Strip the first two digits of the year.
+  size_t index = pTimeStr.find_first_of('T');
+  return pTimeStr.substr(2, index - 2) +
+    pTimeStr.substr(index + 1, pTimeStr.size() - (index + 1)) + 'Z';
+}
+
+system_clock::time_point
 DerNode::DerGeneralizedTime::toMillisecondsSince1970()
 {
   string payloadString((const char*)&payload_[0], payloadPosition_);
@@ -457,5 +489,14 @@ DerNode::DerGeneralizedTime::toDerTimeString(system_clock::time_point time)
   return pTimeStr.substr(0, index) +
     pTimeStr.substr(index + 1, pTimeStr.size() - (index + 1)) + 'Z';
 }
+
+DerNode::DerExplicit::DerExplicit(int tag)
+: DerStructure((DerNodeType)(0xa0 | tag))
+{
+  if (tag > 0x1f)
+    throw DerDecodingException
+      ("The explicit tag must be less than or equal to 0x1f");
+}
+
 
 }

@@ -1,14 +1,14 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
  * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
  *
  * This works is based substantially on previous work as listed below:
  *
  * Original file: include/ndn-cpp/security/v2/certificate-v2.hpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use std::chrono. Support ndn_ind_dll.
+ * Summary of Changes: Use std::chrono. Support ndn_ind_dll. Add
+ * getSignedEncoding and getSignatureValue. Decode X.509.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -37,7 +37,9 @@
 
 #include <stdexcept>
 #include "../validity-period.hpp"
+#include "../../key-locator.hpp"
 #include "../../data.hpp"
+#include "../../security/certificate/x509-certificate-info.hpp"
 
 namespace ndn {
 
@@ -124,28 +126,48 @@ public:
    * @return The key name as a new Name.
    */
   Name
-  getKeyName() const { return getName().getPrefix(KEY_ID_OFFSET + 1); }
+  getKeyName() const
+  {
+    if (getName().size() < MIN_CERT_NAME_LENGTH)
+      throw Error("The certificate has an encapsulated X.509 name, not an NDN cert name");
+    return getName().getPrefix(KEY_ID_OFFSET + 1);
+  }
 
   /**
    * Get the identity name from the certificate name.
    * @return The identity name as a new Name.
    */
   Name
-  getIdentity() const { return getName().getPrefix(KEY_COMPONENT_OFFSET); }
+  getIdentity() const
+  {
+    if (getName().size() < MIN_CERT_NAME_LENGTH)
+      throw Error("The certificate has an encapsulated X.509 name, not an NDN cert name");
+    return getName().getPrefix(KEY_COMPONENT_OFFSET);
+  }
 
   /**
    * Get the key ID component from the certificate name.
    * @return The key ID name component.
    */
   Name::Component
-  getKeyId() const { return getName().get(KEY_ID_OFFSET); }
+  getKeyId() const
+  {
+    if (getName().size() < MIN_CERT_NAME_LENGTH)
+      throw Error("The certificate has an encapsulated X.509 name, not an NDN cert name");
+    return getName().get(KEY_ID_OFFSET);
+  }
 
   /**
    * Get issuer ID component from the certificate name.
    * @return The issuer ID component.
    */
   Name::Component
-  getIssuerId() const { return getName().get(ISSUER_ID_OFFSET); }
+  getIssuerId() const
+  {
+    if (getName().size() < MIN_CERT_NAME_LENGTH)
+      throw Error("The certificate has an encapsulated X.509 name, not an NDN cert name");
+    return getName().get(ISSUER_ID_OFFSET);
+  }
 
   /**
    * Get the public key DER encoding.
@@ -192,6 +214,70 @@ public:
   bool
   isValid() const { return getValidityPeriod().isValid(); }
 
+  /**
+   * Check if this certificate has an issuer name in the signature's key locator.
+   * @return True if this has an issue name.
+   */
+  bool
+  hasIssuerName() const
+  {
+    if (x509Info_)
+      return true;
+
+    return KeyLocator::canGetFromSignature(getSignature()) &&
+      KeyLocator::getFromSignature(getSignature()).getType() == ndn_KeyLocatorType_KEYNAME;
+  }
+
+  /**
+   * Get the issuer name from the signature's key locator. You should first call
+   * hasIssuerName() to check if it exists.
+   * @return The issuer name.
+   */
+  const Name&
+  getIssuerName() const
+  {
+    if (x509Info_)
+      return x509Info_->getIssuerName();
+
+    return KeyLocator::getFromSignature(getSignature()).getKeyName();
+  }
+
+  /**
+   * Get the SignedBlob of the encoding with the offsets for the signed portion.
+   * @param wireFormat (optional) A WireFormat object used to encode the Data
+   * packet. If omitted, use WireFormat getDefaultWireFormat().
+   * @return The SignedBlob of the encoding, or an isNull() Blob if can't encode.
+   */
+  SignedBlob
+  getSignedEncoding(WireFormat& wireFormat = *WireFormat::getDefaultWireFormat()) const
+  {
+    if (x509Info_)
+      return x509Info_->getEncoding();
+
+    SignedBlob signedEncoding;
+    try {
+      // This will use a cached encoding if available.
+      signedEncoding = wireEncode(wireFormat);
+    } catch (const std::exception&) {
+      // The signedEncoding isNull().
+    }
+
+    return signedEncoding;
+  }
+
+  /**
+   * Get the signature value.
+   * @return A Blob with the bytes of the signature value..
+   */
+  const Blob&
+  getSignatureValue() const
+  {
+    if (x509Info_)
+      return x509Info_->getSignatureValue();
+
+    return getSignature()->getSignature();
+  }
+
   // TODO: getExtension
 
   /**
@@ -209,7 +295,7 @@ public:
 
   /**
    * Override to call the base class wireDecode then check the certificate
-   * format.
+   * format. If the input is an X.509 certificate, then encapsulate it.
    * @param input The input byte array to be decoded as an immutable Blob.
    * @param wireFormat A WireFormat object used to decode the input. If omitted,
    * use WireFormat getDefaultWireFormat().
@@ -279,6 +365,8 @@ private:
 
   void
   checkFormat();
+
+  ptr_lib::shared_ptr<X509CertificateInfo> x509Info_;
 };
 
 inline std::ostream&

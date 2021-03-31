@@ -1,7 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil -*- */
 /**
- * Copyright (C) 2020 Operant Networks, Incorporated.
- * @author: Jeff Thompson <jefft0@gmail.com>
+ * Copyright (C) 2020-2021 Operant Networks, Incorporated.
  *
  * This works is based substantially on previous work as listed below:
  *
@@ -9,6 +8,7 @@
  * Original repository: https://github.com/named-data/ndn-cpp
  *
  * Summary of Changes: Use NDN_IND macros. Remove unused methods from security v1.
+ * Use CertificateV2.getPublicKey().
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -271,7 +271,7 @@ void
 KeyChain::addCertificate(PibKey& key, const CertificateV2& certificate)
 {
   if (key.getName() != certificate.getKeyName() ||
-      !certificate.getContent().equals(key.getPublicKey()))
+      !certificate.getPublicKey().equals(key.getPublicKey()))
     throw invalid_argument("Key `" + key.getName().toUri() +
       "` does not match certificate `" + certificate.getName().toUri() + "`");
 

@@ -8,7 +8,7 @@
  * Original file: src/security/verification-helpers.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. Use CertificateV2 getSignedEncoding.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -34,6 +34,7 @@
 
 #include <stdexcept>
 #include <ndn-ind/security/security-exception.hpp>
+#include <ndn-ind/security/v2/certificate-v2.hpp>
 #include <ndn-ind/lite/util/crypto-lite.hpp>
 #include <ndn-ind/lite/security/ec-public-key-lite.hpp>
 #include <ndn-ind/lite/security/rsa-public-key-lite.hpp>
@@ -99,17 +100,28 @@ VerificationHelpers::verifyDataSignature
   (const Data& data, const PublicKey& publicKey, DigestAlgorithm digestAlgorithm,
    WireFormat& wireFormat)
 {
-  SignedBlob encoding;
-  try {
-    encoding = data.wireEncode(wireFormat);
-  } catch (const std::exception&) {
-    return false;
+  SignedBlob signedEncoding;
+  Blob signatureValue;
+  const CertificateV2* certificate = dynamic_cast<const CertificateV2*>(&data);
+  if (certificate) {
+    // Special case: Use the CertificateV2 methods which may have special processing.
+    signedEncoding = certificate->getSignedEncoding(wireFormat);
+    if (signedEncoding.isNull())
+      return false;
+    signatureValue = certificate->getSignatureValue();
+  }
+  else {
+    try {
+      signedEncoding = data.wireEncode(wireFormat);
+      signatureValue = data.getSignature()->getSignature();
+    } catch (const std::exception&) {
+      return false;
+    }
   }
 
   return verifySignature
-    (encoding.signedBuf(), encoding.signedSize(),
-     data.getSignature()->getSignature().buf(),
-     data.getSignature()->getSignature().size(), publicKey, digestAlgorithm);
+    (signedEncoding.signedBuf(), signedEncoding.signedSize(),
+     signatureValue.buf(), signatureValue.size(), publicKey, digestAlgorithm);
 }
 
 bool
