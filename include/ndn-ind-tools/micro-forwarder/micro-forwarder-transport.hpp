@@ -39,7 +39,7 @@ public:
    * A MicroForwarderTransport::ConnectionInfo extends Transport::ConnectionInfo
    * to hold the MicroForwarder object to connect to.
    */
-  class ConnectionInfo : public Transport::ConnectionInfo {
+  class ndn_ind_dll ConnectionInfo : public Transport::ConnectionInfo {
   public:
     /**
      * Create a ConnectionInfo for the forwarder object.

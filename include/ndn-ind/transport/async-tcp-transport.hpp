@@ -58,7 +58,7 @@ public:
    * An AsyncTcpTransport::ConnectionInfo extends Transport::ConnectionInfo to
    * hold the host and port info for the TCP connection.
    */
-  class ConnectionInfo : public Transport::ConnectionInfo {
+  class ndn_ind_dll ConnectionInfo : public Transport::ConnectionInfo {
   public:
     /**
      * Create a ConnectionInfo with the given host and port.

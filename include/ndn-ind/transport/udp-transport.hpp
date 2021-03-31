@@ -54,7 +54,7 @@ public:
    * A UdpTransport::ConnectionInfo extends Transport::ConnectionInfo to hold
    * the host and port info for the UDP connection.
    */
-  class ConnectionInfo : public Transport::ConnectionInfo {
+  class ndn_ind_dll ConnectionInfo : public Transport::ConnectionInfo {
   public:
     /**
      * Create a ConnectionInfo with the given host and port.
