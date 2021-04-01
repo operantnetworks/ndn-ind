@@ -90,6 +90,15 @@ public:
   addRoute(const ndn::Name& name, int faceId, int cost = 0);
 
   /**
+   * @deprecated Use addRoute.
+   */
+  bool
+  DEPRECATED_IN_NDN_IND registerRoute(const ndn::Name& name, int faceId, int cost = 0)
+  {
+    return addRoute(name, faceId, cost);
+  }
+
+  /**
    * Send a remote register prefix command over face with faceId to the remote
    * forwarder. This allows the remote forwarder to forward interests back to
    * here which match the prefix. On the remote node, nfd.conf must have a

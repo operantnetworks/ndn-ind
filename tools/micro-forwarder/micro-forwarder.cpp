@@ -19,6 +19,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
+#include <set>
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind/encoding/tlv-wire-format.hpp>
 #include <ndn-ind/lite/encoding/tlv-0_3-wire-format-lite.hpp>
@@ -332,6 +333,7 @@ MicroForwarder::onReceivedElement
       }
 
       // Send the interest to the faces in matching FIB entries.
+      set<int> sentFaceIds;
       for (int i = 0; i < FIB_.size(); ++i) {
         FibEntry& fibEntry = *FIB_[i];
 
@@ -341,11 +343,12 @@ MicroForwarder::onReceivedElement
           for (int j = 0; j < fibEntry.getNextHopCount(); ++j) {
             ForwarderFace* outFace = fibEntry.getNextHop(j).getFace();
 
-            // Don't send the interest back to where it came from.
-            if (outFace != face) {
+            // Don't send the interest back to where it came from or to the same face again.
+            if (outFace != face && sentFaceIds.count(outFace->getFaceId()) == 0) {
               _LOG_DEBUG("Forwarded Interest to face " << outFace->getFaceId() << ": "
                 << interest->getName());
               // Forward the full element including any LP header.
+              sentFaceIds.insert(outFace->getFaceId());
               outFace->send(element, elementLength);
             }
           }
