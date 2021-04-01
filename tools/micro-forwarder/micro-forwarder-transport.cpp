@@ -72,7 +72,7 @@ MicroForwarderTransport::connect
   // The MicroForwader will call endpoint_->connect with its elementListener.
   int faceId = connectionInfo_.getForwarder()->addFace
     ("internal://app", endpoint_, ptr_lib::make_shared<Transport::ConnectionInfo>());
-  connectionInfo_.getForwarder()->registerRoute(Name("/"), faceId);
+  connectionInfo_.getForwarder()->addRoute(Name("/"), faceId);
 
   if (onConnected)
     onConnected();

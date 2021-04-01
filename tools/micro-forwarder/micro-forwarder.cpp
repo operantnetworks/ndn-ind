@@ -62,11 +62,11 @@ MicroForwarder::addFace(const char *host, unsigned short port)
 }
 
 bool
-MicroForwarder::registerRoute(const ndn::Name& name, int faceId, int cost)
+MicroForwarder::addRoute(const Name& name, int faceId, int cost)
 {
   ForwarderFace* nextHopFace = findFace(faceId);
   if (!nextHopFace) {
-    _LOG_INFO("Register route: Unrecognized face id " << faceId);
+    _LOG_INFO("addRoute: Unrecognized face id " << faceId);
     return false;
   }
 
@@ -83,7 +83,7 @@ MicroForwarder::registerRoute(const ndn::Name& name, int faceId, int cost)
         // The face is not already added.
         fibEntry.addNextHop(ptr_lib::make_shared<NextHopRecord>(nextHopFace, cost));
 
-      _LOG_INFO("Register route: Added face " << faceId <<
+      _LOG_INFO("addRoute: Added face " << faceId <<
         " to existing FIB entry for: " << name);
       return true;
     }
@@ -94,7 +94,7 @@ MicroForwarder::registerRoute(const ndn::Name& name, int faceId, int cost)
   fibEntry->addNextHop(ptr_lib::make_shared<NextHopRecord>(nextHopFace, cost));
   FIB_.push_back(fibEntry);
 
-  _LOG_INFO("Register route: Added face id " << faceId <<
+  _LOG_INFO("addRoute: Added face id " << faceId <<
     " to new FIB entry for: " << name);
   return true;
 }

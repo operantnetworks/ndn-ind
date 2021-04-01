@@ -85,7 +85,16 @@ public:
    * faceId.
    */
   bool
-  registerRoute(const ndn::Name& name, int faceId, int cost = 0);
+  addRoute(const ndn::Name& name, int faceId, int cost = 0);
+
+  /**
+   * @deprecated Use addRoute.
+   */
+  bool
+  DEPRECATED_IN_NDN_IND registerRoute(const ndn::Name& name, int faceId, int cost = 0)
+  {
+    return addRoute(name, faceId, cost);
+  }
 
   /**
    * Call processEvents() for the Transport object in each face. This is
