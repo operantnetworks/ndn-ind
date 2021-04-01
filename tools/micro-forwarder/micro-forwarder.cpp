@@ -26,6 +26,7 @@
 #include <ndn-ind/transport/tcp-transport.hpp>
 #include <ndn-ind/network-nack.hpp>
 #include "../../src/lp/lp-packet.hpp"
+#include <ndn-ind-tools/micro-forwarder/micro-forwarder-transport.hpp>
 #include <ndn-ind-tools/micro-forwarder/micro-forwarder.hpp>
 
 using namespace std;
@@ -97,6 +98,40 @@ MicroForwarder::addRoute(const Name& name, int faceId, int cost)
   _LOG_INFO("addRoute: Added face id " << faceId <<
     " to new FIB entry for: " << name);
   return true;
+}
+
+void
+MicroForwarder::remoteRegisterPrefix
+  (int faceId, const Name& prefix, KeyChain& commandKeyChain,
+   const Name& commandCertificateName, const OnRegisterFailed& onRegisterFailed,
+   const OnRegisterSuccess& onRegisterSuccess)
+{
+  if (!findFace(faceId)) {
+    _LOG_INFO("remoteRegisterPrefix: Unrecognized face id " << faceId);
+    return;
+  }
+
+  ptr_lib::shared_ptr<MicroForwarderTransport> transport(new MicroForwarderTransport());
+  // Set isLocal_ false so that registerPrefix will use localhop.
+  transport->isLocal_ = false;
+  // Set the outFaceId_ so that the registration Interest will only go that face.
+  transport->outFaceId_ = faceId;
+
+  ptr_lib::shared_ptr<Face> registrationFace(new Face
+    (transport, ptr_lib::make_shared<MicroForwarderTransport::ConnectionInfo>(this)));
+  registrationFace->setCommandSigningInfo(commandKeyChain, commandCertificateName);
+  registrationFace->registerPrefix
+    (prefix,
+     // Use a no-op OnInterest.
+     [](const ptr_lib::shared_ptr<const Name>&,
+        const ptr_lib::shared_ptr<const Interest>&, Face&, uint64_t,
+        const ptr_lib::shared_ptr<const InterestFilter>&) {},
+     // Wrap the callback so we keep the registrationFace object alive while needed.
+     [registrationFace, onRegisterFailed](auto& prefix) { onRegisterFailed(prefix); },
+     [registrationFace, onRegisterSuccess](auto& prefix, auto registeredPrefixId) {
+       if (onRegisterSuccess)
+         onRegisterSuccess(prefix, registeredPrefixId);
+     });
 }
 
 void
@@ -195,12 +230,18 @@ MicroForwarder::onReceivedElement
     _LOG_DEBUG("Received Interest on face " << face->getFaceId() << ": " <<
        interest->getName());
 
+    MicroForwarderTransport* microForwarderTransport = 0;
+    if (dynamic_cast<MicroForwarderTransport::Endpoint*>(face->getTransport()))
+      // The incoming face uses a MicroForwarderTransport.
+      microForwarderTransport = ((MicroForwarderTransport::Endpoint*)face->getTransport())->transport_;
+
     if (localhostNamePrefix.match(interest->getName()))
       // Ignore localhost.
       return;
 
-    if (localhopNamePrefix.match(interest->getName()))
-      // Ignore localhop.
+    if (localhopNamePrefix.match(interest->getName()) &&
+        !(microForwarderTransport && !microForwarderTransport->isLocal_))
+      // Ignore localhop unless the MicroForwarderTransport has been set as not local.
       return;
 
     // First check for a duplicate nonce on any face.
@@ -270,6 +311,23 @@ MicroForwarder::onReceivedElement
       }
     }
     else {
+      if (microForwarderTransport && microForwarderTransport->outFaceId_ >= 0) {
+        // Special case. The transport specifies the outgoing face to use.
+        // remoteRegisterPrefix uses this to send the registration Interest only to the target.
+        ForwarderFace* outFace = findFace(microForwarderTransport->outFaceId_);
+        if (!outFace) {
+          // We don't expect this since remoteRegisterPrefix already checked it.
+          _LOG_INFO("Unrecognized outFaceId_ " << microForwarderTransport->outFaceId_);
+          return;
+        }
+        
+        _LOG_DEBUG("Forwarded Interest to specified face " <<
+          microForwarderTransport->outFaceId_ << ": " << interest->getName());
+        // Forward the full element including any LP header.
+        outFace->send(element, elementLength);
+        return;
+      }
+
       // Send the interest to the faces in matching FIB entries.
       for (int i = 0; i < FIB_.size(); ++i) {
         FibEntry& fibEntry = *FIB_[i];
