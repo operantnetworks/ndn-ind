@@ -370,6 +370,7 @@
     <ClCompile Include="..\..\src\security\certificate\certificate-subject-description.cpp" />
     <ClCompile Include="..\..\src\security\certificate\certificate.cpp" />
     <ClCompile Include="..\..\src\security\certificate\public-key.cpp" />
+    <ClCompile Include="..\..\src\security\certificate\x509-certificate-info.cpp" />
     <ClCompile Include="..\..\src\security\command-interest-preparer.cpp" />
     <ClCompile Include="..\..\src\security\command-interest-signer.cpp" />
     <ClCompile Include="..\..\src\security\key-chain.cpp" />
