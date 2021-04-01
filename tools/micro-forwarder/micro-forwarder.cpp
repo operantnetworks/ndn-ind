@@ -25,6 +25,8 @@
 #include <ndn-ind/lite/lp/lp-packet-lite.hpp>
 #include <ndn-ind/transport/tcp-transport.hpp>
 #include <ndn-ind/network-nack.hpp>
+#include <ndn-ind/control-parameters.hpp>
+#include <ndn-ind/control-response.hpp>
 #include "../../src/lp/lp-packet.hpp"
 #include <ndn-ind-tools/micro-forwarder/micro-forwarder-transport.hpp>
 #include <ndn-ind-tools/micro-forwarder/micro-forwarder.hpp>
@@ -235,9 +237,10 @@ MicroForwarder::onReceivedElement
       // The incoming face uses a MicroForwarderTransport.
       microForwarderTransport = ((MicroForwarderTransport::Endpoint*)face->getTransport())->transport_;
 
-    if (localhostNamePrefix.match(interest->getName()))
-      // Ignore localhost.
+    if (localhostNamePrefix.match(interest->getName())) {
+      onReceivedLocalhostInterest(face, interest);
       return;
+    }
 
     if (localhopNamePrefix.match(interest->getName()) &&
         !(microForwarderTransport && !microForwarderTransport->isLocal_))
@@ -370,6 +373,41 @@ MicroForwarder::onReceivedElement
         entry.clearInFace();
       }
     }
+  }
+}
+
+void
+MicroForwarder::onReceivedLocalhostInterest
+  (ForwarderFace* face, const ptr_lib::shared_ptr<Interest>& interest)
+{
+  if (registerNamePrefix.match(interest->getName())) {
+    // Decode the ControlParameters.
+    ControlParameters controlParameters;
+    try {
+      controlParameters.wireDecode(interest->getName().get(4).getValue());
+    } catch (const std::exception& ex) {
+      _LOG_ERROR("Error decoding registration interest ControlParameters " << ex.what());
+      return;
+    }
+
+    _LOG_INFO("Received register prefix request for " << controlParameters.getName());
+
+    if (!addRoute(controlParameters.getName(), face->getFaceId()))
+      // TODO: Send error reply?
+      return;
+
+    // Send the ControlResponse.
+    ControlResponse controlResponse;
+    controlResponse.setStatusText("Success");
+    controlResponse.setStatusCode(200);
+    controlResponse.setBodyAsControlParameters(&controlParameters);
+    Data responseData(interest->getName());
+    responseData.setContent(controlResponse.wireEncode());
+    // TODO: Sign the responseData.
+    face->send(*responseData.wireEncode());
+  }
+  else {
+    _LOG_INFO("Unrecognized localhost prefix " << interest->getName());
   }
 }
 

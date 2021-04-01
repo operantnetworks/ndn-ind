@@ -42,6 +42,7 @@ public:
   : minPitEntryLifetime_(std::chrono::minutes(1)),
     localhostNamePrefix("/localhost"),
     localhopNamePrefix("/localhop"),
+    registerNamePrefix("/localhost/nfd/rib/register"),
     broadcastNamePrefix("/ndn/broadcast")
   {
   }
@@ -395,6 +396,14 @@ private:
   };
 
   /**
+   * This is called by onReceivedElement when it receives an interest starting
+   * with /localhost . Process the localhost command such as register prefix.
+   */
+  void
+  onReceivedLocalhostInterest
+    (ForwarderFace* face, const ndn::ptr_lib::shared_ptr<ndn::Interest>& interest);
+
+  /**
    * Find the face in faces_ with the faceId.
    * @param The faceId.
    * @return The ForwarderFace, or null if not found.
@@ -420,6 +429,7 @@ private:
 
   ndn::Name localhostNamePrefix;
   ndn::Name localhopNamePrefix;
+  ndn::Name registerNamePrefix;
   ndn::Name broadcastNamePrefix;
 
   static MicroForwarder* instance_;
