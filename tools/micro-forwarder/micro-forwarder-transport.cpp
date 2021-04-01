@@ -37,14 +37,16 @@ MicroForwarderTransport::ConnectionInfo::~ConnectionInfo()
 
 MicroForwarderTransport::MicroForwarderTransport()
 : elementBuffer_(1000),
-  elementReader_(0, &elementBuffer_)
+  elementReader_(0, &elementBuffer_),
+  isLocal_(true),
+  outFaceId_(-1)
 {
 }
 
 bool
 MicroForwarderTransport::isLocal(const Transport::ConnectionInfo& connectionInfo)
 {
-  return true;
+  return isLocal_;
 }
 
 bool
