@@ -1043,5 +1043,8 @@
     <ClCompile Include="..\..\src\lite\encoding\element-reader-lite.cpp">
       <Filter>Source Files\src\lite\encoding</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\security\certificate\x509-certificate-info.cpp">
+      <Filter>Source Files\src\security\certificate</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

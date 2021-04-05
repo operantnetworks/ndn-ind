@@ -58,7 +58,7 @@ public:
    * A UnixTransport::ConnectionInfo extends Transport::ConnectionInfo to hold
    * the file path of the Unix socket.
    */
-  class ConnectionInfo : public Transport::ConnectionInfo {
+  class ndn_ind_dll ConnectionInfo : public Transport::ConnectionInfo {
   public:
     /**
      * Create a ConnectionInfo with the given filePath.

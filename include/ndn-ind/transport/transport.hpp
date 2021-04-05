@@ -50,7 +50,7 @@ public:
    * A Transport::ConnectionInfo is a base class for connection information used
    * by subclasses of Transport.
    */
-  class ConnectionInfo {
+  class ndn_ind_dll ConnectionInfo {
   public:
     virtual ~ConnectionInfo();
   };
