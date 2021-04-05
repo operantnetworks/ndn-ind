@@ -24,6 +24,7 @@
 
 #include <ndn-ind/interest.hpp>
 #include <ndn-ind/data.hpp>
+#include <ndn-ind/face.hpp>
 #include <ndn-ind/transport/transport.hpp>
 
 namespace ndntools {
@@ -41,6 +42,7 @@ public:
   : minPitEntryLifetime_(std::chrono::minutes(1)),
     localhostNamePrefix("/localhost"),
     localhopNamePrefix("/localhop"),
+    registerNamePrefix("/localhost/nfd/rib/register"),
     broadcastNamePrefix("/ndn/broadcast")
   {
   }
@@ -85,7 +87,42 @@ public:
    * faceId.
    */
   bool
-  registerRoute(const ndn::Name& name, int faceId, int cost = 0);
+  addRoute(const ndn::Name& name, int faceId, int cost = 0);
+
+  /**
+   * @deprecated Use addRoute.
+   */
+  bool
+  DEPRECATED_IN_NDN_IND registerRoute(const ndn::Name& name, int faceId, int cost = 0)
+  {
+    return addRoute(name, faceId, cost);
+  }
+
+  /**
+   * Send a remote register prefix command over face with faceId to the remote
+   * forwarder. This allows the remote forwarder to forward interests back to
+   * here which match the prefix. On the remote node, nfd.conf must have a
+   * "localhop_security" section which allows remote prefix registration.
+   * @param faceId The face ID of the face for sending the command.
+   * @param prefix The prefix for remote registration. You can use the default
+   * Name() so that the remote forwarder will forward all interests to here, but
+   * if you want to limit the traffic, then use the prefix of the interests that
+   * the local application needs to receive.
+   * @param commandKeyChain The KeyChain object for signing command interests,
+   * which must remain valid until this calls onRegisterFailed or onRegisterSuccess.
+   * @param commandCertificateName The certificate name corresponding to the
+   * key in commandKeyChain which is used for signing command interests. This
+   * makes a copy of the Name. You can get the default certificate name with
+   * commandKeyChain.getDefaultCertificateName() .
+   * @param onRegisterFailed
+   * @param onRegisterSuccess
+   */
+  void
+  remoteRegisterPrefix
+    (int faceId, const ndn::Name& prefix, ndn::KeyChain& commandKeyChain,
+     const ndn::Name& commandCertificateName,
+     const ndn::OnRegisterFailed& onRegisterFailed,
+     const ndn::OnRegisterSuccess& onRegisterSuccess = ndn::OnRegisterSuccess());
 
   /**
    * Call processEvents() for the Transport object in each face. This is
@@ -150,6 +187,9 @@ private:
 
     const std::string&
     getUri() const { return uri_; }
+
+    ndn::Transport*
+    getTransport() const { return transport_.get(); }
 
     int
     getFaceId() const { return faceId_; }
@@ -365,6 +405,14 @@ private:
   };
 
   /**
+   * This is called by onReceivedElement when it receives an interest starting
+   * with /localhost . Process the localhost command such as register prefix.
+   */
+  void
+  onReceivedLocalhostInterest
+    (ForwarderFace* face, const ndn::ptr_lib::shared_ptr<ndn::Interest>& interest);
+
+  /**
    * Find the face in faces_ with the faceId.
    * @param The faceId.
    * @return The ForwarderFace, or null if not found.
@@ -390,6 +438,7 @@ private:
 
   ndn::Name localhostNamePrefix;
   ndn::Name localhopNamePrefix;
+  ndn::Name registerNamePrefix;
   ndn::Name broadcastNamePrefix;
 
   static MicroForwarder* instance_;

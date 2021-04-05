@@ -37,14 +37,16 @@ MicroForwarderTransport::ConnectionInfo::~ConnectionInfo()
 
 MicroForwarderTransport::MicroForwarderTransport()
 : elementBuffer_(1000),
-  elementReader_(0, &elementBuffer_)
+  elementReader_(0, &elementBuffer_),
+  isLocal_(true),
+  outFaceId_(-1)
 {
 }
 
 bool
 MicroForwarderTransport::isLocal(const Transport::ConnectionInfo& connectionInfo)
 {
-  return true;
+  return isLocal_;
 }
 
 bool
@@ -72,7 +74,7 @@ MicroForwarderTransport::connect
   // The MicroForwader will call endpoint_->connect with its elementListener.
   int faceId = connectionInfo_.getForwarder()->addFace
     ("internal://app", endpoint_, ptr_lib::make_shared<Transport::ConnectionInfo>());
-  connectionInfo_.getForwarder()->registerRoute(Name("/"), faceId);
+  connectionInfo_.getForwarder()->addRoute(Name("/"), faceId);
 
   if (onConnected)
     onConnected();

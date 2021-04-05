@@ -121,6 +121,8 @@ public:
   getIsConnected();
 
 private:
+  friend class MicroForwarder;
+
   /**
    * A MicroForwarderTransport::Endpoint extends Transport and is the the
    * Transport used in calling the MicroForwarder addFace method, as the endpoint
@@ -188,6 +190,8 @@ private:
     getIsConnected() { return true; }
 
   private:
+    friend class MicroForwarder;
+
     ndn::DynamicMallocUInt8ArrayLite elementBuffer_;
     ndn::ElementReaderLite elementReader_;
     MicroForwarderTransport* transport_;
@@ -198,6 +202,9 @@ private:
   ndn::DynamicMallocUInt8ArrayLite elementBuffer_;
   ndn::ElementReaderLite elementReader_;
   ndn::ptr_lib::shared_ptr<Endpoint> endpoint_;
+  bool isLocal_;
+  // Set outFaceId_ to specify the only output face for sending packets.
+  int outFaceId_;
 };
 
 }
