@@ -142,6 +142,7 @@ public:
   class DerUtcTime;
   class DerGeneralizedTime;
   class DerExplicit;
+  class DerImplicitByteString;
 
   /**
    * Check that index is in bounds for the children list, cast children[index]
@@ -689,6 +690,56 @@ public:
    */
   int
   getTag() { return nodeType_ & 0x1f; }
+};
+
+/**
+ * DerImplicitByteString extends DerByteString to encode a string of bytes using
+ * an IMPLICIT node type.
+ */
+class DerNode::DerImplicitByteString : public DerByteString {
+public:
+  /**
+   * Create a DerImplicitByteString with the input value.
+   * @param inputData An input buffer containing the bytes to encode.
+   * @param inputDataLength The length of inputData.
+   * @param type The value of the DER type, for example 0x81 . It is an error if
+   * bit 6 is set (meaning a structured type) or if bits 7 and 8 are zero (not
+   * an implicit tag).
+   */
+  DerImplicitByteString
+    (const uint8_t* inputData, size_t inputDataLength, int type)
+  : DerByteString(inputData, inputDataLength, (DerNodeType)type)
+  {
+    if (!isImplicit(type))
+      throw std::runtime_error
+        ("DerImplicitByteString: The type is not for a non-structured IMPLICIT value");
+  }
+
+  DerImplicitByteString(int type)
+  : DerByteString(0, 0, (DerNodeType)type)
+  {
+    if (!isImplicit(type))
+      throw std::runtime_error
+        ("DerImplicitByteString: The type is not for a non-structured IMPLICIT value");
+  }
+
+  /**
+   * Get the value of the DER type.
+   * @return The value of the DER type, for example 0x81.
+   */
+  int
+  getType() { return (int)nodeType_; }
+
+  /**
+   * Check if the type code is for a non-structured IMPLICIT value.
+   * @param type The type code.
+   * @return True if for non-structured IMPLICIT value.
+   */
+  static bool
+  isImplicit(int type)
+  {
+    return (type & 0x20) == 0 && (type & 0xc0) != 0;
+  }
 };
 
 }

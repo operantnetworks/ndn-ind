@@ -98,6 +98,8 @@ DerNode::parse(const uint8_t* inputBuf, size_t inputBufLength, size_t startIdx)
     newNode.reset(new DerGeneralizedTime());
   else if (DerStructure::isExplicitNode(nodeType))
     newNode.reset(new DerExplicit(nodeType & 0x1f));
+  else if (DerImplicitByteString::isImplicit(nodeType))
+    newNode.reset(new DerImplicitByteString(nodeType));
   else
     throw DerDecodingException("Unimplemented DER type");
 
