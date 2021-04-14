@@ -114,25 +114,35 @@ public:
   }
 
   /**
-   * Convert an X.509 name to an NDN Name. This should be the reverse operation
-   * of makeX509Name().
-   * @param x509Name The DerNode of the X.509 name.
+   * Make an NDN Name from the URI field in the Subject Alternative Names
+   * extension, if available. Otherwise make an NDN name that encapsulates the
+   * X.509 name, where the first component is "x509" and the second is the
+   * encoded X.509 name. This should be the reverse operation of makeX509Name().
+   * @param x509Name The DerNode of the X.509 name, used if extensions is null
+   * or doesn't have a URI field in the Subject Alternative Names.
+   * @param extensions The DerNode of the extensions (the only child of the
+   * DerExplicit node with tag 3). If this is null, don't use it.
    * @return The NDN Name.
    */
   static Name
-  makeName(DerNode& x509Name);
+  makeName(DerNode* x509Name, DerNode* extensions);
 
   /**
-   * If the Name has two components and the first is "x509", then return the
-   * DerNode of the second component. Otherwise, return the DerNode of an
-   * X.509 name with one component where the type is "pseudonym" and the value
-   * is a UTF8 string with the name URI. This should be the reverse operation
-   * of makeName().
+   * If the Name has two components and the first is "x509" (see
+   * isEncapsulatedX509), then return a DerNode made from the second component.
+   * Otherwise, return a DerNode which is a short representation of the Name,
+   * and update the extensions by adding a Subject Alternative Names extension
+   * with a URI field for the NDN Name. This should be the reverse operation of
+   * makeName().
    * @param name The NDN name.
+   * @param extensions The DerNode of the extensions (the only child of the
+   * DerExplicit node with tag 3). If the NDN Name is not an encapsulated X.509
+   * name, then add the Subject Alternative Names extensions (without first
+   * checking if extensions already has one). If this is null, don't use it.
    * @return A DerNode of the X.509 name.
    */
   static ptr_lib::shared_ptr<DerNode>
-  makeX509Name(const Name& name);
+  makeX509Name(const Name& name, DerNode* extensions);
 
   /**
    * Get the name component for "x509". This is a method because not all C++
