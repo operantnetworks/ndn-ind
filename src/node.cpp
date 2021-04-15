@@ -276,7 +276,8 @@ Node::RegisterResponse::operator()(const ptr_lib::shared_ptr<const Interest>& in
   }
   catch (runtime_error& ex) {
     _LOG_DEBUG
-      ("Register prefix failed: Error decoding the NFD response: " <<  ex.what());
+      ("Register prefix failed for prefix " << info_->prefix_->toUri() <<
+       " : Error decoding the NFD response: " <<  ex.what());
     try {
       info_->onRegisterFailed_(info_->prefix_);
     } catch (const std::exception& ex) {
@@ -290,8 +291,8 @@ Node::RegisterResponse::operator()(const ptr_lib::shared_ptr<const Interest>& in
   // Status code 200 is "OK".
   if (controlResponse.getStatusCode() != 200) {
     _LOG_DEBUG
-      ("Register prefix failed: Expected NFD status code 200, got: " <<
-       controlResponse.getStatusCode());
+      ("Register prefix failed for prefix " << info_->prefix_->toUri() <<
+       " : Expected NFD status code 200, got: " << controlResponse.getStatusCode());
     try {
       info_->onRegisterFailed_(info_->prefix_);
     } catch (const std::exception& ex) {
