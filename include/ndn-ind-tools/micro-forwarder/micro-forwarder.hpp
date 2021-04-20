@@ -213,11 +213,7 @@ private:
      * @param dataLength The number of bytes in data.
      */
     void
-    send(const uint8_t *data, size_t dataLength)
-    {
-      if (transport_)
-        transport_->send(data, dataLength);
-    }
+    send(const uint8_t *data, size_t dataLength);
 
     void
     send(const std::vector<uint8_t>& data) { send(&data[0], data.size()); }
