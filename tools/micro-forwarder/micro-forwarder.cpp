@@ -297,10 +297,6 @@ MicroForwarder::onReceivedElement
     PIT_.push_back(pitEntry);
     _LOG_DEBUG("Added PIT entry for Interest: " << interest->getName());
 
-    if (isDuplicateInterest)
-      // Don't forward a duplicate interest.
-      return;
-
     if (broadcastNamePrefix.match(interest->getName())) {
       // Special case: broadcast to all faces.
       for (int i = 0; i < faces_.size(); ++i) {
