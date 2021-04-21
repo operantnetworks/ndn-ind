@@ -208,6 +208,11 @@ EncryptorV2::Impl::encrypt
 {
   // Use the first key manager in the prioritized list which has a ready key.
   for (size_t i = 0; i < keyManagers_.size(); ++i) {
+    // Below, encrypt only checks if a first GCK has been retrieved. We must also
+    // check isKeyReady() to make sure the access manager is responding.
+    if (!keyManagers_[i]->isKeyReady())
+      continue;
+
     ptr_lib::shared_ptr<EncryptedContent> encryptedContent = keyManagers_[i]->encrypt
       (plainData, plainDataLength, associatedData, associatedDataLength);
     if (encryptedContent)
