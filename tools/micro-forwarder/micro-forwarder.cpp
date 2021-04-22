@@ -146,6 +146,20 @@ MicroForwarder::processEvents()
 }
 
 void
+MicroForwarder::ForwarderFace::send(const uint8_t *data, size_t dataLength)
+{
+  if (transport_) {
+    try {
+      transport_->send(data, dataLength);
+    } catch (const std::exception& ex) {
+      _LOG_ERROR("MicroForwarder: Error in transport send: " << ex.what());
+    } catch (...) {
+      _LOG_ERROR("MicroForwarder: Error in transport send");
+    }
+  }
+}
+
+void
 MicroForwarder::ForwarderFace::onReceivedElement
   (const uint8_t *element, size_t elementLength)
 {
