@@ -86,7 +86,8 @@ EncryptorV2::Impl::Impl
    Validator* validator, KeyChain* keyChain, Face* face,
    ndn_EncryptAlgorithmType algorithmType)
 : credentialsKey_(0), validator_(validator),
-  onError_(onError), keyChain_(keyChain), face_(face), algorithmType_(algorithmType)
+  onError_(onError), keyChain_(keyChain), face_(face), algorithmType_(algorithmType),
+  iKeyManagerLastEncryption_(-1)
 {
   keyManagers_.push_back(ptr_lib::make_shared<KeyManager>
     (this, accessPrefix, ckPrefix, ckDataSigningInfo));
@@ -114,7 +115,8 @@ EncryptorV2::Impl::Impl
    PibKey* credentialsKey, Validator* validator, KeyChain* keyChain, Face* face,
    ndn_EncryptAlgorithmType algorithmType)
 : onError_(onError), credentialsKey_(credentialsKey), validator_(validator),
-  keyChain_(keyChain), face_(face), algorithmType_(algorithmType)
+  keyChain_(keyChain), face_(face), algorithmType_(algorithmType),
+  iKeyManagerLastEncryption_(-1)
 {
   for (size_t i = 0; i < nAccessPrefixes; ++i)
     keyManagers_.push_back(ptr_lib::make_shared<KeyManager>(this, accessPrefixes[i]));
@@ -215,8 +217,23 @@ EncryptorV2::Impl::encrypt
 
     ptr_lib::shared_ptr<EncryptedContent> encryptedContent = keyManagers_[i]->encrypt
       (plainData, plainDataLength, associatedData, associatedDataLength);
-    if (encryptedContent)
+    if (encryptedContent) {
+      iKeyManagerLastEncryption_ = i;
       return encryptedContent;
+    }
+  }
+
+  // No access manager is responding. Maybe use the key manager of the last encryption.
+  if (iKeyManagerLastEncryption_ >= 0) {
+    ptr_lib::shared_ptr<EncryptedContent> encryptedContent =
+      keyManagers_[iKeyManagerLastEncryption_]->encrypt
+        (plainData, plainDataLength, associatedData, associatedDataLength);
+    if (encryptedContent) {
+      _LOG_TRACE
+        ("No access manager is responding. Used possibly stale content key from " <<
+         keyManagers_[iKeyManagerLastEncryption_]->getAccessPrefix().toUri());
+      return encryptedContent;
+    }
   }
 
   throw runtime_error("EncryptorV2 has not fetched the first group content key (GCK)");
@@ -299,7 +316,8 @@ EncryptorV2::Impl::encrypt
     // key managers so that they can check for a new GCK.
   }
 
-  if (canEncrypt) {
+  // Use a ready key manager, or the last one that did an encryption.
+  if (canEncrypt || iKeyManagerLastEncryption_ >= 0) {
     ptr_lib::shared_ptr<EncryptedContent> encryptedContent;
     try {
       // If a key was made ready, then processPendingEncrypts() should already have
