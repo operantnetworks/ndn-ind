@@ -651,6 +651,9 @@ private:
       size_t
       size() { return storage_.size(); }
 
+      const Name&
+      getAccessPrefix() const { return accessPrefix_; }
+
     private:
       // Give friend access to the tests.
       friend class ::TestEncryptorV2_EncryptAndPublishCk_Test;
@@ -764,6 +767,8 @@ private:
     Face* face_;
     ndn_EncryptAlgorithmType algorithmType_;
     std::vector<ptr_lib::shared_ptr<KeyManager> > keyManagers_;
+    // The index in keyManagers_ of the last successful encryption.
+    int iKeyManagerLastEncryption_;
     // A historical record mapping the generated CK name or fetched GCK name to
     // the content key.
     std::map<Name, Blob> contentKeys_;
