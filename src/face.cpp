@@ -88,6 +88,12 @@ Face::Face()
   commandKeyChain_(0)
 {
 }
+#else
+Face::Face()
+{
+  throw runtime_error
+    ("The default Face constructor for Unix sockets is not supported. Try Face(\"127.0.0.1\").");
+}
 #endif
 
 Face::Face(const char *host, unsigned short port)
