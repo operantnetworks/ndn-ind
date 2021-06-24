@@ -278,6 +278,20 @@ public:
     return getSignature()->getSignature();
   }
 
+  /**
+   * Get the CRL distribution URI from the X509CertificateInfo.
+   * @return The CRL distribution URI, or "" if not found or it there is no
+   * X509CertificateInfo.
+   */
+  std::string
+  getCrlDistributionUri() const
+  {
+    if (x509Info_)
+      return x509Info_->getCrlDistributionUri();
+
+    return "";
+  }
+
   // TODO: getExtension
 
   /**

@@ -102,6 +102,14 @@ public:
   getSignatureValue() const { return signatureValue_; }
 
   /**
+   * In the extensions find the X509v3 CRL Distribution Points extension and get
+   * the first fullname URI.
+   * @return The CRL distribution URI, or "" if not found.
+   */
+  const std::string&
+  getCrlDistributionUri() const { return crlDistributionUri_; }
+
+  /**
    * Check if the Name has two components and the first component is "x509". The
    * second component should be the encoding of the X.509 name.
    * @param name The Name to check.
@@ -145,6 +153,16 @@ public:
   makeX509Name(const Name& name, DerNode* extensions);
 
   /**
+   * In the extensions, find the X509v3 CRL Distribution Points extension and
+   * get the first fullname URI.
+   * @param extensions The DerNode of the extensions (the only child of the
+   * DerExplicit node with tag 3). If this is null, don't use it and return "".
+   * @return The first fullname URI in the distributionPoint, or "" if not found.
+   */
+  static std::string
+  findCrlDistributionUri(DerNode* extensions);
+
+  /**
    * Get the name component for "x509". This is a method because not all C++
    * environments support static constructors.
    * @return The name component for "KEY".
@@ -160,6 +178,7 @@ private:
   Name subjectName_;
   Blob publicKey_;
   Blob signatureValue_;
+  std::string crlDistributionUri_;
   static Name::Component* X509_COMPONENT;
 };
 
