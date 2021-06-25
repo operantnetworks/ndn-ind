@@ -279,6 +279,20 @@ public:
   }
 
   /**
+   * Get the X.509 serial number from the X509CertificateInfo.
+   * @return The X.509 serial number as a Blob with the bytes of the integer,
+   * or an isNull() Blob if there is no X509CertificateInfo.
+   */
+  Blob
+  getX509SerialNumber() const
+  {
+    if (x509Info_)
+      return x509Info_->getSerialNumber();
+
+    return Blob();
+  }
+
+  /**
    * Get the CRL distribution URI from the X509CertificateInfo.
    * @return The CRL distribution URI, or "" if not found or it there is no
    * X509CertificateInfo.

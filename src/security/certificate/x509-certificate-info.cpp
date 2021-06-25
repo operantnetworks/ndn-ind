@@ -98,6 +98,7 @@ X509CertificateInfo::X509CertificateInfo(const Blob& encoding)
     if (tbsChildren.size() < 6 + versionOffset)
       throw runtime_error("X509CertificateInfo: Expected 6 TBSCertificate fields");
 
+    serialNumber_ = tbsChildren[0 + versionOffset]->getPayload();
     issuerName_ = makeName(tbsChildren[2 + versionOffset].get(), 0);
 
     // validity

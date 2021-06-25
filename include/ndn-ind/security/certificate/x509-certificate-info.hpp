@@ -67,6 +67,13 @@ public:
   getEncoding() const { return signedEncoding_; }
 
   /**
+   * Get the serial number.
+   * @return The serial number as a Blob with the bytes of the integer.
+   */
+  const Blob&
+  getSerialNumber() const { return serialNumber_; }
+
+  /**
    * Get the issuer name which has been converted to an NDN name.
    * @return The issuer name.
    */
@@ -173,6 +180,7 @@ public:
 private:
   ptr_lib::shared_ptr<DerNode> root_;
   SignedBlob signedEncoding_;
+  Blob serialNumber_;
   Name issuerName_;
   ValidityPeriod validityPeriod_;
   Name subjectName_;
