@@ -67,6 +67,13 @@ public:
   getEncoding() const { return signedEncoding_; }
 
   /**
+   * Get the serial number.
+   * @return The serial number as a Blob with the bytes of the integer.
+   */
+  const Blob&
+  getSerialNumber() const { return serialNumber_; }
+
+  /**
    * Get the issuer name which has been converted to an NDN name.
    * @return The issuer name.
    */
@@ -100,6 +107,14 @@ public:
    */
   const Blob&
   getSignatureValue() const { return signatureValue_; }
+
+  /**
+   * In the extensions find the X509v3 CRL Distribution Points extension and get
+   * the first fullname URI.
+   * @return The CRL distribution URI, or "" if not found.
+   */
+  const std::string&
+  getCrlDistributionUri() const { return crlDistributionUri_; }
 
   /**
    * Check if the Name has two components and the first component is "x509". The
@@ -145,6 +160,16 @@ public:
   makeX509Name(const Name& name, DerNode* extensions);
 
   /**
+   * In the extensions, find the X509v3 CRL Distribution Points extension and
+   * get the first fullname URI.
+   * @param extensions The DerNode of the extensions (the only child of the
+   * DerExplicit node with tag 3). If this is null, don't use it and return "".
+   * @return The first fullname URI in the distributionPoint, or "" if not found.
+   */
+  static std::string
+  findCrlDistributionUri(DerNode* extensions);
+
+  /**
    * Get the name component for "x509". This is a method because not all C++
    * environments support static constructors.
    * @return The name component for "KEY".
@@ -155,11 +180,13 @@ public:
 private:
   ptr_lib::shared_ptr<DerNode> root_;
   SignedBlob signedEncoding_;
+  Blob serialNumber_;
   Name issuerName_;
   ValidityPeriod validityPeriod_;
   Name subjectName_;
   Blob publicKey_;
   Blob signatureValue_;
+  std::string crlDistributionUri_;
   static Name::Component* X509_COMPONENT;
 };
 

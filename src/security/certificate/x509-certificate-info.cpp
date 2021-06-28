@@ -31,7 +31,8 @@ typedef DerNode::DerSequence DerSequence;
 static const char *RSA_ENCRYPTION_OID = "1.2.840.113549.1.1.1";
 static const char *PSEUDONYM_OID = "2.5.4.65";
 static const char *SUBJECT_ALTERNATIVE_NAME_OID = "2.5.29.17";
-static const int SUBJECT_ALTERNATIVE_NAME_URI_TYPE = 0x86;
+static const char *CRL_DISTRIBUTION_POINTS_OID = "2.5.29.31";
+static const int GENERAL_NAME_URI_TYPE = 0x86;
 
 X509CertificateInfo::X509CertificateInfo(const Blob& encoding)
 {
@@ -97,6 +98,7 @@ X509CertificateInfo::X509CertificateInfo(const Blob& encoding)
     if (tbsChildren.size() < 6 + versionOffset)
       throw runtime_error("X509CertificateInfo: Expected 6 TBSCertificate fields");
 
+    serialNumber_ = tbsChildren[0 + versionOffset]->getPayload();
     issuerName_ = makeName(tbsChildren[2 + versionOffset].get(), 0);
 
     // validity
@@ -121,6 +123,8 @@ X509CertificateInfo::X509CertificateInfo(const Blob& encoding)
     subjectName_ = makeName(tbsChildren[4 + versionOffset].get(), extensions);
 
     publicKey_ = tbsChildren[5 + versionOffset]->encode();
+
+    crlDistributionUri_ = findCrlDistributionUri(extensions);
   } catch (const std::exception& ex) {
     throw runtime_error(string("X509CertificateInfo: Cannot decode the TBSCertificate: ") +
       ex.what());
@@ -215,22 +219,22 @@ X509CertificateInfo::makeName(DerNode* x509Name, DerNode* extensions)
     //    }
     //
     // subjectAltName EXTENSION ::= {
-    // 	SYNTAX GeneralNames
-    // 	IDENTIFIED BY id-ce-subjectAltName
+    //   SYNTAX GeneralNames
+    //   IDENTIFIED BY id-ce-subjectAltName
     // }
     //
     // GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
     //
     // GeneralName ::= CHOICE {
-    // 	otherName	[0] INSTANCE OF OTHER-NAME,
-    // 	rfc822Name	[1] IA5String,
-    // 	dNSName		[2] IA5String,
-    // 	x400Address	[3] ORAddress,
-    // 	directoryName	[4] Name,
-    // 	ediPartyName	[5] EDIPartyName,
-    // 	uniformResourceIdentifier [6] IA5String,
-    // 	IPAddress	[7] OCTET STRING,
-    // 	registeredID	[8] OBJECT IDENTIFIER
+    //   otherName  [0] INSTANCE OF OTHER-NAME,
+    //   rfc822Name  [1] IA5String,
+    //   dNSName    [2] IA5String,
+    //   x400Address  [3] ORAddress,
+    //   directoryName  [4] Name,
+    //   ediPartyName  [5] EDIPartyName,
+    //   uniformResourceIdentifier [6] IA5String,
+    //   IPAddress  [7] OCTET STRING,
+    //   registeredID  [8] OBJECT IDENTIFIER
     const vector<ptr_lib::shared_ptr<DerNode> >& extensionsChildren =
       extensions->getChildren();
 
@@ -267,7 +271,7 @@ X509CertificateInfo::makeName(DerNode* x509Name, DerNode* extensions)
             // We don't expect this.
             continue;
 
-          if (value->getType() == SUBJECT_ALTERNATIVE_NAME_URI_TYPE)
+          if (value->getType() == GENERAL_NAME_URI_TYPE)
             // Return an NDN name made from the URI.
             return Name(value->toVal().toRawStr());
         }
@@ -295,7 +299,7 @@ X509CertificateInfo::makeX509Name(const Name& name, DerNode* extensionsNode)
     // Add the Subject Alternative Names without checking if one already exists.
     DerSequence generalNames;
     generalNames.addChild(ptr_lib::make_shared<DerNode::DerImplicitByteString>
-      ((const uint8_t*)uri.c_str(), uri.size(), SUBJECT_ALTERNATIVE_NAME_URI_TYPE));
+      ((const uint8_t*)uri.c_str(), uri.size(), GENERAL_NAME_URI_TYPE));
     Blob generalNamesEncoding = generalNames.encode();
 
     ptr_lib::shared_ptr<DerSequence> extension(new DerSequence());
@@ -320,6 +324,90 @@ X509CertificateInfo::makeX509Name(const Name& name, DerNode* extensionsNode)
   root->addChild(component);
 
   return root;
+}
+
+string
+X509CertificateInfo::findCrlDistributionUri(DerNode* extensions)
+{
+  if (!extensions)
+    return "";
+
+  // See makeName() for the definition of Extensions and GeneralNames.
+  //
+  // CRLDistPointSyntax ::= SEQUENCE SIZE (1..MAX) OF DistributionPoint
+  //
+  // DistributionPoint ::= SEQUENCE {
+  //   distributionPoint [0] DistributionPointName OPTIONAL,
+  //   reasons      [1] ReasonFlags OPTIONAL,
+  //   cRLIssuer    [2] GeneralNames OPTIONAL
+  // }
+  //
+  // DistributionPointName ::= CHOICE {
+  //   fullname  [0] GeneralNames,
+  //   nameRelativeToCRLIssuer [1] RelativeDistinguishedName
+  // }
+  const vector<ptr_lib::shared_ptr<DerNode> >& extensionsChildren =
+    extensions->getChildren();
+
+  for (int iExtension = 0; iExtension < extensionsChildren.size(); ++iExtension) {
+    DerSequence* extension = 
+      dynamic_cast<DerSequence*>(extensionsChildren[iExtension].get());
+    if (!extension)
+      // We don't expect this.
+      continue;
+    const vector<ptr_lib::shared_ptr<DerNode> >& extensionChildren =
+      extension->getChildren();
+
+    if (extensionChildren.size() < 2 || extensionChildren.size() > 3)
+      // We don't expect this.
+      continue;
+    DerNode::DerOid* oid = dynamic_cast<DerNode::DerOid*>(extensionChildren[0].get());
+    // Ignore "critical".
+    DerNode::DerOctetString* extensionValue = dynamic_cast<DerNode::DerOctetString*>
+      (extensionChildren[extensionChildren.size() - 1].get());
+    if (!oid || !extensionValue)
+      // We don't expect this.
+      continue;
+    if (oid->toVal().toRawStr() != CRL_DISTRIBUTION_POINTS_OID)
+      // Try the next extension.
+      continue;
+
+    try {
+      ptr_lib::shared_ptr<DerNode> distributionPointList = DerNode::parse(extensionValue->toVal());
+      const vector<ptr_lib::shared_ptr<DerNode> >& distributionPointListChildren =
+        distributionPointList->getChildren();
+      for (int i = 0; i < distributionPointListChildren.size(); ++i) {
+        const vector<ptr_lib::shared_ptr<DerNode> >& distributionPointChildren =
+          distributionPointListChildren[i]->getChildren();
+
+        for (int j = 0; j < distributionPointChildren.size(); ++j) {
+          // Get distributionPoint [0] DistributionPointName.
+          DerNode::DerExplicit* distributionNameExplicit = dynamic_cast<DerNode::DerExplicit*>
+            (distributionPointChildren[j].get());
+          if (distributionNameExplicit && distributionNameExplicit->getTag() == 0 &&
+              distributionNameExplicit->getChildren().size() == 1) {
+            // Get fullname [0] GeneralNames.
+            DerNode::DerExplicit* fullNameExplicit = dynamic_cast<DerNode::DerExplicit*>
+              (distributionNameExplicit->getChildren()[0].get());
+            if (fullNameExplicit && fullNameExplicit->getTag() == 0 &&
+                fullNameExplicit->getChildren().size() == 1) {
+              // Get an implicit GeneralName URI.
+              DerNode::DerImplicitByteString* value =
+                dynamic_cast<DerNode::DerImplicitByteString*>
+                  (fullNameExplicit->getChildren()[0].get());
+              if (value && value->getType() == GENERAL_NAME_URI_TYPE)
+                return value->toVal().toRawStr();
+            }
+          }
+        }
+      }
+    } catch (const std::exception& ex) {
+      // We don't expect this.
+      continue;
+    }
+  }
+
+  return "";
 }
 
 const Name::Component&
