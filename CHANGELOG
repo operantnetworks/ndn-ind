@@ -1,4 +1,4 @@
-NDN-IND (2021-03-07)
+NDN-IND (2021-07-23)
 --------------------
 
 Changes
@@ -17,6 +17,8 @@ Changes
 * Add support for chacha20-Poly1305 in NAC. https://github.com/operantnetworks/ndn-ind/pull/7
 * Add support for a group content key (GCK) and secured interest in NAC.
 * Support multiple access managers in NAC. https://github.com/operantnetworks/ndn-ind/pull/25
+* Support X509 certificate format and validation https://github.com/operantnetworks/ndn-ind/pull/35
+* Support X509 CRL format https://github.com/operantnetworks/ndn-ind/pull/46
 * In Interest, changed the MustBeFresh default value to false.
 * Added Tlv0_3WireFormat.
 * In Face, also check for a Unix socket at /var/tmp/nfd.sock .
