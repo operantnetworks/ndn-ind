@@ -83,32 +83,38 @@ INIT_LOGGERS ();
 #else // else NDN_IND_HAVE_LOG4CXX
 
 #define INIT_LOGGER(name)
+#define INIT_LOGGERS(x)
 #define _LOG_FUNCTION(x)
 #define _LOG_FUNCTION_NOARGS
-#define _LOG_TRACE(x)
-#define _LOG_INFO(x)
-#define _LOG_WARN(x)
-#define _LOG_ERROR(x)
-#define INIT_LOGGERS(x)
-#define _LOG_ERROR_COND(cond,x)
-#define _LOG_DEBUG_COND(cond,x)
 
 #define MEMBER_LOGGER
 #define INIT_MEMBER_LOGGER(className,name)
 
-#ifdef _DEBUG
+// If the library is not compiled with _DEBUG, it is also possible to define
+// NDN_IND_WITH_LOGGING to send all log messages to clog.
+#if 1 || defined(_DEBUG) || defined(NDN_IND_WITH_LOGGING)
 
 #include <time.h>
 #include <iostream>
 
 #define _LOG_DEBUG(x) \
   { time_t now = time(0); std::string s = std::string(ctime(&now)); std::clog << s.substr(0, s.size() - 1) << " " << x << std::endl; }
-#define _LOG_ERROR(x) _LOG_DEBUG(x)
 
 #else
 #define _LOG_DEBUG(x)
-#define _LOG_ERROR(x)
 #endif
+
+// Define all the other levels using _LOG_DEBUG.
+#define _LOG_TRACE(x) _LOG_DEBUG(x)
+#define _LOG_INFO(x) _LOG_DEBUG(x)
+#define _LOG_WARN(x) _LOG_DEBUG(x)
+#define _LOG_ERROR(x) _LOG_DEBUG(x)
+
+#define _LOG_ERROR_COND(cond,x) \
+  if (cond) { _LOG_ERROR(x) }
+
+#define _LOG_DEBUG_COND(cond,x) \
+  if (cond) { _LOG_DEBUG(x) }
 
 #endif // NDN_IND_HAVE_LOG4CXX
 
