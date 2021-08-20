@@ -134,11 +134,19 @@ Validator::requestCertificate
     _LOG_TRACE("Found trusted certificate " << certificate->getName());
 
     certificate = state->verifyCertificateChain(certificate);
-    if (certificate)
-      state->verifyOriginalPacket(*certificate);
+    if (certificate) {
+      for (size_t i = 0; i < state->certificateChain_.size(); ++i) {
+        if (!cacheVerifiedCertificate(*state->certificateChain_[i])) {
+          state->fail(ValidationError(ValidationError::REVOKED,
+            "The certificate with serial number " +
+            state->certificateChain_[i]->getX509SerialNumber().toHex() +
+            " is revoked: `" + state->certificateChain_[i]->getName().toUri() + "`"));
+          return;
+        }
+      }
 
-    for (size_t i = 0; i < state->certificateChain_.size(); ++i)
-      cacheVerifiedCertificate(*state->certificateChain_[i]);
+      state->verifyOriginalPacket(*certificate);
+    }
 
     return;
   }

@@ -63,6 +63,10 @@ X509CrlCache::insert(const X509CrlInfo& crlInfo)
     return false;
   }
 
+  if (nextUpdate < nextRefreshTime_)
+    // We need to run refresh() sooner.)
+    nextRefreshTime_ = nextUpdate;
+
   auto removalHours = duration_cast<hours>(nextUpdate - now).count();
   _LOG_DEBUG("Adding CRL from issuer " << crlInfo.getIssuerName().toUri() <<
     ", will remove in " << removalHours << " hours");
