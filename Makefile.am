@@ -221,6 +221,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/tpm/tpm-key-handle-memory.hpp \
   include/ndn-ind/security/tpm/tpm-key-handle-osx.hpp \
   include/ndn-ind/security/tpm/tpm-private-key.hpp \
+  include/ndn-ind/security/v2/certificate-cache-v2.hpp \
   include/ndn-ind/security/v2/certificate-fetcher-from-network.hpp \
   include/ndn-ind/security/v2/certificate-fetcher-offline.hpp \
   include/ndn-ind/security/v2/certificate-fetcher.hpp \
@@ -238,6 +239,8 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/v2/validation-policy.hpp \
   include/ndn-ind/security/v2/validation-state.hpp \
   include/ndn-ind/security/v2/validator.hpp \
+  include/ndn-ind/security/v2/x509-crl-cache.hpp \
+  include/ndn-ind/security/v2/x509-crl-fetcher.hpp \
   include/ndn-ind/security/v2/validator-config/config-checker.hpp \
   include/ndn-ind/security/v2/validator-config/config-filter.hpp \
   include/ndn-ind/security/v2/validator-config/config-name-relation.hpp \
@@ -470,6 +473,8 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/security/v2/validation-policy.cpp \
   src/security/v2/validation-state.cpp \
   src/security/v2/validator.cpp \
+  src/security/v2/x509-crl-cache.cpp \
+  src/security/v2/x509-crl-fetcher.cpp \
   src/security/v2/validator-config/config-checker.cpp \
   src/security/v2/validator-config/config-filter.cpp \
   src/security/v2/validator-config/config-name-relation.cpp \
