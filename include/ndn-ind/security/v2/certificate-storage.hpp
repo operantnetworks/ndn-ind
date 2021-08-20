@@ -36,6 +36,7 @@
 #define NDN_CERTIFICATE_STORAGE_HPP
 
 #include "certificate-cache-v2.hpp"
+#include "x509-crl-cache.hpp"
 #include "trust-anchor-container.hpp"
 
 namespace ndn {
@@ -143,14 +144,25 @@ public:
   resetAnchors() { trustAnchors_.clear(); }
 
   /**
-   * Cache the verified certificate a period of time (1 hour).
+   * Check if the CRL revoked the certificate and if not then
+   * cache the verified certificate a period of time (1 hour).
    * @param certificate The certificate object, which is copied.
+   * @return True for success, false if the CRL from the issuer has revoked this
+   * certificate (in which case there is a log message).
+   */
+  bool
+  cacheVerifiedCertificate(const CertificateV2& certificate);
+
+  /**
+   * Cache the verified CRL in the X509CrlCache, and evict certificates from the
+   * verified certificate cache which have the same issuer as the CRL and which
+   * have a serial number in the revocation list. The cached CRL will be used to
+   * check if a new certificate is revoked before adding the the verified
+   * certificate cache.
+   * @param crlInfo The X509CrlInfo object, which is copied.
    */
   void
-  cacheVerifiedCertificate(const CertificateV2& certificate)
-  {
-    verifiedCertificateCache_.insert(certificate);
-  }
+  cacheVerifiedCrl(const X509CrlInfo& crlInfo);
 
   /**
    * Remove any cached verified certificates.
@@ -170,6 +182,19 @@ public:
     unverifiedCertificateCache_.setNowOffset_(nowOffset);
   }
 
+  /**
+   * Find the first entry in crlInfo where the entry's serial number matches the
+   * given serial number.
+   * @param crlInfo The X509CrlInfo to search.
+   * @param serialNumber The serial number to match as a Blob with the bytes of
+   * the integer. If serialNumber.size() == 0, this does not match it.
+   * @return The matching RevokedCertificate entry, or null if not found. The
+   * pointer to the entry becomes invalid if the crlInfo is changed, so make a
+   * copy if you need it long-term.
+   */
+  static const X509CrlInfo::RevokedCertificate*
+  findRevokedCertificate(const X509CrlInfo& crlInfo, const Blob& serialNumber);
+
 private:
   // Disable the copy constructor and assignment operator.
   CertificateStorage(const CertificateStorage& other);
@@ -179,6 +204,7 @@ protected:
   TrustAnchorContainer trustAnchors_;
   CertificateCacheV2 verifiedCertificateCache_;
   CertificateCacheV2 unverifiedCertificateCache_;
+  X509CrlCache verifiedCrlCache_;
 };
 
 }
