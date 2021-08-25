@@ -133,9 +133,11 @@ X509CertificateInfo::X509CertificateInfo(const Blob& encoding)
 
 X509CertificateInfo::X509CertificateInfo
   (const Name& issuerName, const ValidityPeriod& validityPeriod,
-   const Name& subjectName, const Blob& publicKey, const Blob& signatureValue)
+   const Name& subjectName, const Blob& publicKey, const Blob& signatureValue,
+   const Blob& serialNumber)
 : issuerName_(issuerName), validityPeriod_(validityPeriod),
-  subjectName_(subjectName), publicKey_(publicKey), signatureValue_(signatureValue)
+  subjectName_(subjectName), publicKey_(publicKey), signatureValue_(signatureValue),
+  serialNumber_(serialNumber)
 {
   // We are using certificate extensions, so we must set the version.
   ptr_lib::shared_ptr<DerNode::DerExplicit> version(new DerNode::DerExplicit(0));
@@ -156,7 +158,13 @@ X509CertificateInfo::X509CertificateInfo
   //      subjectPublicKeyInfo SubjectPublicKeyInfo
   //      }
   tbsCertificate->addChild(version);
-  tbsCertificate->addChild(ptr_lib::make_shared<DerNode::DerInteger>(0));
+
+  if (serialNumber.size() > 0 && serialNumber.buf()[0] >= 0x80)
+    throw runtime_error
+      ("X509CertificateInfo: Negative serial numbers are not currently supported");
+  tbsCertificate->addChild(ptr_lib::make_shared<DerNode::DerInteger>
+    (serialNumber.buf(), serialNumber.size()));
+
   tbsCertificate->addChild(algorithmIdentifier);
   tbsCertificate->addChild(makeX509Name(issuerName, 0));
 

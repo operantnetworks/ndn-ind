@@ -331,6 +331,17 @@ DerNode::DerInteger::DerInteger(int integer)
   encodeHeader(payloadPosition_);
 }
 
+DerNode::DerInteger::DerInteger(const uint8_t* inputData, size_t inputDataLength)
+: DerNode(DerNodeType_Integer)
+{
+  if (inputDataLength > 0 && inputData[0] >= 0x80)
+    throw DerEncodingException
+      ("DerInteger: Negative integers are not currently supported");
+
+  payloadAppend(inputData, inputDataLength);
+  encodeHeader(inputDataLength);
+}
+
 DerNode::DerInteger::DerInteger()
 : DerNode(DerNodeType_Integer)
 {

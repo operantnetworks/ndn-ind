@@ -397,7 +397,8 @@ am_libndn_ind_la_OBJECTS = $(am__objects_2) $(am__objects_1) \
 	src/security/v2/validation-policy-simple-hierarchy.lo \
 	src/security/v2/validation-policy.lo \
 	src/security/v2/validation-state.lo \
-	src/security/v2/validator.lo \
+	src/security/v2/validator.lo src/security/v2/x509-crl-cache.lo \
+	src/security/v2/x509-crl-fetcher.lo \
 	src/security/v2/validator-config/config-checker.lo \
 	src/security/v2/validator-config/config-filter.lo \
 	src/security/v2/validator-config/config-name-relation.lo \
@@ -981,6 +982,8 @@ am__depfiles_remade = contrib/apache/$(DEPDIR)/apr_base64.Plo \
 	src/security/v2/$(DEPDIR)/validation-policy.Plo \
 	src/security/v2/$(DEPDIR)/validation-state.Plo \
 	src/security/v2/$(DEPDIR)/validator.Plo \
+	src/security/v2/$(DEPDIR)/x509-crl-cache.Plo \
+	src/security/v2/$(DEPDIR)/x509-crl-fetcher.Plo \
 	src/security/v2/validator-config/$(DEPDIR)/config-checker.Plo \
 	src/security/v2/validator-config/$(DEPDIR)/config-filter.Plo \
 	src/security/v2/validator-config/$(DEPDIR)/config-name-relation.Plo \
@@ -1860,6 +1863,7 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/tpm/tpm-key-handle-memory.hpp \
   include/ndn-ind/security/tpm/tpm-key-handle-osx.hpp \
   include/ndn-ind/security/tpm/tpm-private-key.hpp \
+  include/ndn-ind/security/v2/certificate-cache-v2.hpp \
   include/ndn-ind/security/v2/certificate-fetcher-from-network.hpp \
   include/ndn-ind/security/v2/certificate-fetcher-offline.hpp \
   include/ndn-ind/security/v2/certificate-fetcher.hpp \
@@ -1877,6 +1881,8 @@ ndn_ind_cpp_headers = \
   include/ndn-ind/security/v2/validation-policy.hpp \
   include/ndn-ind/security/v2/validation-state.hpp \
   include/ndn-ind/security/v2/validator.hpp \
+  include/ndn-ind/security/v2/x509-crl-cache.hpp \
+  include/ndn-ind/security/v2/x509-crl-fetcher.hpp \
   include/ndn-ind/security/v2/validator-config/config-checker.hpp \
   include/ndn-ind/security/v2/validator-config/config-filter.hpp \
   include/ndn-ind/security/v2/validator-config/config-name-relation.hpp \
@@ -2112,6 +2118,8 @@ libndn_ind_la_SOURCES = ${libndn_c_la_SOURCES} ${ndn_ind_cpp_headers} \
   src/security/v2/validation-policy.cpp \
   src/security/v2/validation-state.cpp \
   src/security/v2/validator.cpp \
+  src/security/v2/x509-crl-cache.cpp \
+  src/security/v2/x509-crl-fetcher.cpp \
   src/security/v2/validator-config/config-checker.cpp \
   src/security/v2/validator-config/config-filter.cpp \
   src/security/v2/validator-config/config-name-relation.cpp \
@@ -3081,6 +3089,10 @@ src/security/v2/validation-policy.lo: src/security/v2/$(am__dirstamp) \
 src/security/v2/validation-state.lo: src/security/v2/$(am__dirstamp) \
 	src/security/v2/$(DEPDIR)/$(am__dirstamp)
 src/security/v2/validator.lo: src/security/v2/$(am__dirstamp) \
+	src/security/v2/$(DEPDIR)/$(am__dirstamp)
+src/security/v2/x509-crl-cache.lo: src/security/v2/$(am__dirstamp) \
+	src/security/v2/$(DEPDIR)/$(am__dirstamp)
+src/security/v2/x509-crl-fetcher.lo: src/security/v2/$(am__dirstamp) \
 	src/security/v2/$(DEPDIR)/$(am__dirstamp)
 src/security/v2/validator-config/$(am__dirstamp):
 	@$(MKDIR_P) src/security/v2/validator-config
@@ -4108,6 +4120,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/$(DEPDIR)/validation-policy.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/$(DEPDIR)/validation-state.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/$(DEPDIR)/validator.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/$(DEPDIR)/x509-crl-cache.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/$(DEPDIR)/x509-crl-fetcher.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/validator-config/$(DEPDIR)/config-checker.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/validator-config/$(DEPDIR)/config-filter.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/security/v2/validator-config/$(DEPDIR)/config-name-relation.Plo@am__quote@ # am--include-marker
@@ -6540,6 +6554,8 @@ distclean: distclean-recursive
 	-rm -f src/security/v2/$(DEPDIR)/validation-policy.Plo
 	-rm -f src/security/v2/$(DEPDIR)/validation-state.Plo
 	-rm -f src/security/v2/$(DEPDIR)/validator.Plo
+	-rm -f src/security/v2/$(DEPDIR)/x509-crl-cache.Plo
+	-rm -f src/security/v2/$(DEPDIR)/x509-crl-fetcher.Plo
 	-rm -f src/security/v2/validator-config/$(DEPDIR)/config-checker.Plo
 	-rm -f src/security/v2/validator-config/$(DEPDIR)/config-filter.Plo
 	-rm -f src/security/v2/validator-config/$(DEPDIR)/config-name-relation.Plo
@@ -6923,6 +6939,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f src/security/v2/$(DEPDIR)/validation-policy.Plo
 	-rm -f src/security/v2/$(DEPDIR)/validation-state.Plo
 	-rm -f src/security/v2/$(DEPDIR)/validator.Plo
+	-rm -f src/security/v2/$(DEPDIR)/x509-crl-cache.Plo
+	-rm -f src/security/v2/$(DEPDIR)/x509-crl-fetcher.Plo
 	-rm -f src/security/v2/validator-config/$(DEPDIR)/config-checker.Plo
 	-rm -f src/security/v2/validator-config/$(DEPDIR)/config-filter.Plo
 	-rm -f src/security/v2/validator-config/$(DEPDIR)/config-name-relation.Plo

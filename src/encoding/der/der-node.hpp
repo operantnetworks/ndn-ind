@@ -376,6 +376,15 @@ public:
    */
   DerInteger(int integer);
 
+  /**
+   * Create a DerInteger with the given byte array.
+   * @param inputData The bytes of the integer.
+   * @param inputDataLength The length of inputData.
+   * @throws DerEncodingException if the first byte of inputData is >= 0x80.
+   * (Negative integers are not supported.)
+   */
+  DerInteger(const uint8_t* inputData, size_t inputDataLength);
+
   DerInteger();
 
   /**

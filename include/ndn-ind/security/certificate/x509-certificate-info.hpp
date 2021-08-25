@@ -54,10 +54,14 @@ public:
    * @param publicKey The bytes of the public key DER.
    * @param signatureValue The bytes of the signature value. This assumes the
    * algorithm is RSA with SHA-256.
+   * @param serialNumber (optional) The serial number as a Blob with the bytes
+   * of the integer. If omitted use a single byte of 00. The first bytes must be
+   * >= 0x80. (Negative serial numbers are not supported.)
    */
   X509CertificateInfo
     (const Name& issuerName, const ValidityPeriod& validityPeriod,
-     const Name& subjectName, const Blob& publicKey, const Blob& signatureValue);
+     const Name& subjectName, const Blob& publicKey, const Blob& signatureValue,
+     const Blob& serialNumber = Blob((const uint8_t*)"\0", 1));
 
   /**
    * Get the SignedBlob of the encoding with the offsets for the signed portion.
