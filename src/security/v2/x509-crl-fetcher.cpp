@@ -78,7 +78,7 @@ X509CrlFetcher::Impl::checkForNewCrl()
 
     void
     onData
-      (const ptr_lib::shared_ptr<const Interest>& ckInterest,
+      (const ptr_lib::shared_ptr<const Interest>& interest,
        const ptr_lib::shared_ptr<Data>& crlLatestData)
     {
       parent_->lastResponseTime_ = system_clock::now();
@@ -103,13 +103,13 @@ X509CrlFetcher::Impl::checkForNewCrl()
             return;
           }
 
-          // Leave isGckRetrievalInProgress_ true.
+          // Leave isCrlRetrievalInProgress_ true.
           parent_->fetchCrl
             (newCrlName, 0, N_RETRIES, ptr_lib::make_shared<vector<Blob> >());
         },
         [=](auto&, auto& error) {
           parent_->isCrlRetrievalInProgress_ = false;
-          _LOG_ERROR("Validate CRL latest_ Data failure: " << error.toString());
+          _LOG_ERROR("Validate CRL _latest Data failure: " << error.toString());
         });
     }
 
@@ -192,6 +192,7 @@ X509CrlFetcher::Impl::fetchCrl
         int segment = segmentData->getName().get(-1).toSegment();
         if (segment != expectedSegment_) {
           // Since we fetch in sequence, we don't expect this.
+          parent_->isCrlRetrievalInProgress_ = false;
           _LOG_ERROR("fetchCrl: Expected segment " << expectedSegment_ <<
             ", but got " << segmentData->getName().toUri());
           return;
