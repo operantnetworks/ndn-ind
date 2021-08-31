@@ -45,7 +45,7 @@ namespace ndn {
  */
 class ndn_ind_dll ValidationError {
 public:
-  static const int NO_ERROR =                    0;
+  static const int NO_VALIDATION_ERROR =                    0;
   static const int INVALID_SIGNATURE =           1;
   static const int NO_SIGNATURE =                2;
   static const int CANNOT_RETRIEVE_CERTIFICATE = 3;
