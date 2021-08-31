@@ -10,6 +10,7 @@
  *
  * Summary of Changes: Use NDN_IND macros. Use std::chrono.
  *   Support ChaCha20-Ploy1305, GCK, encrypted Interest, multiple access managers.
+ *   Add setGckLatestInterestLifetime.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -888,8 +889,13 @@ EncryptorV2::Impl::KeyManager::fetchGck(const Name& gckName, int nTriesLeft)
     // pass shared_from_this() to keep a pointer to this Impl.
     ptr_lib::shared_ptr<Callbacks> callbacks = ptr_lib::make_shared<Callbacks>
       (shared_from_this(), gckName, nTriesLeft);
+    Interest interest(encryptedGckName);
+    interest.setMustBeFresh(false).setCanBePrefix(true);
+    if (parent_->gckLatestInterestLifetime_.count() >= 0)
+      // Override the default interest lifetime.
+      interest.setInterestLifetime(parent_->gckLatestInterestLifetime_);
     gckPendingInterestId_ = parent_->face_->expressInterest
-      (Interest(encryptedGckName).setMustBeFresh(false).setCanBePrefix(true),
+      (interest,
        bind(&Callbacks::onData, callbacks, _1, _2),
        bind(&Callbacks::onTimeout, callbacks, _1),
        bind(&Callbacks::onNetworkNack, callbacks, _1, _2));
