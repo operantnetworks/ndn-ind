@@ -371,6 +371,7 @@
     <ClCompile Include="..\..\src\security\certificate\certificate.cpp" />
     <ClCompile Include="..\..\src\security\certificate\public-key.cpp" />
     <ClCompile Include="..\..\src\security\certificate\x509-certificate-info.cpp" />
+    <ClCompile Include="..\..\src\security\certificate\x509-crl-info.cpp" />
     <ClCompile Include="..\..\src\security\command-interest-preparer.cpp" />
     <ClCompile Include="..\..\src\security\command-interest-signer.cpp" />
     <ClCompile Include="..\..\src\security\key-chain.cpp" />
@@ -418,6 +419,8 @@
     <ClCompile Include="..\..\src\security\v2\validator-config\config-name-relation.cpp" />
     <ClCompile Include="..\..\src\security\v2\validator-config\config-rule.cpp" />
     <ClCompile Include="..\..\src\security\v2\validator.cpp" />
+    <ClCompile Include="..\..\src\security\v2\x509-crl-cache.cpp" />
+    <ClCompile Include="..\..\src\security\v2\x509-crl-fetcher.cpp" />
     <ClCompile Include="..\..\src\security\validator-null.cpp" />
     <ClCompile Include="..\..\src\security\validity-period.cpp" />
     <ClCompile Include="..\..\src\security\verification-helpers.cpp" />
