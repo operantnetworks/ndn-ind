@@ -88,6 +88,13 @@ X509CrlCache::find(const Name& issuerName) const
 }
 
 void
+X509CrlCache::clear()
+{
+  crlsByName_.clear();
+  nextRefreshTime_ = system_clock::time_point::max();
+}
+
+void
 X509CrlCache::refresh()
 {
   auto now = system_clock::now();

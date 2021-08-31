@@ -126,6 +126,13 @@ CertificateCacheV2::deleteCertificate(const Name& certificateName)
 }
 
 void
+CertificateCacheV2::clear()
+{
+  certificatesByName_.clear();
+  nextRefreshTime_ = system_clock::time_point::max();
+}
+
+void
 CertificateCacheV2::refresh()
 {
   // nowOffset_ is only used for testing.

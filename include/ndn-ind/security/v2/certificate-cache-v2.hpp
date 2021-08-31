@@ -98,11 +98,7 @@ public:
    * Clear all certificates from the cache.
    */
   void
-  clear()
-  {
-    certificatesByName_.clear();
-    nextRefreshTime_ = std::chrono::system_clock::time_point::max();
-  }
+  clear();
 
   /**
    * Get the default maximum lifetime (1 hour).
