@@ -10,7 +10,11 @@ NDN-IND for Visual Studio
 ```
 * To install protobuf, in a command prompt change directory to the vcpkg root and enter:
 ```
-    vcpkg install protobuf
+    vcpkg install protobuf:x64-Windows
+```
+* To install zlib, in a command prompt change directory to the vcpkg root and enter:
+```
+    vcpkg install zlib:x64-Windows
 ```
 * To add the vcpkg to the path:
     * In the Sytem control panel, click Advanced system settings, then click Environment Variables.
