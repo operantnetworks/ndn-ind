@@ -48,7 +48,7 @@ namespace ndn {
  * would not use.
  * http://redmine.named-data.net/projects/nfd/wiki/NDNLPv2
  */
-class LpPacket {
+class ndn_ind_dll LpPacket {
 public:
   /**
    * Get the fragment wire encoding.

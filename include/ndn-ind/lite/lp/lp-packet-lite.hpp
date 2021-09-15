@@ -104,7 +104,7 @@ public:
   }
 };
 
-class LpPacketLite : private ndn_LpPacket {
+class ndn_ind_dll LpPacketLite : private ndn_LpPacket {
 public:
   /**
    * Create an LpPacket to use the headerFieldsArray.
