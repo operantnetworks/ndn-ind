@@ -47,6 +47,16 @@
   #define ndn_ind_dll
 #endif
 
+#if defined(_WIN32)
+#ifdef NDN_IND_TOOLS_EXPORTS
+#define ndn_ind_tools_dll __declspec(dllexport)
+#else
+#define ndn_ind_tools_dll __declspec(dllimport)
+#endif
+#else
+#define ndn_ind_tools_dll
+#endif
+
 #if NDN_IND_HAVE_ATTRIBUTE_DEPRECATED
   #define DEPRECATED_IN_NDN_IND __attribute__((deprecated))
 #else
