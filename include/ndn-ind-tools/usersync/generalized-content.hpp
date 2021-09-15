@@ -46,7 +46,7 @@ namespace ndntools {
  * info and segmented content. See the methods for more detail.
  * @note The support for GeneralizedContent is experimental and the API is not finalized.
  */
-class GeneralizedContent : public ndn::ptr_lib::enable_shared_from_this<GeneralizedContent> {
+class ndn_ind_tools_dll GeneralizedContent : public ndn::ptr_lib::enable_shared_from_this<GeneralizedContent> {
 public:
   enum ErrorCode {
     // Repeat the error codes from SegmentFetcher.

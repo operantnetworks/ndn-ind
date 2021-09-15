@@ -53,7 +53,7 @@ namespace ndntools {
  * ContentMetaInfo represents the information in the _meta packet of a
  * Generalized Content.
  */
-class ContentMetaInfo {
+class ndn_ind_tools_dll ContentMetaInfo {
 public:
   /**
    * Create a ContentMetaInfo where all the fields have default unspecified values.

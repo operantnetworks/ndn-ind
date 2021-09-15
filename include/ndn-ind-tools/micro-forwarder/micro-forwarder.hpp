@@ -34,7 +34,7 @@ namespace ndntools {
  * forwarder. It has a single instance which you can access with
  * MicroForwarder::get().
  */
-class ndn_ind_dll MicroForwarder {
+class ndn_ind_tools_dll MicroForwarder {
   class ForwarderFace;
 
 public:

@@ -46,7 +46,7 @@ namespace ndntools {
  * ndn-autoconfig-server. See:
  * https://named-data.net/doc/NFD/current/misc/local-prefix-discovery.html
  */
-class PrefixDiscovery {
+class ndn_ind_tools_dll PrefixDiscovery {
 public:
   typedef ndn::func_lib::function<void
     (const ndn::ptr_lib::shared_ptr<std::vector<ndn::Name> >& prefixes)> OnPrefixes;

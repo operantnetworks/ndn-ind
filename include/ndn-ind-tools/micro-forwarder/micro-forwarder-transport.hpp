@@ -33,13 +33,13 @@ namespace ndntools {
  * A MicroForwarderTransport extends Transport to communicate with a
  * MicroForwarder object. This can be used as the transport in the Face constructor.
  */
-class ndn_ind_dll MicroForwarderTransport : public ndn::Transport {
+class ndn_ind_tools_dll MicroForwarderTransport : public ndn::Transport {
 public:
   /**
    * A MicroForwarderTransport::ConnectionInfo extends Transport::ConnectionInfo
    * to hold the MicroForwarder object to connect to.
    */
-  class ndn_ind_dll ConnectionInfo : public Transport::ConnectionInfo {
+  class ConnectionInfo : public Transport::ConnectionInfo {
   public:
     /**
      * Create a ConnectionInfo for the forwarder object.

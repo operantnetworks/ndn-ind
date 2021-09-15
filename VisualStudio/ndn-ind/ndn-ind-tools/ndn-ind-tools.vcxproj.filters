@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\tools">
+      <UniqueIdentifier>{07ee58c8-e5fb-4bb3-ac16-a6cb5a0a70c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tools\micro-forwarder">
+      <UniqueIdentifier>{9da4232b-e9c3-4179-a069-4344f67a5969}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ndn-ind-tools">
+      <UniqueIdentifier>{f64cc5d8-4f51-4b5a-931e-2a65ba7cb014}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ndn-ind-tools\micro-forwarder">
+      <UniqueIdentifier>{85d41f99-9946-42fa-8ab8-3b053d6f3fe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ndn-ind-tools\usersync">
+      <UniqueIdentifier>{d154936a-357a-4c25-85c5-b1a2d00a4809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tools\usersync">
+      <UniqueIdentifier>{b9c1a0c2-e147-4ff4-a97e-633b93f8c2ac}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\tools\micro-forwarder\micro-forwarder-transport.cpp">
+      <Filter>Source Files\tools\micro-forwarder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\tools\micro-forwarder\micro-forwarder.cpp">
+      <Filter>Source Files\tools\micro-forwarder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\tools\usersync\prefix-discovery.cpp">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\tools\usersync\channel-discovery.cpp">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\tools\usersync\content-meta-info.cpp">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\tools\usersync\generalized-content.cpp">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\tools\usersync\content-meta-info.pb.cc">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\ndn-ind-tools\micro-forwarder\micro-forwarder-transport.hpp">
+      <Filter>Header Files\ndn-ind-tools\micro-forwarder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\ndn-ind-tools\micro-forwarder\micro-forwarder.hpp">
+      <Filter>Header Files\ndn-ind-tools\micro-forwarder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\content-meta-info.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\generalized-content.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\prefix-discovery.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\channel-discovery.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\tools\usersync\content-meta-info.pb.h">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

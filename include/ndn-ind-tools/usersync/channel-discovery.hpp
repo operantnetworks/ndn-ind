@@ -46,7 +46,7 @@ namespace ndntools {
  * a channel is added or removed.
  * @note The support for ChannelDiscovery is experimental and the API is not finalized.
  */
-class ChannelDiscovery {
+class ndn_ind_tools_dll ChannelDiscovery {
 public:
   enum ErrorCode {
     REGISTER_FAILED = 1,
