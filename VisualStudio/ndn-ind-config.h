@@ -103,7 +103,7 @@
 
 /* Define to 1 if you have `z' library (-lz) */
 #ifndef NDN_IND_HAVE_LIBZ
-#define NDN_IND_HAVE_LIBZ 0
+#define NDN_IND_HAVE_LIBZ 1
 #endif
 
 /* 1 if have log4cxx. */
