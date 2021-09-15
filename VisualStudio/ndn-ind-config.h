@@ -91,7 +91,9 @@
 /* #undef HAVE_LIBLOG4CXX */
 
 /* Define to 1 if you have the `protobuf' library (-lprotobuf). */
-/* #undef HAVE_LIBPROTOBUF */
+#ifndef NDN_IND_HAVE_LIBPROTOBUF
+#define NDN_IND_HAVE_LIBPROTOBUF 1
+#endif
 
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 /* #undef HAVE_LIBPTHREAD */
@@ -136,7 +138,7 @@
 
 /* 1 if have Google Protobuf. */
 #ifndef NDN_IND_HAVE_PROTOBUF
-#define NDN_IND_HAVE_PROTOBUF 0
+#define NDN_IND_HAVE_PROTOBUF 1
 #endif
 
 /* Define if you have POSIX threads libraries and header files. */

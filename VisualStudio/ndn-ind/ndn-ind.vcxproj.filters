@@ -130,12 +130,6 @@
     <Filter Include="Source Files\src\util\regex">
       <UniqueIdentifier>{c1e558a0-a60f-4ad8-9e5e-255520134fd3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tools">
-      <UniqueIdentifier>{3c69295c-b92e-463a-9181-bf771e7e3e13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\tools\micro-forwarder">
-      <UniqueIdentifier>{ac6865cd-602c-4efb-8680-7d69681d3bb4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -407,6 +401,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\node.hpp">
       <Filter>Source Files\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\sync\sync-state.pb.h">
+      <Filter>Source Files\src\sync</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1034,17 +1031,14 @@
     <ClCompile Include="..\..\src\lite\signature-lite.cpp">
       <Filter>Source Files\src\lite</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder.cpp">
-      <Filter>Source Files\tools\micro-forwarder</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder-transport.cpp">
-      <Filter>Source Files\tools\micro-forwarder</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\lite\encoding\element-reader-lite.cpp">
       <Filter>Source Files\src\lite\encoding</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\security\certificate\x509-certificate-info.cpp">
       <Filter>Source Files\src\security\certificate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\sync\sync-state.pb.cc">
+      <Filter>Source Files\src\sync</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

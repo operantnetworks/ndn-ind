@@ -314,7 +314,7 @@ ChronoSync2013::Impl::processRecoveryInterest
     }
 
     if (tempContent.ss_size() != 0) {
-      ptr_lib::shared_ptr<vector<uint8_t> > array(new vector<uint8_t>(tempContent.ByteSize()));
+      ptr_lib::shared_ptr<vector<uint8_t> > array(new vector<uint8_t>(tempContent.ByteSizeLong()));
       tempContent.SerializeToArray(&array->front(), array->size());
       Data data(interest.getName());
       data.setContent(Blob(array, false));
@@ -383,7 +383,7 @@ ChronoSync2013::Impl::processSyncInterest
   if (tempContent.ss_size() != 0) {
     Name name(applicationBroadcastPrefix_);
     name.append(syncDigest);
-    ptr_lib::shared_ptr<vector<uint8_t> > array(new vector<uint8_t>(tempContent.ByteSize()));
+    ptr_lib::shared_ptr<vector<uint8_t> > array(new vector<uint8_t>(tempContent.ByteSizeLong()));
     tempContent.SerializeToArray(&array->front(), array->size());
     Data data(name);
     data.setContent(Blob(array, false));
@@ -576,7 +576,7 @@ void
 ChronoSync2013::Impl::broadcastSyncState
   (const string& digest, const Sync::SyncStateMsg& syncMessage)
 {
-  ptr_lib::shared_ptr<vector<uint8_t> > array(new vector<uint8_t>(syncMessage.ByteSize()));
+  ptr_lib::shared_ptr<vector<uint8_t> > array(new vector<uint8_t>(syncMessage.ByteSizeLong()));
   syncMessage.SerializeToArray(&array->front(), array->size());
   Data data(applicationBroadcastPrefix_);
   data.getName().append(digest);

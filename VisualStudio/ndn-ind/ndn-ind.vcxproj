@@ -152,7 +152,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>..\..\..\vcpkg\installed\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcrypto.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libprotobuf.lib; libcrypto.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -229,6 +229,7 @@
     <ClInclude Include="..\..\src\sync\detail\psync-state.hpp" />
     <ClInclude Include="..\..\src\sync\detail\psync-user-prefixes.hpp" />
     <ClInclude Include="..\..\src\sync\digest-tree.hpp" />
+    <ClInclude Include="..\..\src\sync\sync-state.pb.h" />
     <ClInclude Include="..\..\src\transport\async-socket-transport.hpp" />
     <ClInclude Include="..\..\src\util\boost-info-parser.hpp" />
     <ClInclude Include="..\..\src\util\command-interest-generator.hpp" />
@@ -433,6 +434,7 @@
     <ClCompile Include="..\..\src\sync\full-psync2017-with-users.cpp" />
     <ClCompile Include="..\..\src\sync\full-psync2017.cpp" />
     <ClCompile Include="..\..\src\sync\psync-producer-base.cpp" />
+    <ClCompile Include="..\..\src\sync\sync-state.pb.cc" />
     <ClCompile Include="..\..\src\threadsafe-face.cpp" />
     <ClCompile Include="..\..\src\transport\async-tcp-transport.cpp" />
     <ClCompile Include="..\..\src\transport\async-unix-transport.cpp" />
@@ -458,8 +460,6 @@
     <ClCompile Include="..\..\src\util\regex\ndn-regex-top-matcher.cpp" />
     <ClCompile Include="..\..\src\util\segment-fetcher.cpp" />
     <ClCompile Include="..\..\src\util\sqlite3-statement.cpp" />
-    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder-transport.cpp" />
-    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
