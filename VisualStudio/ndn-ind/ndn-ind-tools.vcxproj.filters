@@ -36,49 +36,49 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\tools\micro-forwarder\micro-forwarder-transport.cpp">
-      <Filter>Source Files\tools\micro-forwarder</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\tools\micro-forwarder\micro-forwarder.cpp">
-      <Filter>Source Files\tools\micro-forwarder</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\tools\usersync\prefix-discovery.cpp">
+    <ClInclude Include="..\..\include\ndn-ind-tools\micro-forwarder\micro-forwarder.hpp">
+      <Filter>Header Files\ndn-ind-tools\micro-forwarder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ndn-ind-tools\micro-forwarder\micro-forwarder-transport.hpp">
+      <Filter>Header Files\ndn-ind-tools\micro-forwarder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ndn-ind-tools\usersync\channel-discovery.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ndn-ind-tools\usersync\content-meta-info.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ndn-ind-tools\usersync\generalized-content.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ndn-ind-tools\usersync\prefix-discovery.hpp">
+      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tools\usersync\content-meta-info.pb.h">
       <Filter>Source Files\tools\usersync</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\tools\usersync\channel-discovery.cpp">
-      <Filter>Source Files\tools\usersync</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\tools\usersync\content-meta-info.cpp">
-      <Filter>Source Files\tools\usersync</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\tools\usersync\generalized-content.cpp">
-      <Filter>Source Files\tools\usersync</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\tools\usersync\content-meta-info.pb.cc">
-      <Filter>Source Files\tools\usersync</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\ndn-ind-tools\micro-forwarder\micro-forwarder-transport.hpp">
-      <Filter>Header Files\ndn-ind-tools\micro-forwarder</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\ndn-ind-tools\micro-forwarder\micro-forwarder.hpp">
-      <Filter>Header Files\ndn-ind-tools\micro-forwarder</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\content-meta-info.hpp">
-      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\generalized-content.hpp">
-      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\prefix-discovery.hpp">
-      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\ndn-ind-tools\usersync\channel-discovery.hpp">
-      <Filter>Header Files\ndn-ind-tools\usersync</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\tools\usersync\content-meta-info.pb.h">
+    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder-transport.cpp">
+      <Filter>Source Files\tools\micro-forwarder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tools\micro-forwarder\micro-forwarder.cpp">
+      <Filter>Source Files\tools\micro-forwarder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tools\usersync\prefix-discovery.cpp">
       <Filter>Source Files\tools\usersync</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="..\..\tools\usersync\channel-discovery.cpp">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tools\usersync\content-meta-info.cpp">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tools\usersync\content-meta-info.pb.cc">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tools\usersync\generalized-content.cpp">
+      <Filter>Source Files\tools\usersync</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

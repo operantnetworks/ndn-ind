@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30709.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ndn-ind", "ndn-ind.vcxproj", "{5ADC4A32-007A-4F7B-A1FA-630CF3B3F060}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ndn-ind-tools", "ndn-ind-tools\ndn-ind-tools.vcxproj", "{4AD850B1-14BA-4F76-ACA2-292E8227AC0C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ndn-ind-tools", "ndn-ind-tools.vcxproj", "{4AD850B1-14BA-4F76-ACA2-292E8227AC0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
