@@ -183,17 +183,17 @@ public:
   }
 
   /**
-   * Find the first entry in crlInfo where the entry's serial number matches the
-   * given serial number.
-   * @param crlInfo The X509CrlInfo to search.
+   * Find the first entry in the CRL for issuerName where the entry's serial
+   * number matches the given serial number.
+   * @param issuerName The NDN issuer name for finding the CRL.
    * @param serialNumber The serial number to match as a Blob with the bytes of
    * the integer. If serialNumber.size() == 0, this does not match it.
    * @return The matching RevokedCertificate entry, or null if not found. The
    * pointer to the entry becomes invalid if the crlInfo is changed, so make a
    * copy if you need it long-term.
    */
-  static const X509CrlInfo::RevokedCertificate*
-  findRevokedCertificate(const X509CrlInfo& crlInfo, const Blob& serialNumber);
+  const X509CrlInfo::RevokedCertificate*
+  findRevokedCertificate(const Name& issuerName, const Blob& serialNumber) const;
 
 private:
   // Disable the copy constructor and assignment operator.

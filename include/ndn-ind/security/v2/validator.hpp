@@ -109,6 +109,7 @@ public:
   /**
    * Asynchronously validate the Data packet.
    * @param data The Data packet to validate, which is copied.
+   * If data is a CertificateV2, then also check if it is revoked by the CRL.
    * @param successCallback On validation success, this calls
    * successCallback(data).
    * @param failureCallback On validation failure, this calls

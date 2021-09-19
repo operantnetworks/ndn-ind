@@ -145,7 +145,7 @@ Validator::requestCertificate
         }
       }
 
-      state->verifyOriginalPacket(*certificate);
+      state->verifyOriginalPacket(*certificate, this);
     }
 
     return;

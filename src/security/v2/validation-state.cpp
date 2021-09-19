@@ -7,7 +7,7 @@
  * Original file: src/security/v2/validation-state.cpp
  * Original repository: https://github.com/named-data/ndn-cpp
  *
- * Summary of Changes: Use ndn-ind includes.
+ * Summary of Changes: Use ndn-ind includes. In verifyOriginalPacket, check CRL.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -34,6 +34,7 @@
 #include <stdexcept>
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind/security/verification-helpers.hpp>
+#include <ndn-ind/security/v2/certificate-storage.hpp>
 #include <ndn-ind/security/v2/validation-state.hpp>
 
 INIT_LOGGER("ndn.ValidationState");
@@ -101,9 +102,26 @@ DataValidationState::DataValidationState
 
 void
 DataValidationState::verifyOriginalPacket
-  (const CertificateV2& trustedCertificate)
+  (const CertificateV2& trustedCertificate,
+   const CertificateStorage* certificateStorage)
 {
   if (VerificationHelpers::verifyDataSignature(*data_, trustedCertificate)) {
+    CertificateV2* originalCertificate = dynamic_cast<CertificateV2*>(data_.get());
+    if (certificateStorage && originalCertificate) {
+      // The original packet is a certificate. Check if the issuer has revoked it.
+      const X509CrlInfo::RevokedCertificate* revoked =
+        certificateStorage->findRevokedCertificate
+          (originalCertificate->getIssuerName(), originalCertificate->getX509SerialNumber());
+      if (revoked) {
+        fail(ValidationError(ValidationError::REVOKED,
+          "The CRL from issuer " + originalCertificate->getIssuerName().toUri() +
+          " has revoked serial number " + revoked->getSerialNumber().toHex() +
+          " at time " + toIsoString(revoked->getRevocationDate()) +
+          ". Rejecting certificate " + originalCertificate->getName().toUri()));
+        return;
+      }
+    }
+
     _LOG_TRACE("OK signature for data `" << data_->getName() << "`");
     try {
       successCallback_(*data_);
@@ -164,7 +182,8 @@ InterestValidationState::InterestValidationState
 
 void
 InterestValidationState::verifyOriginalPacket
-  (const CertificateV2& trustedCertificate)
+  (const CertificateV2& trustedCertificate,
+   const CertificateStorage* certificateStorage)
 {
   if (VerificationHelpers::verifyInterestSignature(interest_, trustedCertificate)) {
     _LOG_TRACE("OK signature for interest `" << interest_.getName() << "`");

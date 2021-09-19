@@ -69,6 +69,8 @@ typedef func_lib::function<void
   (const Interest& interest, const ValidationError& error)>
   InterestValidationFailureCallback;
 
+class CertificateStorage;
+
 /**
  * ValidationState is an abstract base class for DataValidationState and
  * InterestValidationState.
@@ -179,9 +181,14 @@ private:
    * Verify the signature of the original packet. This is only called by the
    * Validator class.
    * @param trustedCertificate The certificate that signs the original packet.
+   * @param certificateStorage If not null and the original packet is a
+   * CertificateV2, call certificateStorage.findRevokedCertificate to check if
+   * the original packet is revoked.
    */
   virtual void
-  verifyOriginalPacket(const CertificateV2& trustedCertificate) = 0;
+  verifyOriginalPacket
+    (const CertificateV2& trustedCertificate,
+     const CertificateStorage* certificateStorage) = 0;
 
   /**
    * Call the success callback of the original packet without signature
@@ -253,7 +260,9 @@ public:
 
 private:
   virtual void
-  verifyOriginalPacket(const CertificateV2& trustedCertificate);
+  verifyOriginalPacket
+    (const CertificateV2& trustedCertificate,
+     const CertificateStorage* certificateStorage);
 
   virtual void
   bypassValidation();
@@ -306,7 +315,9 @@ public:
 
 private:
   virtual void
-  verifyOriginalPacket(const CertificateV2& trustedCertificate);
+  verifyOriginalPacket
+    (const CertificateV2& trustedCertificate,
+     const CertificateStorage* certificateStorage);
 
   virtual void
   bypassValidation();

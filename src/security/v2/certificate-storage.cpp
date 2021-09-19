@@ -65,19 +65,15 @@ CertificateStorage::isCertificateKnown(const Name& certificatePrefix)
 bool
 CertificateStorage::cacheVerifiedCertificate(const CertificateV2& certificate)
 {
-  ptr_lib::shared_ptr<X509CrlInfo> crlInfo = verifiedCrlCache_.find
-    (certificate.getIssuerName());
-  if (crlInfo) {
-    const X509CrlInfo::RevokedCertificate* revoked = findRevokedCertificate
-      (*crlInfo, certificate.getX509SerialNumber());
-    if (revoked) {
-      _LOG_ERROR("REVOKED: The CRL with thisUpdate time " <<
-        toIsoString(crlInfo->getThisUpdate()) << " has revoked serial number " <<
-        revoked->getSerialNumber().toHex() << " at time " <<
-        toIsoString(revoked->getRevocationDate()) << ". Rejecting fetched certificate " <<
-        certificate.getName().toUri());
-      return false;
-    }
+  const X509CrlInfo::RevokedCertificate* revoked = findRevokedCertificate
+    (certificate.getIssuerName(), certificate.getX509SerialNumber());
+  if (revoked) {
+    _LOG_ERROR("REVOKED: The CRL from issuer " <<
+      certificate.getIssuerName().toUri() << " has revoked serial number " <<
+      revoked->getSerialNumber().toHex() << " at time " <<
+      toIsoString(revoked->getRevocationDate()) << ". Rejecting fetched certificate " <<
+      certificate.getName().toUri());
+    return false;
   }
 
   verifiedCertificateCache_.insert(certificate);
@@ -87,7 +83,9 @@ CertificateStorage::cacheVerifiedCertificate(const CertificateV2& certificate)
 void
 CertificateStorage::cacheVerifiedCrl(const X509CrlInfo& crlInfo)
 {
-  verifiedCrlCache_.insert(crlInfo);
+  if (!verifiedCrlCache_.insert(crlInfo))
+    // The error has been logged, such as expired CRL.
+    return;
 
   // Remove revoked certificates from verifiedCertificateCache_ .
   const std::map<Name, CertificateCacheV2::Entry>& certificates =
@@ -99,7 +97,8 @@ CertificateStorage::cacheVerifiedCrl(const X509CrlInfo& crlInfo)
       continue;
 
     const X509CrlInfo::RevokedCertificate* revoked = findRevokedCertificate
-      (crlInfo, certEntry->second.certificate_->getX509SerialNumber());
+      (certEntry->second.certificate_->getIssuerName(),
+       certEntry->second.certificate_->getX509SerialNumber());
     if (revoked) {
       _LOG_ERROR("REVOKED: The newly-fetched CRL with thisUpdate time " <<
         toIsoString(crlInfo.getThisUpdate()) << " has revoked serial number " <<
@@ -118,15 +117,19 @@ CertificateStorage::cacheVerifiedCrl(const X509CrlInfo& crlInfo)
 
 const X509CrlInfo::RevokedCertificate*
 CertificateStorage::findRevokedCertificate
-  (const X509CrlInfo& crlInfo, const Blob& serialNumber)
+  (const Name& issuerName, const Blob& serialNumber) const
 {
   if (serialNumber.size() == 0)
     // This can happen by calling getX509SerialNumber() on a non-X.509 certificate.
     return 0;
 
-  for (size_t i = 0; i < crlInfo.getRevokedCertificateCount(); ++i) {
+  ptr_lib::shared_ptr<X509CrlInfo> crlInfo = verifiedCrlCache_.find(issuerName);
+  if (!crlInfo)
+    return 0;
+
+  for (size_t i = 0; i < crlInfo->getRevokedCertificateCount(); ++i) {
     const X509CrlInfo::RevokedCertificate& entry =
-      crlInfo.getRevokedCertificate(i);
+      crlInfo->getRevokedCertificate(i);
     if (entry.getSerialNumber().equals(serialNumber))
       return &entry;
   }

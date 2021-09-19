@@ -1046,5 +1046,14 @@
     <ClCompile Include="..\..\src\security\certificate\x509-certificate-info.cpp">
       <Filter>Source Files\src\security\certificate</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\x509-crl-cache.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\v2\x509-crl-fetcher.cpp">
+      <Filter>Source Files\src\security\v2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\security\certificate\x509-crl-info.cpp">
+      <Filter>Source Files\src\security\certificate</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
