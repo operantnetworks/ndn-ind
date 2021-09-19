@@ -10,6 +10,7 @@
  *
  * Summary of Changes: Use std::chrono. Support ChaCha20-Ploy1305, GCK,
  *   encrypted Interest, multiple access managers. Support ndn_ind_dll.
+ *   Add setGckLatestInterestLifetime.
  *
  * which was originally released under the LGPL license with the following rights:
  *
@@ -396,6 +397,18 @@ public:
   }
 
   /**
+   * Set the Interest lifetime for the Interest sent to the access manager to
+   * get the name of the latest GCK. If you don't call this, then use the
+   * default Interest lifetime as defined by the Interest class.
+   * @param gckLatestInterestLifetime The Interest lifetime.
+   */
+  void
+  setGckLatestInterestLifetime(std::chrono::nanoseconds gckLatestInterestLifetime)
+  {
+    impl_->setGckLatestInterestLifetime(gckLatestInterestLifetime);
+  }
+
+  /**
    * Get the number of packets stored in in-memory storage.
    * @return The number of packets.
    */
@@ -522,6 +535,7 @@ private:
     initializeGck()
     {
       checkForNewGckInterval_ = std::chrono::minutes(1);
+      gckLatestInterestLifetime_ = std::chrono::milliseconds(-1);
     }
 
     void
@@ -557,6 +571,12 @@ private:
     setCheckForNewGckInterval(std::chrono::nanoseconds checkForNewGckInterval)
     {
       checkForNewGckInterval_ = checkForNewGckInterval;
+    }
+
+    void
+    setGckLatestInterestLifetime(std::chrono::nanoseconds gckLatestInterestLifetime)
+    {
+      gckLatestInterestLifetime_ = gckLatestInterestLifetime;
     }
 
     size_t
@@ -758,6 +778,7 @@ private:
 
     // For fetching and decrypting the GCK. Not used for CK.
     std::chrono::nanoseconds checkForNewGckInterval_;
+    std::chrono::nanoseconds gckLatestInterestLifetime_; /**< -1 ms to use the default */
     std::vector<ptr_lib::shared_ptr<PendingEncrypt> > pendingEncrypts_;
     PibKey* credentialsKey_;
 
