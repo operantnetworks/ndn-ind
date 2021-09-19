@@ -44,7 +44,7 @@ operator<<(ostream& os, const ValidationError& error)
 {
   int code = error.getCode();
 
-  if (code == ValidationError::NO_ERROR)
+  if (code == ValidationError::NO_VALIDATION_ERROR)
     os << "No error";
   else if (code == ValidationError::INVALID_SIGNATURE)
     os << "Invalid signature";
