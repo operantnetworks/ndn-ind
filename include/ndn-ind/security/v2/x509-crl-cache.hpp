@@ -68,11 +68,7 @@ public:
    * Clear all CRLs from the cache.
    */
   void
-  clear()
-  {
-    crlsByName_.clear();
-    nextRefreshTime_ = std::chrono::system_clock::time_point::max();
-  }
+  clear();
 
   /**
    * X509CrlCache::Entry is the value of the crlsByName_ map.
