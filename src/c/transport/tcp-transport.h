@@ -96,6 +96,27 @@ static __inline ndn_Error ndn_TcpTransport_connect
 }
 
 /**
+ * Set this transport to use the existing socket descriptor.
+ * @param self A pointer to the ndn_TcpTransport struct.
+ * @param socketDescriptor The socket descriptor, which must already be open.
+ * @param elementListener A pointer to the ndn_ElementListener used by
+ * ndn_SocketTransport_processEvents, which remain valid during the life of this
+ * object or until replaced by the next call to connect.
+ * @return 0 for success, else an error code.
+ */
+static __inline ndn_Error ndn_TcpTransport_useSocket
+  (struct ndn_TcpTransport *self,
+#if defined(_WIN32)
+   SOCKET socketDescriptor,
+#else
+   int socketDescriptor,
+#endif
+   struct ndn_ElementListener *elementListener)
+{
+  return ndn_SocketTransport_useSocket(&self->base, socketDescriptor, elementListener);
+}
+
+/**
  * Send data to the socket.
  * @param self A pointer to the ndn_TcpTransport struct.
  * @param data A pointer to the buffer of data to send.
