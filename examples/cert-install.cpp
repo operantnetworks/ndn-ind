@@ -19,6 +19,10 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
+// Only compile if ndn-ind-config.h defines NDN_IND_HAVE_SQLITE3.
+#include <ndn-ind/ndn-ind-config.h>
+#ifdef NDN_IND_HAVE_SQLITE3
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -68,3 +72,17 @@ int main(int argc, char* argv[])
   
   return 0;
 }
+
+#else // NDN_IND_HAVE_SQLITE3
+
+#include <iostream>
+
+using namespace std;
+
+int main(int argc, char** argv)
+{
+  cout <<
+    "This program uses sqlite3 but it is not installed. Install it and ./configure again." << endl;
+}
+
+#endif // NDN_IND_HAVE_SQLITE3
