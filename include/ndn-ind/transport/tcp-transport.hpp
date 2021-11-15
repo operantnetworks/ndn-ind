@@ -37,6 +37,9 @@
 #include <string>
 #include "../common.hpp"
 #include "transport.hpp"
+#if defined(_WIN32)
+#include <winsock2.h>
+#endif
 
 struct ndn_TcpTransport;
 
@@ -64,17 +67,62 @@ public:
     ConnectionInfo(const char *host, unsigned short port = 6363)
     : host_(host), port_(port)
     {
+#if defined(_WIN32)
+      socketDescriptor_ = INVALID_SOCKET;
+#else
+      socketDescriptor_ = -1;
+#endif
     }
 
     /**
-     * Get the host given to the constructor.
+     * Create a ConnectionInfo to use an already-open socket descriptor.
+     * @param socketDescriptor The socket descriptor which must already be open.
+     */
+#if defined(_WIN32)
+    ConnectionInfo(SOCKET socketDescriptor)
+#else
+    ConnectionInfo(int socketDescriptor)
+#endif
+    : socketDescriptor_(socketDescriptor), port_(-1)
+    {
+    }
+
+    /**
+     * Check if an already-open socket descriptor was given to the constructor.
+     * @return True if there is an already-open socket descriptor.
+     */
+    bool
+    hasSocketDescriptor() const
+    {
+#if defined(_WIN32)
+      return socketDescriptor_ != INVALID_SOCKET;
+#else
+      return socketDescriptor_ >= 0;
+#endif
+    }
+
+    /**
+     * Get the socket descriptor given to the constructor.
+     * @return The socket descriptor.
+     */
+#if defined(_WIN32)
+    SOCKET
+#else
+    int
+#endif
+    getSocketDescriptor() const { return socketDescriptor_; }
+
+    /**
+     * Get the host given to the constructor, or undefined if the constructor
+     * was called with a socketDescriptor.
      * @return A string reference for the host.
      */
     const std::string&
     getHost() const { return host_; }
 
     /**
-     * Get the port given to the constructor.
+     * Get the port given to the constructor, or undefined if the constructor
+     * was called with a socketDescriptor.
      * @return The port number.
      */
     unsigned short
@@ -84,6 +132,11 @@ public:
     ~ConnectionInfo();
 
   private:
+#if defined(_WIN32)
+  SOCKET socketDescriptor_; /**< INVALID_SOCKET if not already connected */
+#else
+  int socketDescriptor_; /**< -1 if not already connected */
+#endif
     std::string host_;
     unsigned short port_;
   };

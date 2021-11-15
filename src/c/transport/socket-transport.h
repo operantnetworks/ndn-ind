@@ -95,6 +95,29 @@ ndn_Error ndn_SocketTransport_connect
    unsigned short port, struct ndn_ElementListener *elementListener);
 
 /**
+ * Set this transport to use the existing socket descriptor.
+ * @param self A pointer to the ndn_SocketTransport struct.
+ * @param socketDescriptor The socket descriptor, which must already be open.
+ * @param elementListener A pointer to the ndn_ElementListener used by
+ * ndn_SocketTransport_processEvents, which remain valid during the life of this
+ * object or until replaced by the next call to connect.
+ * @return 0 for success, else an error code.
+ */
+static __inline ndn_Error ndn_SocketTransport_useSocket
+  (struct ndn_SocketTransport *self,
+#if defined(_WIN32)
+   SOCKET socketDescriptor,
+#else
+   int socketDescriptor,
+#endif
+   struct ndn_ElementListener *elementListener)
+{
+  ndn_ElementReader_reset(&self->elementReader, elementListener);
+  self->socketDescriptor = socketDescriptor;
+  return NDN_ERROR_success;
+}
+
+/**
  * Send data to the socket.
  * @param self A pointer to the ndn_SocketTransport struct.
  * @param data A pointer to the buffer of data to send.

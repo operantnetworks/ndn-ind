@@ -92,10 +92,19 @@ TcpTransport::connect
     dynamic_cast<const TcpTransport::ConnectionInfo&>(connectionInfo);
 
   ndn_Error error;
-  if ((error = ndn_TcpTransport_connect
-       (transport_.get(), (char *)tcpConnectionInfo.getHost().c_str(),
-        tcpConnectionInfo.getPort(), &elementListener)))
-    throw runtime_error(ndn_getErrorString(error));
+  if (tcpConnectionInfo.hasSocketDescriptor()) {
+    // Just use the already-open socket.
+    if ((error = ndn_TcpTransport_useSocket
+         (transport_.get(), tcpConnectionInfo.getSocketDescriptor(),
+          &elementListener)))
+      throw runtime_error(ndn_getErrorString(error));
+  }
+  else {
+    if ((error = ndn_TcpTransport_connect
+         (transport_.get(), (char *)tcpConnectionInfo.getHost().c_str(),
+          tcpConnectionInfo.getPort(), &elementListener)))
+      throw runtime_error(ndn_getErrorString(error));
+  }
 
   isConnected_ = true;
   if (onConnected)
