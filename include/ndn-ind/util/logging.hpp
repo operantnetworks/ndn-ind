@@ -92,7 +92,7 @@ INIT_LOGGERS ();
 
 // If the library is not compiled with _DEBUG, it is also possible to define
 // NDN_IND_WITH_LOGGING to send all log messages to clog.
-#if 1 || defined(_DEBUG) || defined(NDN_IND_WITH_LOGGING)
+#if defined(_DEBUG) || defined(NDN_IND_WITH_LOGGING)
 
 #include <time.h>
 #include <iostream>
