@@ -219,6 +219,8 @@ DynamicTrustAnchorGroup::loadCertificate
 {
   ptr_lib::shared_ptr<CertificateV2> certificate = readCertificate(file);
   if (certificate) {
+    _LOG_TRACE("Loaded trust anchor certificate " << certificate->getName().toUri() <<
+      " from file: " << file);
     if (!certificate->isValid()) {
       _LOG_INFO("Dynamic trust anchor is out of validity. Not loaded. " << certificate->getName().toUri());
       return;
@@ -231,6 +233,8 @@ DynamicTrustAnchorGroup::loadCertificate
     else
       oldAnchorNames.erase(certificate->getName());
   }
+  else
+    _LOG_TRACE("Could not read certificate from file: " << file);
 }
 
 }
