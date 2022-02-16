@@ -181,6 +181,15 @@ public:
   static const Name::Component&
   getX509_COMPONENT();
 
+  /**
+   * Return the X509 name for the specified common name.
+   * 
+   * @param commonName The common name to build the X509 name from.
+   * @return The X509 name as a Blob.
+   */
+  static ndn::Blob
+  makeX509NameOfCommonName(const std::string& commonName);
+
 private:
   ptr_lib::shared_ptr<DerNode> root_;
   SignedBlob signedEncoding_;
