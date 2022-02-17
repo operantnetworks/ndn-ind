@@ -30,6 +30,7 @@ typedef DerNode::DerSequence DerSequence;
 
 static const char *RSA_ENCRYPTION_OID = "1.2.840.113549.1.1.1";
 static const char *PSEUDONYM_OID = "2.5.4.65";
+static const char *COMMON_NAME_OID = "2.5.4.3";
 static const char *SUBJECT_ALTERNATIVE_NAME_OID = "2.5.29.17";
 static const char *CRL_DISTRIBUTION_POINTS_OID = "2.5.29.31";
 static const int GENERAL_NAME_URI_TYPE = 0x86;
@@ -428,5 +429,19 @@ X509CertificateInfo::getX509_COMPONENT()
 }
 
 Name::Component* X509CertificateInfo::X509_COMPONENT = 0;
+
+ndn::Blob
+X509CertificateInfo::makeX509NameOfCommonName(const std::string& commonName)
+{
+  ptr_lib::shared_ptr<DerSequence> root(new DerSequence());
+  ptr_lib::shared_ptr<DerSequence> typeAndValue(new DerSequence());
+  typeAndValue->addChild(ptr_lib::make_shared<DerNode::DerOid>(OID(COMMON_NAME_OID)));
+  typeAndValue->addChild(ptr_lib::make_shared<DerNode::DerUtf8String>
+    ((const uint8_t*)commonName.c_str(), commonName.size()));
+  ptr_lib::shared_ptr<DerNode::DerSet> component(new DerNode::DerSet());
+  component->addChild(typeAndValue);
+  root->addChild(component);
+  return root->encode();
+}
 
 }
