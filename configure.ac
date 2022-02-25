@@ -74,6 +74,18 @@ AX_BOOST_ASIO
 AX_BOOST_CHRONO
 AX_BOOST_FILESYSTEM
 
+AC_MSG_CHECKING([for std::filesystem])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+    [[#include <filesystem>]]
+    [[bool result = std::filesystem::create_directories("");]])
+], [
+    AC_MSG_RESULT([yes])
+    AC_DEFINE_UNQUOTED([HAVE_STD_FILESYSTEM], 1, [1 if have std::filesystem .])
+], [
+    AC_MSG_RESULT([no])
+    AC_DEFINE_UNQUOTED([HAVE_STD_FILESYSTEM], 0, [1 if have std::filesystem .])
+])
+
 AC_MSG_CHECKING([for std::shared_ptr])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
     [[#include <memory>]]

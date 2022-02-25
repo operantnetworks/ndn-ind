@@ -20210,6 +20210,41 @@ fi
 	fi
 
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for std::filesystem" >&5
+printf %s "checking for std::filesystem... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <filesystem>
+    bool result = std::filesystem::create_directories("");
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+
+printf "%s\n" "#define HAVE_STD_FILESYSTEM 1" >>confdefs.h
+
+
+else $as_nop
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+printf "%s\n" "#define HAVE_STD_FILESYSTEM 0" >>confdefs.h
+
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for std::shared_ptr" >&5
 printf %s "checking for std::shared_ptr... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
