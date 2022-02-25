@@ -8,6 +8,10 @@ NDN-IND for Visual Studio
 
     vcpkg install openssl:x64-Windows
 
+* To install sqlite3, in a command prompt change directory to the vcpkg root and enter:
+
+    vcpkg install sqlite3:x64-Windows
+
 * To add the vcpkg to the path:
     * In the Sytem control panel, click Advanced system settings, then click Environment Variables.
     * In the "System variables" panel, click Path. Click Edit and click New.
