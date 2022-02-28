@@ -42,6 +42,8 @@
 #include <ndn-ind/security/tpm/tpm-key-handle-memory.hpp>
 #ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
 #include <boost/filesystem.hpp>
+#elif NDN_IND_HAVE_STD_FILESYSTEM
+#include <filesystem>
 #endif
 #if defined(_WIN32)
 #include <direct.h>
@@ -62,12 +64,18 @@ TpmBackEndFile::TpmBackEndFile(const string& locationPath)
       keyStorePath_.erase(keyStorePath_.size() - 1);
   }
   else {
+#if defined(_WIN32)
+    const char* homeDrive = getenv("HOMEDRIVE");
+    const char* homePath = getenv("HOMEPATH");
+    string home = (!homeDrive || !homePath ? "." : string(homeDrive) + string(homePath));
+#else
     // Note: We don't use <filesystem> support because it is not "header-only"
     // and requires linking to libraries.
     const char* home = getenv("HOME");
     if (!home || *home == '\0')
       // Don't expect this to happen;
       home = ".";
+#endif
     string homeDir(home);
     if (homeDir[homeDir.size() - 1] == '/' || homeDir[homeDir.size() - 1] == '\\')
       // Strip the ending path separator.
@@ -79,21 +87,24 @@ TpmBackEndFile::TpmBackEndFile(const string& locationPath)
 
   // ::mkdir will work if the parent directory already exists, which is most cases.
 #if defined(_WIN32)
-  int status = ::_mkdir(keyStorePath_.c_str());
+  int status = -1;
 #else
   int status = ::mkdir(keyStorePath_.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
   // EEXIST means the directory already exists, so it's OK.
-  if (status != 0 && status != EEXIST) {
+  if (status != 0 && errno != EEXIST) {
     // Can't create the directory with ::mkdir.
 #ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
     // Try with create_directories.
     boost::filesystem::create_directories(keyStorePath_);
+#elif NDN_IND_HAVE_STD_FILESYSTEM
+      filesystem::create_directories(keyStorePath_);
 #else
     throw TpmBackEnd::Error
       (string("TpmBackEndFile: Error '") + strerror(errno) + "' in 'mkdir " + keyStorePath_ +
        "' . Create the parent directory and try again.");
 #endif
+
   }
 }
 

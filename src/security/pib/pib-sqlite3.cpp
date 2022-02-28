@@ -43,6 +43,8 @@
 #include "../../util/sqlite3-statement.hpp"
 #ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
 #include <boost/filesystem.hpp>
+#elif NDN_IND_HAVE_STD_FILESYSTEM
+#include <filesystem>
 #endif
 #include <ndn-ind/security/pib/pib-sqlite3.hpp>
 
@@ -219,13 +221,19 @@ PibSqlite3::PibSqlite3
   else
     databaseDirectoryPath = getDefaultDatabaseDirectoryPath();
 
+#if defined(_WIN32)
+  int status = -1;
+#else
   // ::mkdir will work if the parent directory already exists, which is most cases.
   int status = ::mkdir(databaseDirectoryPath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-  if (status != 0 && status != EEXIST) {
+#endif
+  if (status != 0 && errno != EEXIST) {
     // Can't create the directory with ::mkdir.
-#ifdef NDN_IND_HAVE_CXX17
     // Try with create_directories.
+#ifdef NDN_IND_HAVE_BOOST_FILESYSTEM
     boost::filesystem::create_directories(databaseDirectoryPath);
+#elif NDN_IND_HAVE_STD_FILESYSTEM
+      filesystem::create_directories(databaseDirectoryPath);
 #else
     throw PibImpl::Error
       (string("PibSqlite3: Error '") + strerror(errno) + "' in 'mkdir " + databaseDirectoryPath +
@@ -608,18 +616,24 @@ WHERE certificates.is_default=1 AND keys.key_name=?");
 string
 PibSqlite3::getDefaultDatabaseDirectoryPath()
 {
+#if defined(_WIN32)
+  const char* homeDrive = getenv("HOMEDRIVE");
+  const char* homePath = getenv("HOMEPATH");
+  string home = (!homeDrive || !homePath ? "." : string(homeDrive) + string(homePath));
+#else
   // Note: We don't use <filesystem> support because it is not "header-only"
   // and requires linking to libraries.
   const char* home = getenv("HOME");
   if (!home || *home == '\0')
     // Don't expect this to happen;
     home = ".";
+#endif
   string homeDir(home);
   if (homeDir[homeDir.size() - 1] == '/' || homeDir[homeDir.size() - 1] == '\\')
     // Strip the ending path separator.
     homeDir.erase(homeDir.size() - 1);
 
-  // TODO: Handle non-unix file systems which don't use "/".
+  // Forward slash works on both Unix and Windows.
   return homeDir + '/' + ".ndn";
 }
 

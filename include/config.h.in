@@ -111,6 +111,9 @@
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
+/* 1 if have std::filesystem . */
+#undef HAVE_STD_FILESYSTEM
+
 /* 1 if have the `std::function' class. */
 #undef HAVE_STD_FUNCTION
 
