@@ -65,6 +65,24 @@ MicroForwarder::addFace(const char *host, unsigned short port)
      ptr_lib::make_shared<TcpTransport::ConnectionInfo>(host, port));
 }
 
+#ifdef PENALTY_BOX
+int
+MicroForwarder::addFaceWithPenaltyBox(const char *host, unsigned short port, uint32_t recvTimeoutMs, uint32_t maxTimeoutCount, uint32_t penaltyTimeMs)
+{
+  auto faceId = addFace
+    (string("tcp://") + host + ":" + to_string(port),
+     ptr_lib::make_shared<TcpTransport>(),
+     ptr_lib::make_shared<TcpTransport::ConnectionInfo>(host, port));
+
+  auto face = findFace (faceId);
+  face->setPenaltyParameters (recvTimeoutMs, maxTimeoutCount, penaltyTimeMs);
+  face->enablePenaltyBoxMode();
+  return faceId;
+}
+
+#endif
+
+
 bool
 MicroForwarder::addRoute(const Name& name, int faceId, int cost)
 {
@@ -137,6 +155,36 @@ MicroForwarder::remoteRegisterPrefix
      });
 }
 
+#ifdef PENALTY_BOX
+
+    void
+    MicroForwarder::processEvents()
+    {
+        for (int i = 0; i < faces_.size(); ++i) {
+            faces_[i]->processEvents();
+            if (faces_[i]->isPenaltyBoxEnabled() && !faces_[i]->inPenaltyBox() && faces_[i]->isSendTimedOut()) {
+                faces_[i]->incTimeoutCount();     // Increments the timeout counter and (possibly) puts face in penalty
+#ifdef PENALTY_BOX_DEBUG
+                printf("\n\n-----------Timeout count: %u\n", faces_[i]->getTimeoutCount());
+                if (faces_[i]->inPenaltyBox()) {
+                    printf("-----------In penalty box!\n");
+                }
+                printf ("\n");
+#endif
+            }
+            else if (faces_[i]->isPenaltyBoxEnabled() && faces_[i]->inPenaltyBox() && faces_[i]->isPenaltyBoxExpired()) {
+#ifdef PENALTY_BOX_DEBUG
+                printf("\n\n===========Out of penalty box!\n\n");
+#endif
+                faces_[i]->setPenaltyBox(false);
+                faces_[i]->clearTimeoutCount();
+                faces_[i]->clearSendPending();
+            }
+        }
+    }
+
+#else
+
 void
 MicroForwarder::processEvents()
 {
@@ -145,12 +193,38 @@ MicroForwarder::processEvents()
   }
 }
 
+#endif
+
 void
 MicroForwarder::ForwarderFace::send(const uint8_t *data, size_t dataLength)
 {
   if (transport_) {
     try {
-      transport_->send(data, dataLength);
+
+#ifdef PENALTY_BOX
+
+#ifdef PENALTY_BOX_DEBUG
+        cout << "Data length: " << dataLength << endl;
+        printf("Last = %d\n", *(data+dataLength-1) & 0x000000FF  );
+#endif
+        if (!penaltyBoxEnabled_)
+            transport_->send(data, dataLength);
+        else if (!inPenaltyBox_) {
+            transport_->send(data, dataLength);
+            sendPending = true;
+            lastSendTs = std::chrono::system_clock::now();
+#ifdef PENALTY_BOX_DEBUG
+            printf ("\n\n@@@@@@ Sending data\n\n");
+#endif
+        }
+#ifdef PENALTY_BOX_DEBUG
+        else printf ("\n\n##### Skipping send due to penalty box\n\n");
+#endif
+
+#else
+        transport_->send(data, dataLength);
+#endif
+
     } catch (const std::exception& ex) {
       _LOG_ERROR("MicroForwarder: Error in transport send: " << ex.what());
     } catch (...) {
@@ -163,7 +237,7 @@ void
 MicroForwarder::ForwarderFace::onReceivedElement
   (const uint8_t *element, size_t elementLength)
 {
-  parent_->onReceivedElement(this, element, elementLength);
+    parent_->onReceivedElement(this, element, elementLength);
 }
 
 void
@@ -209,7 +283,21 @@ MicroForwarder::onReceivedElement
     data->wireDecode(interestOrData, interestOrDataLength, *TlvWireFormat::get());
   }
 
-  auto now = system_clock::now();
+#ifdef PENALTY_BOX
+
+  if (face->isPenaltyBoxEnabled()) {
+#ifdef PENALTY_BOX_DEBUG
+    printf ("\n******** onReceivedElement(), face ID = %d: %s, in %lums\n\n", face->getFaceId(), face->getUri().c_str(),
+            std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() - face->getLastSendTs())).count());
+#endif
+    face->clearSendPending();
+    face->clearTimeoutCount();
+  }
+
+#endif
+
+
+    auto now = system_clock::now();
   // Remove timed-out PIT entries
   // Iterate backwards so we can remove the entry and keep iterating.
   for (int i = PIT_.size() - 1; i >= 0; --i) {

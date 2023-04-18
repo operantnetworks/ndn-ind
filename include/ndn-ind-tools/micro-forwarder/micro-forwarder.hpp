@@ -27,6 +27,10 @@
 #include <ndn-ind/face.hpp>
 #include <ndn-ind/transport/transport.hpp>
 
+// Uncomment to enable Penalty Box features
+#define PENALTY_BOX
+#define PENALTY_BOX_DEBUG
+
 namespace ndntools {
 
 /**
@@ -74,6 +78,49 @@ public:
    */
   int
   addFace(const char *host, unsigned short port = 6363);
+
+#ifdef PENALTY_BOX
+  /**
+   * Add a new face to communicate with TCP to host:port, with penalty box enabled
+   * for this face. This immediately connects. The URI to use in the faces/query
+   * and faces/list commands will be "tcp://host:port" .
+   *
+   * @param host The host for the TCP connection.
+   * @param port (optional) The port for the TCP connection. If omitted, use 6363.
+   * @param recvTimeoutMs Penalty box parameter: milliseconds of timeout
+   * @param maxTimeoutCount Penalty box parameter: max timeouts, before going into penalty box mode
+   * @param penaltyTimeMs Penalty box parameter: milliseconds to remain in penalty box
+   * @return The new face ID.
+   */
+  int
+  addFaceWithPenaltyBox
+    (const char *host,
+     unsigned short port,
+     uint32_t recvTimeoutMs,
+     uint32_t maxTimeoutCount,
+     uint32_t penaltyTimeMs);
+
+  /**
+   * Add a new face to communicate with TCP to host:port, with penalty box enabled
+   * for this face. This immediately connects. The URI to use in the faces/query
+   * and faces/list commands will be "tcp://host:port" .
+   *
+   * @param host The host for the TCP connection.
+   * @param recvTimeoutMs Penalty box parameter: milliseconds of timeout
+   * @param maxTimeoutCount Penalty box parameter: max timeouts, before going into penalty box mode
+   * @param penaltyTimeMs Penalty box parameter: milliseconds to remain in penalty box
+   * @return The new face ID.
+   */
+    int
+    addFaceWithPenaltyBox
+    (const char *host,
+    uint32_t recvTimeoutMs,
+    uint32_t maxTimeoutCount,
+    uint32_t penaltyTimeMs) {
+      return addFaceWithPenaltyBox (host, 6363, recvTimeoutMs, maxTimeoutCount, penaltyTimeMs);
+    }
+
+#endif
 
   /**
    * Find or create the FIB entry with the given name and add the ForwarderFace
@@ -183,6 +230,17 @@ private:
     : parent_(parent), uri_(uri), transport_(transport)
     {
       faceId_ = ++lastFaceId_;
+#ifdef PENALTY_BOX
+      penaltyBoxEnabled_ = false;
+      maxTimeoutCount_ = 5;
+      penaltyTimeMs_ = 10000;
+      recvTimeoutMs_ = 1000;
+
+      sendPending = false;
+      inPenaltyBox_ = false;
+      currentTimeoutCount = 0;
+      inPenaltyBoxTs = lastSendTs = std::chrono::system_clock::now();
+#endif
     }
 
     const std::string&
@@ -194,7 +252,87 @@ private:
     int
     getFaceId() const { return faceId_; }
 
+#ifdef PENALTY_BOX
+    std::chrono::system_clock::time_point
+    getLastSendTs() const { return lastSendTs; }
+
+    bool
+    isSendPending() { return sendPending; }
+
+    void
+    clearSendPending() { sendPending = false; }
+
+    bool
+    isSendTimedOut() {
+      if (inPenaltyBox_ || !sendPending) return false;
+      auto millis = std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() -
+        lastSendTs)).count();
+      auto isTimedOut = millis >= recvTimeoutMs_;
+      if (isTimedOut) lastSendTs = std::chrono::system_clock::now();
+      return isTimedOut;
+    }
+
     /**
+     * Increments the timeout counter, and if necessary, places the face into
+     * penalty box
+     */
+    void
+    incTimeoutCount() {
+        if (++currentTimeoutCount >= maxTimeoutCount_) {
+            inPenaltyBoxTs = std::chrono::system_clock::now();
+            inPenaltyBox_ = true;
+        }
+    }
+
+    void
+    clearTimeoutCount() { currentTimeoutCount = 0; }
+
+    uint32_t
+    getTimeoutCount() { return currentTimeoutCount; }
+
+    uint32_t
+    getMaxTimeoutCount() { return maxTimeoutCount_; }
+
+    void
+    setPenaltyBox (bool isInPenaltyBox) { inPenaltyBox_ = isInPenaltyBox; }
+
+    bool
+    isPenaltyBoxEnabled () { return penaltyBoxEnabled_; }
+
+    bool
+    inPenaltyBox() { return inPenaltyBox_; }
+
+    bool
+    isPenaltyBoxExpired() {
+        if (!inPenaltyBox_) return false;
+        auto millis = std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() -
+          inPenaltyBoxTs)).count();
+        return millis > penaltyTimeMs_;
+    }
+
+    void
+    enablePenaltyBoxMode () { penaltyBoxEnabled_ = true; }
+
+    void
+    disablePenaltyBoxMode () { penaltyBoxEnabled_ = false; }
+
+    /**
+     * Sets penalty box parameters
+     *
+     * @param recvTimeoutMs the receive timeout in milliseconds
+     * @param maxTimeoutCount the maximum consecutive receive timeouts, before the interface goes into penalty box
+     * @param penaltyTimeMs the time duration in milliseconds, during which the interface remains in penalty box
+     */
+    void
+    setPenaltyParameters (uint32_t recvTimeoutMs, uint32_t maxTimeoutCount, uint32_t penaltyTimeMs) {
+        recvTimeoutMs_ = recvTimeoutMs;
+        maxTimeoutCount_ = maxTimeoutCount;
+        penaltyTimeMs_ = penaltyTimeMs;
+    }
+
+#endif
+
+            /**
      * Check if this face is still enabled.
      * @returns True if this face is still enabled.
      */
@@ -238,6 +376,27 @@ private:
     ndn::ptr_lib::shared_ptr<ndn::Transport> transport_;
     int faceId_;
     static int lastFaceId_;
+
+#ifdef PENALTY_BOX
+
+    bool penaltyBoxEnabled_;                                // true = penalty box mode is enabled
+
+    uint32_t maxTimeoutCount_;                              // A face is put in penalty box onc the max timeouts happen
+    uint32_t penaltyTimeMs_;                                // The penalty time, once the interface is in penalty mode
+    uint32_t recvTimeoutMs_;                                // Receive timeout period. Once expired, the timeout counter
+                                                            //   increases by 1
+
+    bool sendPending;                                       // true = have expressed interest, and are waiting for response
+                                                            //   if true, then the timeout clock is ticking
+
+    bool inPenaltyBox_;                                     // true = interface is in penalty box, false = normal operation
+
+    std::chrono::system_clock::time_point lastSendTs;       // timestamp of the last send
+    std::chrono::system_clock::time_point inPenaltyBoxTs;   // timestamp when face went into penalty box
+
+    uint32_t currentTimeoutCount;                           // Current number of timeouts that have consecutively happened
+
+#endif
   };
 
   /**
