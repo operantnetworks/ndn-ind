@@ -174,6 +174,28 @@ To make documentation, in a terminal enter:
 The documentation output is in `doc/html/index.html`. (If you already did ./configure
 before installing Doxygen, you need to do ./configure again before make doxygen-doc.)
 
+
+### Enabling Penalty Box
+Penalty box is a custom feature that causes faces which aren't responding but also are TCP connected to be taken
+offline for a penalty period.
+
+This feature is disabled by default.  To enable it, uncomment the `#define PENALTY_BOX` line in `include/ndn-ind-tools/micro-forwarder/micro-forwarder.hpp` 
+
+With this line uncommented, build and install as documented above.
+
+### Using Penalty Box
+
+To use penalty box, replace existing calls to `addFace()` with calls to `addFaceWithPenaltyBox()`.
+
+The relevant additional parameters to `addFaceWithPenaltyBox()` are:
+
+    recvTimeoutMs: The response timeout period in milliseconds
+
+    maxTimeoutCount: The number of timeouts allowed before penalty box is enabled for the face
+
+    penaltyTimeMs: The time a face will spend in penalty box once the timeout count has been met 
+
+
 Files
 =====
 This makes the following libraries:
