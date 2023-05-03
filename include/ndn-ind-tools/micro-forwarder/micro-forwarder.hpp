@@ -44,6 +44,7 @@ class ndn_ind_dll MicroForwarder {
 public:
   MicroForwarder()
   : minPitEntryLifetime_(std::chrono::minutes(1)),
+    failedFaceIds(),
     localhostNamePrefix("/localhost"),
     localhopNamePrefix("/localhop"),
     registerNamePrefix("/localhost/nfd/rib/register"),
@@ -80,6 +81,7 @@ public:
   addFace(const char *host, unsigned short port = 6363);
 
 #ifdef PENALTY_BOX
+
   /**
    * Add a new face to communicate with TCP to host:port, with penalty box enabled
    * for this face. This immediately connects. The URI to use in the faces/query
@@ -94,11 +96,11 @@ public:
    */
   int
   addFaceWithPenaltyBox
-    (const char *host,
-     unsigned short port,
-     uint32_t recvTimeoutMs,
-     uint32_t maxTimeoutCount,
-     uint32_t penaltyTimeMs);
+  (const char *host,
+  unsigned short port,
+  uint32_t recvTimeoutMs,
+  uint32_t maxTimeoutCount,
+  uint32_t penaltyTimeMs);
 
   /**
    * Add a new face to communicate with TCP to host:port, with penalty box enabled
@@ -111,16 +113,24 @@ public:
    * @param penaltyTimeMs Penalty box parameter: milliseconds to remain in penalty box
    * @return The new face ID.
    */
-    int
-    addFaceWithPenaltyBox
-    (const char *host,
-    uint32_t recvTimeoutMs,
-    uint32_t maxTimeoutCount,
-    uint32_t penaltyTimeMs) {
-      return addFaceWithPenaltyBox (host, 6363, recvTimeoutMs, maxTimeoutCount, penaltyTimeMs);
-    }
+  int
+  addFaceWithPenaltyBox
+  (const char *host,
+  uint32_t recvTimeoutMs,
+  uint32_t maxTimeoutCount,
+  uint32_t penaltyTimeMs) {
+    return addFaceWithPenaltyBox (host, 6363, recvTimeoutMs, maxTimeoutCount, penaltyTimeMs);
+  }
 
 #endif
+
+  /**
+   * Removes an existing face using the face ID returned by addFace().
+   * 
+   * @param faceId The ID of the face to remove.
+   */
+  void
+  removeFace(int faceId);
 
   /**
    * Find or create the FIB entry with the given name and add the ForwarderFace
@@ -195,6 +205,24 @@ public:
     (ForwarderFace* face, const uint8_t *element, size_t elementLength);
 
   /**
+   * Returns the vector of failed face IDs. These IDs may be used in calls to
+   * removeFace().
+   * 
+   * @return std::vector<int> The failed face IDs.
+   */
+  std::vector<int>
+  getFailedFaceIds() const;
+
+  /**
+   * Clears the vector of failed face IDs. Following this call without intervening internal 
+   * uses of faces (which might have one or more faces which fail), getFailedFaceIds() will
+   * return an empty vector.
+   * 
+   */
+  void
+  clearFailedFaceIds();
+
+  /**
    * Get a singleton instance of a MicroForwarder.
    * @return The singleton instance.
    */
@@ -213,48 +241,25 @@ private:
    * the* given Transport. (This is not to be confused with the application Face.)
    */
   class ForwarderFace : public ndn::ElementListener {
-  public:
-    /**
-     * Create a ForwarderFace and set the faceId to a unique value.
-     * @param parent The parent MicroForwarder.
-     * @param uri The URI to use in the faces/query and faces/list commands.
-     * @param transport Communicate using the Transport object. You must call
-     * transport.connect with an elementListener object whose
-     * onReceivedElement(element, elementLength) calls
-     * MicroForwarder.onReceivedElement(face, element, elementLength), with this
-     * face.
-     */
-    ForwarderFace
-      (MicroForwarder* parent, const std::string uri,
-       const ndn::ptr_lib::shared_ptr<ndn::Transport>& transport)
-    : parent_(parent), uri_(uri), transport_(transport)
-    {
-      faceId_ = ++lastFaceId_;
-#ifdef PENALTY_BOX
-      penaltyBoxEnabled_ = false;
-      maxTimeoutCount_ = 5;
-      penaltyTimeMs_ = 10000;
-      recvTimeoutMs_ = 1000;
-
-      sendPending = false;
-      inPenaltyBox_ = false;
-      currentTimeoutCount = 0;
-      inPenaltyBoxTs = lastSendTs = std::chrono::system_clock::now();
-#endif
-    }
-
-    const std::string&
-    getUri() const { return uri_; }
-
-    ndn::Transport*
-    getTransport() const { return transport_.get(); }
-
-    int
-    getFaceId() const { return faceId_; }
 
 #ifdef PENALTY_BOX
+
+  // Penalty Box constructor initializers - this is done here to keep penalty box code
+  //   within a common area of the source file
+  #define FORWARDER_FACE_INIT_PB() \
+    penaltyBoxEnabled_ = false; \
+    maxTimeoutCount_ = 5;       \
+    penaltyTimeMs_ = 10000;     \
+    recvTimeoutMs_ = 1000;      \
+    sendPending = false;        \
+    inPenaltyBox_ = false;      \
+    currentTimeoutCount_ = 0;    \
+    inPenaltyBoxTs_ = lastSendTs_ = std::chrono::system_clock::now();
+
+    public:
+
     std::chrono::system_clock::time_point
-    getLastSendTs() const { return lastSendTs; }
+    getLastSendTs() const { return lastSendTs_; }
 
     bool
     isSendPending() { return sendPending; }
@@ -266,9 +271,9 @@ private:
     isSendTimedOut() {
       if (inPenaltyBox_ || !sendPending) return false;
       auto millis = std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() -
-        lastSendTs)).count();
+                                                                           lastSendTs_)).count();
       auto isTimedOut = millis >= recvTimeoutMs_;
-      if (isTimedOut) lastSendTs = std::chrono::system_clock::now();
+      if (isTimedOut) lastSendTs_ = std::chrono::system_clock::now();
       return isTimedOut;
     }
 
@@ -278,17 +283,17 @@ private:
      */
     void
     incTimeoutCount() {
-        if (++currentTimeoutCount >= maxTimeoutCount_) {
-            inPenaltyBoxTs = std::chrono::system_clock::now();
-            inPenaltyBox_ = true;
-        }
+      if (++currentTimeoutCount_ >= maxTimeoutCount_) {
+        inPenaltyBoxTs_= std::chrono::system_clock::now();
+        inPenaltyBox_ = true;
+      }
     }
 
     void
-    clearTimeoutCount() { currentTimeoutCount = 0; }
+    clearTimeoutCount() { currentTimeoutCount_ = 0; }
 
     uint32_t
-    getTimeoutCount() { return currentTimeoutCount; }
+    getTimeoutCount() { return currentTimeoutCount_; }
 
     uint32_t
     getMaxTimeoutCount() { return maxTimeoutCount_; }
@@ -304,10 +309,10 @@ private:
 
     bool
     isPenaltyBoxExpired() {
-        if (!inPenaltyBox_) return false;
-        auto millis = std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() -
-          inPenaltyBoxTs)).count();
-        return millis > penaltyTimeMs_;
+      if (!inPenaltyBox_) return false;
+      auto millis = std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() -
+                                                                           inPenaltyBoxTs_)).count();
+      return millis > penaltyTimeMs_;
     }
 
     void
@@ -325,14 +330,67 @@ private:
      */
     void
     setPenaltyParameters (uint32_t recvTimeoutMs, uint32_t maxTimeoutCount, uint32_t penaltyTimeMs) {
-        recvTimeoutMs_ = recvTimeoutMs;
-        maxTimeoutCount_ = maxTimeoutCount;
-        penaltyTimeMs_ = penaltyTimeMs;
+      recvTimeoutMs_ = recvTimeoutMs;
+      maxTimeoutCount_ = maxTimeoutCount;
+      penaltyTimeMs_ = penaltyTimeMs;
     }
+
+    // Penalty Box tracking variables
+    private:
+    bool penaltyBoxEnabled_;                                  // true = penalty box mode is enabled
+
+    uint32_t maxTimeoutCount_;                                // A face is put in penalty box onc the max timeouts happen
+    uint32_t penaltyTimeMs_;                                  // The penalty time, once the interface is in penalty mode
+    uint32_t recvTimeoutMs_;                                  // Receive timeout period. Once expired, the timeout counter
+    //   increases by 1
+
+    bool sendPending;                                         // true = have expressed interest, and are waiting for response
+    //   if true, then the timeout clock is ticking
+
+    bool inPenaltyBox_;                                       // true = interface is in penalty box, false = normal operation
+
+    std::chrono::system_clock::time_point lastSendTs_;         // timestamp of the last send
+    std::chrono::system_clock::time_point inPenaltyBoxTs_;     // timestamp when face went into penalty box
+
+    uint32_t currentTimeoutCount_;                             // Current number of timeouts that have consecutively happened
+
+#else
+
+  // No Penalty Box variables nor initializers on a non-penalty box compile
+  #define FORWARDER_FACE_INIT_PB()
 
 #endif
 
-            /**
+    public:
+    /**
+     * Create a ForwarderFace and set the faceId to a unique value.
+     * @param parent The parent MicroForwarder.
+     * @param uri The URI to use in the faces/query and faces/list commands.
+     * @param transport Communicate using the Transport object. You must call
+     * transport.connect with an elementListener object whose
+     * onReceivedElement(element, elementLength) calls
+     * MicroForwarder.onReceivedElement(face, element, elementLength), with this
+     * face.
+     */
+    ForwarderFace
+      (MicroForwarder* parent, const std::string uri,
+       const ndn::ptr_lib::shared_ptr<ndn::Transport>& transport)
+    : parent_(parent), uri_(uri), transport_(transport)
+    {
+      faceId_ = ++lastFaceId_;
+      FORWARDER_FACE_INIT_PB()    // Initializes additional parameters if penalty box is enabled at compile time
+    }
+
+    const std::string&
+    getUri() const { return uri_; }
+
+    ndn::Transport*
+    getTransport() const { return transport_.get(); }
+
+    int
+    getFaceId() const { return faceId_; }
+
+    /**
      * Check if this face is still enabled.
      * @returns True if this face is still enabled.
      */
@@ -377,26 +435,6 @@ private:
     int faceId_;
     static int lastFaceId_;
 
-#ifdef PENALTY_BOX
-
-    bool penaltyBoxEnabled_;                                // true = penalty box mode is enabled
-
-    uint32_t maxTimeoutCount_;                              // A face is put in penalty box onc the max timeouts happen
-    uint32_t penaltyTimeMs_;                                // The penalty time, once the interface is in penalty mode
-    uint32_t recvTimeoutMs_;                                // Receive timeout period. Once expired, the timeout counter
-                                                            //   increases by 1
-
-    bool sendPending;                                       // true = have expressed interest, and are waiting for response
-                                                            //   if true, then the timeout clock is ticking
-
-    bool inPenaltyBox_;                                     // true = interface is in penalty box, false = normal operation
-
-    std::chrono::system_clock::time_point lastSendTs;       // timestamp of the last send
-    std::chrono::system_clock::time_point inPenaltyBoxTs;   // timestamp when face went into penalty box
-
-    uint32_t currentTimeoutCount;                           // Current number of timeouts that have consecutively happened
-
-#endif
   };
 
   /**
@@ -538,6 +576,17 @@ private:
       nextHops_.push_back(nextHop);
     }
 
+    void
+    removeNextHop(int faceId)
+    {
+      for (int i = 0; i < nextHops_.size(); ++i) {
+        if (nextHops_[i]->getFace() && nextHops_[i]->getFace()->getFaceId() == faceId) {
+          nextHops_.erase(begin(nextHops_) + i);
+          return;
+        }
+      }
+    }
+
     /**
      * Get the index in the list of NextHopRecord with the given face.
      * @param fact The face to search for.
@@ -590,6 +639,7 @@ private:
   std::vector<ndn::ptr_lib::shared_ptr<FibEntry> > FIB_;
   std::vector<ndn::ptr_lib::shared_ptr<ForwarderFace> > faces_;
   std::chrono::nanoseconds minPitEntryLifetime_;
+  std::vector<int> failedFaceIds;
 
   ndn::Name localhostNamePrefix;
   ndn::Name localhopNamePrefix;

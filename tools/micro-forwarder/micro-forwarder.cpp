@@ -19,6 +19,7 @@
  * A copy of the GNU Lesser General Public License is in the file COPYING.
  */
 
+#include <algorithm>
 #include <set>
 #include <ndn-ind/util/logging.hpp>
 #include <ndn-ind/encoding/tlv-wire-format.hpp>
@@ -38,6 +39,15 @@ using namespace ndn;
 using namespace ndn::func_lib;
 
 INIT_LOGGER("ndntools.MicroForwarder");
+
+
+// Optional compile-time debug outout from Penalty Box messages
+#ifdef PENALTY_BOX_DEBUG
+#define PB_DEBUG(str) cout << str;
+#else
+#define PB_DEBUG(str);  // No-Op
+#endif
+
 
 namespace ndntools {
 
@@ -65,22 +75,40 @@ MicroForwarder::addFace(const char *host, unsigned short port)
      ptr_lib::make_shared<TcpTransport::ConnectionInfo>(host, port));
 }
 
-#ifdef PENALTY_BOX
-int
-MicroForwarder::addFaceWithPenaltyBox(const char *host, unsigned short port, uint32_t recvTimeoutMs, uint32_t maxTimeoutCount, uint32_t penaltyTimeMs)
+void
+MicroForwarder::removeFace(int faceId)
 {
-  auto faceId = addFace
-    (string("tcp://") + host + ":" + to_string(port),
-     ptr_lib::make_shared<TcpTransport>(),
-     ptr_lib::make_shared<TcpTransport::ConnectionInfo>(host, port));
+  auto iFace = find_if(begin(faces_), end(faces_), [&faceId](const ndn::ptr_lib::shared_ptr<ForwarderFace>& f) { return f->getFaceId() == faceId; });
+  if (end(faces_) != iFace) {
+    // Remove PIT entries which refer to this face.
+    auto iPit = begin(PIT_);
+    while (end(PIT_) != iPit) {
+      if (nullptr != (*iPit)->getInFace() && (*iPit)->getInFace()->getFaceId() == faceId) {
+        (*iPit)->setIsRemoved();
+        iPit = PIT_.erase(iPit);
+      }
+      else {
+        ++iPit;
+      }
+    }
 
-  auto face = findFace (faceId);
-  face->setPenaltyParameters (recvTimeoutMs, maxTimeoutCount, penaltyTimeMs);
-  face->enablePenaltyBoxMode();
-  return faceId;
+    // Remove FIB next hops entries which refer to this face. If the FIB entry no longer has any next hops as a result
+    // of this operation, remove the FIB entry.
+    auto iFib = begin(FIB_);
+    while (end(FIB_) != iFib) {
+      (*iFib)->removeNextHop(faceId);
+      if (0 == (*iFib)->getNextHopCount()) {
+        iFib = FIB_.erase(iFib);
+      }
+      else {
+        ++iFib;
+      }
+    }
+
+    // Remove the face.
+    faces_.erase(iFace);
+  }
 }
-
-#endif
 
 
 bool
@@ -155,89 +183,11 @@ MicroForwarder::remoteRegisterPrefix
      });
 }
 
-#ifdef PENALTY_BOX
-
-    void
-    MicroForwarder::processEvents()
-    {
-        for (int i = 0; i < faces_.size(); ++i) {
-            faces_[i]->processEvents();
-            if (faces_[i]->isPenaltyBoxEnabled() && !faces_[i]->inPenaltyBox() && faces_[i]->isSendTimedOut()) {
-                faces_[i]->incTimeoutCount();     // Increments the timeout counter and (possibly) puts face in penalty
-#ifdef PENALTY_BOX_DEBUG
-                printf("\n\n-----------Timeout count: %u\n", faces_[i]->getTimeoutCount());
-                if (faces_[i]->inPenaltyBox()) {
-                    printf("-----------In penalty box!\n");
-                }
-                printf ("\n");
-#endif
-            }
-            else if (faces_[i]->isPenaltyBoxEnabled() && faces_[i]->inPenaltyBox() && faces_[i]->isPenaltyBoxExpired()) {
-#ifdef PENALTY_BOX_DEBUG
-                printf("\n\n===========Out of penalty box!\n\n");
-#endif
-                faces_[i]->setPenaltyBox(false);
-                faces_[i]->clearTimeoutCount();
-                faces_[i]->clearSendPending();
-            }
-        }
-    }
-
-#else
-
-void
-MicroForwarder::processEvents()
-{
-  for (int i = 0; i < faces_.size(); ++i) {
-    faces_[i]->processEvents();
-  }
-}
-
-#endif
-
-void
-MicroForwarder::ForwarderFace::send(const uint8_t *data, size_t dataLength)
-{
-  if (transport_) {
-    try {
-
-#ifdef PENALTY_BOX
-
-#ifdef PENALTY_BOX_DEBUG
-        cout << "Data length: " << dataLength << endl;
-        printf("Last = %d\n", *(data+dataLength-1) & 0x000000FF  );
-#endif
-        if (!penaltyBoxEnabled_)
-            transport_->send(data, dataLength);
-        else if (!inPenaltyBox_) {
-            transport_->send(data, dataLength);
-            sendPending = true;
-            lastSendTs = std::chrono::system_clock::now();
-#ifdef PENALTY_BOX_DEBUG
-            printf ("\n\n@@@@@@ Sending data\n\n");
-#endif
-        }
-#ifdef PENALTY_BOX_DEBUG
-        else printf ("\n\n##### Skipping send due to penalty box\n\n");
-#endif
-
-#else
-        transport_->send(data, dataLength);
-#endif
-
-    } catch (const std::exception& ex) {
-      _LOG_ERROR("MicroForwarder: Error in transport send: " << ex.what());
-    } catch (...) {
-      _LOG_ERROR("MicroForwarder: Error in transport send");
-    }
-  }
-}
-
 void
 MicroForwarder::ForwarderFace::onReceivedElement
   (const uint8_t *element, size_t elementLength)
 {
-    parent_->onReceivedElement(this, element, elementLength);
+  parent_->onReceivedElement(this, element, elementLength);
 }
 
 void
@@ -287,8 +237,14 @@ MicroForwarder::onReceivedElement
 
   if (face->isPenaltyBoxEnabled()) {
 #ifdef PENALTY_BOX_DEBUG
-    printf ("\n******** onReceivedElement(), face ID = %d: %s, in %lums\n\n", face->getFaceId(), face->getUri().c_str(),
-            std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() - face->getLastSendTs())).count());
+    PB_DEBUG("\n******** onReceivedElement(), face ID = ")
+    PB_DEBUG(to_string(face->getFaceId()))
+    PB_DEBUG(": ")
+    PB_DEBUG(face->getUri().c_str())
+    PB_DEBUG("in ")
+    PB_DEBUG(to_string(std::chrono::duration_cast<std::chrono::milliseconds>((std::chrono::system_clock::now() -
+      face->getLastSendTs())).count()))
+    PB_DEBUG("ms\n\n")
 #endif
     face->clearSendPending();
     face->clearTimeoutCount();
@@ -296,8 +252,7 @@ MicroForwarder::onReceivedElement
 
 #endif
 
-
-    auto now = system_clock::now();
+  auto now = system_clock::now();
   // Remove timed-out PIT entries
   // Iterate backwards so we can remove the entry and keep iterating.
   for (int i = PIT_.size() - 1; i >= 0; --i) {
@@ -436,6 +391,9 @@ MicroForwarder::onReceivedElement
         FibEntry& fibEntry = *FIB_[i];
 
         // This behavior is multicast.
+        // To support multicast in an error situation, failure of a single face doesn't
+        // prevent processing of the other faces. The ID of failed faces is added to the failed
+        // face ID list, if it isn't already present.
         // TODO: Need to allow for "best route" and longest prefix match?
         if (fibEntry.getName().match(interest->getName())) {
           for (int j = 0; j < fibEntry.getNextHopCount(); ++j) {
@@ -447,7 +405,14 @@ MicroForwarder::onReceivedElement
                 << interest->getName());
               // Forward the full element including any LP header.
               sentFaceIds.insert(outFace->getFaceId());
-              outFace->send(element, elementLength);
+              try {
+                outFace->send(element, elementLength);
+              }
+              catch(...) {
+                if (end(failedFaceIds) == find(begin(failedFaceIds), end(failedFaceIds), outFace->getFaceId())) {
+                  failedFaceIds.push_back(outFace->getFaceId());
+                }
+              }
             }
           }
         }
@@ -475,6 +440,18 @@ MicroForwarder::onReceivedElement
       }
     }
   }
+}
+
+vector<int>
+MicroForwarder::getFailedFaceIds() const
+{
+  return failedFaceIds;
+}
+
+void
+MicroForwarder::clearFailedFaceIds()
+{
+  failedFaceIds.clear();
 }
 
 void
@@ -522,6 +499,107 @@ MicroForwarder::findFace(int faceId)
 
   return 0;
 }
+
+#ifdef PENALTY_BOX
+
+//
+// PENALTY BOX IMPLEMENTATION
+//
+
+int
+MicroForwarder::addFaceWithPenaltyBox(const char *host, unsigned short port, uint32_t recvTimeoutMs, uint32_t maxTimeoutCount, uint32_t penaltyTimeMs)
+{
+  auto faceId = addFace
+    (string("tcp://") + host + ":" + to_string(port),
+     ptr_lib::make_shared<TcpTransport>(),
+     ptr_lib::make_shared<TcpTransport::ConnectionInfo>(host, port));
+
+  auto face = findFace (faceId);
+  face->setPenaltyParameters (recvTimeoutMs, maxTimeoutCount, penaltyTimeMs);
+  face->enablePenaltyBoxMode();
+  return faceId;
+}
+
+void
+MicroForwarder::processEvents()
+{
+  for (int i = 0; i < faces_.size(); ++i) {
+    faces_[i]->processEvents();
+    if (faces_[i]->isPenaltyBoxEnabled() && !faces_[i]->inPenaltyBox() && faces_[i]->isSendTimedOut()) {
+      faces_[i]->incTimeoutCount();     // Increments the timeout counter and (possibly) puts face in penalty
+      PB_DEBUG("\n\n-----------Timeout count: %u\n")
+      PB_DEBUG(to_string(faces_[i]->getTimeoutCount()))
+      PB_DEBUG("\n")
+      if (faces_[i]->inPenaltyBox()) PB_DEBUG("-----------In penalty box!\n");
+      PB_DEBUG ("\n")
+    }
+    else if (faces_[i]->isPenaltyBoxEnabled() && faces_[i]->inPenaltyBox() && faces_[i]->isPenaltyBoxExpired()) {
+      PB_DEBUG("\n\n===========Out of penalty box!\n\n")
+      faces_[i]->setPenaltyBox(false);
+      faces_[i]->clearTimeoutCount();
+      faces_[i]->clearSendPending();
+    }
+  }
+}
+
+void
+MicroForwarder::ForwarderFace::send(const uint8_t *data, size_t dataLength)
+{
+  if (transport_) {
+    try {
+
+      PB_DEBUG("Data length: ")
+      PB_DEBUG(to_string(dataLength))
+      PB_DEBUG("\n")
+      PB_DEBUG("Last = ")
+      PB_DEBUG(to_string(*(data+dataLength-1) & 0x000000FF))
+      PB_DEBUG("\n")
+
+      if (!penaltyBoxEnabled_)
+        transport_->send(data, dataLength);
+      else if (!inPenaltyBox_) {
+        transport_->send(data, dataLength);
+        sendPending = true;
+        lastSendTs_ = std::chrono::system_clock::now();
+
+      PB_DEBUG("\n\n@@@@@@ Sending data\n\n")
+    }
+    else PB_DEBUG ("\n\n##### Skipping send due to penalty box\n\n");
+
+    } catch (const std::exception& ex) {
+      _LOG_ERROR("MicroForwarder: Error in transport send: " << ex.what());
+    } catch (...) {
+      _LOG_ERROR("MicroForwarder: Error in transport send");
+    }
+  }
+}
+
+
+#else
+
+void
+MicroForwarder::processEvents()
+{
+  for (int i = 0; i < faces_.size(); ++i) {
+    faces_[i]->processEvents();
+  }
+}
+
+void
+MicroForwarder::ForwarderFace::send(const uint8_t *data, size_t dataLength)
+{
+  if (transport_) {
+    try {
+      transport_->send(data, dataLength);
+    } catch (const std::exception& ex) {
+      _LOG_ERROR("MicroForwarder: Error in transport send: " << ex.what());
+    } catch (...) {
+      _LOG_ERROR("MicroForwarder: Error in transport send");
+    }
+  }
+}
+
+#endif
 
 int MicroForwarder::ForwarderFace::lastFaceId_ = 0;
 MicroForwarder* MicroForwarder::instance_ = 0;
